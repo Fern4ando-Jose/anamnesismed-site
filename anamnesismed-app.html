@@ -722,10 +722,26 @@ select.f-input{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xm
         </div>
         <div class="hc-panel-body">
           <div class="hc-panel-content">
-            <div class="f-row">
+            <div class="f-row" style="position:relative">
               <label class="f-label pt">a) Queixa principal</label>
               <label class="f-label es">a) Queja principal</label>
-              <input class="f-input" type="text" id="mc-a" placeholder="" oninput="updateProgress()">
+              <div style="position:relative">
+                <input class="f-input" type="text" id="mc-a" placeholder="Digite ou selecione o motivo..." autocomplete="off"
+                  oninput="onMCInput(this.value)" style="padding-right:32px">
+                <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted);pointer-events:none">🔍</span>
+              </div>
+              <!-- Autocomplete dropdown -->
+              <div id="mc-suggestions" style="display:none;position:absolute;z-index:500;background:var(--bg-card);border:1.5px solid var(--primary);border-radius:10px;max-height:280px;overflow-y:auto;box-shadow:0 8px 32px rgba(13,45,61,.15);min-width:320px"></div>
+            </div>
+            <!-- Motivo ativo badge -->
+            <div id="mc-motivo-badge" style="display:none;margin-bottom:10px">
+              <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(14,116,144,.1);border:1px solid rgba(14,116,144,.25);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--primary)">
+                <span id="mc-badge-icon">🩺</span>
+                <span id="mc-badge-name"></span>
+                <span style="cursor:pointer;opacity:.6;font-size:16px;font-weight:300" onclick="clearMotivo()">×</span>
+              </div>
+              <small style="margin-left:10px;font-size:11px;color:var(--muted)" class="pt">AEA e guias atualizados para este motivo</small>
+              <small style="margin-left:10px;font-size:11px;color:var(--muted)" class="es">AEA y guías actualizados para este motivo</small>
             </div>
             <div class="f-row">
               <label class="f-label pt">b) Segunda queixa (se houver)</label>
@@ -772,9 +788,10 @@ select.f-input{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xm
             <!-- Guided AEA injected by JS based on motivo -->
             <div id="aea-guided-content"></div>
 
-            <!-- LITIDIFIS universal -->
-            <div class="f-section-lbl pt">Caracterização da dor/sintoma — LITIDIFIS</div>
-            <div class="f-section-lbl es">Caracterización del dolor/síntoma — LITIDIFIS</div>
+            <!-- LITIDIFIS — só aparece para motivos de dor -->
+            <div id="litidifis-block">
+            <div class="f-section-lbl pt">Semiologia da dor — LITIDIFIS</div>
+            <div class="f-section-lbl es">Semiología del dolor — LITIDIFIS</div>
             <div class="f-row">
               <label class="f-label pt">L — Localização</label>
               <label class="f-label es">L — Localización</label>
@@ -882,6 +899,7 @@ select.f-input{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xm
               <label class="f-label es">Tratamiento ya realizado para esta queja</label>
               <input class="f-input" type="text" id="aea-trat" placeholder="Medicação, dose, resposta...">
             </div>
+            </div><!-- /litidifis-block -->
             <div class="f-row">
               <label class="f-label pt">Relato livre (AEA em texto)</label>
               <label class="f-label es">Relato libre (AEA en texto)</label>
@@ -1691,7 +1709,7 @@ function showScreen(s){
 const MOTIVOS = {
   clinica: [
     {cat:'Cardiorrespiratório / Cardiovascular', items:[
-      {id:'dor-toracica',name:'Dor Torácica',nameEs:'Dolor Torácico',icon:'❤️',color:'mc-danger',
+      {id:'dor-toracica',name:'Dor Torácica',nameEs:'Dolor Torácico',icon:'❤️',color:'mc-danger',isPain:true,
        aeaGuide:[
          {q:'Localização da dor',qEs:'Localización del dolor',type:'radio',opts:['Retroesternal','Precordial','Lateral/pleural','Epigástrica','Difusa']},
          {q:'Irradiação',qEs:'Irradiación',type:'radio',opts:['Membro superior esquerdo','Mandíbula/pescoço','Ombro direito','Dorso/interescapular','Sem irradiação']},
@@ -1719,7 +1737,7 @@ const MOTIVOS = {
       },
     ]},
     {cat:'Neurológico',items:[
-      {id:'cefaleia',name:'Cefaleia',nameEs:'Cefalea',icon:'🧠',color:'mc-purple',
+      {id:'cefaleia',name:'Cefaleia',nameEs:'Cefalea',icon:'🧠',color:'mc-purple',isPain:true,
        aeaGuide:[
          {q:'Localização',qEs:'Localización',type:'radio',opts:['Frontal','Temporal','Occipital','Hemicraniana','Holocraniana','Peri-ocular']},
          {q:'Caráter',qEs:'Carácter',type:'radio',opts:['Pulsátil/latejante','Em pressão/aperto','Lancinante/elétrica','Em explosão']},
@@ -1749,7 +1767,7 @@ const MOTIVOS = {
       },
     ]},
     {cat:'Gastrointestinal',items:[
-      {id:'dor-abdominal',name:'Dor Abdominal',nameEs:'Dolor Abdominal',icon:'🫀',color:'mc-accent',
+      {id:'dor-abdominal',name:'Dor Abdominal',nameEs:'Dolor Abdominal',icon:'🫀',color:'mc-accent',isPain:true,
        aeaGuide:[
          {q:'Localização',qEs:'Localización',type:'radio',opts:['Epigástrio','HCD','HCE','FID','FIE','Periumbilical','Hipogástrio','Difusa']},
          {q:'Relação com alimentação',qEs:'Relación con alimentación',type:'radio',opts:['Piora após refeição','Melhora após refeição','Alivia com jejum','Sem relação']},
@@ -1789,7 +1807,7 @@ const MOTIVOS = {
   ],
   cirurgia: [
     {cat:'Abdome Agudo',items:[
-      {id:'apendicite',name:'Apendicite / Abdome Agudo',nameEs:'Apendicitis / Abdomen Agudo',icon:'🔪',color:'mc-danger',
+      {id:'apendicite',name:'Apendicite / Abdome Agudo',nameEs:'Apendicitis / Abdomen Agudo',icon:'🔪',color:'mc-danger',isPain:true,
        aeaGuide:[
          {q:'Início da dor',qEs:'Inicio del dolor',type:'radio',opts:['Periumbilical migrando para FID','FID desde o início','Difusa','Epigástrica']},
          {q:'Anorexia?',qEs:'¿Anorexia?',type:'yn'},
@@ -1836,6 +1854,98 @@ const RAS_SYSTEMS = [
   {id:'psiquico',icon:'💭',name:'Saúde mental',nameEs:'Salud mental',
    questions:['Humor (depressão / ansiedade)','Alterações do sono','Ideação suicida / automutilação','Alterações de comportamento','Uso de psicofármacos']},
 ];
+
+// ── AUTOCOMPLETE + DYNAMIC MC ─────────────────────────
+function getAllMotivos(){
+  var all = [];
+  for(var sp in MOTIVOS){
+    MOTIVOS[sp].forEach(function(cat){
+      cat.items.forEach(function(m){ m._spec=sp; all.push(m); });
+    });
+  }
+  return all;
+}
+
+function onMCInput(val){
+  var sug = document.getElementById('mc-suggestions');
+  if(!val || val.length < 1){ sug.style.display='none'; return; }
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var term = val.toLowerCase().trim();
+  var matches = getAllMotivos().filter(function(m){
+    var nm = (lang==='es'?(m.nameEs||m.name):m.name).toLowerCase();
+    return nm.includes(term);
+  }).slice(0,8);
+  if(!matches.length){ sug.style.display='none'; return; }
+  sug.innerHTML = matches.map(function(m){
+    var nm = lang==='es'?(m.nameEs||m.name):m.name;
+    var specLabel = m._spec==='clinica'?(lang==='pt'?'Clínica Médica':'Clínica Médica'):(lang==='pt'?'Cirurgia Geral':'Cirugía General');
+    return '<div onclick="selectMotivoFromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
+      +'<span style="font-size:18px;flex-shrink:0">'+m.icon+'</span>'
+      +'<div><div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'
+      +'<div style="font-size:10px;color:var(--muted)">'+specLabel+'</div></div>'
+      +'</div>';
+  }).join('');
+  // Position relative to parent
+  var inp = document.getElementById('mc-a');
+  var rect = inp.getBoundingClientRect();
+  sug.style.display = 'block';
+  sug.style.top = (inp.offsetTop + inp.offsetHeight + 4)+'px';
+  sug.style.left = inp.offsetLeft+'px';
+  sug.style.width = inp.offsetWidth+'px';
+  sug.style.position = 'absolute';
+}
+
+function selectMotivoFromMC(id){
+  document.getElementById('mc-suggestions').style.display='none';
+  var mObj = findMotivo(id);
+  if(!mObj) return;
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var nm = lang==='es'?(mObj.nameEs||mObj.name):mObj.name;
+  document.getElementById('mc-a').value = nm;
+  // Show badge
+  document.getElementById('mc-motivo-badge').style.display = 'block';
+  document.getElementById('mc-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-badge-name').textContent = nm;
+  // Update HC motivo header
+  currentMotivo = mObj;
+  document.getElementById('hc-icon').textContent = mObj.icon;
+  document.getElementById('hc-name').textContent = nm;
+  document.getElementById('tb-motivo').textContent = nm;
+  // Update dynamic sections
+  renderAEAGuide(mObj);
+  updateLITIDIFIS(mObj);
+  renderRAS(mObj.rasHighlight || []);
+  renderGuideContent(mObj);
+  updateProgress();
+  // Open AEA panel
+  var aeaPanel = document.getElementById('panel-aea');
+  if(!aeaPanel.classList.contains('open')) aeaPanel.classList.add('open');
+}
+
+function clearMotivo(){
+  currentMotivo = null;
+  document.getElementById('mc-a').value = '';
+  document.getElementById('mc-motivo-badge').style.display = 'none';
+  document.getElementById('aea-guided-content').innerHTML = '';
+  updateLITIDIFIS(null);
+  renderRAS([]);
+}
+
+function updateLITIDIFIS(mObj){
+  var block = document.getElementById('litidifis-block');
+  if(!block) return;
+  // Show LITIDIFIS only for pain motivos OR if no motivo selected (generic)
+  var show = !mObj || mObj.isPain;
+  block.style.display = show ? '' : 'none';
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#mc-suggestions') && e.target.id !== 'mc-a'){
+    var sug = document.getElementById('mc-suggestions');
+    if(sug) sug.style.display='none';
+  }
+});
 
 // ── CURRENT STATE ─────────────────────────────────────
 var currentMotivo = null;
@@ -1891,7 +2001,12 @@ function openHC(id){
   document.getElementById('hc-spec').textContent = lang==='pt'?'Clínica Médica / Cirurgia Geral':'Clínica Médica / Cirugía General';
   document.getElementById('tb-motivo').textContent = nm;
   document.getElementById('mc-a').value = nm;
-  
+  // Show badge
+  document.getElementById('mc-motivo-badge').style.display = 'block';
+  document.getElementById('mc-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-badge-name').textContent = nm;
+  // LITIDIFIS visibility
+  updateLITIDIFIS(mObj);
   // Load AEA guided questions
   renderAEAGuide(mObj);
   // Load RAS filtered
