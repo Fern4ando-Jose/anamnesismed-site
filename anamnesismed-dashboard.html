@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;--bg-sidebar:#0d2d3d;
+  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
+  --secondary:#0d9488;--accent:#f59e0b;
+  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --sidebar-w:240px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar-w);min-height:100vh;
+  background:var(--bg-sidebar);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:100;transition:transform .3s
+}
+.sidebar-head{
+  padding:24px 20px 20px;
+  border-bottom:1px solid rgba(255,255,255,.07)
+}
+.sidebar-logo{
+  font-family:var(--serif);font-size:18px;font-weight:700;
+  color:#fff;text-decoration:none;display:block;margin-bottom:4px
+}
+.sidebar-logo span{color:#5dd0e8}
+.sidebar-role{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.3px}
+
+.sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px}
+.nav-section-label{
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:rgba(255,255,255,.28);
+  padding:12px 8px 6px;margin-top:8px
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.55);
+  text-decoration:none;cursor:pointer;border:none;background:transparent;
+  transition:all .2s;width:100%;text-align:left
+}
+.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
+.nav-item.active{background:rgba(14,116,144,.25);color:#fff}
+.nav-item.active .nav-dot{background:var(--primary)}
+.nav-icon{font-size:16px;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;font-size:10px;font-weight:700;
+  background:var(--primary);color:#fff;
+  padding:2px 7px;border-radius:10px
+}
+
+.sidebar-foot{
+  padding:16px 12px 20px;
+  border-top:1px solid rgba(255,255,255,.07)
+}
+.user-info{
+  display:flex;align-items:center;gap:10px;
+  padding:10px;border-radius:8px;cursor:pointer;
+  transition:background .2s
+}
+.user-info:hover{background:rgba(255,255,255,.06)}
+.user-av{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(14,116,144,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;flex-shrink:0
+}
+.user-name{font-size:13px;font-weight:600;color:#fff}
+.user-plan{font-size:11px;color:rgba(255,255,255,.4)}
+.user-caret{margin-left:auto;font-size:11px;color:rgba(255,255,255,.3)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{
+  background:var(--bg-card);
+  border-bottom:1px solid var(--line);
+  padding:0 32px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink)}
+.topbar-subtitle{font-size:13px;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+
+.lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+.search-wrap{position:relative}
+.search-input{
+  padding:8px 12px 8px 34px;font-size:13px;
+  background:var(--bg);border:1px solid var(--line);
+  border-radius:8px;color:var(--ink);outline:none;
+  width:220px;transition:all .2s;font-family:var(--sans)
+}
+.search-input:focus{border-color:var(--primary);width:260px;box-shadow:0 0 0 3px rgba(14,116,144,.1)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted)}
+
+.btn-new{
+  padding:8px 18px;font-size:13px;font-weight:700;
+  color:#fff;background:var(--primary);border:none;
+  border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+  transition:all .2s
+}
+.btn-new:hover{background:var(--primary-dark);transform:translateY(-1px)}
+
+/* CONTENT */
+.content{padding:28px 32px;flex:1}
+
+/* STATS CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:12px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:6px
+}
+.stat-card-top{display:flex;align-items:center;justify-content:space-between}
+.stat-label{font-size:12px;font-weight:600;color:var(--muted)}
+.stat-icon{font-size:20px}
+.stat-value{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--ink);line-height:1}
+.stat-delta{font-size:12px;color:var(--secondary)}
+
+/* SECTION HEADERS */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title-sm{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink)}
+.view-all{font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;cursor:pointer}
+.view-all:hover{text-decoration:underline}
+
+/* HC LIST */
+.hc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.hc-card{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 20px;
+  display:flex;align-items:center;gap:16px;
+  cursor:pointer;text-decoration:none;color:inherit;
+  transition:all .2s
+}
+.hc-card:hover{border-color:rgba(14,116,144,.3);box-shadow:0 4px 16px rgba(13,45,61,0.06);transform:translateX(2px)}
+.hc-color{width:4px;height:48px;border-radius:4px;flex-shrink:0}
+.hc-info{flex:1;min-width:0}
+.hc-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.hc-dot{width:3px;height:3px;border-radius:50%;background:var(--line-md)}
+.hc-status{
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;
+  flex-shrink:0
+}
+.hc-status.complete{background:rgba(13,148,136,.12);color:#0d9488}
+.hc-status.draft{background:rgba(245,158,11,.12);color:#d97706}
+.hc-actions{display:flex;gap:6px;flex-shrink:0}
+.hc-btn{
+  width:30px;height:30px;border-radius:7px;border:1px solid var(--line);
+  background:transparent;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;color:var(--muted)
+}
+.hc-btn:hover{background:var(--bg);border-color:var(--line-md);color:var(--ink)}
+
+/* QUICK ACCESS */
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.quick-card{
+  background:var(--bg-card);border:1px solid var(--line);
+  border-radius:12px;padding:20px;
+  cursor:pointer;text-decoration:none;color:inherit;
+  transition:all .2s;display:flex;flex-direction:column;gap:10px
+}
+.quick-card:hover{border-color:rgba(14,116,144,.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,45,61,0.07)}
+.quick-icon{font-size:28px}
+.quick-title{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink)}
+.quick-desc{font-size:12px;color:var(--muted);line-height:1.55}
+.quick-count{font-size:11px;font-weight:700;color:var(--primary);margin-top:auto}
+
+/* BOTTOM GRID */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:20px}
+
+/* RECENT ACTIVITY */
+.activity-list{display:flex;flex-direction:column;gap:12px}
+.act-item{display:flex;align-items:flex-start;gap:12px}
+.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.act-dot.created{background:var(--primary)}
+.act-dot.edited{background:var(--accent)}
+.act-dot.exported{background:var(--secondary)}
+.act-text{font-size:13px;color:var(--muted);line-height:1.5}
+.act-text strong{color:var(--ink)}
+.act-time{font-size:11px;color:rgba(75,96,112,.5)}
+
+/* UPGRADE PANEL */
+.upgrade-panel{
+  background:linear-gradient(135deg,var(--ink) 0%,#0c4a6e 100%);
+  border:1px solid rgba(14,116,144,.3);
+  border-radius:12px;padding:24px;
+  position:relative;overflow:hidden
+}
+.upgrade-panel::before{
+  content:'';position:absolute;
+  top:-30px;right:-30px;width:120px;height:120px;
+  border-radius:50%;background:rgba(14,116,144,.2)
+}
+.upgrade-panel::after{
+  content:'';position:absolute;
+  bottom:-20px;left:30px;width:80px;height:80px;
+  border-radius:50%;background:rgba(13,148,136,.15)
+}
+.upgrade-content{position:relative;z-index:1}
+.upgrade-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px}
+.upgrade-title{font-family:var(--serif);font-size:18px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3}
+.upgrade-title em{font-style:italic;color:#5dd0e8}
+.upgrade-desc{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.6}
+.upgrade-price{font-family:var(--serif);font-size:26px;font-weight:700;color:#fff;margin-bottom:16px}
+.upgrade-price span{font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.5);font-weight:400}
+.btn-upgrade{
+  display:block;text-align:center;
+  padding:11px;font-size:14px;font-weight:700;
+  color:var(--ink);background:#fff;border:none;
+  border-radius:8px;cursor:pointer;
+  text-decoration:none;transition:all .2s;font-family:var(--sans)
+}
+.btn-upgrade:hover{background:#f0f4f8;transform:translateY(-1px)}
+
+/* MOBILE NAV */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg-card);border-top:1px solid var(--line);padding:8px 0 env(safe-area-inset-bottom)}
+.mobile-nav-items{display:flex;justify-content:space-around}
+.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 12px;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;transition:color .2s}
+.mn-item.active{color:var(--primary)}
+.mn-icon{font-size:20px}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.empty-desc{font-size:14px;color:var(--muted);margin-bottom:20px}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .quick-grid{grid-template-columns:repeat(2,1fr)}
+  .bottom-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mobile-nav{display:block}
+  .content{padding:20px 16px 80px}
+  .topbar{padding:0 16px}
+  .search-wrap{display:none}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .quick-grid{grid-template-columns:1fr 1fr}
+  .bottom-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr}
+  .quick-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <a href="anamnesismed-landing.html" class="sidebar-logo">Anamnesis<span>Med</span></a>
+    <div class="sidebar-role pt">Plano Gratuito</div>
+    <div class="sidebar-role es">Plan Gratuito</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label pt">Principal</div>
+    <div class="nav-section-label es">Principal</div>
+    <button class="nav-item active" onclick="setView('dashboard')">
+      <span class="nav-icon">🏠</span>
+      <span class="pt">Dashboard</span><span class="es">Dashboard</span>
+    </button>
+    <a href="anamnesismed-app.html" class="nav-item">
+      <span class="nav-icon">🩺</span>
+      <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
+      <span class="nav-badge">+</span>
+    </a>
+    <button class="nav-item" onclick="setView('hcs')">
+      <span class="nav-icon">📋</span>
+      <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
+      <span class="nav-badge">5</span>
+    </button>
+
+    <div class="nav-section-label pt">Biblioteca</div>
+    <div class="nav-section-label es">Biblioteca</div>
+    <a href="anamnesismed-app.html" class="nav-item">
+      <span class="nav-icon">🏥</span>
+      <span class="pt">Clínica Médica</span><span class="es">Medicina Interna</span>
+    </a>
+    <a href="anamnesismed-app.html" class="nav-item">
+      <span class="nav-icon">🔪</span>
+      <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
+    </a>
+
+    <div class="nav-section-label pt">Conta</div>
+    <div class="nav-section-label es">Cuenta</div>
+    <button class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span class="pt">Configurações</span><span class="es">Configuración</span>
+    </button>
+    <a href="anamnesismed-landing.html#pricing" class="nav-item" style="color:rgba(245,158,11,.85)">
+      <span class="nav-icon">✦</span>
+      <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-foot">
+    <div class="user-info">
+      <div class="user-av">FJ</div>
+      <div>
+        <div class="user-name">Fernando Jose</div>
+        <div class="user-plan pt">Plano Gratuito · 3/5 HCs</div>
+        <div class="user-plan es">Plan Gratuito · 3/5 HCs</div>
+      </div>
+      <span class="user-caret">⋮</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button style="display:none;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink)" id="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div>
+        <div class="topbar-title pt" id="page-title">Olá, Fernando 👋</div>
+        <div class="topbar-title es" id="page-title-es">Hola, Fernando 👋</div>
+        <div class="topbar-subtitle pt" id="page-sub">Sexta-feira, 5 de junho de 2025</div>
+        <div class="topbar-subtitle es" id="page-sub-es">Viernes, 5 de junio de 2025</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="lang-toggle">
+        <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+        <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="search" class="search-input" placeholder="Buscar HCs..." id="search">
+      </div>
+      <a href="anamnesismed-app.html" class="btn-new">
+        <span>+</span>
+        <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label pt">HCs criadas</span>
+          <span class="stat-label es">HCs creadas</span>
+          <span class="stat-icon">📋</span>
+        </div>
+        <div class="stat-value">3</div>
+        <div class="stat-delta pt">+1 essa semana</div>
+        <div class="stat-delta es">+1 esta semana</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label pt">PDFs exportados</span>
+          <span class="stat-label es">PDFs exportados</span>
+          <span class="stat-icon">📄</span>
+        </div>
+        <div class="stat-value">2</div>
+        <div class="stat-delta pt">Último: ontem</div>
+        <div class="stat-delta es">Último: ayer</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label pt">Motivos consultados</span>
+          <span class="stat-label es">Motivos consultados</span>
+          <span class="stat-icon">🩺</span>
+        </div>
+        <div class="stat-value">7</div>
+        <div class="stat-delta pt">Dor torácica + 6 mais</div>
+        <div class="stat-delta es">Dolor torácico + 6 más</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label pt">Plano</span>
+          <span class="stat-label es">Plan</span>
+          <span class="stat-icon">✦</span>
+        </div>
+        <div class="stat-value" style="font-size:20px;margin-top:2px">Grátis</div>
+        <div class="stat-delta" style="color:var(--accent)">
+          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="pt">Upgrade →</a>
+          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="es">Upgrade →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT HCs -->
+    <div class="section-head">
+      <h2 class="section-title-sm pt">HCs recentes</h2>
+      <h2 class="section-title-sm es">HCs recientes</h2>
+      <a href="anamnesismed-app.html" class="view-all pt">Ver todas →</a>
+      <a href="anamnesismed-app.html" class="view-all es">Ver todas →</a>
+    </div>
+    <div class="hc-list" id="hc-list">
+      <a href="anamnesismed-app.html" class="hc-card">
+        <div class="hc-color" style="background:#0e7490"></div>
+        <div class="hc-info">
+          <div class="hc-name pt">Paciente M.S.F. — Dor Torácica</div>
+          <div class="hc-name es">Paciente M.S.F. — Dolor Torácico</div>
+          <div class="hc-meta">
+            <span class="pt">Clínica Médica</span><span class="es">Medicina Interna</span>
+            <span class="hc-dot"></span>
+            <span class="pt">Hoje às 14h23</span><span class="es">Hoy a las 14h23</span>
+            <span class="hc-dot"></span>
+            <span>7/7 abas</span>
+          </div>
+        </div>
+        <span class="hc-status complete pt">Completa</span>
+        <span class="hc-status complete es">Completa</span>
+        <div class="hc-actions">
+          <button class="hc-btn" title="Editar" onclick="event.preventDefault()">✏️</button>
+          <button class="hc-btn" title="PDF" onclick="event.preventDefault()">📄</button>
+          <button class="hc-btn" title="Excluir" onclick="event.preventDefault()">🗑️</button>
+        </div>
+      </a>
+      <a href="anamnesismed-app.html" class="hc-card">
+        <div class="hc-color" style="background:#f59e0b"></div>
+        <div class="hc-info">
+          <div class="hc-name pt">Paciente R.O.A. — Dispneia</div>
+          <div class="hc-name es">Paciente R.O.A. — Disnea</div>
+          <div class="hc-meta">
+            <span class="pt">Clínica Médica</span><span class="es">Medicina Interna</span>
+            <span class="hc-dot"></span>
+            <span class="pt">Ontem às 09h15</span><span class="es">Ayer a las 09h15</span>
+            <span class="hc-dot"></span>
+            <span>4/7 abas</span>
+          </div>
+        </div>
+        <span class="hc-status draft pt">Rascunho</span>
+        <span class="hc-status draft es">Borrador</span>
+        <div class="hc-actions">
+          <button class="hc-btn" title="Editar" onclick="event.preventDefault()">✏️</button>
+          <button class="hc-btn" title="PDF" onclick="event.preventDefault()">📄</button>
+          <button class="hc-btn" title="Excluir" onclick="event.preventDefault()">🗑️</button>
+        </div>
+      </a>
+      <a href="anamnesismed-app.html" class="hc-card">
+        <div class="hc-color" style="background:#0d9488"></div>
+        <div class="hc-info">
+          <div class="hc-name pt">Paciente A.P.L. — Cefaleia</div>
+          <div class="hc-name es">Paciente A.P.L. — Cefalea</div>
+          <div class="hc-meta">
+            <span class="pt">Clínica Médica</span><span class="es">Medicina Interna</span>
+            <span class="hc-dot"></span>
+            <span class="pt">03/06/2025 · 11h40</span><span class="es">03/06/2025 · 11h40</span>
+            <span class="hc-dot"></span>
+            <span>7/7 abas</span>
+          </div>
+        </div>
+        <span class="hc-status complete pt">Completa</span>
+        <span class="hc-status complete es">Completa</span>
+        <div class="hc-actions">
+          <button class="hc-btn" title="Editar" onclick="event.preventDefault()">✏️</button>
+          <button class="hc-btn" title="PDF" onclick="event.preventDefault()">📄</button>
+          <button class="hc-btn" title="Excluir" onclick="event.preventDefault()">🗑️</button>
+        </div>
+      </a>
+    </div>
+
+    <!-- QUICK ACCESS -->
+    <div class="section-head">
+      <h2 class="section-title-sm pt">Acesso rápido</h2>
+      <h2 class="section-title-sm es">Acceso rápido</h2>
+    </div>
+    <div class="quick-grid">
+      <a href="anamnesismed-app.html" class="quick-card">
+        <div class="quick-icon">🏥</div>
+        <div class="quick-title pt">Clínica Médica</div>
+        <div class="quick-title es">Medicina Interna</div>
+        <p class="quick-desc pt">25 motivos de consulta com HC estruturada completa</p>
+        <p class="quick-desc es">25 motivos de consulta con HC estructurada completa</p>
+        <div class="quick-count pt">25 motivos disponíveis</div>
+        <div class="quick-count es">25 motivos disponibles</div>
+      </a>
+      <a href="anamnesismed-app.html" class="quick-card">
+        <div class="quick-icon">🔪</div>
+        <div class="quick-title pt">Cirurgia Geral</div>
+        <div class="quick-title es">Cirugía General</div>
+        <p class="quick-desc pt">26 motivos cirúrgicos com avaliação pré-operatória</p>
+        <p class="quick-desc es">26 motivos quirúrgicos con evaluación preoperatoria</p>
+        <div class="quick-count pt">26 motivos disponíveis</div>
+        <div class="quick-count es">26 motivos disponibles</div>
+      </a>
+      <a href="anamnesismed-app.html" class="quick-card">
+        <div class="quick-icon">🧠</div>
+        <div class="quick-title pt">Mnemônicas</div>
+        <div class="quick-title es">Mnemotécnicas</div>
+        <p class="quick-desc pt">LITIDIFIS, IDET, ROTA, FOCOS e todas as principais</p>
+        <p class="quick-desc es">LITIDIFIS, IDET, ROTA, FOCOS y todas las principales</p>
+        <div class="quick-count pt">Todas as especialidades</div>
+        <div class="quick-count es">Todas las especialidades</div>
+      </a>
+    </div>
+
+    <!-- BOTTOM PANELS -->
+    <div class="bottom-grid">
+      <!-- ACTIVITY -->
+      <div class="panel">
+        <div class="section-head" style="margin-bottom:16px">
+          <h3 class="section-title-sm pt">Atividade recente</h3>
+          <h3 class="section-title-sm es">Actividad reciente</h3>
+        </div>
+        <div class="activity-list">
+          <div class="act-item">
+            <div class="act-dot created"></div>
+            <div>
+              <div class="act-text pt"><strong>HC criada</strong> — Dor Torácica (M.S.F.)</div>
+              <div class="act-text es"><strong>HC creada</strong> — Dolor Torácico (M.S.F.)</div>
+              <div class="act-time pt">Hoje · 14h23</div>
+              <div class="act-time es">Hoy · 14h23</div>
+            </div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot exported"></div>
+            <div>
+              <div class="act-text pt"><strong>PDF exportado</strong> — Cefaleia (A.P.L.)</div>
+              <div class="act-text es"><strong>PDF exportado</strong> — Cefalea (A.P.L.)</div>
+              <div class="act-time pt">Ontem · 16h05</div>
+              <div class="act-time es">Ayer · 16h05</div>
+            </div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot edited"></div>
+            <div>
+              <div class="act-text pt"><strong>HC editada</strong> — Dispneia (R.O.A.)</div>
+              <div class="act-text es"><strong>HC editada</strong> — Disnea (R.O.A.)</div>
+              <div class="act-time pt">Ontem · 09h40</div>
+              <div class="act-time es">Ayer · 09h40</div>
+            </div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot created"></div>
+            <div>
+              <div class="act-text pt"><strong>HC criada</strong> — Cefaleia (A.P.L.)</div>
+              <div class="act-text es"><strong>HC creada</strong> — Cefalea (A.P.L.)</div>
+              <div class="act-time">03/06 · 11h40</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPGRADE -->
+      <div class="upgrade-panel">
+        <div class="upgrade-content">
+          <div class="upgrade-label pt">Plano Pro</div>
+          <div class="upgrade-label es">Plan Pro</div>
+          <h3 class="upgrade-title pt">Acesso <em>ilimitado</em> a todos os motivos</h3>
+          <h3 class="upgrade-title es">Acceso <em>ilimitado</em> a todos los motivos</h3>
+          <p class="upgrade-desc pt">25 motivos de Clínica Médica · 26 de Cirurgia Geral · HCs ilimitadas na nuvem · Export PDF completo</p>
+          <p class="upgrade-desc es">25 motivos de Medicina Interna · 26 de Cirugía General · HCs ilimitadas en la nube · Export PDF completo</p>
+          <div class="upgrade-price">$0,99 <span class="pt">/mês</span><span class="es">/mes</span></div>
+          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade pt">Fazer upgrade agora →</a>
+          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade es">Hacer upgrade ahora →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-items">
+    <button class="mn-item active">
+      <span class="mn-icon">🏠</span>
+      <span class="pt">Início</span><span class="es">Inicio</span>
+    </button>
+    <a href="anamnesismed-app.html" class="mn-item" style="text-decoration:none;color:var(--muted)">
+      <span class="mn-icon">🩺</span>
+      <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
+    </a>
+    <button class="mn-item">
+      <span class="mn-icon">📋</span>
+      <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
+    </button>
+    <button class="mn-item">
+      <span class="mn-icon">⚙️</span>
+      <span class="pt">Conta</span><span class="es">Cuenta</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-pt').classList.toggle('active',l==='pt');
+  try{localStorage.setItem('am-lang',l)}catch(e){}
+}
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function setView(v){
+  // future: show/hide panels
+}
+(function(){
+  try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
+  // Show menu button on mobile
+  if(window.innerWidth<=768){
+    document.getElementById('menu-btn').style.display='block';
+  }
+  // Update date
+  var now=new Date();
+  var days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var daysEs=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var monthsEs=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var d=now.getDate();
+  document.getElementById('page-sub').textContent=days[now.getDay()]+', '+d+' de '+months[now.getMonth()]+' de '+now.getFullYear();
+  document.getElementById('page-sub-es').textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
+})();
+</script>
+</body>
+</html>

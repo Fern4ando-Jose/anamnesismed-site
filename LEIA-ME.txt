@@ -1,0 +1,66 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║           AnamnesísMed — Estrutura Atualizada do Projeto             ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+DESIGN SYSTEM (Direção 3 — "Saúde Confiável"):
+────────────────────────────────────────────────────────────────────────
+Paleta:   #f0f4f8 (bg) · #0d2d3d (navy/tinta) · #0e7490 (teal primário)
+          #0d9488 (teal-verde) · #f59e0b (âmbar/destaque)
+Fontes:   Libre Baskerville (títulos/serif) + Source Sans 3 (corpo/sans)
+Tom:      Acolhedor · Profissional · Confiável
+Ref:      Zocdoc · Apple Health · Doctolib
+
+ARQUIVOS DO PROJETO:
+────────────────────────────────────────────────────────────────────────
+index.html                   → Redireciona para a Landing Page
+anamnesismed-landing.html    → Página inicial (Landing Page) ✅ REDESIGN
+anamnesismed-auth.html       → Login / Cadastro (magic link) ✅ REDESIGN
+anamnesismed-dashboard.html  → Dashboard do usuário          ✅ REDESIGN
+anamnesismed-app.html        → App principal (HC completa)
+
+NAVEGAÇÃO COMPLETA:
+────────────────────────────────────────────────────────────────────────
+Landing → Auth → Dashboard → App
+
+  App (7 abas):
+    1. Anamnese      — Formulário completo (página única, scroll)
+    2. Mnemônicas    — LITIDIFIS, IDET, ROTA, FOCOS...
+    3. Manobras      — Técnica passo a passo + achados
+    4. Sinais Clássicos — Kernig, Brudzinski, Osler, Janeway...
+    5. Diagnóstico Diferencial — Tabela comparativa explicada
+    6. Escalas / Scores — Sepsis-3, Duke, qSOFA, temperaturas
+    7. Conduta       — Plano + Export PDF narrativo
+
+FUNCIONALIDADES:
+────────────────────────────────────────────────────────────────────────
+✅ Bilíngue ES / PT com troca em tempo real
+✅ Busca de motivos (sidebar + campo principal)
+✅ Formulário completo com rádios, checkboxes, EVA 0-10
+✅ Acordeões para manobras semiológicas
+✅ Export PDF narrativo ("Paciente de X anos que consulta por...")
+✅ Salvar/restaurar dados (localStorage)
+✅ Responsivo (tablet + mobile com bottom nav)
+✅ Progresso visual entre abas
+✅ Design system "Saúde Confiável" aplicado em 3 páginas
+
+STATUS DO PROJETO:
+────────────────────────────────────────────────────────────────────────
+✅ Landing Page            — redesign completo (Direção 3)
+✅ Login / Cadastro        — redesign completo (magic link + Google)
+✅ Dashboard               — redesign completo (sidebar + stats + HCs)
+🔶 App Principal           — estrutura OK, pendente aplicar novo design
+🔲 Backend (Supabase)      — autenticação real (TODO: integrar)
+🔲 Stripe                  — pagamentos $0.99/mês (TODO: integrar)
+🔲 Expandir HCs            — completar 25 motivos de Clínica Médica
+🔲 Deploy                  — Vercel / Netlify → anamnesismed.com
+🟡 Domínio                 — anamnesismed.com já registrado ✓
+
+PRÓXIMOS PASSOS:
+────────────────────────────────────────────────────────────────────────
+1. Aplicar design "Saúde Confiável" ao anamnesismed-app.html
+2. Backend — Supabase (auth real: magic link + Google OAuth)
+3. Stripe — integração de pagamento ($0.99/mês)
+4. Expandir conteúdo — HCs dos 25 motivos de Clínica Médica
+5. Deploy — publicar em anamnesismed.com via Vercel
+
+© 2025 AnamnesísMed · anamnesismed.com

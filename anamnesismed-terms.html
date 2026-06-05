@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — Termos de Uso e Responsabilidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;
+  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
+  --secondary:#0d9488;--accent:#f59e0b;--danger:#c0392b;
+  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --r:10px;--r-lg:16px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:60px;
+  background:rgba(240,244,248,0.94);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line)
+}
+.nav-logo{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--primary)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+/* LAYOUT */
+.page-wrap{max-width:800px;margin:0 auto;padding:40px 32px 60px}
+
+/* HEADER */
+.doc-header{text-align:center;margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid var(--line)}
+.doc-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(192,57,43,.09);border:1px solid rgba(192,57,43,.2);color:var(--danger);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:16px}
+.doc-title{font-family:var(--serif);font-size:clamp(24px,3vw,36px);font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.2}
+.doc-title em{font-style:italic;color:var(--primary)}
+.doc-subtitle{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.7}
+.doc-meta{margin-top:18px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+.doc-meta-item{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+
+/* CRITICAL ALERT BOX */
+.alert-box{
+  background:rgba(192,57,43,.06);
+  border:1.5px solid rgba(192,57,43,.25);
+  border-radius:var(--r-lg);padding:20px 24px;
+  margin-bottom:36px;display:flex;gap:16px;align-items:flex-start
+}
+.alert-icon{font-size:24px;flex-shrink:0;margin-top:2px}
+.alert-content{}
+.alert-title{font-size:15px;font-weight:700;color:var(--danger);margin-bottom:6px}
+.alert-text{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* SECTION */
+.term-section{margin-bottom:36px}
+.term-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--primary);margin-bottom:6px}
+.term-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:12px}
+.term-body{font-size:15px;color:var(--muted);line-height:1.8}
+.term-body p{margin-bottom:12px}
+.term-body p:last-child{margin-bottom:0}
+.term-body strong{color:var(--ink);font-weight:700}
+.term-body em{font-style:italic}
+.term-body a{color:var(--primary);text-decoration:none}
+.term-body a:hover{text-decoration:underline}
+
+/* LIST */
+.term-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.term-list li{font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;line-height:1.6}
+.term-list li::before{content:"→";color:var(--primary);font-weight:700;flex-shrink:0;margin-top:1px}
+.term-list.warn li::before{content:"⚠";color:var(--danger)}
+
+/* SOURCES TABLE */
+.sources-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.source-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:4px}
+.source-title{font-size:13px;font-weight:700;color:var(--ink)}
+.source-org{font-size:12px;color:var(--primary);font-weight:600}
+.source-year{font-size:11px;color:var(--muted)}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--line);margin:32px 0}
+
+/* ACCEPT BOX */
+.accept-box{
+  background:var(--bg-card);border:1.5px solid var(--line);
+  border-radius:var(--r-lg);padding:28px;
+  position:sticky;bottom:16px;
+  box-shadow:0 8px 32px rgba(13,45,61,0.12)
+}
+.accept-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.accept-sub{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.accept-checks{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.accept-check{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.accept-check input[type=checkbox]{width:17px;height:17px;flex-shrink:0;margin-top:2px;accent-color:var(--primary);cursor:pointer}
+.accept-check-label{font-size:13px;color:var(--muted);line-height:1.55}
+.accept-check-label strong{color:var(--ink)}
+.accept-actions{display:flex;gap:12px;align-items:center}
+.btn-accept{
+  flex:1;padding:13px;font-size:15px;font-weight:700;
+  color:#fff;background:var(--primary);border:none;
+  border-radius:var(--r);cursor:pointer;font-family:var(--sans);
+  transition:all .2s;opacity:.5;pointer-events:none
+}
+.btn-accept.ready{opacity:1;pointer-events:auto}
+.btn-accept.ready:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-decline{font-size:13px;color:var(--muted);text-decoration:none;cursor:pointer;transition:color .2s;border:none;background:none;padding:8px}
+.btn-decline:hover{color:var(--danger)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .page-wrap{padding:28px 20px 120px}
+  .sources-grid{grid-template-columns:1fr}
+  .accept-box{margin:0 -20px;border-radius:0;position:fixed;bottom:0;left:0;right:0;padding:20px}
+  .doc-meta{gap:14px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="anamnesismed-landing.html" class="nav-logo">Anamnesis<span>Med</span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="doc-badge pt">⚕ Documento Obrigatório</div>
+    <div class="doc-badge es">⚕ Documento Obligatorio</div>
+    <h1 class="doc-title pt">Termos de Uso e <em>Responsabilidade</em></h1>
+    <h1 class="doc-title es">Términos de Uso y <em>Responsabilidad</em></h1>
+    <p class="doc-subtitle pt">Leia com atenção antes de usar o AnamnesísMed. Este documento define o escopo da ferramenta e as responsabilidades de cada parte.</p>
+    <p class="doc-subtitle es">Lea con atención antes de usar AnamnesísMed. Este documento define el alcance de la herramienta y las responsabilidades de cada parte.</p>
+    <div class="doc-meta">
+      <span class="doc-meta-item pt">📅 Última atualização: junho de 2025</span>
+      <span class="doc-meta-item es">📅 Última actualización: junio de 2025</span>
+      <span class="doc-meta-item pt">🌐 Versão bilíngue: PT / ES</span>
+      <span class="doc-meta-item es">🌐 Versión bilingüe: PT / ES</span>
+      <span class="doc-meta-item">📍 anamnesismed.com</span>
+    </div>
+  </div>
+
+  <!-- CRITICAL ALERT -->
+  <div class="alert-box">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-content">
+      <div class="alert-title pt">AVISO CRÍTICO — Ferramenta de Apoio Educacional, Não Substituto Médico</div>
+      <div class="alert-title es">AVISO CRÍTICO — Herramienta de Apoyo Educativo, No Sustituto Médico</div>
+      <p class="alert-text pt">O AnamnesísMed é uma ferramenta de apoio educacional e de organização da informação clínica. <strong>Não constitui orientação médica, diagnóstico ou prescrição.</strong> Todo e qualquer raciocínio clínico, diagnóstico e conduta terapêutica são de exclusiva responsabilidade do profissional de saúde habilitado que atende o paciente.</p>
+      <p class="alert-text es">AnamnesísMed es una herramienta de apoyo educativo y de organización de la información clínica. <strong>No constituye orientación médica, diagnóstico ni prescripción.</strong> Todo razonamiento clínico, diagnóstico y conducta terapéutica son de exclusiva responsabilidad del profesional de salud habilitado que atiende al paciente.</p>
+    </div>
+  </div>
+
+  <!-- 1. NATUREZA DA FERRAMENTA -->
+  <div class="term-section">
+    <div class="term-num pt">Artigo 1</div>
+    <div class="term-num es">Artículo 1</div>
+    <h2 class="term-title pt">Natureza e Finalidade da Ferramenta</h2>
+    <h2 class="term-title es">Naturaleza y Finalidad de la Herramienta</h2>
+    <div class="term-body">
+      <p class="pt">O AnamnesísMed é uma <strong>plataforma digital de apoio ao ensino médico e à organização de histórias clínicas</strong>. Destina-se exclusivamente a fins educacionais, de treinamento, organização e referência para médicos e estudantes de medicina.</p>
+      <p class="es">AnamnesísMed es una <strong>plataforma digital de apoyo a la enseñanza médica y la organización de historias clínicas</strong>. Se destina exclusivamente a fines educativos, de entrenamiento, organización y referencia para médicos y estudiantes de medicina.</p>
+      <p class="pt">O conteúdo apresentado — incluindo mnemônicas, manobras semiológicas, escalas clínicas, diagnósticos diferenciais e protocolos de conduta — tem caráter <strong>didático e de referência rápida</strong>. Não substitui livros-texto, diretrizes clínicas atualizadas, ou o julgamento clínico do profissional.</p>
+      <p class="es">El contenido presentado — incluyendo mnemotécnicas, maniobras semiológicas, escalas clínicas, diagnósticos diferenciales y protocolos de conducta — tiene carácter <strong>didáctico y de referencia rápida</strong>. No sustituye libros de texto, guías clínicas actualizadas, ni el juicio clínico del profesional.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 2. ISENÇÃO DE RESPONSABILIDADE -->
+  <div class="term-section">
+    <div class="term-num pt">Artigo 2</div>
+    <div class="term-num es">Artículo 2</div>
+    <h2 class="term-title pt">Isenção de Responsabilidade Clínica</h2>
+    <h2 class="term-title es">Exención de Responsabilidad Clínica</h2>
+    <div class="term-body">
+      <p class="pt"><strong>O AnamnesísMed e seus desenvolvedores não se responsabilizam, em nenhuma hipótese, por:</strong></p>
+      <p class="es"><strong>AnamnesísMed y sus desarrolladores no se responsabilizan, en ningún caso, por:</strong></p>
+      <ul class="term-list warn">
+        <li class="pt">Diagnósticos, condutas terapêuticas ou decisões clínicas tomadas com base no conteúdo da plataforma</li>
+        <li class="es">Diagnósticos, conductas terapéuticas o decisiones clínicas tomadas con base en el contenido de la plataforma</li>
+        <li class="pt">Danos causados a pacientes decorrentes do uso — direto ou indireto — das informações disponibilizadas</li>
+        <li class="es">Daños causados a pacientes derivados del uso — directo o indirecto — de la información disponible</li>
+        <li class="pt">Imprecisões ou desatualizações no conteúdo em relação às diretrizes clínicas mais recentes</li>
+        <li class="es">Imprecisiones o desactualizaciones en el contenido respecto a las guías clínicas más recientes</li>
+        <li class="pt">Uso da plataforma por indivíduos sem habilitação médica legalmente reconhecida</li>
+        <li class="es">Uso de la plataforma por individuos sin habilitación médica legalmente reconocida</li>
+        <li class="pt">Erros de interpretação ou aplicação do conteúdo pelo usuário</li>
+        <li class="es">Errores de interpretación o aplicación del contenido por parte del usuario</li>
+        <li class="pt">Perda de dados, interrupção de serviço ou falhas técnicas da plataforma</li>
+        <li class="es">Pérdida de datos, interrupción del servicio o fallas técnicas de la plataforma</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 3. FONTES E REFERÊNCIAS -->
+  <div class="term-section">
+    <div class="term-num pt">Artigo 3</div>
+    <div class="term-num es">Artículo 3</div>
+    <h2 class="term-title pt">Fontes e Referências Bibliográficas</h2>
+    <h2 class="term-title es">Fuentes y Referencias Bibliográficas</h2>
+    <div class="term-body">
+      <p class="pt">O conteúdo do AnamnesísMed foi elaborado com base nas seguintes fontes de referência consagradas na medicina clínica. O usuário é encorajado a consultar as fontes primárias para casos de dúvida ou decisão clínica.</p>
+      <p class="es">El contenido de AnamnesísMed fue elaborado con base en las siguientes fuentes de referencia reconocidas en medicina clínica. Se alienta al usuario a consultar las fuentes primarias ante casos de duda o decisión clínica.</p>
+    </div>
+    <div class="sources-grid">
+      <div class="source-card">
+        <div class="source-title">Harrison's Principles of Internal Medicine</div>
+        <div class="source-org">McGraw-Hill Medical</div>
+        <div class="source-year">21ª edição, 2022</div>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Semiologia Médica</div>
+        <div class="source-org">Porto & Porto</div>
+        <div class="source-year">8ª edição, 2019</div>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Cecil-Goldman Medicine</div>
+        <div class="source-org">Elsevier</div>
+        <div class="source-year">26ª edição, 2020</div>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Schwartz's Principles of Surgery</div>
+        <div class="source-org">McGraw-Hill</div>
+        <div class="source-year">11ª edição, 2019</div>
+      </div>
+      <div class="source-card">
+        <div class="source-title pt">Sepsis-3: Third International Consensus</div>
+        <div class="source-title es">Sepsis-3: Tercer Consenso Internacional</div>
+        <div class="source-org">Singer et al. — JAMA</div>
+        <div class="source-year">2016 · DOI: 10.1001/jama.2016.0287</div>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Duke Criteria (Endocarditis)</div>
+        <div class="source-org">Li et al. — Clinical Infectious Diseases</div>
+        <div class="source-year">2000 · DOI: 10.1086/313753</div>
+      </div>
+      <div class="source-card">
+        <div class="source-title pt">Diretrizes da Sociedade Brasileira de Cardiologia</div>
+        <div class="source-title es">Directrices de la Sociedad Brasileña de Cardiología</div>
+        <div class="source-org">SBC</div>
+        <div class="source-year">2023/2024</div>
+      </div>
+      <div class="source-card">
+        <div class="source-title pt">Propedêutica Clínica e Fisiopatologia</div>
+        <div class="source-title es">Propedéutica Clínica y Fisiopatología</div>
+        <div class="source-org">Fischbach & Dunning</div>
+        <div class="source-year">8ª edição, 2015</div>
+      </div>
+    </div>
+    <div class="term-body" style="margin-top:16px">
+      <p class="pt">⚠️ <strong>Importante:</strong> O conteúdo pode não refletir as diretrizes mais recentes. Consulte sempre as fontes primárias atualizadas antes de tomar decisões clínicas.</p>
+      <p class="es">⚠️ <strong>Importante:</strong> El contenido puede no reflejar las guías más recientes. Consulte siempre las fuentes primarias actualizadas antes de tomar decisiones clínicas.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 4. USO DE DADOS -->
+  <div class="term-section">
+    <div class="term-num pt">Artigo 4</div>
+    <div class="term-num es">Artículo 4</div>
+    <h2 class="term-title pt">Dados dos Pacientes e Privacidade</h2>
+    <h2 class="term-title es">Datos de Pacientes y Privacidad</h2>
+    <div class="term-body">
+      <p class="pt"><strong>ATENÇÃO — LGPD / HIPAA:</strong> O AnamnesísMed processa informações que podem ser inseridas pelo usuário durante o preenchimento de histórias clínicas. O usuário é o único responsável por:</p>
+      <p class="es"><strong>ATENCIÓN — LGPD / HIPAA:</strong> AnamnesísMed procesa información que puede ser ingresada por el usuario durante el llenado de historias clínicas. El usuario es el único responsable de:</p>
+      <ul class="term-list warn">
+        <li class="pt">Obter o consentimento do paciente para o registro e armazenamento de suas informações de saúde</li>
+        <li class="es">Obtener el consentimiento del paciente para el registro y almacenamiento de su información de salud</li>
+        <li class="pt">Garantir o cumprimento das legislações de proteção de dados aplicáveis (LGPD, HIPAA, GDPR)</li>
+        <li class="es">Garantizar el cumplimiento de las legislaciones de protección de datos aplicables (LGPD, HIPAA, GDPR)</li>
+        <li class="pt">Não inserir dados identificáveis de pacientes em plataformas sem conformidade com as normas vigentes</li>
+        <li class="es">No ingresar datos identificables de pacientes en plataformas sin conformidad con las normas vigentes</li>
+      </ul>
+      <p class="pt">O AnamnesísMed <strong>não compartilha dados de pacientes com terceiros</strong> e utiliza criptografia para proteção das informações. Dados inseridos localmente (localStorage) permanecem apenas no dispositivo do usuário.</p>
+      <p class="es">AnamnesísMed <strong>no comparte datos de pacientes con terceros</strong> y utiliza cifrado para la protección de la información. Los datos ingresados localmente (localStorage) permanecen solo en el dispositivo del usuario.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 5. LIMITAÇÕES TÉCNICAS -->
+  <div class="term-section">
+    <div class="term-num pt">Artigo 5</div>
+    <div class="term-num es">Artículo 5</div>
+    <h2 class="term-title pt">Limitações Técnicas e de Conteúdo</h2>
+    <h2 class="term-title es">Limitaciones Técnicas y de Contenido</h2>
+    <div class="term-body">
+      <ul class="term-list">
+        <li class="pt">O AnamnesísMed está em desenvolvimento ativo. Conteúdos podem ser incompletos, desatualizados ou conter imprecisões</li>
+        <li class="es">AnamnesísMed está en desarrollo activo. Los contenidos pueden estar incompletos, desactualizados o contener imprecisiones</li>
+        <li class="pt">O export em PDF é apenas uma representação organizada das informações inseridas pelo usuário, não um documento médico-legal</li>
+        <li class="es">El export en PDF es solo una representación organizada de la información ingresada por el usuario, no un documento médico-legal</li>
+        <li class="pt">Escalas e scores (Sepsis-3, qSOFA, Duke, etc.) são apresentados para fins educacionais; sua aplicação clínica requer avaliação individualizada</li>
+        <li class="es">Escalas y scores (Sepsis-3, qSOFA, Duke, etc.) se presentan con fines educativos; su aplicación clínica requiere evaluación individualizada</li>
+        <li class="pt">A plataforma pode estar temporariamente indisponível por manutenção, sem aviso prévio</li>
+        <li class="es">La plataforma puede estar temporalmente no disponible por mantenimiento, sin previo aviso</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 6. ELEGIBILIDADE -->
+  <div class="term-section">
+    <div class="term-num pt">Artigo 6</div>
+    <div class="term-num es">Artículo 6</div>
+    <h2 class="term-title pt">Elegibilidade e Público-Alvo</h2>
+    <h2 class="term-title es">Elegibilidad y Público Objetivo</h2>
+    <div class="term-body">
+      <p class="pt">O AnamnesísMed destina-se exclusivamente a <strong>médicos legalmente habilitados, estudantes de medicina regularmente matriculados e outros profissionais de saúde</strong>. O uso por leigos ou para fins de autodiagnóstico é expressamente desaconselhado e de exclusiva responsabilidade do usuário.</p>
+      <p class="es">AnamnesísMed se destina exclusivamente a <strong>médicos legalmente habilitados, estudiantes de medicina regularmente matriculados y otros profesionales de salud</strong>. El uso por legos o con fines de autodiagnóstico está expresamente desaconsejado y es de exclusiva responsabilidad del usuario.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 7. MODIFICAÇÕES -->
+  <div class="term-section">
+    <div class="term-num pt">Artigo 7</div>
+    <div class="term-num es">Artículo 7</div>
+    <h2 class="term-title pt">Modificações dos Termos</h2>
+    <h2 class="term-title es">Modificaciones de los Términos</h2>
+    <div class="term-body">
+      <p class="pt">O AnamnesísMed reserva-se o direito de atualizar estes Termos a qualquer momento. Alterações significativas serão notificadas por e-mail ou aviso na plataforma. O uso continuado após a notificação implica aceitação dos novos termos.</p>
+      <p class="es">AnamnesísMed se reserva el derecho de actualizar estos Términos en cualquier momento. Los cambios significativos serán notificados por correo electrónico o aviso en la plataforma. El uso continuado tras la notificación implica aceptación de los nuevos términos.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ACCEPT BOX -->
+  <div class="accept-box" id="accept-box">
+    <h3 class="accept-title pt">Aceite os Termos para continuar</h3>
+    <h3 class="accept-title es">Acepta los Términos para continuar</h3>
+    <p class="accept-sub pt">Ao aceitar, você confirma que leu, compreendeu e concorda com os Termos de Uso e Responsabilidade do AnamnesísMed.</p>
+    <p class="accept-sub es">Al aceptar, confirmas que has leído, comprendido y aceptas los Términos de Uso y Responsabilidad de AnamnesísMed.</p>
+    <div class="accept-checks">
+      <label class="accept-check">
+        <input type="checkbox" id="chk1" onchange="checkAll()">
+        <span class="accept-check-label pt">Entendo que o AnamnesísMed é uma <strong>ferramenta educacional</strong> e não substitui o julgamento clínico ou a responsabilidade médica</span>
+        <span class="accept-check-label es">Entiendo que AnamnesísMed es una <strong>herramienta educativa</strong> y no sustituye el juicio clínico ni la responsabilidad médica</span>
+      </label>
+      <label class="accept-check">
+        <input type="checkbox" id="chk2" onchange="checkAll()">
+        <span class="accept-check-label pt">Responsabilizo-me pelo uso correto das informações e pela obtenção do <strong>consentimento dos pacientes</strong> cujos dados inserir na plataforma</span>
+        <span class="accept-check-label es">Me responsabilizo por el uso correcto de la información y por obtener el <strong>consentimiento de los pacientes</strong> cuyos datos ingrese en la plataforma</span>
+      </label>
+      <label class="accept-check">
+        <input type="checkbox" id="chk3" onchange="checkAll()">
+        <span class="accept-check-label pt">Li e concordo com a <strong>Isenção de Responsabilidade Clínica</strong> descrita no Artigo 2 e com as <strong>Limitações Técnicas</strong> do Artigo 5</span>
+        <span class="accept-check-label es">He leído y acepto la <strong>Exención de Responsabilidad Clínica</strong> descrita en el Artículo 2 y las <strong>Limitaciones Técnicas</strong> del Artículo 5</span>
+      </label>
+    </div>
+    <div class="accept-actions">
+      <button class="btn-accept pt" id="btn-accept" onclick="acceptTerms()">Aceitar e criar conta →</button>
+      <button class="btn-accept es" id="btn-accept-es" onclick="acceptTerms()">Aceptar y crear cuenta →</button>
+      <a href="anamnesismed-landing.html" class="btn-decline pt">Recusar e sair</a>
+      <a href="anamnesismed-landing.html" class="btn-decline es">Rechazar y salir</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-pt').classList.toggle('active',l==='pt');
+  try{localStorage.setItem('am-lang',l)}catch(e){}
+}
+
+function checkAll(){
+  var all=['chk1','chk2','chk3'].every(function(id){return document.getElementById(id).checked});
+  document.getElementById('btn-accept').classList.toggle('ready',all);
+  document.getElementById('btn-accept-es').classList.toggle('ready',all);
+}
+
+function acceptTerms(){
+  try{localStorage.setItem('am-terms-accepted','2025-06')}catch(e){}
+  // Redirect to dashboard after acceptance
+  window.location.href='anamnesismed-dashboard.html';
+}
+
+(function(){
+  try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
+  // If terms already accepted, show different message
+  try{
+    if(localStorage.getItem('am-terms-accepted')){
+      var box=document.getElementById('accept-box');
+      box.style.background='rgba(13,148,136,.06)';
+      box.style.borderColor='rgba(13,148,136,.3)';
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

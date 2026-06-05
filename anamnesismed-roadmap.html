@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — Roadmap Técnico</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0c10;--paper:#f5f1e8;--cream:#ede8d8;--white:#fff;
+  --red:#c0392b;--teal:#1a5c5c;--gold:#9a6800;--green:#1e6b3c;
+  --navy:#1a3a5c;--purple:#5b2d8e;--muted:#6b6660;--line:rgba(10,12,16,.1);
+  --serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);padding:32px 24px 60px;max-width:960px;margin:0 auto}
+h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;letter-spacing:-.5px}
+.subtitle{font-size:12px;font-family:var(--mono);color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px}
+
+/* PHASE CARDS */
+.phases{display:flex;flex-direction:column;gap:24px}
+.phase{background:var(--white);border-radius:14px;border:1.5px solid var(--line);overflow:hidden}
+.phase-head{padding:18px 22px;display:flex;align-items:center;gap:14px;border-bottom:1.5px solid var(--line)}
+.phase-num{font-family:var(--serif);font-size:32px;font-weight:900;opacity:.15;line-height:1}
+.phase-icon{font-size:26px;flex-shrink:0}
+.phase-title{font-family:var(--serif);font-size:18px;font-weight:900}
+.phase-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.phase-badge{margin-left:auto;font-size:9px;font-weight:700;font-family:var(--mono);
+  letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:8px;white-space:nowrap}
+.badge-now{background:#d4edda;color:#155724}
+.badge-week{background:#fff3cd;color:#856404}
+.badge-month{background:#e8d5ff;color:#4a1a8e}
+.badge-done{background:var(--ink);color:var(--white)}
+
+.phase-body{padding:20px 22px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.phase-body.single{grid-template-columns:1fr}
+
+.block{border-radius:9px;border:1.5px solid var(--line);padding:14px 16px;position:relative;overflow:hidden}
+.block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.b-red::before{background:var(--red)} .b-teal::before{background:var(--teal)}
+.b-gold::before{background:var(--gold)} .b-navy::before{background:var(--navy)}
+.b-green::before{background:var(--green)} .b-purple::before{background:var(--purple)}
+
+.block-title{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.block-icon{font-size:16px}
+.block-items{list-style:none;display:flex;flex-direction:column;gap:5px}
+.block-items li{font-size:12px;color:var(--muted);display:flex;gap:7px;line-height:1.5}
+.block-items li::before{content:'→';color:var(--red);flex-shrink:0;font-size:11px;margin-top:1px}
+.block-items li strong{color:var(--ink);font-weight:600}
+.block-items li code{font-family:var(--mono);font-size:10px;background:var(--cream);
+  padding:1px 5px;border-radius:3px;color:var(--ink)}
+
+.cost-tag{display:inline-block;margin-top:8px;padding:3px 9px;border-radius:6px;
+  font-size:10px;font-weight:700;font-family:var(--mono);
+  background:var(--cream);color:var(--muted)}
+.cost-tag.free{background:#d4edda;color:#155724}
+.cost-tag.paid{background:#fff3cd;color:#856404}
+
+/* ARCH DIAGRAM */
+.arch{background:var(--ink);border-radius:14px;padding:24px;margin-bottom:24px;overflow:hidden;position:relative}
+.arch::before{content:'';position:absolute;top:-60px;right:-60px;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(192,57,43,.2) 0%,transparent 65%)}
+.arch-title{font-family:var(--serif);font-size:16px;font-weight:900;color:var(--white);margin-bottom:18px}
+.arch-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.arch-node{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;padding:10px 14px;text-align:center;min-width:90px}
+.arch-node-icon{font-size:18px;display:block;margin-bottom:4px}
+.arch-node-name{font-size:11px;font-weight:700;color:var(--white)}
+.arch-node-sub{font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono);margin-top:2px}
+.arch-arrow{font-size:18px;color:rgba(255,255,255,.25);flex-shrink:0}
+
+/* PRICING DETAIL */
+.pricing-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.price-mini{background:var(--cream);border-radius:9px;padding:14px;text-align:center}
+.price-mini-val{font-family:var(--serif);font-size:22px;font-weight:900;color:var(--ink)}
+.price-mini-lbl{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.price-mini-desc{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:7px;padding:14px 0 4px}
+.check-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.5}
+.check-box{width:20px;height:20px;border-radius:5px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.done{background:var(--ink);color:var(--white)}
+.todo{background:var(--cream);border:1.5px solid var(--line);color:var(--muted)}
+.now{background:var(--red);color:var(--white)}
+
+@media(max-width:600px){
+  .phase-body{grid-template-columns:1fr}
+  .arch-flow{flex-direction:column;align-items:flex-start}
+  .pricing-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<h1>AnamnesísMed</h1>
+<div class="subtitle">Roadmap Técnico · Hospedagem · Pagamentos · Controle de Usuários</div>
+
+<!-- ARQUITETURA GERAL -->
+<div class="arch">
+  <div class="arch-title">🏗️ Arquitetura Completa</div>
+  <div class="arch-flow">
+    <div class="arch-node">
+      <span class="arch-node-icon">🌐</span>
+      <div class="arch-node-name">Usuário</div>
+      <div class="arch-node-sub">Browser / Mobile</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-node">
+      <span class="arch-node-icon">▲</span>
+      <div class="arch-node-name">Vercel</div>
+      <div class="arch-node-sub">Hosting + CDN</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-node">
+      <span class="arch-node-icon">⚡</span>
+      <div class="arch-node-name">Supabase</div>
+      <div class="arch-node-sub">Auth + DB + API</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-node">
+      <span class="arch-node-icon">💳</span>
+      <div class="arch-node-name">Stripe</div>
+      <div class="arch-node-sub">Pagamentos</div>
+    </div>
+    <span class="arch-arrow">→</span>
+    <div class="arch-node">
+      <span class="arch-node-icon">📧</span>
+      <div class="arch-node-name">Resend</div>
+      <div class="arch-node-sub">Emails / Magic Link</div>
+    </div>
+  </div>
+</div>
+
+<!-- ESTADO ATUAL -->
+<div class="phase">
+  <div class="phase-head">
+    <span class="phase-num">0</span>
+    <span class="phase-icon">✅</span>
+    <div>
+      <div class="phase-title">O que já temos</div>
+      <div class="phase-sub">Frontend completo em HTML/CSS/JS puro</div>
+    </div>
+    <span class="phase-badge badge-done">Feito</span>
+  </div>
+  <div class="phase-body single" style="grid-template-columns:1fr">
+    <div class="checklist">
+      <div class="check-item"><div class="check-box done">✓</div><span><strong>Landing Page</strong> — bilíngue ES/PT, hero, preços, cadastro</span></div>
+      <div class="check-item"><div class="check-box done">✓</div><span><strong>Login / Cadastro</strong> — magic link UI, validação, estados</span></div>
+      <div class="check-item"><div class="check-box done">✓</div><span><strong>Dashboard</strong> — sidebar, stats, HCs recentes, especialidades</span></div>
+      <div class="check-item"><div class="check-box done">✓</div><span><strong>App Principal</strong> — 51 motivos, HC completa com 7 abas, PDF narrativo</span></div>
+      <div class="check-item"><div class="check-box done">✓</div><span>Busca, acordeões, mnemônicas, scores, diagnóstico diferencial</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FASE 1: HOSPEDAR -->
+<div class="phase">
+  <div class="phase-head">
+    <span class="phase-num">1</span>
+    <span class="phase-icon">🚀</span>
+    <div>
+      <div class="phase-title">Hospedar o site</div>
+      <div class="phase-sub">Vercel — deploy em 10 minutos, grátis</div>
+    </div>
+    <span class="phase-badge badge-now">Fazer agora</span>
+  </div>
+  <div class="phase-body">
+    <div class="block b-teal">
+      <div class="block-title"><span class="block-icon">▲</span> Vercel (recomendado)</div>
+      <ul class="block-items">
+        <li>Cria conta em <strong>vercel.com</strong> com GitHub</li>
+        <li>Cria repositório GitHub: <code>anamnesismed-site</code></li>
+        <li>Coloca os 4 arquivos HTML no repositório</li>
+        <li>No Vercel: <strong>New Project → Import GitHub</strong></li>
+        <li>Deploy automático em &lt;2 minutos</li>
+        <li>URL gerada: <code>anamnesismed.vercel.app</code></li>
+        <li>Depois aponta o domínio <code>anamnesismed.com</code></li>
+      </ul>
+      <span class="cost-tag free">Grátis para começar</span>
+    </div>
+    <div class="block b-navy">
+      <div class="block-title"><span class="block-icon">🌐</span> Domínio</div>
+      <ul class="block-items">
+        <li>Comprar <strong>anamnesismed.com</strong> em Namecheap ou GoDaddy</li>
+        <li>Custo: ~<strong>$12/ano</strong></li>
+        <li>No Vercel: Settings → Domains → adicionar o domínio</li>
+        <li>Configurar DNS no registrador (2 registros CNAME)</li>
+        <li>HTTPS automático via Let's Encrypt</li>
+      </ul>
+      <span class="cost-tag paid">~$12/ano</span>
+    </div>
+  </div>
+</div>
+
+<!-- FASE 2: AUTH REAL -->
+<div class="phase">
+  <div class="phase-head">
+    <span class="phase-num">2</span>
+    <span class="phase-icon">🔐</span>
+    <div>
+      <div class="phase-title">Autenticação real</div>
+      <div class="phase-sub">Supabase — magic link de verdade, sem senha</div>
+    </div>
+    <span class="phase-badge badge-week">Esta semana</span>
+  </div>
+  <div class="phase-body">
+    <div class="block b-green">
+      <div class="block-title"><span class="block-icon">⚡</span> Supabase Setup</div>
+      <ul class="block-items">
+        <li>Cria conta em <strong>supabase.com</strong></li>
+        <li>New Project → nome: <code>anamnesismed</code></li>
+        <li>Ir em <strong>Authentication → Providers → Email</strong></li>
+        <li>Habilitar <strong>Magic Link</strong> (desabilitar senha)</li>
+        <li>Copiar <code>SUPABASE_URL</code> e <code>ANON_KEY</code></li>
+      </ul>
+      <span class="cost-tag free">Grátis até 50k usuários/mês</span>
+    </div>
+    <div class="block b-red">
+      <div class="block-title"><span class="block-icon">💻</span> Código a adicionar</div>
+      <ul class="block-items">
+        <li>Instalar SDK: <code>supabase-js</code> via CDN</li>
+        <li>Na tela de login: chamar <code>supabase.auth.signInWithOtp({email})</code></li>
+        <li>Usuário recebe email com link real</li>
+        <li>Ao clicar, Supabase autentica e redireciona para o dashboard</li>
+        <li>Salvar sessão com <code>supabase.auth.getSession()</code></li>
+        <li>Proteger dashboard: redirecionar se não autenticado</li>
+      </ul>
+      <span class="cost-tag free">~2h de desenvolvimento</span>
+    </div>
+  </div>
+</div>
+
+<!-- FASE 3: BANCO DE DADOS -->
+<div class="phase">
+  <div class="phase-head">
+    <span class="phase-num">3</span>
+    <span class="phase-icon">🗄️</span>
+    <div>
+      <div class="phase-title">Banco de Dados — Salvar HCs</div>
+      <div class="phase-sub">Supabase PostgreSQL — HCs salvas por usuário</div>
+    </div>
+    <span class="phase-badge badge-week">Esta semana</span>
+  </div>
+  <div class="phase-body">
+    <div class="block b-teal">
+      <div class="block-title"><span class="block-icon">📊</span> Tabelas necessárias</div>
+      <ul class="block-items">
+        <li><code>users</code> — id, email, nome, faculdade, ano, plano, trial_end</li>
+        <li><code>historias_clinicas</code> — id, user_id, motivo, especialidade, dados (JSON), criado_em, atualizado_em</li>
+        <li><code>subscriptions</code> — user_id, stripe_id, status, periodo</li>
+      </ul>
+      <span class="cost-tag free">PostgreSQL grátis no Supabase</span>
+    </div>
+    <div class="block b-gold">
+      <div class="block-title"><span class="block-icon">🔒</span> Row Level Security</div>
+      <ul class="block-items">
+        <li>Cada usuário só vê <strong>suas próprias HCs</strong></li>
+        <li>Supabase tem RLS nativo — 2 linhas de SQL</li>
+        <li><code>user_id = auth.uid()</code> em todas as queries</li>
+        <li>Sem backend próprio necessário</li>
+      </ul>
+      <span class="cost-tag free">Automático no Supabase</span>
+    </div>
+  </div>
+</div>
+
+<!-- FASE 4: PAGAMENTOS -->
+<div class="phase">
+  <div class="phase-head">
+    <span class="phase-num">4</span>
+    <span class="phase-icon">💳</span>
+    <div>
+      <div class="phase-title">Pagamentos — $0,99/mês</div>
+      <div class="phase-sub">Stripe Checkout — o mais simples e confiável</div>
+    </div>
+    <span class="phase-badge badge-month">Próximo mês</span>
+  </div>
+  <div class="phase-body">
+    <div class="block b-purple">
+      <div class="block-title"><span class="block-icon">💳</span> Stripe Setup</div>
+      <ul class="block-items">
+        <li>Cria conta em <strong>stripe.com</strong></li>
+        <li>Cria produto: <strong>AnamnesísMed Pro</strong></li>
+        <li>Cria preço recorrente: <strong>$0.99/mês</strong></li>
+        <li>Copia o <code>price_id</code> gerado pelo Stripe</li>
+        <li>Adicionar Stripe.js ao HTML via CDN</li>
+        <li>Botão "Assinar" → <code>stripe.redirectToCheckout()</code></li>
+      </ul>
+      <span class="cost-tag paid">Stripe cobra 2.9% + $0.30 por transação</span>
+    </div>
+    <div class="block b-red">
+      <div class="block-title"><span class="block-icon">⚙️</span> Webhook (automação)</div>
+      <ul class="block-items">
+        <li>Stripe envia webhook quando usuário paga</li>
+        <li>Vercel Function (serverless) recebe o webhook</li>
+        <li>Atualiza campo <code>plano = 'pro'</code> no Supabase</li>
+        <li>Mesma função para cancelamentos</li>
+        <li>Apenas ~30 linhas de código JavaScript</li>
+      </ul>
+      <span class="cost-tag free">Vercel Functions — grátis</span>
+    </div>
+  </div>
+  <!-- Cálculo de receita -->
+  <div style="padding:0 22px 20px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:4px">Projeção de Receita</div>
+    <div class="pricing-row">
+      <div class="price-mini">
+        <div class="price-mini-val">$89</div>
+        <div class="price-mini-lbl">100 usuários/mês</div>
+        <div class="price-mini-desc">Após taxa Stripe ~10%<br>Ponto de equilíbrio</div>
+      </div>
+      <div class="price-mini">
+        <div class="price-mini-val">$445</div>
+        <div class="price-mini-lbl">500 usuários/mês</div>
+        <div class="price-mini-desc">Crescimento orgânico<br>Redes sociais médicas</div>
+      </div>
+      <div class="price-mini">
+        <div class="price-mini-val">$890</div>
+        <div class="price-mini-lbl">1.000 usuários/mês</div>
+        <div class="price-mini-desc">Meta 6 meses<br>Divulgação nas faculdades</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FASE 5: CONTROLE DE USUÁRIOS -->
+<div class="phase">
+  <div class="phase-head">
+    <span class="phase-num">5</span>
+    <span class="phase-icon">👥</span>
+    <div>
+      <div class="phase-title">Controle de Usuários</div>
+      <div class="phase-sub">Trial → Pago → Cancelado — automático</div>
+    </div>
+    <span class="phase-badge badge-month">Próximo mês</span>
+  </div>
+  <div class="phase-body">
+    <div class="block b-navy">
+      <div class="block-title"><span class="block-icon">⏳</span> Lógica do Trial</div>
+      <ul class="block-items">
+        <li>Ao cadastrar: <code>trial_end = agora + 30 dias</code></li>
+        <li>App verifica <code>trial_end &gt; hoje</code> ao carregar</li>
+        <li>Se expirado e sem plano → bloqueia e mostra paywall</li>
+        <li>Email automático no dia 25: "5 dias restantes"</li>
+        <li>Email no dia 30: "Trial expirado — assine agora"</li>
+      </ul>
+    </div>
+    <div class="block b-green">
+      <div class="block-title"><span class="block-icon">📊</span> Painel de Admin</div>
+      <ul class="block-items">
+        <li>Ver todos os usuários cadastrados</li>
+        <li>Usuários ativos no trial vs. pagantes</li>
+        <li>HCs criadas por usuário</li>
+        <li>Churn rate (cancelamentos)</li>
+        <li>Supabase Dashboard já tem isso nativo</li>
+        <li>Exportar lista de emails para marketing</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- RESUMO DE CUSTOS -->
+<div class="phase">
+  <div class="phase-head">
+    <span class="phase-num">💰</span>
+    <span class="phase-icon">💰</span>
+    <div>
+      <div class="phase-title">Custo Total para Lançar</div>
+      <div class="phase-sub">Quanto custa colocar no ar antes de ter receita</div>
+    </div>
+    <span class="phase-badge badge-now">Essencial</span>
+  </div>
+  <div style="padding:20px 22px">
+    <div class="pricing-row" style="grid-template-columns:repeat(5,1fr)">
+      <div class="price-mini">
+        <div class="price-mini-val" style="font-size:16px">$12</div>
+        <div class="price-mini-lbl">Domínio</div>
+        <div class="price-mini-desc">anamnesismed.com<br>/ano Namecheap</div>
+      </div>
+      <div class="price-mini">
+        <div class="price-mini-val" style="color:var(--green);font-size:16px">$0</div>
+        <div class="price-mini-lbl">Vercel</div>
+        <div class="price-mini-desc">Hosting grátis<br>até 100GB/mês</div>
+      </div>
+      <div class="price-mini">
+        <div class="price-mini-val" style="color:var(--green);font-size:16px">$0</div>
+        <div class="price-mini-lbl">Supabase</div>
+        <div class="price-mini-desc">Grátis até<br>50k users/mês</div>
+      </div>
+      <div class="price-mini">
+        <div class="price-mini-val" style="color:var(--green);font-size:16px">$0</div>
+        <div class="price-mini-lbl">Stripe</div>
+        <div class="price-mini-desc">Grátis<br>Só cobra por transação</div>
+      </div>
+      <div class="price-mini" style="background:var(--ink)">
+        <div class="price-mini-val" style="color:var(--white);font-size:20px">$12</div>
+        <div class="price-mini-lbl" style="color:rgba(255,255,255,.4)">TOTAL/ano</div>
+        <div class="price-mini-desc" style="color:rgba(255,255,255,.5)">Para lançar<br>com 0 usuários</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

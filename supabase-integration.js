@@ -1,0 +1,730 @@
+/**
+ * AnamnesísMed — Supabase Integration
+ * ─────────────────────────────────────────────────────────────────────────
+ * Arquivo: supabase-integration.js
+ * Inclui em TODOS os HTMLs antes do </body>:
+ *   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ *   <script src="supabase-integration.js"></script>
+ *
+ * CONFIGURAR as duas linhas abaixo com suas chaves do Supabase:
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+
+const SUPABASE_URL      = 'https://SEU-PROJETO.supabase.co';   // ← trocar
+const SUPABASE_ANON_KEY = 'eyJhbGci...SEU-ANON-KEY';           // ← trocar
+
+// ── Inicializar cliente Supabase ──────────────────────────────────────────
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── Detectar em qual página estamos ──────────────────────────────────────
+const PAGE = (() => {
+  const p = window.location.pathname;
+  if (p.includes('landing') || p === '/' || p.endsWith('index.html')) return 'landing';
+  if (p.includes('auth'))      return 'auth';
+  if (p.includes('dashboard')) return 'dashboard';
+  if (p.includes('app'))       return 'app';
+  return 'unknown';
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTH — Funções de autenticação
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Envia Magic Link para o email
+ * Substitui o submitLogin() e submitSignup() falsos nos HTMLs
+ */
+async function authSendMagicLink(email) {
+  try {
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.origin + '/anamnesismed-dashboard.html'
+      }
+    });
+    if (error) throw error;
+    return { ok: true };
+  } catch (err) {
+    console.error('Magic link error:', err);
+    return { ok: false, error: err.message };
+  }
+}
+
+/**
+ * Cadastro — salva dados extras do estudante
+ * Chamado após o magic link ser clicado
+ */
+async function authSaveProfile(data) {
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return;
+
+  const { error } = await sb.from('profiles').upsert({
+    id: user.id,
+    email: user.email,
+    nome: data.nome,
+    sobrenome: data.sobrenome,
+    universidade: data.universidade,
+    ano_curso: data.ano_curso,
+    idioma: data.idioma || 'es',
+  });
+
+  if (error) console.error('Profile save error:', error);
+}
+
+/**
+ * Logout
+ */
+async function authLogout() {
+  await sb.auth.signOut();
+  window.location.href = 'anamnesismed-auth.html';
+}
+
+/**
+ * Obter sessão atual
+ */
+async function authGetSession() {
+  const { data: { session } } = await sb.auth.getSession();
+  return session;
+}
+
+/**
+ * Obter usuário atual
+ */
+async function authGetUser() {
+  const { data: { user } } = await sb.auth.getUser();
+  return user;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PROFILES — Perfil e plano do usuário
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Buscar perfil completo do usuário logado
+ */
+async function profileGet() {
+  const user = await authGetUser();
+  if (!user) return null;
+
+  const { data, error } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+  if (error) { console.error('Profile get error:', error); return null; }
+  return data;
+}
+
+/**
+ * Verificar se o acesso está ativo (trial ou plano pago)
+ * Retorna: { active: bool, type: 'trial'|'pro'|'expired', daysLeft: number }
+ */
+async function profileCheckAccess() {
+  const profile = await profileGet();
+  if (!profile) return { active: false, type: 'no_profile', daysLeft: 0 };
+
+  if (profile.plano === 'pro') {
+    return { active: true, type: 'pro', daysLeft: 999 };
+  }
+
+  if (profile.plano === 'trial') {
+    const trialEnd = new Date(profile.trial_end);
+    const now = new Date();
+    const daysLeft = Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24));
+
+    if (daysLeft > 0) {
+      return { active: true, type: 'trial', daysLeft };
+    } else {
+      return { active: false, type: 'expired', daysLeft: 0 };
+    }
+  }
+
+  return { active: false, type: 'unknown', daysLeft: 0 };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HCs — Salvar, carregar, listar
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Salvar ou atualizar uma HC no banco
+ */
+async function hcSave(motivoId, motivo, especialidade, dados) {
+  const user = await authGetUser();
+  if (!user) return { ok: false, error: 'Não autenticado' };
+
+  // Verifica se já existe uma HC para este motivo
+  const { data: existing } = await sb
+    .from('historias_clinicas')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('motivo_id', motivoId)
+    .order('criado_em', { ascending: false })
+    .limit(1)
+    .single();
+
+  let result;
+  if (existing) {
+    // Atualiza existente
+    result = await sb
+      .from('historias_clinicas')
+      .update({
+        dados,
+        status: 'rascunho',
+        atualizado_em: new Date().toISOString()
+      })
+      .eq('id', existing.id);
+  } else {
+    // Insere nova
+    result = await sb
+      .from('historias_clinicas')
+      .insert({
+        user_id: user.id,
+        motivo_id: motivoId,
+        motivo,
+        especialidade,
+        dados,
+        status: 'rascunho'
+      });
+  }
+
+  if (result.error) {
+    console.error('HC save error:', result.error);
+    return { ok: false, error: result.error.message };
+  }
+  return { ok: true };
+}
+
+/**
+ * Carregar dados de uma HC específica
+ */
+async function hcLoad(motivoId) {
+  const user = await authGetUser();
+  if (!user) return null;
+
+  const { data, error } = await sb
+    .from('historias_clinicas')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('motivo_id', motivoId)
+    .order('atualizado_em', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
+/**
+ * Listar todas as HCs do usuário (para o dashboard)
+ */
+async function hcListAll(limit = 20) {
+  const user = await authGetUser();
+  if (!user) return [];
+
+  const { data, error } = await sb
+    .from('historias_clinicas')
+    .select('id, motivo, motivo_id, especialidade, status, criado_em, atualizado_em')
+    .eq('user_id', user.id)
+    .order('atualizado_em', { ascending: false })
+    .limit(limit);
+
+  if (error) { console.error('HC list error:', error); return []; }
+  return data || [];
+}
+
+/**
+ * Marcar HC como completa
+ */
+async function hcMarkComplete(hcId) {
+  const { error } = await sb
+    .from('historias_clinicas')
+    .update({ status: 'completa', atualizado_em: new Date().toISOString() })
+    .eq('id', hcId);
+
+  return !error;
+}
+
+/**
+ * Deletar uma HC
+ */
+async function hcDelete(hcId) {
+  const user = await authGetUser();
+  if (!user) return false;
+
+  const { error } = await sb
+    .from('historias_clinicas')
+    .delete()
+    .eq('id', hcId)
+    .eq('user_id', user.id); // garantia de segurança
+
+  return !error;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GUARDS — Proteção de páginas
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Redireciona para login se não estiver autenticado
+ * Usar em: dashboard.html, app.html
+ */
+async function guardRequireAuth() {
+  const session = await authGetSession();
+  if (!session) {
+    window.location.href = 'anamnesismed-auth.html';
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Redireciona para dashboard se já estiver autenticado
+ * Usar em: auth.html, landing.html
+ */
+async function guardRedirectIfAuth() {
+  const session = await authGetSession();
+  if (session) {
+    window.location.href = 'anamnesismed-dashboard.html';
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Verificar acesso e mostrar paywall se expirado
+ * Usar em: app.html
+ */
+async function guardCheckAccess() {
+  const access = await profileCheckAccess();
+
+  if (!access.active) {
+    // Mostra paywall
+    showPaywall(access.type);
+    return false;
+  }
+
+  // Atualiza UI com dias restantes
+  updateTrialUI(access);
+  return true;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UI HELPERS — Atualizar interface com dados reais
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Preenche o nome do usuário em todos os lugares da UI
+ */
+async function uiUpdateUserInfo() {
+  const profile = await profileGet();
+  if (!profile) return;
+
+  const nome = profile.nome || profile.email?.split('@')[0] || 'Estudante';
+
+  // Atualiza em todos os elementos que mostram o nome
+  document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = nome);
+  document.querySelectorAll('.sb-uname').forEach(el => el.textContent = nome);
+  document.querySelectorAll('.user-name').forEach(el => el.textContent = nome);
+
+  // Avatar com inicial
+  document.querySelectorAll('.sb-avatar, .user-avatar').forEach(el => {
+    el.textContent = nome.charAt(0).toUpperCase();
+  });
+
+  // Plano e dias restantes
+  const access = await profileCheckAccess();
+  const lang = document.documentElement.dataset.lang || 'es';
+
+  document.querySelectorAll('.sb-uplan, .user-plan').forEach(el => {
+    if (access.type === 'pro') {
+      el.textContent = 'Pro';
+    } else if (access.type === 'trial') {
+      el.textContent = lang === 'es'
+        ? `Trial — ${access.daysLeft} días`
+        : `Trial — ${access.daysLeft} dias`;
+    }
+  });
+
+  // Trial pill no dashboard
+  const trialDaysEl = document.querySelector('.trial-days');
+  if (trialDaysEl && access.type === 'trial') {
+    trialDaysEl.textContent = access.daysLeft;
+  }
+
+  // Topbar trial badge
+  document.querySelectorAll('.topbar-trial').forEach(el => {
+    if (access.type === 'pro') {
+      el.style.display = 'none';
+    } else {
+      el.textContent = lang === 'es'
+        ? `${access.daysLeft} días gratis`
+        : `${access.daysLeft} dias grátis`;
+    }
+  });
+}
+
+/**
+ * Atualiza UI de trial
+ */
+function updateTrialUI(access) {
+  const lang = document.documentElement.dataset.lang || 'es';
+  document.querySelectorAll('.topbar-trial').forEach(el => {
+    if (access.type === 'pro') {
+      el.style.display = 'none';
+    } else {
+      el.textContent = lang === 'es'
+        ? `${access.daysLeft} días gratis`
+        : `${access.daysLeft} dias grátis`;
+    }
+  });
+}
+
+/**
+ * Preenche lista de HCs recentes no dashboard
+ */
+async function uiLoadRecentHCs() {
+  const container = document.querySelector('.hc-list');
+  if (!container) return;
+
+  const hcs = await hcListAll(5);
+
+  if (hcs.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <span class="empty-icon">📋</span>
+        <div class="empty-title es">Sin historias clínicas aún</div>
+        <div class="empty-title pt">Sem histórias clínicas ainda</div>
+        <div class="empty-sub es">Abre el app y empieza tu primera HC</div>
+        <div class="empty-sub pt">Abre o app e comece sua primeira HC</div>
+        <a href="anamnesismed-app.html" class="empty-btn es">+ Nueva HC</a>
+        <a href="anamnesismed-app.html" class="empty-btn pt">+ Nova HC</a>
+      </div>`;
+    return;
+  }
+
+  const specColors = { clinica: 'teal', cirurgia: 'red' };
+  const statusLabels = {
+    rascunho: { es: 'Borrador', pt: 'Rascunho', cls: 'st-draft' },
+    completa: { es: 'Completa', pt: 'Completa', cls: 'st-complete' },
+  };
+
+  container.innerHTML = hcs.map(hc => {
+    const color = specColors[hc.especialidade] || 'slate';
+    const st = statusLabels[hc.status] || statusLabels.rascunho;
+    const date = new Date(hc.atualizado_em).toLocaleDateString('pt-BR');
+
+    return `
+    <div class="hc-item" onclick="window.location.href='anamnesismed-app.html'">
+      <div class="hc-type-dot" style="background:var(--${color})"></div>
+      <div class="hc-item-info">
+        <div class="hc-item-title">${hc.motivo || hc.motivo_id}</div>
+        <div class="hc-item-meta">
+          <span>${hc.especialidade === 'clinica' ? 'Clínica Médica' : 'Cirugía General'}</span>
+          <span>${date}</span>
+        </div>
+      </div>
+      <div class="hc-item-right">
+        <span class="hc-status ${st.cls} es">${st.es}</span>
+        <span class="hc-status ${st.cls} pt">${st.pt}</span>
+        <div class="hc-actions">
+          <button class="hc-action-btn" onclick="event.stopPropagation();hcDelete('${hc.id}').then(()=>uiLoadRecentHCs())" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/**
+ * Mostra paywall quando trial expirou
+ */
+function showPaywall(reason) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:fixed;inset:0;z-index:9999;
+    background:rgba(10,12,16,.85);backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;padding:20px`;
+
+  const lang = document.documentElement.dataset.lang || 'es';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:40px;max-width:400px;width:100%;text-align:center">
+      <div style="font-size:48px;margin-bottom:16px">⏰</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin-bottom:10px">
+        ${lang === 'es' ? 'Tu trial ha terminado' : 'Seu trial acabou'}
+      </h2>
+      <p style="font-size:14px;color:#6b6660;margin-bottom:24px;line-height:1.6">
+        ${lang === 'es'
+          ? 'Activa tu plan por solo <strong>$0.99/mes</strong> y sigue usando AnamnesísMed sin límites.'
+          : 'Ative seu plano por apenas <strong>$0,99/mês</strong> e continue usando o AnamnesísMed sem limites.'}
+      </p>
+      <button onclick="window.location.href='anamnesismed-landing.html#pricing'"
+        style="background:#c0392b;color:#fff;border:none;border-radius:8px;
+        padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-bottom:10px">
+        ${lang === 'es' ? 'Activar plan — $0.99/mes →' : 'Ativar plano — $0,99/mês →'}
+      </button>
+      <a href="anamnesismed-auth.html"
+        style="font-size:12px;color:#6b6660;text-decoration:none;display:block">
+        ${lang === 'es' ? 'Cambiar de cuenta' : 'Trocar de conta'}
+      </a>
+    </div>`;
+
+  document.body.appendChild(overlay);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTO-SAVE — Salva HC automaticamente no Supabase
+// ═══════════════════════════════════════════════════════════════════════════
+
+let autoSaveTimer = null;
+
+/**
+ * Agenda autosave 2s após última alteração
+ * Substitui o saveData() local do app.html
+ */
+function autoSaveHC(motivoId, motivo, especialidade) {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(async () => {
+    // Coleta todos os dados do formulário
+    const dados = {};
+    document.querySelectorAll('#hc-screen input, #hc-screen textarea, #hc-screen select').forEach(el => {
+      if (el.id) dados[el.id] = el.value;
+    });
+
+    // Checkboxes marcados
+    dados._checks = [];
+    document.querySelectorAll('#hc-screen .f-check.on').forEach(el => {
+      dados._checks.push(el.textContent.replace('✓', '').trim());
+    });
+
+    const result = await hcSave(motivoId, motivo, especialidade, dados);
+    if (result.ok) {
+      showSaveFeedback();
+    }
+  }, 2000);
+}
+
+/**
+ * Feedback visual de salvo
+ */
+function showSaveFeedback() {
+  let badge = document.getElementById('save-badge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.id = 'save-badge';
+    badge.style.cssText = `
+      position:fixed;bottom:80px;right:16px;z-index:500;
+      background:#1e6b3c;color:#fff;font-size:11px;font-weight:700;
+      padding:6px 12px;border-radius:20px;
+      opacity:0;transition:opacity .3s;font-family:'DM Mono',monospace`;
+    badge.textContent = '✓ Salvo';
+    document.body.appendChild(badge);
+  }
+  badge.style.opacity = '1';
+  setTimeout(() => badge.style.opacity = '0', 2000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INIT — Executado automaticamente por página
+// ═══════════════════════════════════════════════════════════════════════════
+
+(async function init() {
+  // Detectar mudança de auth (magic link clicado)
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && PAGE === 'auth') {
+      // Magic link clicado — redirecionar para dashboard
+      window.location.href = 'anamnesismed-dashboard.html';
+    }
+    if (event === 'SIGNED_OUT') {
+      if (PAGE === 'dashboard' || PAGE === 'app') {
+        window.location.href = 'anamnesismed-auth.html';
+      }
+    }
+  });
+
+  // Ações por página
+  if (PAGE === 'auth') {
+    // Se já logado, redireciona
+    await guardRedirectIfAuth();
+
+    // Substituir submitLogin e submitSignup pelos reais
+    window.submitLogin = async function() {
+      const emailEl = document.getElementById('login-email');
+      if (!emailEl) return;
+      const email = emailEl.value.trim();
+      if (!email || !email.includes('@')) {
+        emailEl.style.borderColor = 'var(--red)';
+        return;
+      }
+
+      const btn = document.querySelector('#form-login .submit-btn');
+      if (btn) { btn.classList.add('loading'); }
+
+      const result = await authSendMagicLink(email);
+
+      if (btn) btn.classList.remove('loading');
+
+      if (result.ok) {
+        document.getElementById('success-email-display').textContent = email;
+        try { document.getElementById('success-email-pt').textContent = email; } catch(e) {}
+        document.getElementById('form-wrap').style.display = 'none';
+        document.getElementById('success-state').style.display = 'block';
+      } else {
+        alert(result.error || 'Erro ao enviar o link. Tente novamente.');
+      }
+    };
+
+    window.submitSignup = async function() {
+      const name  = document.getElementById('signup-name')?.value.trim();
+      const email = document.getElementById('signup-email')?.value.trim();
+      if (!name || !email || !email.includes('@')) return;
+
+      const btn = document.querySelector('#form-signup .submit-btn');
+      if (btn) btn.classList.add('loading');
+
+      // Salvar dados extras temporariamente para recuperar após o click no link
+      sessionStorage.setItem('am_signup_data', JSON.stringify({
+        nome: name,
+        sobrenome: document.getElementById('signup-last')?.value || '',
+        universidade: document.getElementById('signup-uni')?.value || '',
+        ano_curso: document.getElementById('signup-year')?.value || '',
+        idioma: document.getElementById('signup-lang')?.value || 'es',
+      }));
+
+      const result = await authSendMagicLink(email);
+      if (btn) btn.classList.remove('loading');
+
+      if (result.ok) {
+        document.getElementById('success-email-display').textContent = email;
+        document.getElementById('form-wrap').style.display = 'none';
+        document.getElementById('success-state').style.display = 'block';
+      } else {
+        alert(result.error || 'Erro ao criar conta. Tente novamente.');
+      }
+    };
+  }
+
+  if (PAGE === 'dashboard') {
+    const ok = await guardRequireAuth();
+    if (!ok) return;
+
+    // Se tem dados de cadastro pendentes, salvar agora
+    const signupData = sessionStorage.getItem('am_signup_data');
+    if (signupData) {
+      await authSaveProfile(JSON.parse(signupData));
+      sessionStorage.removeItem('am_signup_data');
+    }
+
+    // Atualizar UI
+    await uiUpdateUserInfo();
+    await uiLoadRecentHCs();
+
+    // Logout button
+    const logoutBtn = document.querySelector('[data-action="logout"]');
+    if (logoutBtn) logoutBtn.addEventListener('click', authLogout);
+  }
+
+  if (PAGE === 'app') {
+    const ok = await guardRequireAuth();
+    if (!ok) return;
+
+    await guardCheckAccess();
+    await uiUpdateUserInfo();
+
+    // Sobrescrever saveData para salvar no Supabase também
+    const originalSave = window.saveData;
+    window.saveData = function() {
+      if (typeof originalSave === 'function') originalSave();
+      // Auto-save no Supabase se há HC aberta
+      if (window.currentHC) {
+        autoSaveHC(
+          window.currentHC.id,
+          window.currentHC.esName,
+          window.currentSpec || 'clinica'
+        );
+      }
+    };
+
+    // Ao abrir uma HC, carregar dados do Supabase
+    const originalOpenHC = window.openHC;
+    window.openHC = async function(id, esName, ptName, icon, colorVar) {
+      if (typeof originalOpenHC === 'function') originalOpenHC(id, esName, ptName, icon, colorVar);
+
+      // Carregar dados salvos do Supabase (sobrescreve localStorage)
+      const hcData = await hcLoad(id);
+      if (hcData?.dados) {
+        const dados = hcData.dados;
+        Object.entries(dados).forEach(([fid, val]) => {
+          if (fid === '_checks') return;
+          const el = document.getElementById(fid);
+          if (el) el.value = val;
+        });
+        // Restaurar radio buttons
+        document.querySelectorAll('#hc-screen input[type=hidden]').forEach(h => {
+          if (!h.value || !h.id) return;
+          h.closest('.f-radios')?.querySelectorAll('.f-radio').forEach(btn => {
+            if ((btn.getAttribute('onclick') || '').includes("'" + h.value + "'")) {
+              btn.classList.add('sel');
+            }
+          });
+        });
+      }
+    };
+  }
+
+  if (PAGE === 'landing') {
+    // Se já logado, mostrar botão "Ir ao app" em vez de "Cadastrar"
+    const session = await authGetSession();
+    if (session) {
+      document.querySelectorAll('.nav-cta, .btn-primary').forEach(el => {
+        el.textContent = document.documentElement.dataset.lang === 'pt'
+          ? 'Ir ao App →'
+          : 'Ir al App →';
+        el.href = 'anamnesismed-dashboard.html';
+        el.onclick = null;
+      });
+    }
+  }
+
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STRIPE — Checkout (adicionar quando tiver conta Stripe)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Iniciar checkout do Stripe
+ * Requer: incluir <script src="https://js.stripe.com/v3/"></script>
+ * e criar uma Vercel Function em /api/create-checkout-session.js
+ */
+async function stripeCheckout() {
+  const user = await authGetUser();
+  if (!user) {
+    window.location.href = 'anamnesismed-auth.html';
+    return;
+  }
+
+  try {
+    // Chama a Vercel Function que cria a sessão no Stripe
+    const res = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: user.email, userId: user.id })
+    });
+    const { url } = await res.json();
+    window.location.href = url; // Redireciona para o Stripe Checkout
+  } catch (err) {
+    console.error('Stripe checkout error:', err);
+    alert('Erro ao iniciar pagamento. Tente novamente.');
+  }
+}
+
+// Expõe funções globalmente para uso nos HTMLs
+window.authLogout         = authLogout;
+window.stripeCheckout     = stripeCheckout;
+window.hcSave             = hcSave;
+window.hcDelete           = hcDelete;
+window.hcListAll          = hcListAll;
+window.uiLoadRecentHCs    = uiLoadRecentHCs;
+window.profileCheckAccess = profileCheckAccess;

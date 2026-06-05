@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — Guia de Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0c10;--paper:#f5f1e8;--cream:#ede8d8;--white:#fff;
+  --red:#c0392b;--teal:#1a5c5c;--gold:#9a6800;--green:#1e6b3c;
+  --navy:#1a3a5c;--muted:#6b6660;--line:rgba(10,12,16,.1);
+  --serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);padding:32px 24px 80px;max-width:860px;margin:0 auto}
+h1{font-family:var(--serif);font-size:26px;font-weight:900;margin-bottom:4px}
+.sub{font-size:11px;font-family:var(--mono);color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px}
+
+/* PHASE */
+.phase{margin-bottom:32px}
+.phase-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  padding-bottom:12px;border-bottom:2px solid var(--line)}
+.phase-num{width:36px;height:36px;border-radius:50%;background:var(--ink);
+  color:var(--white);display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:14px;flex-shrink:0}
+.phase-num.done{background:var(--green)}
+.phase-num.active{background:var(--red)}
+.phase-title{font-family:var(--serif);font-size:18px;font-weight:900}
+.phase-eta{margin-left:auto;font-size:10px;font-family:var(--mono);
+  padding:3px 10px;border-radius:6px;font-weight:700;letter-spacing:1px;white-space:nowrap}
+.eta-now{background:var(--red);color:var(--white)}
+.eta-after{background:var(--cream);color:var(--muted)}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{background:var(--white);border-radius:10px;border:1.5px solid var(--line);
+  padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.step-n{width:24px;height:24px;border-radius:50%;background:var(--cream);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;color:var(--muted)}
+.step-n.done{background:var(--green);color:var(--white)}
+.step-body{flex:1}
+.step-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.step-desc a{color:var(--red);font-weight:600}
+.step-desc code{font-family:var(--mono);font-size:11px;background:var(--cream);
+  padding:1px 6px;border-radius:3px;color:var(--ink)}
+.step-img{margin-top:8px;background:var(--cream);border-radius:6px;
+  padding:10px 14px;font-size:11px;font-family:var(--mono);color:var(--muted);
+  border-left:3px solid var(--teal)}
+.step-warn{margin-top:8px;background:#fff8ee;border-radius:6px;
+  padding:9px 13px;font-size:11px;line-height:1.6;border-left:3px solid var(--gold)}
+
+/* CODE BLOCKS */
+.code-block{background:var(--ink);border-radius:8px;padding:14px 16px;
+  font-family:var(--mono);font-size:11px;line-height:1.8;
+  color:rgba(255,255,255,.8);margin:8px 0;overflow-x:auto;white-space:pre}
+.c-key{color:#ff7b72} .c-str{color:#a5d6ff} .c-cmt{color:rgba(255,255,255,.3)}
+.c-fn{color:#d2a8ff} .c-val{color:#79c0ff}
+
+/* INFO BOX */
+.info{background:#eef5f5;border-left:3px solid var(--teal);border-radius:0 8px 8px 0;
+  padding:11px 14px;font-size:12px;line-height:1.7;margin:14px 0;color:var(--teal)}
+.info strong{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+.warn{background:#fff8ee;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;
+  padding:11px 14px;font-size:12px;line-height:1.7;margin:14px 0}
+</style>
+</head>
+<body>
+
+<h1>Setup Completo</h1>
+<div class="sub">GitHub → Vercel → Supabase · Passo a passo</div>
+
+<!-- ═══════════════════════════ FASE 1: GITHUB ═══════════════════════════ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-num active">1</div>
+    <div>
+      <div class="phase-title">GitHub — Repositório do projeto</div>
+    </div>
+    <span class="phase-eta eta-now">10 min</span>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">
+        <div class="step-title">Criar conta no GitHub</div>
+        <div class="step-desc">Acessa <a href="https://github.com" target="_blank">github.com</a> → Sign up → email + senha → confirma o email.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-body">
+        <div class="step-title">Criar repositório</div>
+        <div class="step-desc">
+          No GitHub: clica em <strong>+ → New repository</strong><br>
+          Nome: <code>anamnesismed-site</code><br>
+          Visibilidade: <strong>Public</strong> (necessário para Vercel gratuito)<br>
+          Marca: ✅ Add a README file → clica <strong>Create repository</strong>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-body">
+        <div class="step-title">Fazer upload dos arquivos HTML</div>
+        <div class="step-desc">
+          No repositório criado: clica em <strong>Add file → Upload files</strong><br>
+          Arrasta os 4 arquivos de <code>D:\Claude\AnamnesisMed-site\</code>:<br>
+          <code>anamnesismed-landing.html</code> · <code>anamnesismed-auth.html</code> · <code>anamnesismed-dashboard.html</code> · <code>anamnesismed-app.html</code><br><br>
+          Clica em <strong>Commit changes</strong> → Done!
+        </div>
+        <div class="step-img">💡 Renomeia anamnesismed-landing.html para index.html antes de subir — assim o Vercel abre ela por padrão</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FASE 2: VERCEL ═══════════════════════════ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-num active">2</div>
+    <div>
+      <div class="phase-title">Vercel — Site no ar</div>
+    </div>
+    <span class="phase-eta eta-now">5 min</span>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">
+        <div class="step-title">Criar conta no Vercel</div>
+        <div class="step-desc">
+          Acessa <a href="https://vercel.com" target="_blank">vercel.com</a> → <strong>Sign Up → Continue with GitHub</strong><br>
+          Autoriza o acesso ao GitHub. Conta criada automaticamente.
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-body">
+        <div class="step-title">Importar o repositório</div>
+        <div class="step-desc">
+          No Vercel Dashboard: <strong>Add New → Project</strong><br>
+          Seleciona o repositório <code>anamnesismed-site</code><br>
+          Framework: <strong>Other</strong> (não é React nem Next.js)<br>
+          Clica em <strong>Deploy</strong>
+        </div>
+        <div class="step-img">🚀 Em ~1 minuto o site estará em: anamnesismed-site.vercel.app</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-body">
+        <div class="step-title">Apontar o domínio (opcional agora)</div>
+        <div class="step-desc">
+          Vercel Dashboard → seu projeto → <strong>Settings → Domains</strong><br>
+          Adiciona: <code>anamnesismed.com</code><br>
+          Vercel mostra os registros DNS para configurar no Namecheap.<br>
+          HTTPS é automático — Let's Encrypt gratuito.
+        </div>
+        <div class="step-warn">⏳ Pode fazer isso depois — o site já funciona em *.vercel.app enquanto testa</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FASE 3: SUPABASE ═══════════════════════════ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-num active">3</div>
+    <div>
+      <div class="phase-title">Supabase — Auth + Banco de Dados</div>
+    </div>
+    <span class="phase-eta eta-now">20 min</span>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">
+        <div class="step-title">Criar conta e projeto</div>
+        <div class="step-desc">
+          Acessa <a href="https://supabase.com" target="_blank">supabase.com</a> → <strong>Start your project</strong><br>
+          Entra com GitHub → <strong>New Project</strong><br>
+          Nome: <code>anamnesismed</code> · Senha do banco: anota numa parte segura<br>
+          Region: <strong>South America (São Paulo)</strong> ou <strong>US East</strong><br>
+          Aguarda ~2 min para o projeto ser criado.
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-body">
+        <div class="step-title">Copiar as chaves de API</div>
+        <div class="step-desc">
+          No projeto Supabase: <strong>Settings → API</strong><br>
+          Copia e guarda num arquivo de texto:<br>
+          • <code>Project URL</code> → ex: <code>https://xyzxyz.supabase.co</code><br>
+          • <code>anon public key</code> → chave longa que começa com <code>eyJ...</code>
+        </div>
+        <div class="step-warn">⚠️ A <code>anon key</code> é pública — pode estar no código frontend. NÃO use a <code>service_role key</code> no frontend.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-body">
+        <div class="step-title">Habilitar Magic Link</div>
+        <div class="step-desc">
+          No Supabase: <strong>Authentication → Providers → Email</strong><br>
+          Deixa <strong>Enable Email Provider</strong> ✅ ativo<br>
+          Desativa <strong>Confirm email</strong> (por agora, para facilitar testes)<br>
+          O magic link já está habilitado por padrão — nenhuma configuração extra necessária.
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">4</div>
+      <div class="step-body">
+        <div class="step-title">Criar as tabelas no banco</div>
+        <div class="step-desc">
+          No Supabase: <strong>SQL Editor → New query</strong><br>
+          Cola e executa o SQL abaixo:
+        </div>
+        <div class="code-block"><span class="c-cmt">-- Tabela de perfis de usuário</span>
+<span class="c-key">CREATE TABLE</span> <span class="c-val">profiles</span> (
+  id          <span class="c-val">UUID</span> <span class="c-key">REFERENCES</span> auth.users <span class="c-key">PRIMARY KEY</span>,
+  nome        <span class="c-val">TEXT</span>,
+  sobrenome   <span class="c-val">TEXT</span>,
+  email       <span class="c-val">TEXT</span>,
+  universidade <span class="c-val">TEXT</span>,
+  ano_curso   <span class="c-val">TEXT</span>,
+  idioma      <span class="c-val">TEXT</span> <span class="c-key">DEFAULT</span> <span class="c-str">'es'</span>,
+  plano       <span class="c-val">TEXT</span> <span class="c-key">DEFAULT</span> <span class="c-str">'trial'</span>,
+  trial_end   <span class="c-val">TIMESTAMPTZ</span> <span class="c-key">DEFAULT</span> (now() + interval <span class="c-str">'30 days'</span>),
+  stripe_id   <span class="c-val">TEXT</span>,
+  criado_em   <span class="c-val">TIMESTAMPTZ</span> <span class="c-key">DEFAULT</span> now()
+);
+
+<span class="c-cmt">-- Tabela de histórias clínicas</span>
+<span class="c-key">CREATE TABLE</span> <span class="c-val">historias_clinicas</span> (
+  id            <span class="c-val">UUID</span> <span class="c-key">DEFAULT</span> gen_random_uuid() <span class="c-key">PRIMARY KEY</span>,
+  user_id       <span class="c-val">UUID</span> <span class="c-key">REFERENCES</span> auth.users <span class="c-key">NOT NULL</span>,
+  motivo        <span class="c-val">TEXT</span>,
+  motivo_id     <span class="c-val">TEXT</span>,
+  especialidade <span class="c-val">TEXT</span>,
+  dados         <span class="c-val">JSONB</span>,
+  status        <span class="c-val">TEXT</span> <span class="c-key">DEFAULT</span> <span class="c-str">'rascunho'</span>,
+  criado_em     <span class="c-val">TIMESTAMPTZ</span> <span class="c-key">DEFAULT</span> now(),
+  atualizado_em <span class="c-val">TIMESTAMPTZ</span> <span class="c-key">DEFAULT</span> now()
+);
+
+<span class="c-cmt">-- Segurança: cada usuário só vê suas próprias HCs</span>
+<span class="c-key">ALTER TABLE</span> profiles <span class="c-key">ENABLE ROW LEVEL SECURITY</span>;
+<span class="c-key">ALTER TABLE</span> historias_clinicas <span class="c-key">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="c-key">CREATE POLICY</span> <span class="c-str">"usuario ve proprio perfil"</span> <span class="c-key">ON</span> profiles
+  <span class="c-key">FOR ALL USING</span> (id = auth.uid());
+
+<span class="c-key">CREATE POLICY</span> <span class="c-str">"usuario ve proprias HCs"</span> <span class="c-key">ON</span> historias_clinicas
+  <span class="c-key">FOR ALL USING</span> (user_id = auth.uid());
+
+<span class="c-cmt">-- Criar perfil automaticamente ao cadastrar</span>
+<span class="c-key">CREATE OR REPLACE FUNCTION</span> <span class="c-fn">criar_perfil_novo_usuario</span>()
+<span class="c-key">RETURNS TRIGGER AS</span> $$
+<span class="c-key">BEGIN</span>
+  <span class="c-key">INSERT INTO</span> profiles (id, email)
+  <span class="c-key">VALUES</span> (NEW.id, NEW.email);
+  <span class="c-key">RETURN</span> NEW;
+<span class="c-key">END</span>;
+$$ <span class="c-key">LANGUAGE</span> plpgsql <span class="c-key">SECURITY DEFINER</span>;
+
+<span class="c-key">CREATE TRIGGER</span> on_auth_user_created
+  <span class="c-key">AFTER INSERT ON</span> auth.users
+  <span class="c-key">FOR EACH ROW EXECUTE</span> <span class="c-fn">criar_perfil_novo_usuario</span>();</div>
+        <div class="step-img">✅ Clica em RUN — se não der erro, as tabelas foram criadas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FASE 4: VARIÁVEIS ═══════════════════════════ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-num active">4</div>
+    <div>
+      <div class="phase-title">Variáveis de Ambiente no Vercel</div>
+    </div>
+    <span class="phase-eta eta-now">5 min</span>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">
+        <div class="step-title">Adicionar as chaves do Supabase ao Vercel</div>
+        <div class="step-desc">
+          No Vercel: seu projeto → <strong>Settings → Environment Variables</strong><br><br>
+          Adiciona as duas variáveis:<br>
+          <code>SUPABASE_URL</code> = <code>https://xyzxyz.supabase.co</code><br>
+          <code>SUPABASE_ANON_KEY</code> = <code>eyJhbGci...</code><br><br>
+          Marca: ✅ Production ✅ Preview ✅ Development<br>
+          Clica <strong>Save</strong> e depois <strong>Redeploy</strong>
+        </div>
+        <div class="step-warn">⚠️ Depois de adicionar variáveis é necessário fazer redeploy para elas serem aplicadas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="info">
+  <strong>Próximo passo — código de integração</strong>
+  Com GitHub + Vercel + Supabase configurados, o Claude vai gerar o arquivo <code>supabase-integration.js</code> que conecta os 4 HTMLs ao backend real — auth, salvar HCs, verificar trial, controlar acesso.
+</div>
+
+</body>
+</html>

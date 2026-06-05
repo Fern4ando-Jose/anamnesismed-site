@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — História Clínica Completa</title>
+<meta name="description" content="Ferramenta de história clínica completa para médicos e estudantes. Mnemônicas, manobras semiológicas, escalas e diagnóstico diferencial. Grátis para começar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;
+  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
+  --secondary:#0d9488;--accent:#f59e0b;
+  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --r:10px;--r-lg:16px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:64px;
+  background:rgba(240,244,248,0.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);transition:box-shadow .3s
+}
+nav.scrolled{box-shadow:0 2px 24px rgba(13,45,61,0.07)}
+.nav-logo{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:-.3px}
+.nav-logo span{color:var(--primary)}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-link{font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-link:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;font-family:var(--sans);letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+.btn-outline{padding:8px 18px;font-size:14px;font-weight:600;color:var(--ink);border:1.5px solid var(--line-md);border-radius:var(--r);text-decoration:none;transition:all .2s;white-space:nowrap}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+.btn-primary{padding:9px 22px;font-size:14px;font-weight:700;color:#fff;background:var(--primary);border:none;border-radius:var(--r);text-decoration:none;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:64px}
+.hero-left{padding:80px 40px 80px 64px;display:flex;flex-direction:column;justify-content:center}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(14,116,144,.10);border:1px solid rgba(14,116,144,.22);
+  color:var(--primary);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;margin-bottom:28px;width:fit-content;
+  animation:fadeUp .6s var(--ease) both
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.hero-title{font-family:var(--serif);font-size:clamp(34px,3.8vw,56px);font-weight:700;line-height:1.14;letter-spacing:-.5px;color:var(--ink);margin-bottom:22px;animation:fadeUp .6s var(--ease) .1s both}
+.hero-title em{font-style:italic;color:var(--primary)}
+.hero-sub{font-size:17px;font-weight:300;color:var(--muted);line-height:1.75;max-width:460px;margin-bottom:36px;animation:fadeUp .6s var(--ease) .2s both}
+.hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:44px;animation:fadeUp .6s var(--ease) .3s both}
+.btn-hero{padding:14px 30px;font-size:15px;font-weight:700;color:#fff;background:var(--primary);border:none;border-radius:var(--r);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s;box-shadow:0 4px 24px rgba(14,116,144,.28)}
+.btn-hero:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,116,144,.38)}
+.btn-hero-ghost{padding:14px 22px;font-size:15px;font-weight:600;color:var(--muted);background:transparent;border:1.5px solid var(--line-md);border-radius:var(--r);text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-hero-ghost:hover{border-color:var(--primary);color:var(--primary)}
+.proof{display:flex;align-items:center;gap:14px;animation:fadeUp .6s var(--ease) .4s both}
+.avatars{display:flex}
+.av{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;margin-left:-10px}
+.avatars .av:first-child{margin-left:0}
+.av1{background:#0e7490}.av2{background:#0d9488}.av3{background:#f59e0b}.av4{background:#8b5cf6}
+.proof-text{font-size:13px;color:var(--muted);line-height:1.45}
+.proof-text strong{color:var(--ink);font-weight:700}
+
+/* HERO RIGHT */
+.hero-right{background:var(--ink);display:flex;align-items:center;justify-content:center;padding:60px 40px;position:relative;overflow:hidden}
+.hero-right::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(14,116,144,.38) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(13,148,136,.25) 0%,transparent 55%)}
+
+/* MOCKUP */
+.mockup{position:relative;z-index:2;width:100%;max-width:380px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.11);border-radius:var(--r-lg);overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.55);animation:float 7s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.mk-top{background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.09);padding:10px 14px;display:flex;align-items:center;gap:8px}
+.mk-dots{display:flex;gap:5px}
+.mk-dot{width:10px;height:10px;border-radius:50%}
+.mk-dot:nth-child(1){background:#ef4444}.mk-dot:nth-child(2){background:#f59e0b}.mk-dot:nth-child(3){background:#22c55e}
+.mk-tit{font-family:var(--serif);font-size:12px;font-weight:700;color:rgba(255,255,255,.65);margin:0 auto}
+.mk-ver{font-size:10px;color:rgba(255,255,255,.3)}
+.mk-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.08);padding:0 12px;gap:2px;overflow-x:auto;scrollbar-width:none}
+.mk-tabs::-webkit-scrollbar{display:none}
+.mk-tab{padding:8px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,.4);position:relative;white-space:nowrap;flex-shrink:0}
+.mk-tab.act{color:#fff}
+.mk-tab.act::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:var(--primary);border-radius:2px 2px 0 0}
+.mk-body{padding:14px}
+.mk-sec{margin-bottom:12px}
+.mk-lbl{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:5px}
+.mk-row{display:flex;gap:7px;margin-bottom:5px}
+.mk-fld{flex:1;padding:6px 9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:5px;font-size:11px;color:rgba(255,255,255,.5)}
+.mk-chips{display:flex;flex-wrap:wrap;gap:4px}
+.mk-chip{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(14,116,144,.2);border:1px solid rgba(14,116,144,.4);color:rgba(93,208,232,.9)}
+.mk-chip.on{background:rgba(14,116,144,.55);border-color:rgba(14,116,144,.8);color:#fff}
+.mk-eva{display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.mk-eva-lbl{font-size:9px;color:rgba(255,255,255,.3);margin-right:2px}
+.mk-n{width:18px;height:18px;border-radius:4px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);background:rgba(255,255,255,.07)}
+.mk-n.hi{background:rgba(239,68,68,.35);color:#fca5a5}
+.mk-foot{padding:9px 14px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center}
+.mk-prog{display:flex;gap:4px;align-items:center}
+.mk-pd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18)}
+.mk-pd.ok{background:var(--primary)}
+.mk-save{padding:5px 12px;background:var(--primary);border:none;border-radius:20px;font-size:10px;font-weight:700;color:#fff;cursor:default}
+
+/* STATS BAR */
+.stats-bar{background:var(--bg-card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 64px;display:flex;justify-content:space-around;gap:16px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-n{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--primary);margin-bottom:3px;line-height:1}
+.stat-l{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.3px}
+
+/* SECTIONS */
+section{padding:80px 64px}
+.stag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);background:rgba(14,116,144,.09);border:1px solid rgba(14,116,144,.18);padding:4px 12px;border-radius:20px;margin-bottom:16px}
+.stitle{font-family:var(--serif);font-size:clamp(26px,3vw,40px);font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:14px}
+.stitle em{font-style:italic;color:var(--primary)}
+.ssub{font-size:16px;color:var(--muted);max-width:560px;line-height:1.72}
+
+/* FEATURES */
+#features{background:var(--bg-card)}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:52px}
+.fc{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px;transition:all .25s}
+.fc:hover{border-color:rgba(14,116,144,.35);transform:translateY(-3px);box-shadow:0 12px 40px rgba(14,116,144,.09)}
+.fc-icon{width:46px;height:46px;border-radius:10px;background:rgba(14,116,144,.11);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+.fc-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.fc-desc{font-size:14px;color:var(--muted);line-height:1.7}
+.fc-list{margin-top:12px;display:flex;flex-direction:column;gap:5px}
+.fci{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.fci::before{content:"✓";color:var(--secondary);font-weight:700;flex-shrink:0;margin-top:1px;font-size:12px}
+
+/* HOW IT WORKS */
+#how{background:var(--bg)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:52px;position:relative}
+.steps::before{content:'';position:absolute;top:28px;left:calc(100%/6);right:calc(100%/6);height:1px;background:var(--line)}
+.step{text-align:center;padding:0 28px;position:relative;z-index:1}
+.snum{width:56px;height:56px;border-radius:50%;background:var(--primary);color:#fff;font-family:var(--serif);font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 4px 18px rgba(14,116,144,.32)}
+.stit{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.sdesc{font-size:14px;color:var(--muted);line-height:1.65}
+
+/* PRICING */
+#pricing{background:var(--bg-card);text-align:center}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:760px;margin:52px auto 0}
+.plan{border:1.5px solid var(--line);border-radius:var(--r-lg);padding:32px;position:relative;background:var(--bg);text-align:left}
+.plan.featured{border-color:var(--primary);background:var(--bg-card);box-shadow:0 8px 40px rgba(14,116,144,.13)}
+.plan-bdg{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 14px;border-radius:20px;white-space:nowrap}
+.plan-name{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.plan-price{font-family:var(--serif);font-size:42px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:5px}
+.plan-price sup{font-size:18px;vertical-align:super}
+.plan-price sub{font-size:14px;color:var(--muted);font-family:var(--sans);font-weight:400}
+.plan-desc{font-size:13px;color:var(--muted);margin-bottom:24px;min-height:40px;line-height:1.6}
+.plan-feats{display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.pf{font-size:14px;color:var(--muted);display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.pf::before{content:"✓";color:var(--primary);font-weight:700;flex-shrink:0}
+.pf.off::before{content:"○";color:var(--line-md)}
+.pf.off{color:rgba(75,96,112,.38)}
+.plan-cta{display:block;text-align:center;padding:13px;font-size:15px;font-weight:700;border-radius:var(--r);text-decoration:none;transition:all .2s;cursor:pointer;border:none;font-family:var(--sans)}
+.cta-ghost{color:var(--primary);background:transparent;border:1.5px solid var(--primary)}
+.cta-ghost:hover{background:var(--primary);color:#fff}
+.cta-solid{background:var(--primary);color:#fff}
+.cta-solid:hover{background:var(--primary-dark);transform:translateY(-1px)}
+
+/* TESTIMONIALS */
+#testimonials{background:var(--bg)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
+.tcard{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;transition:all .2s}
+.tcard:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(13,45,61,0.06)}
+.tquote{font-size:14px;color:var(--muted);line-height:1.72;margin-bottom:18px;font-style:italic}
+.tauthor{display:flex;align-items:center;gap:10px}
+.tav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.ta-name{font-size:13px;font-weight:700;color:var(--ink)}
+.ta-role{font-size:12px;color:var(--muted)}
+.stars{color:var(--accent);font-size:13px;margin-bottom:12px}
+
+/* CTA BANNER */
+.cta-banner{background:var(--ink);padding:88px 64px;text-align:center;position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -20%,rgba(14,116,144,.45) 0%,transparent 55%)}
+.cta-content{position:relative;z-index:1}
+.cta-content h2{font-family:var(--serif);font-size:clamp(28px,3.5vw,44px);font-weight:700;color:#fff;margin-bottom:14px;letter-spacing:-.3px}
+.cta-content h2 em{font-style:italic;color:#5dd0e8}
+.cta-content p{font-size:17px;color:rgba(255,255,255,.62);margin-bottom:36px;max-width:460px;margin-left:auto;margin-right:auto}
+
+/* FOOTER */
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:48px 64px 30px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px}
+.foot-logo{font-family:var(--serif);font-size:19px;font-weight:700;color:#fff;margin-bottom:10px;display:block}
+.foot-logo span{color:var(--primary)}
+.foot-tag{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;max-width:200px}
+.foot-col h4{font-size:10px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px}
+.foot-lnk{display:block;font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;margin-bottom:9px;transition:color .2s}
+.foot-lnk:hover{color:#fff}
+.foot-bar{border-top:1px solid rgba(255,255,255,.06);padding-top:20px;display:flex;justify-content:space-between;align-items:center}
+.foot-copy{font-size:12px;color:rgba(255,255,255,.28)}
+.foot-lgs{display:flex;gap:14px}
+.foot-lg{font-size:12px;color:rgba(255,255,255,.35);cursor:pointer;transition:color .2s;border:none;background:none}
+.foot-lg:hover{color:#fff}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}.d4{animation-delay:.4s}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  nav{padding:0 28px}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr}
+  .hero-right{min-height:400px;padding:40px 24px}
+  .hero-left{padding:60px 28px 48px}
+  section{padding:64px 28px}
+  .stats-bar{padding:24px 28px}
+  .feat-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr;gap:36px}
+  .steps::before{display:none}
+  .pricing-grid{grid-template-columns:1fr;max-width:440px}
+  .testi-grid{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:24px}
+  .cta-banner{padding:68px 28px}
+  footer{padding:40px 28px 24px}
+}
+@media(max-width:600px){
+  .hero-actions{flex-direction:column;align-items:flex-start}
+  .testi-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+  .foot-bar{flex-direction:column;gap:12px;text-align:center}
+  .btn-hero{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Anamnesis<span>Med</span></a>
+  <div class="nav-links">
+    <a href="#features" class="nav-link pt">Funcionalidades</a>
+    <a href="#features" class="nav-link es">Funcionalidades</a>
+    <a href="#how" class="nav-link pt">Como funciona</a>
+    <a href="#how" class="nav-link es">Cómo funciona</a>
+    <a href="#pricing" class="nav-link pt">Planos</a>
+    <a href="#pricing" class="nav-link es">Planes</a>
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+    </div>
+    <a href="anamnesismed-auth.html" class="btn-outline pt">Entrar</a>
+    <a href="anamnesismed-auth.html" class="btn-outline es">Iniciar sesión</a>
+    <a href="anamnesismed-auth.html" class="btn-primary pt">Começar grátis</a>
+    <a href="anamnesismed-auth.html" class="btn-primary es">Empezar gratis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0">
+  <div class="hero-left">
+    <div class="hero-badge pt"><span class="badge-dot"></span>Ferramenta clínica gratuita</div>
+    <div class="hero-badge es"><span class="badge-dot"></span>Herramienta clínica gratuita</div>
+    <h1 class="hero-title d1 pt">Semiologia <em>completa</em><br>ao alcance das<br>suas mãos</h1>
+    <h1 class="hero-title d1 es">Semiología <em>completa</em><br>al alcance de<br>tus manos</h1>
+    <p class="hero-sub d2 pt">HC estruturada · Mnemônicas · Manobras semiológicas · Diagnóstico diferencial · Escalas clínicas. Tudo numa ferramenta, para médicos e estudantes.</p>
+    <p class="hero-sub d2 es">HC estructurada · Mnemotécnicas · Maniobras semiológicas · Diagnóstico diferencial · Escalas clínicas. Todo en una herramienta.</p>
+    <div class="hero-actions d3">
+      <a href="anamnesismed-auth.html" class="btn-hero pt">Acessar gratuitamente →</a>
+      <a href="anamnesismed-auth.html" class="btn-hero es">Acceder gratis →</a>
+      <a href="anamnesismed-app.html" class="btn-hero-ghost pt">▶ Ver o app</a>
+      <a href="anamnesismed-app.html" class="btn-hero-ghost es">▶ Ver el app</a>
+    </div>
+    <div class="proof d4">
+      <div class="avatars">
+        <div class="av av1">AM</div>
+        <div class="av av2">LG</div>
+        <div class="av av3">RV</div>
+        <div class="av av4">CS</div>
+      </div>
+      <div class="proof-text pt"><strong>+2.400 médicos e estudantes</strong><br>já usam o AnamnesísMed</div>
+      <div class="proof-text es"><strong>+2.400 médicos y estudiantes</strong><br>ya usan AnamnesísMed</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="mockup">
+      <div class="mk-top">
+        <div class="mk-dots"><div class="mk-dot"></div><div class="mk-dot"></div><div class="mk-dot"></div></div>
+        <span class="mk-tit">AnamnesísMed</span>
+        <span class="mk-ver">v2.0</span>
+      </div>
+      <div class="mk-tabs">
+        <div class="mk-tab act">Anamnese</div>
+        <div class="mk-tab">Mnemônicas</div>
+        <div class="mk-tab">Manobras</div>
+        <div class="mk-tab">Conduta</div>
+      </div>
+      <div class="mk-body">
+        <div class="mk-sec">
+          <div class="mk-lbl">Identificação do paciente</div>
+          <div class="mk-row">
+            <div class="mk-fld">Nome completo</div>
+            <div class="mk-fld" style="max-width:64px">Idade</div>
+          </div>
+          <div class="mk-row"><div class="mk-fld">Queixa principal (QP)</div></div>
+        </div>
+        <div class="mk-sec">
+          <div class="mk-lbl">Qualidade da dor — LITIDIFIS</div>
+          <div class="mk-chips">
+            <span class="mk-chip on">Queimação</span>
+            <span class="mk-chip">Pontada</span>
+            <span class="mk-chip on">Aperto</span>
+            <span class="mk-chip">Cólica</span>
+            <span class="mk-chip">Peso</span>
+            <span class="mk-chip">Latejamento</span>
+          </div>
+        </div>
+        <div class="mk-sec">
+          <div class="mk-lbl">Intensidade — Escala EVA</div>
+          <div class="mk-eva">
+            <span class="mk-eva-lbl">0</span>
+            <div class="mk-n">1</div><div class="mk-n">2</div><div class="mk-n">3</div>
+            <div class="mk-n">4</div><div class="mk-n">5</div><div class="mk-n">6</div>
+            <div class="mk-n hi">7</div><div class="mk-n">8</div>
+            <div class="mk-n">9</div><div class="mk-n">10</div>
+            <span class="mk-eva-lbl">10</span>
+          </div>
+        </div>
+      </div>
+      <div class="mk-foot">
+        <div class="mk-prog">
+          <div class="mk-pd ok"></div><div class="mk-pd ok"></div><div class="mk-pd ok"></div>
+          <div class="mk-pd"></div><div class="mk-pd"></div><div class="mk-pd"></div><div class="mk-pd"></div>
+        </div>
+        <button class="mk-save">Salvar HC ↓</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-n">25+</div><div class="stat-l pt">Motivos de consulta</div><div class="stat-l es">Motivos de consulta</div></div>
+  <div class="stat"><div class="stat-n">7</div><div class="stat-l pt">Abas por HC completa</div><div class="stat-l es">Pestañas por HC completa</div></div>
+  <div class="stat"><div class="stat-n">100+</div><div class="stat-l pt">Sinais e manobras</div><div class="stat-l es">Signos y maniobras</div></div>
+  <div class="stat"><div class="stat-n">ES · PT</div><div class="stat-l pt">Bilíngue em tempo real</div><div class="stat-l es">Bilingüe en tiempo real</div></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div><div class="stag pt">Funcionalidades</div><div class="stag es">Funcionalidades</div>
+    <h2 class="stitle pt">Tudo que você precisa para uma <em>HC completa</em></h2>
+    <h2 class="stitle es">Todo lo que necesitas para una <em>HC completa</em></h2>
+    <p class="ssub pt">Do formulário estruturado às escalas clínicas — cada aba foi pensada para acelerar o raciocínio clínico.</p>
+    <p class="ssub es">Del formulario estructurado a las escalas clínicas — cada pestaña fue creada para acelerar el razonamiento clínico.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="fc">
+      <div class="fc-icon">📋</div>
+      <div class="fc-title pt">Anamnese Estruturada</div>
+      <div class="fc-title es">Anamnesis Estructurada</div>
+      <p class="fc-desc pt">Formulário completo com todos os campos da HC, organizado por seções com progresso visual entre as abas.</p>
+      <p class="fc-desc es">Formulario completo con todos los campos de la HC, organizado por secciones con progreso visual.</p>
+      <div class="fc-list pt"><div class="fci">Identificação, QP, HDA e ISDA completos</div><div class="fci">Escala EVA 0–10 integrada por campo</div><div class="fci">Antecedentes pessoais, familiares e sociais</div><div class="fci">Export PDF narrativo gerado automaticamente</div></div>
+      <div class="fc-list es"><div class="fci">Identificación, MC, EA y SOCRATES completos</div><div class="fci">Escala EVA 0–10 integrada por campo</div><div class="fci">Antecedentes personales, familiares y sociales</div><div class="fci">Export PDF narrativo generado automáticamente</div></div>
+    </div>
+    <div class="fc">
+      <div class="fc-icon">🧠</div>
+      <div class="fc-title pt">Mnemônicas Clínicas</div>
+      <div class="fc-title es">Mnemotécnicas Clínicas</div>
+      <p class="fc-desc pt">LITIDIFIS, IDET, ROTA, FOCOS e mais — as principais mnemônicas da semiologia sempre ao alcance.</p>
+      <p class="fc-desc es">LITIDIFIS, IDET, ROTA, FOCOS y más — las principales mnemotécnicas de la semiología siempre disponibles.</p>
+      <div class="fc-list pt"><div class="fci">Cada mnemônica com letra a letra expandida</div><div class="fci">Exemplos clínicos por item</div><div class="fci">Organizado por sistema e motivo de consulta</div></div>
+      <div class="fc-list es"><div class="fci">Cada mnemotécnica con letra a letra expandida</div><div class="fci">Ejemplos clínicos por ítem</div><div class="fci">Organizado por sistema y motivo de consulta</div></div>
+    </div>
+    <div class="fc">
+      <div class="fc-icon">🩺</div>
+      <div class="fc-title pt">Manobras Semiológicas</div>
+      <div class="fc-title es">Maniobras Semiológicas</div>
+      <p class="fc-desc pt">Técnica passo a passo, achados positivos/negativos e interpretação clínica para cada manobra do exame físico.</p>
+      <p class="fc-desc es">Técnica paso a paso, hallazgos positivos/negativos e interpretación clínica de cada maniobra del examen físico.</p>
+      <div class="fc-list pt"><div class="fci">Kernig, Brudzinski, Murphy, Blumberg e mais</div><div class="fci">Osler, Janeway, Rovsing, Courvoisier</div><div class="fci">Significado clínico de cada achado explicado</div></div>
+      <div class="fc-list es"><div class="fci">Kernig, Brudzinski, Murphy, Blumberg y más</div><div class="fci">Osler, Janeway, Rovsing, Courvoisier</div><div class="fci">Significado clínico de cada hallazgo explicado</div></div>
+    </div>
+    <div class="fc">
+      <div class="fc-icon">⚖️</div>
+      <div class="fc-title pt">Diagnóstico Diferencial &amp; Escalas</div>
+      <div class="fc-title es">Diagnóstico Diferencial y Escalas</div>
+      <p class="fc-desc pt">Tabela comparativa entre os diagnósticos de cada motivo de consulta, com escalas e critérios diferenciadores.</p>
+      <p class="fc-desc es">Tabla comparativa entre los diagnósticos de cada motivo, con escalas y criterios diferenciadores integrados.</p>
+      <div class="fc-list pt"><div class="fci">Sepsis-3, qSOFA, Duke, CURB-65, Glasgow</div><div class="fci">Critérios de risco por especialidade</div><div class="fci">Plano de conduta e abordagem terapêutica</div></div>
+      <div class="fc-list es"><div class="fci">Sepsis-3, qSOFA, Duke, CURB-65, Glasgow</div><div class="fci">Criterios de riesgo por especialidad</div><div class="fci">Plan de conducta y abordaje terapéutico</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div style="text-align:center;max-width:580px;margin:0 auto">
+    <div class="stag pt">Como funciona</div><div class="stag es">Cómo funciona</div>
+    <h2 class="stitle pt">Três passos para uma <em>HC completa</em></h2>
+    <h2 class="stitle es">Tres pasos para una <em>HC completa</em></h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="stit pt">Escolha o motivo</div><div class="stit es">Elige el motivo</div>
+      <p class="sdesc pt">Selecione o motivo de consulta no índice de Clínica Médica ou Cirurgia Geral. Mais de 25 motivos com HC específica.</p>
+      <p class="sdesc es">Selecciona el motivo de consulta en el índice de Medicina Interna o Cirugía General. Más de 25 motivos con HC específica.</p>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="stit pt">Preencha a HC</div><div class="stit es">Llena la HC</div>
+      <p class="sdesc pt">Use as 7 abas — anamnese, mnemônicas, manobras, sinais, diagnóstico diferencial, escalas e conduta — para uma HC completa.</p>
+      <p class="sdesc es">Usa las 7 pestañas — anamnesis, mnemotécnicas, maniobras, signos, diagnóstico diferencial, escalas y conducta.</p>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="stit pt">Exporte ou salve</div><div class="stit es">Exporta o guarda</div>
+      <p class="sdesc pt">Gere um PDF narrativo completo ou salve a HC no app para retomar depois. Seus dados ficam seguros e acessíveis.</p>
+      <p class="sdesc es">Genera un PDF narrativo completo o guarda la HC en el app para retomarla después. Tus datos están seguros.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="stag pt">Planos</div><div class="stag es">Planes</div>
+  <h2 class="stitle pt"><em>Acesso completo</em> por menos de um café</h2>
+  <h2 class="stitle es"><em>Acceso completo</em> por menos que un café</h2>
+  <p class="ssub" style="margin:0 auto"><span class="pt">Comece gratuitamente. Sem cartão de crédito. Cancele quando quiser.</span><span class="es">Empieza gratis. Sin tarjeta de crédito. Cancela cuando quieras.</span></p>
+  <div class="pricing-grid" style="grid-template-columns:1fr 1fr 1fr;max-width:980px">
+    <!-- TRIAL -->
+    <div class="plan">
+      <div class="plan-name pt">Trial Gratuito</div><div class="plan-name es">Trial Gratuito</div>
+      <div class="plan-price">R$<span>0</span><sub class="pt">/30 dias</sub><sub class="es">/30 días</sub></div>
+      <p class="plan-desc pt">Experimente tudo gratuitamente por 30 dias, sem cartão.</p>
+      <p class="plan-desc es">Prueba todo gratis por 30 días, sin tarjeta.</p>
+      <div class="plan-feats">
+        <div class="pf pt">Acesso completo por 30 dias</div><div class="pf es">Acceso completo por 30 días</div>
+        <div class="pf pt">Todos os motivos e HCs</div><div class="pf es">Todos los motivos y HC</div>
+        <div class="pf pt">Export PDF narrativo</div><div class="pf es">Export PDF narrativo</div>
+        <div class="pf off pt">Acesso após o período trial</div><div class="pf off es">Acceso tras el período trial</div>
+        <div class="pf off pt">HCs salvas na nuvem</div><div class="pf off es">HC guardadas en la nube</div>
+      </div>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost pt">Começar trial →</a>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost es">Iniciar trial →</a>
+    </div>
+    <!-- ESTUDANTE -->
+    <div class="plan featured">
+      <div class="plan-bdg pt">✦ Mais popular</div><div class="plan-bdg es">✦ Más popular</div>
+      <div class="plan-name pt">Estudante</div><div class="plan-name es">Estudiante</div>
+      <div class="plan-price"><sup>$</sup>0,99<sub class="pt">/mês</sub><sub class="es">/mes</sub></div>
+      <p class="plan-desc pt">Para estudantes de medicina e residentes em formação.</p>
+      <p class="plan-desc es">Para estudiantes de medicina y residentes en formación.</p>
+      <div class="plan-feats">
+        <div class="pf pt">25 motivos de Clínica Médica</div><div class="pf es">25 motivos de Medicina Interna</div>
+        <div class="pf pt">26 motivos de Cirurgia Geral</div><div class="pf es">26 motivos de Cirugía General</div>
+        <div class="pf pt">HCs ilimitadas na nuvem</div><div class="pf es">HC ilimitadas en la nube</div>
+        <div class="pf pt">Export PDF narrativo completo</div><div class="pf es">Export PDF narrativo completo</div>
+        <div class="pf pt">Bilíngue ES / PT</div><div class="pf es">Bilingüe ES / PT</div>
+      </div>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-solid pt">Assinar por $0,99 →</a>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-solid es">Suscribirse por $0,99 →</a>
+    </div>
+    <!-- MÉDICO -->
+    <div class="plan" style="border-color:rgba(13,148,136,.4)">
+      <div class="plan-name pt" style="color:var(--secondary)">Médico</div>
+      <div class="plan-name es" style="color:var(--secondary)">Médico</div>
+      <div class="plan-price"><sup>$</sup>4,99<sub class="pt">/mês</sub><sub class="es">/mes</sub></div>
+      <p class="plan-desc pt">Para médicos formados em atendimento clínico diário.</p>
+      <p class="plan-desc es">Para médicos graduados en atención clínica diaria.</p>
+      <div class="plan-feats">
+        <div class="pf pt">Tudo do plano Estudante</div><div class="pf es">Todo del plan Estudiante</div>
+        <div class="pf pt">Acesso prioritário a novos motivos</div><div class="pf es">Acceso prioritario a nuevos motivos</div>
+        <div class="pf pt">Suporte prioritário</div><div class="pf es">Soporte prioritario</div>
+        <div class="pf pt">Exportação em lote de HCs</div><div class="pf es">Exportación en lote de HC</div>
+        <div class="pf pt">Integrações futuras (EMR)</div><div class="pf es">Integraciones futuras (EMR)</div>
+      </div>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost pt" style="color:var(--secondary);border-color:var(--secondary)" onmouseover="this.style.background='var(--secondary)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--secondary)'">Assinar por $4,99 →</a>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost es" style="color:var(--secondary);border-color:var(--secondary)" onmouseover="this.style.background='var(--secondary)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--secondary)'">Suscribirse por $4,99 →</a>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:18px" class="pt">* Verificação de vínculo acadêmico necessária para o plano Estudante</p>
+  <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:18px" class="es">* Se requiere verificación de vínculo académico para el plan Estudiante</p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div><div class="stag pt">Depoimentos</div><div class="stag es">Testimonios</div>
+    <h2 class="stitle pt">O que dizem nossos <em>usuários</em></h2>
+    <h2 class="stitle es">Lo que dicen nuestros <em>usuarios</em></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="tcard">
+      <div class="stars">★★★★★</div>
+      <p class="tquote pt">"Uso no internato todo dia. As mnemônicas e manobras lado a lado com a HC mudam completamente minha consulta."</p>
+      <p class="tquote es">"Uso en el internado todos los días. Las mnemotécnicas y maniobras junto con la HC cambian completamente mi consulta."</p>
+      <div class="tauthor"><div class="tav" style="background:#0e7490">AM</div><div><div class="ta-name">Ana Martins</div><div class="ta-role pt">Estudante de medicina, 5º ano — SP</div><div class="ta-role es">Estudiante de medicina, 5º año — SP</div></div></div>
+    </div>
+    <div class="tcard">
+      <div class="stars">★★★★★</div>
+      <p class="tquote pt">"No plantão de clínica médica o AnamnesísMed virou referência da equipe. O export PDF é excelente para o prontuário."</p>
+      <p class="tquote es">"En el turno de medicina interna el AnamnesísMed se convirtió en referencia del equipo. El export PDF es excelente."</p>
+      <div class="tauthor"><div class="tav" style="background:#0d9488">LG</div><div><div class="ta-name">Lucas Gomes</div><div class="ta-role pt">Residente R2 — Belo Horizonte</div><div class="ta-role es">Residente R2 — Belo Horizonte</div></div></div>
+    </div>
+    <div class="tcard">
+      <div class="stars">★★★★★</div>
+      <p class="tquote pt">"O bilíngue é perfeito. Estudo em espanhol mas faço o internato no Brasil. Mudou completamente minha rotina."</p>
+      <p class="tquote es">"El bilingüe es perfecto. Estudio en español pero hago el internado en Brasil. Cambió completamente mi rutina."</p>
+      <div class="tauthor"><div class="tav" style="background:#f59e0b">RV</div><div><div class="ta-name">Rodrigo Vargas</div><div class="ta-role pt">Estudante intercambista — Bogotá</div><div class="ta-role es">Estudiante de intercambio — Bogotá</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <div class="cta-content">
+    <h2 class="pt">Pronto para elevar sua <em>prática clínica?</em></h2>
+    <h2 class="es">¿Listo para elevar tu <em>práctica clínica?</em></h2>
+    <p class="pt">Crie sua conta gratuita em menos de 1 minuto. Sem cartão de crédito.</p>
+    <p class="es">Crea tu cuenta gratuita en menos de 1 minuto. Sin tarjeta de crédito.</p>
+    <a href="anamnesismed-auth.html" class="btn-hero pt">Criar conta gratuita →</a>
+    <a href="anamnesismed-auth.html" class="btn-hero es">Crear cuenta gratuita →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <span class="foot-logo">Anamnesis<span>Med</span></span>
+      <p class="foot-tag pt">Ferramenta de história clínica completa para médicos e estudantes de medicina.</p>
+      <p class="foot-tag es">Herramienta de historia clínica completa para médicos y estudiantes de medicina.</p>
+    </div>
+    <div>
+      <h4 class="pt">Produto</h4><h4 class="es">Producto</h4>
+      <a href="anamnesismed-app.html" class="foot-lnk">App</a>
+      <a href="#features" class="foot-lnk pt">Funcionalidades</a><a href="#features" class="foot-lnk es">Funcionalidades</a>
+      <a href="#pricing" class="foot-lnk pt">Planos</a><a href="#pricing" class="foot-lnk es">Planes</a>
+      <a href="anamnesismed-roadmap.html" class="foot-lnk">Roadmap</a>
+    </div>
+    <div>
+      <h4 class="pt">Suporte</h4><h4 class="es">Soporte</h4>
+      <a href="#" class="foot-lnk">FAQ</a>
+      <a href="mailto:contato@anamnesismed.com" class="foot-lnk">contato@anamnesismed.com</a>
+    </div>
+    <div>
+      <h4 class="pt">Legal</h4><h4 class="es">Legal</h4>
+      <a href="#" class="foot-lnk pt">Termos de uso</a><a href="#" class="foot-lnk es">Términos de uso</a>
+      <a href="#" class="foot-lnk pt">Privacidade</a><a href="#" class="foot-lnk es">Privacidad</a>
+    </div>
+  </div>
+  <div class="foot-bar">
+    <span class="foot-copy">© 2025 AnamnesísMed · anamnesismed.com</span>
+    <div class="foot-lgs">
+      <button class="foot-lg" onclick="setLang('pt')">Português</button>
+      <button class="foot-lg" onclick="setLang('es')">Español</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-pt').classList.toggle('active',l==='pt');
+  try{localStorage.setItem('am-lang',l)}catch(e){}
+}
+(function(){
+  try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
+  window.addEventListener('scroll',function(){
+    document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10);
+  });
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.style.opacity='1';
+        e.target.style.transform='translateY(0)';
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('.fc,.tcard,.step,.plan').forEach(function(el){
+    el.style.opacity='0';
+    el.style.transform='translateY(20px)';
+    el.style.transition='opacity .6s ease, transform .6s ease';
+    obs.observe(el);
+  });
+})();
+</script>
+</body>
+</html>
