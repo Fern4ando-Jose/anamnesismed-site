@@ -1696,7 +1696,49 @@ function toggleSidebar(){document.getElementById('sidebar').classList.toggle('op
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open')}
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
 function goToDashboard(){window.location.href='anamnesismed-dashboard.html'}
-function newHC(){currentMotivo=null;showScreen('index');updateProgress()}
+function newHC(){
+  // Reset motivo
+  currentMotivo = null;
+  document.getElementById('mc-a').value = '';
+  document.getElementById('mc-motivo-badge').style.display = 'none';
+  document.getElementById('mc-suggestions').style.display = 'none';
+  document.getElementById('aea-guided-content').innerHTML = '';
+  updateLITIDIFIS(null); // show LITIDIFIS generic
+  // Reset HC header
+  document.getElementById('hc-icon').textContent = '📋';
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  document.getElementById('hc-name').textContent = lang==='pt'?'Nova História Clínica':'Nueva Historia Clínica';
+  document.getElementById('hc-spec').textContent = '';
+  document.getElementById('tb-motivo').textContent = lang==='pt'?'Nova HC':'Nueva HC';
+  // Reset progress
+  document.getElementById('hc-progress').style.width = '0%';
+  // Reset key text fields
+  ['dp-nome','dp-ci','dp-idade','dp-ocup','dp-proc','dp-res','dp-tel','dp-acomp-nome','dp-acomp-vinculo','dp-aportado',
+   'mc-a','mc-b','mc-c','aea-local','aea-irrad','aea-agrav','aea-atenua','aea-sintass','aea-trat','aea-texto',
+   'area-desc','app-cirurg','app-trauma','app-intern','app-outras','adm-texto',
+   'sum-achados','sum-sindromes','sum-hipoteses','plan-exames','plan-trat','plan-conduta','plan-obs'
+  ].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  // Reset radio selections
+  document.querySelectorAll('.f-radio.sel, .f-radio.sel-danger').forEach(function(r){r.classList.remove('sel','sel-danger')});
+  document.querySelectorAll('.f-check.on').forEach(function(c){c.classList.remove('on')});
+  document.querySelectorAll('.f-eva-btn.sel').forEach(function(b){b.classList.remove('sel')});
+  document.querySelectorAll('.ecto-opt.sel').forEach(function(o){o.classList.remove('sel')});
+  document.querySelectorAll('.yn-btn.sim, .yn-btn.nao').forEach(function(b){b.classList.remove('sim','nao')});
+  // Close all extra fields
+  document.querySelectorAll('.yn-extra').forEach(function(e){e.style.display='none'});
+  // Close all panels except dados pessoais and MC
+  document.querySelectorAll('.hc-panel').forEach(function(p){p.classList.remove('open')});
+  document.getElementById('panel-dados').classList.add('open');
+  document.getElementById('panel-mc').classList.add('open');
+  // Set today's date
+  document.getElementById('dp-dtingresso').value = new Date().toISOString().split('T')[0];
+  // Render blank RAS
+  renderRAS([]);
+  // Show HC screen (not index)
+  showScreen('hc');
+  showGuide('form', document.querySelector('.guide-tab'));
+  window.scrollTo(0,0);
+}
 
 // ── SCREEN SWITCHING ──────────────────────────────────
 function showScreen(s){
@@ -2377,6 +2419,8 @@ function exportPDF(){
   // Auto-set today's date
   var today = new Date().toISOString().split('T')[0];
   document.getElementById('dp-dtingresso').value = today;
+  // LITIDIFIS visível por padrão (sem motivo = genérico)
+  updateLITIDIFIS(null);
   // IMC auto-calc
   ['sv-peso','sv-altura'].forEach(function(id){
     document.getElementById(id).addEventListener('input',calcIMC);
