@@ -2928,10 +2928,16 @@ function exportPDF(){
   w.document.write('<tr><td>'+(lang==='pt'?'Estado Civil':'Estado Civil')+'</td><td>'+(document.getElementById('dp-ecivil').value||'—')+'</td><td>'+(lang==='pt'?'Telefone':'Teléfono')+'</td><td>'+(document.getElementById('dp-tel').value||'—')+'</td></tr>');
   w.document.write('<tr><td>'+(lang==='pt'?'Data Ingresso':'Fecha Ingreso')+'</td><td>'+(document.getElementById('dp-dtingresso').value||'—')+'</td><td>'+(lang==='pt'?'Acompanhante':'Acompañante')+'</td><td>'+(document.getElementById('dp-acomp-nome').value||'—')+'</td></tr>');
   
+  function selLangText(sel){
+    if(!sel) return '—';
+    var span = sel.querySelector('.'+lang);
+    if(span) return span.textContent.trim();
+    return sel.textContent.trim();
+  }
   var feSel = document.querySelector('#dp-fe .sel');
-  var feVal = feSel ? feSel.textContent.trim() : '—';
+  var feVal = selLangText(feSel);
   var ingr = document.querySelector('#dp-ingresso .sel');
-  var ingrVal = ingr ? ingr.textContent.trim() : '—';
+  var ingrVal = selLangText(ingr);
   w.document.write('<tr><td>'+(lang==='pt'?'Forma de ingresso':'Forma de ingreso')+'</td><td>'+ingrVal+'</td><td>'+(lang==='pt'?'Fonte e Fé':'Fuente y Fe')+'</td><td>'+feVal+'</td></tr>');
   w.document.write('</table>');
   
