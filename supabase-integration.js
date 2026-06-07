@@ -473,6 +473,64 @@ async function uiLoadRecentHCs() {
 }
 
 /**
+ * Calcula e preenche os cards de estatísticas do dashboard
+ * (HCs criadas, PDFs exportados, Motivos consultados) com dados reais do usuário.
+ * Para um usuário novo, tudo começa zerado — nada de números fixos de exemplo.
+ */
+async function uiLoadStats() {
+  const hcs = await hcListAll(100);
+  const lang = document.documentElement.dataset.lang || 'es';
+
+  // HCs criadas
+  const hcsValueEl = document.getElementById('stat-hcs-value');
+  if (hcsValueEl) hcsValueEl.textContent = String(hcs.length);
+
+  const hcsDeltaPt = document.getElementById('stat-hcs-delta-pt');
+  const hcsDeltaEs = document.getElementById('stat-hcs-delta-es');
+  if (hcsDeltaPt && hcsDeltaEs) {
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const novasEstaSemana = hcs.filter(hc => new Date(hc.criado_em).getTime() >= weekAgo).length;
+    if (novasEstaSemana > 0) {
+      hcsDeltaPt.textContent = `+${novasEstaSemana} essa semana`;
+      hcsDeltaEs.textContent = `+${novasEstaSemana} esta semana`;
+    } else {
+      hcsDeltaPt.textContent = hcs.length === 0 ? 'Nenhuma ainda' : '';
+      hcsDeltaEs.textContent = hcs.length === 0 ? 'Ninguna aún' : '';
+    }
+  }
+
+  // PDFs exportados — ainda não há rastreamento real de exportações no banco;
+  // mostrar 0 em vez de um número de exemplo até essa funcionalidade existir.
+  const pdfsValueEl = document.getElementById('stat-pdfs-value');
+  if (pdfsValueEl) pdfsValueEl.textContent = '0';
+  const pdfsDeltaPt = document.getElementById('stat-pdfs-delta-pt');
+  const pdfsDeltaEs = document.getElementById('stat-pdfs-delta-es');
+  if (pdfsDeltaPt && pdfsDeltaEs) {
+    pdfsDeltaPt.textContent = 'Nenhum ainda';
+    pdfsDeltaEs.textContent = 'Ninguno aún';
+  }
+
+  // Motivos consultados (distintos)
+  const motivosUnicos = [...new Set(hcs.map(hc => hc.motivo || hc.motivo_id).filter(Boolean))];
+  const motivosValueEl = document.getElementById('stat-motivos-value');
+  if (motivosValueEl) motivosValueEl.textContent = String(motivosUnicos.length);
+
+  const motivosDeltaPt = document.getElementById('stat-motivos-delta-pt');
+  const motivosDeltaEs = document.getElementById('stat-motivos-delta-es');
+  if (motivosDeltaPt && motivosDeltaEs) {
+    if (motivosUnicos.length === 0) {
+      motivosDeltaPt.textContent = 'Nenhum ainda';
+      motivosDeltaEs.textContent = 'Ninguno aún';
+    } else {
+      const primeiro = motivosUnicos[0];
+      const resto = motivosUnicos.length - 1;
+      motivosDeltaPt.textContent = resto > 0 ? `${primeiro} + ${resto} mais` : primeiro;
+      motivosDeltaEs.textContent = resto > 0 ? `${primeiro} + ${resto} más` : primeiro;
+    }
+  }
+}
+
+/**
  * Mostra paywall quando trial expirou
  */
 function showPaywall(reason) {
@@ -654,6 +712,7 @@ function showSaveFeedback() {
     // Atualizar UI
     await uiUpdateUserInfo();
     await uiLoadRecentHCs();
+    await uiLoadStats();
 
     // Logout button
     const logoutBtn = document.querySelector('[data-action="logout"]');

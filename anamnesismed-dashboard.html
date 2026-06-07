@@ -391,9 +391,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <span class="stat-label es">HCs creadas</span>
           <span class="stat-icon">📋</span>
         </div>
-        <div class="stat-value">3</div>
-        <div class="stat-delta pt">+1 essa semana</div>
-        <div class="stat-delta es">+1 esta semana</div>
+        <div class="stat-value" id="stat-hcs-value">0</div>
+        <div class="stat-delta pt" id="stat-hcs-delta-pt"></div>
+        <div class="stat-delta es" id="stat-hcs-delta-es"></div>
       </div>
       <div class="stat-card">
         <div class="stat-card-top">
@@ -401,9 +401,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <span class="stat-label es">PDFs exportados</span>
           <span class="stat-icon">📄</span>
         </div>
-        <div class="stat-value">2</div>
-        <div class="stat-delta pt">Último: ontem</div>
-        <div class="stat-delta es">Último: ayer</div>
+        <div class="stat-value" id="stat-pdfs-value">0</div>
+        <div class="stat-delta pt" id="stat-pdfs-delta-pt"></div>
+        <div class="stat-delta es" id="stat-pdfs-delta-es"></div>
       </div>
       <div class="stat-card">
         <div class="stat-card-top">
@@ -411,9 +411,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <span class="stat-label es">Motivos consultados</span>
           <span class="stat-icon">🩺</span>
         </div>
-        <div class="stat-value">7</div>
-        <div class="stat-delta pt">Dor torácica + 6 mais</div>
-        <div class="stat-delta es">Dolor torácico + 6 más</div>
+        <div class="stat-value" id="stat-motivos-value">0</div>
+        <div class="stat-delta pt" id="stat-motivos-delta-pt"></div>
+        <div class="stat-delta es" id="stat-motivos-delta-es"></div>
       </div>
       <div class="stat-card">
         <div class="stat-card-top">
@@ -437,7 +437,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <a href="anamnesismed-app.html" class="view-all es">Ver todas →</a>
     </div>
     <div class="hc-list" id="hc-list">
-      <a href="anamnesismed-app.html" class="hc-card">
+      <a href="anamnesismed-app.html" class="hc-card" style="display:none">
         <div class="hc-color" style="background:#0e7490"></div>
         <div class="hc-info">
           <div class="hc-name pt">Paciente M.S.F. — Dor Torácica</div>
@@ -458,7 +458,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <button class="hc-btn" title="Excluir" onclick="event.preventDefault()">🗑️</button>
         </div>
       </a>
-      <a href="anamnesismed-app.html" class="hc-card">
+      <a href="anamnesismed-app.html" class="hc-card" style="display:none">
         <div class="hc-color" style="background:#f59e0b"></div>
         <div class="hc-info">
           <div class="hc-name pt">Paciente R.O.A. — Dispneia</div>

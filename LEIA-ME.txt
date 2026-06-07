@@ -70,6 +70,12 @@ completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existe
   - DB: criado manualmente o registro de perfil que faltava para o usuário fernando-jose@outlook.com.br (id a52339cb-ee38-42c5-b14b-d642eb9399b5), com plano='trial' e trial_end=2026-07-07.
   PENDENTE: enviar a alteração de supabase-integration.js (git add -A; git commit -m "fix: corrige criação de trial de 30 dias no cadastro de perfil"; git push) — sem isso, novos usuários continuam vulneráveis ao mesmo bug.
 
+[CORRIGIDO 2026-06-07] BUG: cards do dashboard ("HCs criadas: 3", "PDFs exportados: 2", "Motivos consultados: 7") mostravam números de exemplo fixos para qualquer usuário, inclusive os novos ->
+  - HTML (anamnesismed-dashboard.html): valores trocados para placeholders com id (zerados por padrão) e cards de HC de exemplo ocultados (display:none) — a lista real já era populada via uiLoadRecentHCs, mas os contadores no topo continuavam hardcoded.
+  - JS (supabase-integration.js): nova função uiLoadStats() calcula os números reais a partir de historias_clinicas do usuário (quantidade de HCs, motivos distintos consultados) e exibe 0/"Nenhum ainda" quando vazio. "PDFs exportados" mostra 0 por enquanto pois ainda não existe rastreamento de exportações no banco — fica registrado para criar essa contagem futuramente.
+  - Chamada uiLoadStats() adicionada ao fluxo de carregamento do dashboard.
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
 
 ────────────────────────────────────────────────────────────────────────
 PROGRESSO — SESSÃO 2026-06-07
