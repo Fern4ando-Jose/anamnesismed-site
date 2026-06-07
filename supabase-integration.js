@@ -79,7 +79,15 @@ async function authSaveProfile(data) {
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return;
 
-  const { error } = await sb.from('profiles').upsert({
+  // Verifica se já existe perfil — se não existir, é um cadastro novo
+  // e precisa iniciar o trial de 30 dias (senão o paywall aparece na hora)
+  const { data: existing } = await sb
+    .from('profiles')
+    .select('id, plano, trial_end')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  const payload = {
     id: user.id,
     email: user.email,
     nome: data.nome,
@@ -87,7 +95,14 @@ async function authSaveProfile(data) {
     universidade: data.universidade,
     ano_curso: data.ano_curso,
     idioma: data.idioma || 'es',
-  });
+  };
+
+  if (!existing || !existing.plano || (existing.plano === 'trial' && !existing.trial_end)) {
+    payload.plano = 'trial';
+    payload.trial_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+  }
+
+  const { error } = await sb.from('profiles').upsert(payload);
 
   if (error) console.error('Profile save error:', error);
 }

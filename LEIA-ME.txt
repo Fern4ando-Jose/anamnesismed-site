@@ -60,6 +60,16 @@ app
 [CORRIGIDO 2026-06-07] Renomear e organizar dashboar -> "Configurações" e menu do usuário agora levam à nova página de perfil; corrigida inconsistência PT/ES no menu (Clínica Médica vs Medicina Interna -> Clínica Médica em ambos); seção renomeada de "Biblioteca" para "Especialidades"
 completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existem 8 motivos cadastrados (7 em Clínica Médica: dor-torácica, dispneia, cefaleia, febre, dor-abdominal, edema, tosse; 1 em Cirurgia: apendicite). O badge "new" no sidebar é apenas indicador de versão (v1/v2), não um motivo placeholder. Ficará para depois — fica registrado para retomar.
 
+[CORRIGIDO 2026-06-07] BUG: mensagem "Tu trial ha terminado" (paywall) aparecendo na hora, em vez de só após 30 dias ->
+  Causa raiz dupla:
+  1) authSaveProfile() fazia upsert no perfil sem definir 'plano'/'trial_end'; como a tabela profiles tem 'plano default trial' mas trial_end SEM default (fica NULL), o cálculo de dias restantes dava NaN -> sistema tratava como "expirado" na hora.
+  2) Mais grave: o perfil do usuário nem sequer estava sendo criado na tabela public.profiles (0 registros, apesar de já existir 1 usuário em auth.users) -> profileCheckAccess() não encontrava perfil e também acionava o paywall.
+  Correções aplicadas:
+  - JS: authSaveProfile() em supabase-integration.js agora verifica se o perfil é novo/incompleto e define plano='trial' + trial_end = agora + 30 dias (precisa do deploy via git push, ver abaixo).
+  - DB: alter table profiles -> trial_end agora tem default 'now() + interval 30 days' (cobre inserts futuros fora do app); rodado backfill para perfis antigos sem trial_end (não havia nenhum afetado).
+  - DB: criado manualmente o registro de perfil que faltava para o usuário fernando-jose@outlook.com.br (id a52339cb-ee38-42c5-b14b-d642eb9399b5), com plano='trial' e trial_end=2026-07-07.
+  PENDENTE: enviar a alteração de supabase-integration.js (git add -A; git commit -m "fix: corrige criação de trial de 30 dias no cadastro de perfil"; git push) — sem isso, novos usuários continuam vulneráveis ao mesmo bug.
+
 
 ────────────────────────────────────────────────────────────────────────
 PROGRESSO — SESSÃO 2026-06-07
