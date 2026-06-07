@@ -86,6 +86,19 @@ completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existe
   Correção: adicionado um novo card de mnemônica "IIDET" (com as 5 linhas Início/Intensidade/Duração/Evolução/Término e seus significados clínicos) ao array `mnemonics` de TODOS os 8 motivos de consulta com guia (febre, dor-toracica, dispneia, cefaleia, dor-abdominal, edema, tosse, apendicite) em anamnesismed-app.html — em febre como semiologia central, e nos demais como "semiologia da febre (se associada)".
   PENDENTE: incluído no mesmo commit/push pendente acima.
 
+[CORRIGIDO 2026-06-07] NOVO: trava de onboarding pós-login — aceitar termos + escolher médico ou estudante ->
+  Implementado um overlay bloqueante (ver onboardingCheckAndShow em supabase-integration.js) que aparece
+  automaticamente assim que o usuário entra no dashboard ou no app pela primeira vez (logo após login com
+  Google ou magic link), em duas etapas em sequência:
+    1) Aceitar os Termos de Uso e Política de Privacidade (checkbox obrigatório + link para anamnesismed-terms.html)
+    2) Escolher "Sou médico(a)" ou "Sou estudante de medicina"
+  As respostas são salvas em profiles.termos_aceitos (boolean) e profiles.tipo_usuario ('medico'|'estudante').
+  O overlay só aparece se algum desses campos estiver vazio — usuários que já responderam não veem mais nada.
+  AÇÃO NECESSÁRIA: rodar este SQL no Supabase SQL Editor (adiciona as 2 colunas que ainda não existem):
+    ALTER TABLE profiles ADD COLUMN IF NOT EXISTS termos_aceitos boolean DEFAULT false;
+    ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tipo_usuario text;
+  PENDENTE: incluído no mesmo commit/push pendente acima (mas o SQL acima precisa ser rodado manualmente no Supabase).
+
 
 ────────────────────────────────────────────────────────────────────────
 PROGRESSO — SESSÃO 2026-06-07

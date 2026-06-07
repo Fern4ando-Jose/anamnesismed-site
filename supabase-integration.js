@@ -153,6 +153,142 @@ async function profileGet() {
 }
 
 /**
+ * Salvar aceite dos termos de uso
+ */
+async function profileAcceptTerms() {
+  const user = await authGetUser();
+  if (!user) return { ok: false };
+  const { error } = await sb.from('profiles').update({ termos_aceitos: true }).eq('id', user.id);
+  if (error) { console.error('Accept terms error:', error); return { ok: false, error }; }
+  return { ok: true };
+}
+
+/**
+ * Salvar tipo de usuário (medico | estudante)
+ */
+async function profileSetTipoUsuario(tipo) {
+  const user = await authGetUser();
+  if (!user) return { ok: false };
+  const { error } = await sb.from('profiles').update({ tipo_usuario: tipo }).eq('id', user.id);
+  if (error) { console.error('Set tipo_usuario error:', error); return { ok: false, error }; }
+  return { ok: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ONBOARDING GATE — Termos de uso + Médico ou Estudante (1ª vez após login)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Verifica o perfil e, se faltar aceitar os termos ou escolher o tipo de
+ * usuário, exibe um overlay bloqueante em sequência (passo 1 → passo 2)
+ * antes de liberar o uso do app/dashboard.
+ */
+async function onboardingCheckAndShow(profile) {
+  if (!profile) return;
+  const needsTerms = !profile.termos_aceitos;
+  const needsTipo  = !profile.tipo_usuario;
+  if (!needsTerms && !needsTipo) return;
+
+  const lang = document.documentElement.dataset.lang || 'pt';
+
+  const overlay = document.createElement('div');
+  overlay.id = 'onboarding-gate';
+  overlay.style.cssText = `
+    position:fixed;inset:0;z-index:9999;
+    background:rgba(13,45,61,0.72);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;font-family:'Source Sans 3',system-ui,sans-serif`;
+
+  const card = document.createElement('div');
+  card.style.cssText = `
+    background:#fff;border-radius:14px;max-width:460px;width:100%;
+    padding:28px 26px;box-shadow:0 20px 60px rgba(0,0,0,.35);
+    color:#0d2d3d`;
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  function renderTerms() {
+    card.innerHTML = `
+      <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:20px;margin-bottom:12px">
+        ${lang==='pt' ? 'Antes de continuar' : 'Antes de continuar'}
+      </h2>
+      <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:14px">
+        ${lang==='pt'
+          ? 'Para usar o AnamnesísMed você precisa ler e aceitar nossos Termos de Uso e Política de Privacidade.'
+          : 'Para usar AnamnesísMed necesitas leer y aceptar nuestros Términos de Uso y Política de Privacidad.'}
+      </p>
+      <a href="anamnesismed-terms.html" target="_blank" rel="noopener"
+         style="font-size:13px;color:#0e7490;font-weight:600;text-decoration:underline">
+        ${lang==='pt' ? 'Ler os Termos de Uso e Privacidade' : 'Leer los Términos de Uso y Privacidad'}
+      </a>
+      <label style="display:flex;gap:10px;align-items:flex-start;margin:16px 0;font-size:13px;line-height:1.5;cursor:pointer">
+        <input type="checkbox" id="og-terms-check" style="margin-top:3px;width:16px;height:16px;flex-shrink:0">
+        <span>${lang==='pt'
+          ? 'Li e aceito os Termos de Uso e a Política de Privacidade do AnamnesísMed.'
+          : 'Leí y acepto los Términos de Uso y la Política de Privacidad de AnamnesísMed.'}</span>
+      </label>
+      <button id="og-terms-btn" disabled style="
+        width:100%;padding:12px;border:none;border-radius:8px;
+        background:#cbd5d9;color:#fff;font-weight:700;font-size:14px;
+        cursor:not-allowed;transition:background .2s">
+        ${lang==='pt' ? 'Aceitar e continuar' : 'Aceptar y continuar'}
+      </button>`;
+
+    const check = card.querySelector('#og-terms-check');
+    const btn   = card.querySelector('#og-terms-btn');
+    check.addEventListener('change', () => {
+      btn.disabled = !check.checked;
+      btn.style.background = check.checked ? '#0e7490' : '#cbd5d9';
+      btn.style.cursor = check.checked ? 'pointer' : 'not-allowed';
+    });
+    btn.addEventListener('click', async () => {
+      if (!check.checked) return;
+      btn.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
+      await profileAcceptTerms();
+      if (needsTipo) renderTipo();
+      else overlay.remove();
+    });
+  }
+
+  function renderTipo() {
+    card.innerHTML = `
+      <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:20px;margin-bottom:12px">
+        ${lang==='pt' ? 'Para personalizar sua experiência' : 'Para personalizar tu experiencia'}
+      </h2>
+      <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:18px">
+        ${lang==='pt' ? 'Você é médico(a) ou estudante de medicina?' : '¿Eres médico(a) o estudiante de medicina?'}
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="og-tipo-btn" data-tipo="medico" style="
+          padding:14px;border:1.5px solid rgba(13,45,61,0.16);border-radius:10px;
+          background:#f0f4f8;color:#0d2d3d;font-weight:600;font-size:14px;
+          text-align:left;cursor:pointer;transition:border-color .15s,background .15s">
+          🩺 ${lang==='pt' ? 'Sou médico(a)' : 'Soy médico(a)'}
+        </button>
+        <button class="og-tipo-btn" data-tipo="estudante" style="
+          padding:14px;border:1.5px solid rgba(13,45,61,0.16);border-radius:10px;
+          background:#f0f4f8;color:#0d2d3d;font-weight:600;font-size:14px;
+          text-align:left;cursor:pointer;transition:border-color .15s,background .15s">
+          🎓 ${lang==='pt' ? 'Sou estudante de medicina' : 'Soy estudiante de medicina'}
+        </button>
+      </div>`;
+
+    card.querySelectorAll('.og-tipo-btn').forEach(b => {
+      b.addEventListener('mouseenter', () => { b.style.borderColor = '#0e7490'; });
+      b.addEventListener('mouseleave', () => { b.style.borderColor = 'rgba(13,45,61,0.16)'; });
+      b.addEventListener('click', async () => {
+        b.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
+        await profileSetTipoUsuario(b.dataset.tipo);
+        overlay.remove();
+      });
+    });
+  }
+
+  if (needsTerms) renderTerms();
+  else renderTipo();
+}
+
+/**
  * Verificar se o acesso está ativo (trial ou plano pago)
  * Retorna: { active: bool, type: 'trial'|'pro'|'expired', daysLeft: number }
  */
@@ -709,6 +845,9 @@ function showSaveFeedback() {
       sessionStorage.removeItem('am_signup_data');
     }
 
+    // Trava de onboarding — termos de uso + médico ou estudante (1ª vez)
+    await onboardingCheckAndShow(await profileGet());
+
     // Atualizar UI
     await uiUpdateUserInfo();
     await uiLoadRecentHCs();
@@ -778,6 +917,9 @@ function showSaveFeedback() {
 
     await guardCheckAccess();
     await uiUpdateUserInfo();
+
+    // Trava de onboarding — termos de uso + médico ou estudante (1ª vez)
+    await onboardingCheckAndShow(await profileGet());
 
     // Sobrescrever saveData para salvar no Supabase também
     const originalSave = window.saveData;
@@ -877,3 +1019,4 @@ window.hcDelete           = hcDelete;
 window.hcListAll          = hcListAll;
 window.uiLoadRecentHCs    = uiLoadRecentHCs;
 window.profileCheckAccess = profileCheckAccess;
+window.onboardingCheckAndShow = onboardingCheckAndShow;
