@@ -81,6 +81,11 @@ completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existe
   Correção: adicionado appearance:none / -webkit-appearance:none / -moz-appearance:none na regra select.f-input em anamnesismed-app.html. Verificado: é a única ocorrência desse padrão no projeto (não afeta outras páginas).
   PENDENTE: incluído no mesmo commit/push pendente acima.
 
+[CORRIGIDO 2026-06-07] CONTEÚDO: faltava a mnemônica IIDET (semiologia da febre) na aba "Mnemotécnicas" ->
+  Origem: usuário enviou um material de referência (Interrogatorio.pdf) cujo quadro "Fiebre" descreve as características Início/Intensidade/Duração/Evolução/Término — que formam o acrônimo IIDET.
+  Correção: adicionado um novo card de mnemônica "IIDET" (com as 5 linhas Início/Intensidade/Duração/Evolução/Término e seus significados clínicos) ao array `mnemonics` de TODOS os 8 motivos de consulta com guia (febre, dor-toracica, dispneia, cefaleia, dor-abdominal, edema, tosse, apendicite) em anamnesismed-app.html — em febre como semiologia central, e nos demais como "semiologia da febre (se associada)".
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
 
 ────────────────────────────────────────────────────────────────────────
 PROGRESSO — SESSÃO 2026-06-07
