@@ -76,6 +76,11 @@ completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existe
   - Chamada uiLoadStats() adicionada ao fluxo de carregamento do dashboard.
   PENDENTE: incluído no mesmo commit/push pendente acima.
 
+[CORRIGIDO 2026-06-07] BUG: campos de seleção do formulário (Estado Civil, Escolaridade etc.) mostravam DUAS setinhas (^) sobrepostas ->
+  Causa: a regra CSS "select.f-input" define uma seta customizada via SVG (background-image), mas não desativa a aparência nativa do navegador (appearance) — então a seta padrão do sistema aparecia junto com a customizada.
+  Correção: adicionado appearance:none / -webkit-appearance:none / -moz-appearance:none na regra select.f-input em anamnesismed-app.html. Verificado: é a única ocorrência desse padrão no projeto (não afeta outras páginas).
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
 
 ────────────────────────────────────────────────────────────────────────
 PROGRESSO — SESSÃO 2026-06-07
