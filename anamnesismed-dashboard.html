@@ -257,19 +257,32 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 }
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(13,45,61,.3)}
   .main{margin-left:0}
   .mobile-nav{display:block}
-  .content{padding:20px 16px 80px}
-  .topbar{padding:0 16px}
+  .content{padding:16px 14px 90px}
+  .topbar{padding:0 14px;height:52px}
+  .topbar-title{font-size:15px}
   .search-wrap{display:none}
-  .stats-row{grid-template-columns:1fr 1fr}
-  .quick-grid{grid-template-columns:1fr 1fr}
+  .btn-new{padding:7px 14px;font-size:12px}
+  .stats-row{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-value{font-size:22px}
+  .quick-grid{grid-template-columns:1fr 1fr;gap:10px}
   .bottom-grid{grid-template-columns:1fr}
+  .hc-card{padding:12px 14px}
+  .hc-name{font-size:13px}
+  .plan-price{font-size:32px}
 }
 @media(max-width:480px){
-  .stats-row{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
   .quick-grid{grid-template-columns:1fr}
+  .topbar .btn-new span.pt,.topbar .btn-new span.es{display:none}
+  .hc-actions{display:none}
+  .upgrade-panel{padding:18px}
+  .upgrade-title{font-size:16px}
+}
+@media(max-width:360px){
+  .stats-row{grid-template-columns:1fr}
 }
 </style>
 </head>

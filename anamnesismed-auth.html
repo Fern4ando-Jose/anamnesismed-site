@@ -152,17 +152,22 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 
 /* RESPONSIVE */
 @media(max-width:900px){
-  body{grid-template-columns:1fr;min-height:auto}
-  .left{min-height:auto;padding:32px 28px 40px}
-  .left-mid{padding:32px 0}
-  .left-headline{font-size:26px}
-  .left-sub{font-size:14px}
-  .right{padding:40px 28px;min-height:auto}
+  body{grid-template-columns:1fr;min-height:auto;overflow-x:hidden}
+  .left{min-height:auto;padding:28px 20px 36px}
+  .left-mid{padding:24px 0}
+  .left-headline{font-size:22px}
+  .left-sub{font-size:13px;margin-bottom:24px}
+  .features-list{gap:10px}
+  .left-bottom{display:none} /* esconde depoimento em mobile — economiza espaço */
+  .right{padding:32px 20px;min-height:auto}
 }
 @media(max-width:480px){
-  .left{padding:24px 20px 32px}
-  .right{padding:32px 20px}
+  .left{padding:20px 16px 28px}
+  .left-headline{font-size:20px}
+  .right{padding:24px 16px}
   .auth-card{max-width:100%}
+  .auth-tabs{margin-bottom:20px}
+  .accept-box{padding:16px}
 }
 </style>
 </head>

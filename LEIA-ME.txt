@@ -43,6 +43,27 @@ FUNCIONALIDADES:
 ✅ Progresso visual entre abas
 ✅ Design system "Saúde Confiável" aplicado em 3 páginas
 
+Erros:
+Pag inicial
+App: entra direto na pagina sem fazer login
+roadmap: está aparecendo no site? pq? deveria ser um arquivo interno
+FaQ: criar a pagina dele, pergunte me
+Términos de uso e Privacidad: criar pagina com términos
+Botão "ver el app" está entrado direto sem fazer login
+
+Pag login
+criar banco dados p/ usuarios
+fazer login con google funcionar
+
+app
+Criar pagina configuração e usuario
+Renomear e organizar dashboar
+completar os motivos de consulta
+
+
+
+
+
 STATUS DO PROJETO:
 ────────────────────────────────────────────────────────────────────────
 ✅ Landing Page            — redesign completo (Direção 3)
