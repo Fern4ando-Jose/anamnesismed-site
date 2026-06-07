@@ -392,32 +392,44 @@ function switchTab(tab){
 
 function handleSubmit(e,type){
   e.preventDefault();
-  var email=document.getElementById('email-'+type).value;
+  var email=document.getElementById('email-'+type).value.trim();
+  if(!email||!email.includes('@'))return;
   var form=document.getElementById('form-'+type);
-  var success=document.getElementById('success-'+type);
-  form.style.display='none';
-  success.style.display='block';
-  var el=document.getElementById('email-sent-'+type);
-  if(el)el.textContent=email;
-  var elEs=document.getElementById('email-sent-'+type+'-es');
-  if(elEs)elEs.textContent=email;
-  // Redirecionar para termos após cadastro
-  if(type==='register'){
-    setTimeout(function(){
-      window.location.href='anamnesismed-terms.html';
-    },2200);
+  var btn=form.querySelector('.btn-submit');
+
+  if(typeof authSendMagicLink!=='function'){
+    alert('Serviço de login indisponível no momento. Tente novamente em instantes.');
+    return;
   }
-  // TODO: integrate Supabase magic link here
+
+  authSendMagicLink(email).then(function(result){
+    if(!result.ok){
+      alert(result.error||'Erro ao enviar o link. Tente novamente.');
+      return;
+    }
+    var success=document.getElementById('success-'+type);
+    form.style.display='none';
+    success.style.display='block';
+    var el=document.getElementById('email-sent-'+type);
+    if(el)el.textContent=email;
+    var elEs=document.getElementById('email-sent-'+type+'-es');
+    if(elEs)elEs.textContent=email;
+  });
 }
 
 function googleAuth(){
-  // TODO: integrate Supabase Google OAuth
-  alert('Google OAuth — integrar com Supabase');
+  if(typeof authGoogleLogin==='function'){
+    authGoogleLogin();
+  }else{
+    alert('Serviço de login com Google indisponível no momento. Tente novamente em instantes.');
+  }
 }
 
 (function(){
   try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-integration.js"></script>
 </body>
 </html>

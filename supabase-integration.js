@@ -10,8 +10,8 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
-const SUPABASE_URL      = 'https://SEU-PROJETO.supabase.co';   // ← trocar
-const SUPABASE_ANON_KEY = 'eyJhbGci...SEU-ANON-KEY';           // ← trocar
+const SUPABASE_URL      = 'https://zrntgfsciiwhwghadosg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_qkwzDeGxE_AGcxftwH83tg_nRI_Umts';
 
 // ── Inicializar cliente Supabase ──────────────────────────────────────────
 const { createClient } = supabase;
@@ -48,6 +48,25 @@ async function authSendMagicLink(email) {
   } catch (err) {
     console.error('Magic link error:', err);
     return { ok: false, error: err.message };
+  }
+}
+
+/**
+ * Login/Cadastro com Google (OAuth)
+ * Redireciona o usuário para o fluxo do Google e volta para o dashboard
+ */
+async function authGoogleLogin() {
+  try {
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/anamnesismed-dashboard.html'
+      }
+    });
+    if (error) throw error;
+  } catch (err) {
+    console.error('Google OAuth error:', err);
+    alert('Erro ao iniciar login com Google. Tente novamente.');
   }
 }
 
@@ -722,6 +741,8 @@ async function stripeCheckout() {
 
 // Expõe funções globalmente para uso nos HTMLs
 window.authLogout         = authLogout;
+window.authSendMagicLink  = authSendMagicLink;
+window.authGoogleLogin    = authGoogleLogin;
 window.stripeCheckout     = stripeCheckout;
 window.hcSave             = hcSave;
 window.hcDelete           = hcDelete;
