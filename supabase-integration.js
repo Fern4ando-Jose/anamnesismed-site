@@ -221,12 +221,26 @@ async function onboardingCheckAndShow(profile) {
          style="font-size:13px;color:#0e7490;font-weight:600;text-decoration:underline">
         ${lang==='pt' ? 'Ler os Termos de Uso e Privacidade' : 'Leer los Términos de Uso y Privacidad'}
       </a>
-      <label style="display:flex;gap:10px;align-items:flex-start;margin:16px 0;font-size:13px;line-height:1.5;cursor:pointer">
-        <input type="checkbox" id="og-terms-check" style="margin-top:3px;width:16px;height:16px;flex-shrink:0">
-        <span>${lang==='pt'
-          ? 'Li e aceito os Termos de Uso e a Política de Privacidade do AnamnesísMed.'
-          : 'Leí y acepto los Términos de Uso y la Política de Privacidad de AnamnesísMed.'}</span>
-      </label>
+      <div style="display:flex;flex-direction:column;gap:12px;margin:16px 0">
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;cursor:pointer">
+          <input type="checkbox" class="og-terms-check" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;accent-color:#0e7490">
+          <span>${lang==='pt'
+            ? 'Entendo que o AnamnesísMed é uma <strong>ferramenta educacional</strong> e não substitui o julgamento clínico ou a responsabilidade médica.'
+            : 'Entiendo que AnamnesísMed es una <strong>herramienta educativa</strong> y no sustituye el juicio clínico ni la responsabilidad médica.'}</span>
+        </label>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;cursor:pointer">
+          <input type="checkbox" class="og-terms-check" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;accent-color:#0e7490">
+          <span>${lang==='pt'
+            ? 'Responsabilizo-me pelo uso correto das informações e pela obtenção do <strong>consentimento dos pacientes</strong> cujos dados inserir na plataforma.'
+            : 'Me responsabilizo por el uso correcto de la información y por obtener el <strong>consentimiento de los pacientes</strong> cuyos datos ingrese en la plataforma.'}</span>
+        </label>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;cursor:pointer">
+          <input type="checkbox" class="og-terms-check" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;accent-color:#0e7490">
+          <span>${lang==='pt'
+            ? 'Li e concordo com a <strong>Isenção de Responsabilidade Clínica</strong> (Artigo 2) e com as <strong>Limitações Técnicas</strong> (Artigo 5).'
+            : 'He leído y acepto la <strong>Exención de Responsabilidad Clínica</strong> (Artículo 2) y las <strong>Limitaciones Técnicas</strong> (Artículo 5).'}</span>
+        </label>
+      </div>
       <button id="og-terms-btn" disabled style="
         width:100%;padding:12px;border:none;border-radius:8px;
         background:#cbd5d9;color:#fff;font-weight:700;font-size:14px;
@@ -234,15 +248,16 @@ async function onboardingCheckAndShow(profile) {
         ${lang==='pt' ? 'Aceitar e continuar' : 'Aceptar y continuar'}
       </button>`;
 
-    const check = card.querySelector('#og-terms-check');
-    const btn   = card.querySelector('#og-terms-btn');
-    check.addEventListener('change', () => {
-      btn.disabled = !check.checked;
-      btn.style.background = check.checked ? '#0e7490' : '#cbd5d9';
-      btn.style.cursor = check.checked ? 'pointer' : 'not-allowed';
-    });
+    const checks = card.querySelectorAll('.og-terms-check');
+    const btn    = card.querySelector('#og-terms-btn');
+    function allChecked() { return Array.from(checks).every(c => c.checked); }
+    checks.forEach(c => c.addEventListener('change', () => {
+      btn.disabled = !allChecked();
+      btn.style.background = allChecked() ? '#0e7490' : '#cbd5d9';
+      btn.style.cursor = allChecked() ? 'pointer' : 'not-allowed';
+    }));
     btn.addEventListener('click', async () => {
-      if (!check.checked) return;
+      if (!allChecked()) return;
       btn.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
       await profileAcceptTerms();
       if (needsTipo) renderTipo();
