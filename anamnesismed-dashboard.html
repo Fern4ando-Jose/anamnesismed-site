@@ -314,11 +314,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <span class="nav-badge">5</span>
     </button>
 
-    <div class="nav-section-label pt">Biblioteca</div>
-    <div class="nav-section-label es">Biblioteca</div>
+    <div class="nav-section-label pt">Especialidades</div>
+    <div class="nav-section-label es">Especialidades</div>
     <a href="anamnesismed-app.html" class="nav-item">
       <span class="nav-icon">🏥</span>
-      <span class="pt">Clínica Médica</span><span class="es">Medicina Interna</span>
+      <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
     </a>
     <a href="anamnesismed-app.html" class="nav-item">
       <span class="nav-icon">🔪</span>
@@ -327,10 +327,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
     <div class="nav-section-label pt">Conta</div>
     <div class="nav-section-label es">Cuenta</div>
-    <button class="nav-item">
+    <a href="anamnesismed-config.html" class="nav-item">
       <span class="nav-icon">⚙️</span>
       <span class="pt">Configurações</span><span class="es">Configuración</span>
-    </button>
+    </a>
     <a href="anamnesismed-landing.html#pricing" class="nav-item" style="color:rgba(245,158,11,.85)">
       <span class="nav-icon">✦</span>
       <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>
@@ -338,7 +338,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   </nav>
 
   <div class="sidebar-foot">
-    <div class="user-info">
+    <a href="anamnesismed-config.html" class="user-info" style="text-decoration:none">
       <div class="user-av">FJ</div>
       <div>
         <div class="user-name">Fernando Jose</div>
@@ -346,7 +346,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="user-plan es">Plan Gratuito · 3/5 HCs</div>
       </div>
       <span class="user-caret">⋮</span>
-    </div>
+    </a>
   </div>
 </aside>
 
@@ -655,5 +655,7 @@ function setView(v){
   document.getElementById('page-sub-es').textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-integration.js"></script>
 </body>
 </html>

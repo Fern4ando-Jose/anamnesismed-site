@@ -607,13 +607,13 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
     </div>
     <div>
       <h4 class="pt">Suporte</h4><h4 class="es">Soporte</h4>
-      <a href="#" class="foot-lnk">FAQ</a>
+      <a href="anamnesismed-faq.html" class="foot-lnk">FAQ</a>
       <a href="mailto:contato@anamnesismed.com" class="foot-lnk">contato@anamnesismed.com</a>
     </div>
     <div>
       <h4 class="pt">Legal</h4><h4 class="es">Legal</h4>
-      <a href="#" class="foot-lnk pt">Termos de uso</a><a href="#" class="foot-lnk es">Términos de uso</a>
-      <a href="#" class="foot-lnk pt">Privacidade</a><a href="#" class="foot-lnk es">Privacidad</a>
+      <a href="anamnesismed-terms.html" class="foot-lnk pt">Termos de uso</a><a href="anamnesismed-terms.html" class="foot-lnk es">Términos de uso</a>
+      <a href="anamnesismed-privacy.html" class="foot-lnk pt">Privacidade</a><a href="anamnesismed-privacy.html" class="foot-lnk es">Privacidad</a>
     </div>
   </div>
   <div class="foot-bar">
@@ -650,4 +650,28 @@ function setLang(l){
   try{localStorage.setItem('am-lang',l)}catch(e){}
 }
 (function(){
-  try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){
+  try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
+  window.addEventListener('scroll',function(){
+    document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10);
+  });
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.style.opacity='1';
+        e.target.style.transform='translateY(0)';
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('.fc,.tcard,.step,.plan').forEach(function(el){
+    el.style.opacity='0';
+    el.style.transform='translateY(20px)';
+    el.style.transition='opacity .6s ease, transform .6s ease';
+    obs.observe(el);
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-integration.js"></script>
+</body>
+</html>

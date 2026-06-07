@@ -22,6 +22,7 @@ const PAGE = (() => {
   const p = window.location.pathname;
   if (p.includes('landing') || p === '/' || p.endsWith('index.html')) return 'landing';
   if (p.includes('auth'))      return 'auth';
+  if (p.includes('config'))    return 'config';
   if (p.includes('dashboard')) return 'dashboard';
   if (p.includes('app'))       return 'app';
   return 'unknown';
@@ -640,6 +641,59 @@ function showSaveFeedback() {
     await uiLoadRecentHCs();
 
     // Logout button
+    const logoutBtn = document.querySelector('[data-action="logout"]');
+    if (logoutBtn) logoutBtn.addEventListener('click', authLogout);
+  }
+
+  if (PAGE === 'config') {
+    const ok = await guardRequireAuth();
+    if (!ok) return;
+
+    const lang = document.documentElement.dataset.lang || 'pt';
+    await uiUpdateUserInfo();
+
+    const profile = await profileGet();
+    if (profile) {
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+      setVal('cfg-nome', profile.nome);
+      setVal('cfg-sobrenome', profile.sobrenome);
+      setVal('cfg-email', profile.email);
+      setVal('cfg-universidade', profile.universidade);
+      setVal('cfg-ano-curso', profile.ano_curso);
+      setVal('cfg-idioma', profile.idioma || lang);
+
+      const planoEl = document.getElementById('cfg-plano');
+      if (planoEl) {
+        if (profile.plano === 'pro') {
+          planoEl.textContent = lang === 'pt' ? 'Pro' : 'Pro';
+        } else {
+          const trialEnd = profile.trial_end ? new Date(profile.trial_end) : null;
+          const daysLeft = trialEnd ? Math.max(0, Math.ceil((trialEnd - new Date()) / (1000*60*60*24))) : 0;
+          planoEl.textContent = lang === 'pt' ? `Trial — ${daysLeft} dias restantes` : `Prueba — ${daysLeft} días restantes`;
+        }
+      }
+    }
+
+    const form = document.getElementById('cfg-form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('cfg-save-btn');
+        if (btn) { btn.disabled = true; btn.textContent = lang === 'pt' ? 'Salvando...' : 'Guardando...'; }
+
+        await authSaveProfile({
+          nome: document.getElementById('cfg-nome')?.value,
+          sobrenome: document.getElementById('cfg-sobrenome')?.value,
+          universidade: document.getElementById('cfg-universidade')?.value,
+          ano_curso: document.getElementById('cfg-ano-curso')?.value,
+          idioma: document.getElementById('cfg-idioma')?.value,
+        });
+
+        if (btn) { btn.disabled = false; btn.textContent = lang === 'pt' ? 'Salvo ✓' : 'Guardado ✓'; }
+        setTimeout(() => { if (btn) btn.textContent = lang === 'pt' ? 'Salvar alterações' : 'Guardar cambios'; }, 2000);
+      });
+    }
+
     const logoutBtn = document.querySelector('[data-action="logout"]');
     if (logoutBtn) logoutBtn.addEventListener('click', authLogout);
   }

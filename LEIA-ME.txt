@@ -45,22 +45,96 @@ FUNCIONALIDADES:
 
 Erros:
 Pag inicial
-App: entra direto na pagina sem fazer login
+[CORRIGIDO 2026-06-07] App: entra direto na pagina sem fazer login
 roadmap: está aparecendo no site? pq? deveria ser um arquivo interno
-FaQ: criar a pagina dele, pergunte me
-Términos de uso e Privacidad: criar pagina com términos
-Botão "ver el app" está entrado direto sem fazer login
+[CORRIGIDO 2026-06-07] FaQ: criar a pagina dele, pergunte me
+[CORRIGIDO 2026-06-07] Términos de uso e Privacidad: criar pagina com términos
+[CORRIGIDO 2026-06-07] Botão "ver el app" está entrado direto sem fazer login
 
 Pag login
-criar banco dados p/ usuarios
-fazer login con google funcionar
+[CORRIGIDO 2026-06-07] criar banco dados p/ usuarios -> tabelas profiles e historias_clinicas criadas no Supabase via SQL Editor, com RLS habilitado e policies (auth.uid() = id / user_id)
+[CORRIGIDO 2026-06-07] fazer login con google funcionar -> verificado no painel Supabase: provider Google já está habilitado (toggle ON), com Client ID e Client Secret configurados; função authGoogleLogin() pronta no supabase-integration.js. Falta apenas testar ao vivo após o deploy do gate de login.
 
 app
-Criar pagina configuração e usuario
-Renomear e organizar dashboar
-completar os motivos de consulta
+[CORRIGIDO 2026-06-07] Criar pagina configuração e usuario -> anamnesismed-config.html criada (dados pessoais, plano, logout), ligada ao Supabase (profileGet/authSaveProfile/authLogout) e ao guard de autenticação (PAGE='config' no supabase-integration.js)
+[CORRIGIDO 2026-06-07] Renomear e organizar dashboar -> "Configurações" e menu do usuário agora levam à nova página de perfil; corrigida inconsistência PT/ES no menu (Clínica Médica vs Medicina Interna -> Clínica Médica em ambos); seção renomeada de "Biblioteca" para "Especialidades"
+completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existem 8 motivos cadastrados (7 em Clínica Médica: dor-torácica, dispneia, cefaleia, febre, dor-abdominal, edema, tosse; 1 em Cirurgia: apendicite). O badge "new" no sidebar é apenas indicador de versão (v1/v2), não um motivo placeholder. Ficará para depois — fica registrado para retomar.
 
 
+────────────────────────────────────────────────────────────────────────
+PROGRESSO — SESSÃO 2026-06-07
+────────────────────────────────────────────────────────────────────────
+✅ Domínio próprio configurado: www.anamnesismed.com
+   - Adicionado no Vercel (Domains) com redirect 308 de anamnesismed.com → www
+   - Registros DNS CNAME criados no Cloudflare (proxy desativado/DNS-only)
+   - Status "Valid Configuration" confirmado nos 3 domínios
+
+✅ Supabase Auth — URL Configuration corrigida
+   - Site URL alterado de http://localhost:3000 para https://www.anamnesismed.com
+   - Redirect URLs adicionadas: https://www.anamnesismed.com/** e
+     https://anamnesismed-site.vercel.app/**
+   - Corrige o erro de redirecionamento para localhost após login com Google
+
+✅ Verificado: nome do app na tela de consentimento OAuth (Google Cloud)
+   - Já estava correto como "AnamnesísMed" — nenhuma alteração necessária
+
+✅ Explicado: como visualizar/gerenciar usuários cadastrados
+   - Supabase → Authentication → Users (UID, nome, email, telefone, provedor)
+   - Supabase → Database → Table Editor (profiles / historias_clinicas) p/ dados de uso
+
+✅ Corrigido bug mobile: badge "Ferramenta clínica gratuita" cortado no topo
+   - Arquivo: anamnesismed-landing.html
+   - Adicionada regra dentro de @media(max-width:600px): permite quebra de linha,
+     reduz fonte/letter-spacing e limita largura
+   - Commit dc0fc13 "Corrigir badge do hero cortado em telas pequenas"
+   - Deploy confirmado no Vercel (Ready / Production)
+
+✅ FAQ — página criada (anamnesismed-faq.html), bilíngue PT/ES, com acordeão
+✅ Privacidade — página criada (anamnesismed-privacy.html), separada dos Termos
+✅ Links do rodapé corrigidos (anamnesismed-landing.html)
+   - FAQ, Termos de uso e Privacidade agora apontam para as páginas reais
+     (antes apontavam para "#")
+✅ Gate de login ativado — App entrava direto sem autenticação
+   - Causa: supabase-integration.js (já tinha toda a lógica pronta:
+     guardRequireAuth, guardCheckAccess, paywall, dados reais do usuário)
+     não estava incluído via <script> em landing/dashboard/app
+   - Adicionadas as tags <script> (Supabase + supabase-integration.js)
+     antes de </body> em: anamnesismed-landing.html, anamnesismed-dashboard.html,
+     anamnesismed-app.html
+   - Resolve junto: "App entra sem login" + "Botão ver o app sem login"
+   - PENDENTE: usuário precisa rodar `git add -A && git commit && git push`
+     localmente (sandbox não conseguiu — lock no .git) e testar ao vivo após deploy
+
+✅ Tabelas do banco de dados criadas no Supabase (SQL Editor)
+   - profiles (id, email, nome, sobrenome, universidade, ano_curso, idioma, plano, trial_end, criado_em)
+   - historias_clinicas (id, user_id, motivo_id, motivo, especialidade, dados jsonb, status, criado_em, atualizado_em)
+   - RLS habilitado em ambas + policies: usuário só acessa seus próprios dados
+     (auth.uid() = id em profiles / auth.uid() = user_id em historias_clinicas)
+   - Resultado: "Success. No rows returned" — tabelas confirmadas criadas
+
+✅ Google OAuth verificado no Supabase (Authentication > Providers > Google)
+   - Provider já está habilitado (toggle ON), Client ID e Client Secret configurados
+   - função authGoogleLogin() já pronta no supabase-integration.js
+   - Falta apenas testar o fluxo completo ao vivo, após o deploy do gate de login
+
+✅ Página de Configurações/Perfil criada (anamnesismed-config.html)
+   - Campos: nome, sobrenome, e-mail (somente leitura), universidade, ano/curso, idioma
+   - Seção de Plano (mostra Pro ou Trial com dias restantes) + botão de upgrade
+   - Botão "Sair da conta" (logout via Supabase)
+   - Integrada ao supabase-integration.js: nova PAGE='config' com guardRequireAuth,
+     carrega dados via profileGet() e salva via authSaveProfile()
+   - Scripts do Supabase incluídos (mesmo padrão das outras páginas)
+
+✅ Dashboard reorganizado
+   - "Configurações" e o cartão do usuário (rodapé da sidebar) agora linkam para
+     anamnesismed-config.html
+   - Corrigida inconsistência de tradução: "Clínica Médica" aparecia como
+     "Medicina Interna" em ES — agora consistente nos dois idiomas
+   - Seção renomeada de "Biblioteca" para "Especialidades" (nome mais condizente
+     com o conteúdo: Clínica Médica / Cirurgia Geral)
+
+NOTA: revisão de "completar os motivos de consulta" e expansão de conteúdo
+clínico ficou para uma próxima sessão (ver item correspondente acima).
 
 
 

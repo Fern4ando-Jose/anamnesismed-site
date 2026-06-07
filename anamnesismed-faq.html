@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt" data-lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — Perguntas Frequentes (FAQ)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;
+  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
+  --secondary:#0d9488;--accent:#f59e0b;--danger:#c0392b;
+  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --r:10px;--r-lg:16px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:60px;
+  background:rgba(240,244,248,0.94);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line)
+}
+.nav-logo{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--primary)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+.page-wrap{max-width:760px;margin:0 auto;padding:40px 32px 80px}
+
+.doc-header{text-align:center;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--line)}
+.doc-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(14,116,144,.09);border:1px solid rgba(14,116,144,.2);color:var(--primary);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:16px}
+.doc-title{font-family:var(--serif);font-size:clamp(24px,3vw,36px);font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.2}
+.doc-title em{font-style:italic;color:var(--primary)}
+.doc-subtitle{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.7}
+
+.faq-group{margin-bottom:32px}
+.faq-group-title{font-family:var(--serif);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--secondary);margin-bottom:14px}
+
+.faq-item{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+.faq-item.open{border-color:var(--line-md)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;cursor:pointer;font-weight:700;font-size:15.5px;color:var(--ink);font-family:var(--sans)}
+.faq-q-icon{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(14,116,144,.10);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;transition:transform .25s}
+.faq-item.open .faq-q-icon{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-a-inner{padding:0 22px 20px;font-size:14.5px;color:var(--muted);line-height:1.75}
+.faq-a-inner strong{color:var(--ink)}
+.faq-a-inner a{color:var(--primary);text-decoration:none}
+.faq-a-inner a:hover{text-decoration:underline}
+
+.cta-box{margin-top:48px;text-align:center;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);padding:32px}
+.cta-title{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:8px}
+.cta-sub{font-size:14px;color:var(--muted);margin-bottom:20px}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--primary);color:#fff;border-radius:var(--r);text-decoration:none;font-weight:700;font-size:14px;transition:all .2s}
+.cta-btn:hover{background:var(--primary-dark);transform:translateY(-1px)}
+
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .page-wrap{padding:28px 20px 60px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="anamnesismed-landing.html" class="nav-logo">Anamnesis<span>Med</span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="doc-header">
+    <div class="doc-badge pt">💬 Central de Ajuda</div>
+    <div class="doc-badge es">💬 Centro de Ayuda</div>
+    <h1 class="doc-title pt">Perguntas <em>Frequentes</em></h1>
+    <h1 class="doc-title es">Preguntas <em>Frecuentes</em></h1>
+    <p class="doc-subtitle pt">Tudo o que você precisa saber sobre o AnamnesísMed — o que é, como funciona e como usar no dia a dia.</p>
+    <p class="doc-subtitle es">Todo lo que necesitas saber sobre AnamnesísMed — qué es, cómo funciona y cómo usarlo en el día a día.</p>
+  </div>
+
+  <!-- GERAL -->
+  <div class="faq-group">
+    <div class="faq-group-title pt">Sobre o AnamnesísMed</div>
+    <div class="faq-group-title es">Sobre AnamnesísMed</div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">O que é o AnamnesísMed?</span>
+        <span class="es">¿Qué es AnamnesísMed?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">É uma ferramenta digital de apoio ao ensino médico que organiza histórias clínicas guiadas, mnemônicas, manobras semiológicas, escalas e diagnósticos diferenciais — pensada para estudantes de medicina e profissionais de saúde.</p>
+        <p class="es">Es una herramienta digital de apoyo a la enseñanza médica que organiza historias clínicas guiadas, mnemotécnicas, maniobras semiológicas, escalas y diagnósticos diferenciales — pensada para estudiantes de medicina y profesionales de salud.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">O AnamnesísMed substitui o julgamento clínico de um médico?</span>
+        <span class="es">¿AnamnesísMed sustituye el juicio clínico de un médico?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt"><strong>Não.</strong> É uma ferramenta de apoio educacional e de organização — não substitui diagnóstico, prescrição ou conduta médica. Veja os detalhes nos <a href="anamnesismed-terms.html">Termos de Uso</a>.</p>
+        <p class="es"><strong>No.</strong> Es una herramienta de apoyo educativo y de organización — no sustituye diagnóstico, prescripción o conducta médica. Consulta los detalles en los <a href="anamnesismed-terms.html">Términos de Uso</a>.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">Para quem é destinado?</span>
+        <span class="es">¿Para quién está destinado?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">Médicos legalmente habilitados, estudantes de medicina e outros profissionais de saúde que queiram organizar e estudar histórias clínicas de forma estruturada.</p>
+        <p class="es">Médicos legalmente habilitados, estudiantes de medicina y otros profesionales de salud que quieran organizar y estudiar historias clínicas de forma estructurada.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- CONTA -->
+  <div class="faq-group">
+    <div class="faq-group-title pt">Conta e Acesso</div>
+    <div class="faq-group-title es">Cuenta y Acceso</div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">Como faço para me cadastrar?</span>
+        <span class="es">¿Cómo me registro?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">Clique em "Entrar" na página inicial e use seu e-mail (link mágico, sem senha) ou sua conta Google. Você receberá acesso ao painel após confirmar.</p>
+        <p class="es">Haz clic en "Entrar" en la página principal y usa tu correo (enlace mágico, sin contraseña) o tu cuenta de Google. Tendrás acceso al panel tras confirmar.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">O AnamnesísMed é gratuito?</span>
+        <span class="es">¿AnamnesísMed es gratuito?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">Há um período de testes gratuito. Após esse período, planos pagos de baixo custo dão acesso completo às ferramentas e ao conteúdo expandido.</p>
+        <p class="es">Hay un período de prueba gratuito. Después de ese período, planes pagos de bajo costo dan acceso completo a las herramientas y al contenido ampliado.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">Esqueci de sair / quero gerenciar minha conta. Como faço?</span>
+        <span class="es">Olvidé cerrar sesión / quiero gestionar mi cuenta. ¿Cómo lo hago?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">No painel (Dashboard), acesse a seção "Conta" para gerenciar seus dados, idioma e sessão.</p>
+        <p class="es">En el panel (Dashboard), accede a la sección "Cuenta" para gestionar tus datos, idioma y sesión.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- USO -->
+  <div class="faq-group">
+    <div class="faq-group-title pt">Usando a Ferramenta</div>
+    <div class="faq-group-title es">Usando la Herramienta</div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">Meus dados ficam salvos?</span>
+        <span class="es">¿Mis datos quedan guardados?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">Sim. Suas histórias clínicas ficam salvas na sua conta e também podem ser armazenadas localmente no seu navegador. Veja mais na nossa <a href="anamnesismed-privacy.html">Política de Privacidade</a>.</p>
+        <p class="es">Sí. Tus historias clínicas quedan guardadas en tu cuenta y también pueden almacenarse localmente en tu navegador. Más detalles en nuestra <a href="anamnesismed-privacy.html">Política de Privacidad</a>.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">Posso exportar uma história clínica em PDF?</span>
+        <span class="es">¿Puedo exportar una historia clínica en PDF?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">Sim, na aba "Conduta" da história clínica há um botão de exportação que gera um resumo narrativo em PDF.</p>
+        <p class="es">Sí, en la pestaña "Conducta" de la historia clínica hay un botón de exportación que genera un resumen narrativo en PDF.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="pt">O conteúdo está disponível em português e espanhol?</span>
+        <span class="es">¿El contenido está disponible en portugués y español?</span>
+        <span class="faq-q-icon">+</span>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p class="pt">Sim, todo o conteúdo é bilíngue (PT/ES) e pode ser alternado em tempo real pelo botão de idioma.</p>
+        <p class="es">Sí, todo el contenido es bilingüe (PT/ES) y puede alternarse en tiempo real con el botón de idioma.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title pt">Ainda tem dúvidas?</div>
+    <div class="cta-title es">¿Aún tienes dudas?</div>
+    <p class="cta-sub pt">Fale com a gente diretamente — respondemos o mais rápido possível.</p>
+    <p class="cta-sub es">Habla con nosotros directamente — respondemos lo más rápido posible.</p>
+    <a href="mailto:contato@anamnesismed.com" class="cta-btn pt">✉ Enviar e-mail</a>
+    <a href="mailto:contato@anamnesismed.com" class="cta-btn es">✉ Enviar correo</a>
+  </div>
+
+</div>
+
+<script>
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-pt').classList.toggle('active',l==='pt');
+  try{localStorage.setItem('am-lang',l)}catch(e){}
+}
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var item=q.closest('.faq-item');
+    var ans=item.querySelector('.faq-a');
+    var open=item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function(o){
+      if(o!==item){o.classList.remove('open');o.querySelector('.faq-a').style.maxHeight=null}
+    });
+    item.classList.toggle('open',!open);
+    ans.style.maxHeight=open?null:(ans.scrollHeight+'px');
+  });
+});
+(function(){try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}})();
+</script>
+</body>
+</html>
