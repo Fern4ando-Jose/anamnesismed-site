@@ -99,6 +99,13 @@ completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existe
     ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tipo_usuario text;
   PENDENTE: incluído no mesmo commit/push pendente acima (mas o SQL acima precisa ser rodado manualmente no Supabase).
 
+[CORRIGIDO 2026-06-07] BUG (reincidente): badge "Ferramenta clínica gratuita" ainda aparecia cortado no topo em celulares ->
+  A correção anterior (commit dc0fc13, line-height:1.4) não foi suficiente — o line-height continuava menor
+  que a altura necessária para o texto maiúsculo + letter-spacing, cortando o topo das letras em telas Android.
+  Nova correção em @media(max-width:600px) .hero-badge: line-height aumentado de 1.4 para 2, padding de
+  6px/12px para 9px/14px, e overflow:visible explícito.
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
 
 ────────────────────────────────────────────────────────────────────────
 PROGRESSO — SESSÃO 2026-06-07
