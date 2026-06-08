@@ -92,7 +92,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14p
 .spec-icon-big{font-size:32px;width:56px;height:56px;border-radius:12px;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .spec-title{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
 .spec-subtitle{font-size:12px;color:var(--muted);margin-top:3px}
-.spec-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--line);padding-bottom:0}
+.spec-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--line);padding-bottom:0;overflow-x:auto;scrollbar-width:none}
+.spec-tabs::-webkit-scrollbar{display:none}
 .spec-tab{padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;user-select:none;text-decoration:none;display:flex;align-items:center;gap:6px}
 .spec-tab:hover{color:var(--ink)}
 .spec-tab.active{color:var(--ink);border-bottom-color:var(--primary)}
@@ -2418,6 +2419,9 @@ function showSpec(spec){
     document.getElementById('stab-'+s).classList.toggle('active', spec===s);
   });
   renderMotivoGrid(spec);
+  // Garante que o index é mostrado e sidebar fechado (mobile)
+  showScreen('index');
+  closeSidebar();
 }
 
 function renderMotivoGrid(spec){
