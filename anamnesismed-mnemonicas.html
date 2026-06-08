@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mnemônicas & Manobras — AnamnesisMed</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+:root{
+  --bg:#f0f4f8; --bg-card:#fff; --cream:#e4eaef;
+  --ink:#0d2d3d; --primary:#0e7490; --primary-dark:#0c5f72;
+  --secondary:#0d9488; --danger:#c2410c;
+  --muted:#4b6070; --line:rgba(13,45,61,.10); --line-md:rgba(13,45,61,.18);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono',Consolas,monospace;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px}
+.wrap{max-width:920px;margin:0 auto;padding:18px 16px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.topbar-back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;cursor:pointer;padding:7px 13px;border-radius:6px;border:1.5px solid var(--line-md);background:var(--bg-card)}
+.topbar-back:hover{color:var(--primary);border-color:var(--primary)}
+.lang-switch{display:flex;gap:4px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:8px;padding:3px}
+.lang-btn{font-size:11px;font-weight:700;padding:5px 12px;border-radius:5px;cursor:pointer;color:var(--muted);user-select:none}
+.lang-btn.active{background:var(--primary);color:#fff}
+h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.subtitle{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+.search-box{width:100%;padding:11px 16px;border-radius:10px;border:1.5px solid var(--line-md);background:var(--bg-card);font-size:13px;margin-bottom:8px}
+.search-box:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(14,116,144,.1)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+.filter-chip{font-size:11px;font-weight:700;padding:6px 13px;border-radius:20px;background:var(--cream);border:1.5px solid transparent;cursor:pointer;color:var(--muted);user-select:none;transition:all .15s}
+.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.theme-section{margin-bottom:30px}
+.theme-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+.theme-icon{font-size:20px;width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.theme-title{font-family:var(--serif);font-size:18px;font-weight:700}
+.section-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin:14px 0 8px}
+/* mnemonic cards */
+.mnem-card{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);margin-bottom:10px;overflow:hidden}
+.mnem-card-head{padding:10px 14px 6px;display:flex;align-items:flex-end;gap:10px;border-bottom:1px solid var(--line);background:var(--cream)}
+.mnem-kw{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--primary);letter-spacing:-1.5px;line-height:1}
+.mnem-name{font-size:10px;color:var(--muted);padding-bottom:2px}
+.mnem-row{display:flex;gap:10px;padding:7px 14px;border-bottom:1px solid var(--line);align-items:flex-start}
+.mnem-row:last-child{border-bottom:none}
+.mnem-letter{font-size:12px;font-weight:700;color:var(--primary);min-width:18px;line-height:1.6;flex-shrink:0}
+.mnem-term{font-size:12px;font-weight:700;display:block;line-height:1.4}
+.mnem-hint{font-size:10px;color:var(--muted);display:block;line-height:1.4}
+/* maneuver accordions */
+.acc{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);margin-bottom:8px;overflow:hidden}
+.acc-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.acc-num{font-size:14px;font-weight:700;color:var(--primary);opacity:.25;min-width:22px;line-height:1;flex-shrink:0}
+.acc-title{font-size:13px;font-weight:700;flex:1;line-height:1.3}
+.acc-subtitle{font-size:10px;color:var(--muted);margin-top:1px}
+.acc-toggle{font-size:18px;color:var(--primary);transition:transform .25s;flex-shrink:0}
+.acc.open .acc-toggle{transform:rotate(45deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.acc.open .acc-body{max-height:2000px}
+.acc-steps{list-style:none;padding:6px 14px}
+.acc-step{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px;line-height:1.6}
+.acc-step:last-child{border-bottom:none}
+.acc-step-n{font-size:9px;font-weight:700;color:var(--primary);min-width:16px;margin-top:2px;flex-shrink:0}
+.acc-findings{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 14px 10px}
+.acc-finding{padding:8px 10px;border-left:3px solid;border-radius:0 5px 5px 0;font-size:11px;line-height:1.5}
+.acc-finding.normal{border-color:var(--secondary);background:rgba(13,148,136,.07)}
+.acc-finding.abnormal{border-color:var(--danger);background:#fdf0eb}
+.acc-finding-lbl{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;color:rgba(13,45,61,.35);display:block}
+.empty-msg{font-size:12px;color:var(--muted);text-align:center;padding:30px 0}
+.es{display:none}
+.lang-es .pt{display:none}
+.lang-es .es{display:inline}
+@media(max-width:600px){.acc-findings{grid-template-columns:1fr}.mnem-kw{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="topbar-back" href="anamnesismed-dashboard.html">← <span class="pt">Voltar ao início</span><span class="es">Volver al inicio</span></a>
+    <div class="lang-switch">
+      <div class="lang-btn active" data-lang="pt" onclick="setLang('pt')">PT</div>
+      <div class="lang-btn" data-lang="es" onclick="setLang('es')">ES</div>
+    </div>
+  </div>
+
+  <h1><span class="pt">Mnemônicas & Manobras</span><span class="es">Mnemotécnicas & Maniobras</span></h1>
+  <p class="subtitle">
+    <span class="pt">Guia de revisão rápida — todas as mnemônicas semiológicas e manobras de exame físico organizadas por tema clínico. Use a busca ou os filtros para encontrar rapidamente o que precisa.</span>
+    <span class="es">Guía de revisión rápida — todas las mnemotécnicas semiológicas y maniobras de exploración física organizadas por tema clínico. Use la búsqueda o los filtros para encontrar lo que necesita.</span>
+  </p>
+
+  <input class="search-box" id="search" placeholder="Buscar por palavra-chave, sigla, manobra... (ex: Murphy, MONA, edema)" oninput="renderAll()">
+  <div class="filter-row" id="filters"></div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+var LANG = 'pt';
+function setLang(l){
+  LANG = l;
+  document.body.classList.toggle('lang-es', l==='es');
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active', b.dataset.lang===l)});
+}
+
+// Theme registry — id, display name (pt/es), icon, and the GUIDE_CONTENT-style data (mnemonics + manobras only)
+var THEMES = [
+{id:'febre', name:'Febre', nameEs:'Fiebre', icon:'🌡️',
+ mnemonics:[
+  {kw:'IIDET', name:'Semiologia da febre', rows:[
+    ['I','Início','Insidioso/lento (febre tifoide) ou brusco com calafrios (pneumonia, sepse)'],
+    ['I','Intensidade','Febrícula (37,3–38°C), moderada (38–39°C) ou alta/hiperpirexia (>39°C)'],
+    ['D','Duração','Curta duração ou febre prolongada (FOI — >3 semanas sem diagnóstico)'],
+    ['E','Evolução','Contínua, remitente, intermitente (normaliza entre picos) ou recorrente (alterna febre e apirexia)'],
+    ['T','Término','Em crise — queda rápida em poucas horas — ou em lise — descenso lento e gradual']
+  ]},
+  {kw:'CRISOH', name:'Padrões da curva febril', rows:[
+    ['C','Contínua','Nunca normaliza; variação <1°C — febre tifoide, pneumonia bacteriana'],
+    ['R','Remitente','Varia >1°C mas não normaliza — endocardite, abscesso'],
+    ['I','Intermitente','Normaliza entre picos — malária, abscessos'],
+    ['S','Séptica/Héctica','Picos altos + calafrios + sudorese profusa — sepse'],
+    ['O','Ondulante','Períodos febris com afebris — Hodgkin, brucelose'],
+    ['H','Humps (bifásica)','Dois períodos febris separados — dengue, febre amarela']
+  ]},
+  {kw:'SIRS', name:'Resposta Inflamatória Sistêmica', rows:[
+    ['T','Temperatura','>38°C ou <36°C'],['C','FC','>90 bpm'],['R','FR','>20 irpm'],['L','Leucócitos','>12.000 ou <4.000/mm³ ou >10% bastões']
+  ]}
+ ],
+ manobras:[
+  {title:'Sinal de Kernig',subtitle:'Irritação meníngea',steps:['Decúbito dorsal','Fletir quadril e joelho 90°','Tentar estender o joelho passivamente'],normal:'Extensão livre sem dor',abnormal:'Resistência/dor na extensão (Kernig +) → meningite'},
+  {title:'Sinal de Brudzinski',subtitle:'Irritação meníngea',steps:['Decúbito dorsal sem travesseiro','Mão atrás da nuca','Fletir pescoço passivamente ao tórax'],normal:'Sem flexão involuntária dos MMII',abnormal:'Flexão reflexa dos joelhos/quadris (Brudzinski +) → meningite'},
+  {title:'Pesquisa de foco infeccioso',subtitle:'Exame sistemático',steps:['Inspeção: pele, mucosas, orofaringe','Ausculta pulmonar bilateral','Abdome: dor, organomegalias','Genitália, articulações'],normal:'Sem foco identificável → suspeitar FOI',abnormal:'Foco identificado → guia diagnóstico e tratamento'},
+  {title:'Pesquisa de linfonodos',subtitle:'Linfadenopatia',steps:['Palpar cadeias cervical, axilar, inguinal','Avaliar tamanho, consistência, mobilidade'],normal:'Linfonodos <1 cm, móveis, indolores',abnormal:'Pétrea → neoplasia | Mole+dolorosa → infecção'}
+ ]},
+
+{id:'dor-toracica', name:'Dor Torácica', nameEs:'Dolor Torácico', icon:'❤️',
+ mnemonics:[
+  {kw:'MONA', name:'Conduta inicial no IAM/SCA',rows:[
+    ['M','Morfina','2-4 mg EV — dor refratária'],['O','Oxigênio','Só se SpO₂ <94%'],['N','Nitratos','NTG SL 0,5 mg — contraindicado se PAS <90 ou sildenafil'],['A','AAS','300 mg mastigado — dose de ataque']
+  ]},
+  {kw:'6 EMERGÊNCIAS', name:'Causas que matam por dor torácica',rows:[
+    ['1','IAM/SCA','Opressão, irradiação MSE, troponina ↑'],['2','Dissecção aórtica','Desgarrante, dorso, assimetria de pulsos'],['3','TEP','Pleurítica, dispneia, TVP, D-Dímero ↑'],['4','Pneumotórax hipertensivo','MV ausente, desvio de traqueia, hipotensão'],['5','Tamponamento','Beck: hipotensão + TJ + bulhas abafadas'],['6','Ruptura esofágica','Pós-vômito, enfisema subcutâneo, Boerhaave']
+  ]}
+ ],
+ manobras:[
+  {title:'Sinal de Levine',subtitle:'Isquemia miocárdica',steps:['Observar como o paciente descreve a dor','Paciente coloca punho fechado sobre o esterno espontaneamente'],normal:'Aponta com dedo a área localizada',abnormal:'Punho fechado no esterno (Levine +) → alta especificidade para isquemia'},
+  {title:'Pulso paradoxal',subtitle:'Tamponamento/pericardite constritiva',steps:['Esfigmomanômetro — inflar acima da sistólica','Desinflar: anotar PA do 1º som (expiração)','Anotar PA quando som aparece em TODAS as fases'],normal:'Diferença <10 mmHg entre fases',abnormal:'Diferença >10 mmHg → tamponamento, pericardite constritiva, TEP maciço'},
+  {title:'Atrito pericárdico',subtitle:'Pericardite aguda',steps:['Diafragma do estetoscópio','Paciente sentado + inclinado para frente','Expiração forçada — LLEB inferior'],normal:'Sem ruídos extras além de B1 e B2',abnormal:'Ruído de couro friccionado → pericardite aguda'},
+  {title:'Palpação da parede torácica',subtitle:'Costocondrite',steps:['Palpar articulações costocondrais 1ª-7ª','Pressão digital firme em cada junção'],normal:'Sem dor à palpação da parede',abnormal:'Reprodução da dor → costocondrite (exclui causa cardíaca)'}
+ ]},
+
+{id:'dispneia', name:'Dispneia', nameEs:'Disnea', icon:'🫁',
+ mnemonics:[
+  {kw:'PASTE', name:'Causas de dispneia aguda',rows:[
+    ['P','Pneumonia/Pneumotórax','Febre+crepitantes / MV ausente unilateral+súbito'],['A','Asma/DPOC','Sibilância, uso musculatura acessória'],['S','SCA/ICC','Ortopneia, crepitantes bibasais, BNP ↑'],['T','TEP','Pleurítica, TVP, taquicardia, D-Dímero ↑'],['E','Epiglotite/Obstrução','Estridor, disfagia, febre, posição trípode']
+  ]}
+ ],
+ manobras:[
+  {title:'Expansibilidade torácica',subtitle:'Ventilação simétrica',steps:['Mãos abertas nos terços inferiores posterior','Polegares na linha média','Inspiração profunda — observar separação dos polegares'],normal:'Expansão simétrica bilateralmente',abnormal:'Assimetria → consolidação, derrame, pneumotórax no lado reduzido'},
+  {title:'Frêmito Tóraco-Vocal',subtitle:'Transmissão de vibrações',steps:['Borda ulnar das mãos no tórax posterior','Dizer "trinta e três"','Comparar bilateralmente'],normal:'FTV simétrico bilateralmente',abnormal:'↑ → consolidação | ↓ → derrame, pneumotórax'},
+  {title:'Percussão torácica',subtitle:'Padrões de ressonância',steps:['Dedo médio nos espaços intercostais','Percutir comparativamente bilateral'],normal:'Sonoridade normal bilateralmente',abnormal:'Macicez → derrame/consolidação | Hiperressonância → pneumotórax'}
+ ]},
+
+{id:'cefaleia', name:'Cefaleia', nameEs:'Cefalea', icon:'🧠',
+ mnemonics:[
+  {kw:'SNOOP4', name:'Sinais de alarme — cefaleia secundária',rows:[
+    ['S','Sistêmico','Febre, perda de peso, HIV, neoplasia'],['N','Neurológico','Déficit focal, papiledema, meningismo'],['O','Onset súbito','Thunderclap — pior cefaleia da vida em segundos'],['O²','Older >50 anos','1ª cefaleia — arterite temporal, HIC'],['P','Progressiva','Piora progressiva sem alívio'],['P²','Position','Piora em decúbito, tosse, Valsalva'],['P³','Prior change','Mudança de padrão em crônico'],['P⁴','Pregnancy','HAS, eclâmpsia, TVS cerebral']
+  ]},
+  {kw:'POUNDIT', name:'Critérios de Enxaqueca',rows:[
+    ['P','Pulsátil','Latejante'],['O','One day (4-72h)','Duração sem tratamento'],['U','Unilateral','Hemicraniana (60-70%)'],['N','Nausea','Náuseas/vômitos'],['D','Disabling','Incapacitante'],['I','Interfere','Piora ao movimentar'],['T','Treatment','Boa resposta a triptanos']
+  ]}
+ ],
+ manobras:[
+  {title:'Sinal de Kernig',subtitle:'Irritação meníngea',steps:['Decúbito dorsal','Fletir quadril e joelho 90°','Tentar estender joelho passivamente'],normal:'Extensão livre sem dor',abnormal:'Resistência+dor → Kernig+ (meningite, HSA)'},
+  {title:'Sinal de Brudzinski',subtitle:'Irritação meníngea',steps:['Decúbito dorsal sem travesseiro','Imobilizar ombros','Fletir pescoço ao tórax'],normal:'Sem flexão dos MMII',abnormal:'Flexão reflexa dos joelhos/quadris → Brudzinski+'},
+  {title:'Fundoscopia',subtitle:'Papiledema — HIC',steps:['Sala escura, dilatar se possível','Examinar disco óptico — bordas, pulso venoso'],normal:'Bordas nítidas, pulso venoso presente',abnormal:'Bordas apagadas, elevação → papiledema = HIC → TC urgente'}
+ ]},
+
+{id:'dor-abdominal', name:'Dor Abdominal', nameEs:'Dolor Abdominal', icon:'🩻',
+ mnemonics:[
+  {kw:'VINDICATE', name:'Causas de dor abdominal',rows:[
+    ['V','Vascular','Isquemia mesentérica, aneurisma, TVP'],['I','Inflamatório','Apendicite, colecistite, pancreatite'],['N','Neoplásico','Ca cólon, gástrico, pancreático'],['D','Dietético/DII','Úlcera péptica, Crohn, RCUI'],['I²','Iatrogênico','AINEs, pós-op, procedimento'],['C','Congênito','Hérnia encarcerada, malrotação'],['A','Autoimune','Porfiria, vasculite, lúpus'],['T','Trauma','Hematoma hepático/esplênico'],['E','Extra-abdominal','CAD, IAM inferior, cólica renal']
+  ]}
+ ],
+ manobras:[
+  {title:'Sinal de Blumberg',subtitle:'Peritonite/irritação peritoneal',steps:['Palpar o ponto de máxima dor','Comprimir profundamente com 3 dedos','Retirar a mão de modo súbito'],normal:'Sem dor à descompressão',abnormal:'Dor aguda ao soltar (Blumberg +) → peritonite (apendicite, perfuração)'},
+  {title:'Sinal de Murphy',subtitle:'Colecistite aguda',steps:['Posicionar 3 dedos sob o rebordo costal direito','Pedir inspiração profunda','Observar parada da inspiração por dor'],normal:'Inspiração completa sem dor',abnormal:'Parada súbita da inspiração por dor (Murphy +) → colecistite aguda'},
+  {title:'Sinal de Rovsing',subtitle:'Apendicite',steps:['Comprimir firmemente o QIE','Manter 10 segundos'],normal:'Sem dor em FID',abnormal:'Dor referida em FID (Rovsing +) → apendicite'},
+  {title:'Sinal do Psoas',subtitle:'Apendicite retrocecal',steps:['DL esquerdo (posição de Sims)','Hiperextender quadril direito passivamente'],normal:'Sem dor com hiperextensão',abnormal:'Dor em FID (Psoas +) → apendicite retrocecal'}
+ ]},
+
+{id:'edema', name:'Edema', nameEs:'Edema', icon:'💧',
+ mnemonics:[
+  {kw:'CHF-RAIN', name:'Causas de edema',rows:[
+    ['C','Cardíaco (ICC)','Vespertino MMII, ortopneia, BNP ↑'],['H','Hepático (cirrose)','Ascite + edema, albumina ↓'],['F','Flebite/TVP','Unilateral, dor, empastamento'],['R','Renal (nefrótico)','Periorbital matutino, proteinúria ↑↑'],['A','Alérgico/angioedema','Súbito, face, urticária'],['I','Ins. venosa crônica','Varizes, lipodermatoesclerose'],['N','Nutricional/Medicamento','Albumina ↓, anlodipino, corticóides']
+  ]}
+ ],
+ manobras:[
+  {title:'Cacifo (Godet)',subtitle:'Edema com cacifo = transudato',steps:['Comprimir sobre a tíbia com polegar 15 segundos','Retirar e observar depressão residual'],normal:'Sem depressão (sem cacifo) → linfedema, mixedema',abnormal:'Depressão persistente (cacifo +) → ICC, cirrose, nefrótico, hipoalbuminemia'},
+  {title:'Sinal de Homans',subtitle:'TVP (baixa acurácia)',steps:['Decúbito dorsal, joelho levemente fletido','Dorsiflexão passiva forçada do pé'],normal:'Sem dor na panturrilha',abnormal:'Dor na panturrilha → Homans+ (baixa sensibilidade/especificidade → preferir Eco-Doppler)'}
+ ]},
+
+{id:'tosse', name:'Tosse', nameEs:'Tos', icon:'😮‍💨',
+ mnemonics:[
+  {kw:'FACTS', name:'Causas de tosse crônica (>8 semanas)',rows:[
+    ['F','FPNS (gotejamento pós-nasal)','Rinorreia, sensação de catarro, piora ao deitar'],['A','Asma','Noturna, frio/alérgenos, sibilância, variabilidade PEF'],['C','Cardiovascular (ICC)','Ortopneia, crepitantes, BNP ↑'],['T','TECA (IECA)','Início após IECA, seca irritativa, desaparece ao suspender'],['S','SRGE (refluxo)','Pós-prandial, noturna, azia, melhora com IBP']
+  ]}
+ ],
+ manobras:[
+  {title:'Peak flow (PEF)',subtitle:'Diagnóstico de asma — variabilidade',steps:['Paciente em pé','Inspiração máxima','Soprar com força máxima no medidor','Repetir 3x — registrar o maior valor'],normal:'PEF >80% do previsto',abnormal:'<80% ou variabilidade >20% → obstrução brônquica → asma/DPOC'},
+  {title:'Ausculta pulmonar',subtitle:'Padrões na tosse',steps:['6 pontos comparativos bilaterais','Fase inspiratória e expiratória'],normal:'Murmúrio vesicular presente e simétrico',abnormal:'Sibilos → broncoespasmo | Crepitantes focais → pneumonia | Bibasais → ICC'}
+ ]},
+
+{id:'apendicite', name:'Apendicite', nameEs:'Apendicitis', icon:'🔬',
+ mnemonics:[
+  {kw:'APENDICITE', name:'Características clínicas',rows:[
+    ['A','Anorexia','>90% dos casos'],['P','Pain migration','Periumbilical → FID (mais específico)'],['E','Enjoo/náuseas','Presentes após a dor'],['N','Náusea APÓS a dor','IMPORTANTE: dor precede vômitos (≠ gastroenterite)'],['D','Defesa em FID','Peritonite local'],['I','Incapacitante','Piora ao andar, sentar, tossir'],['C','Calafrio/febre','Febre baixa — alta → perfuração'],['I²','Instabilidade','FC↑, T>38,5°C, Leuco>18.000 → perfuração'],['T','Toque retal','Apendicite pélvica — Douglas doloroso'],['E','Exames','Leucocitose + USG/TC']
+  ]}
+ ],
+ manobras:[
+  {title:'Sinal de Blumberg',subtitle:'Irritação peritoneal',steps:['Palpar FID lentamente','Comprimir profundo com 3 dedos','Retirar mão de modo súbito'],normal:'Sem dor à descompressão',abnormal:'Dor aguda ao soltar (Blumberg +) → peritonite local'},
+  {title:'Sinal de Rovsing',subtitle:'Foco em FID',steps:['Comprimir firmemente o QIE/FIE','Manter 10 segundos'],normal:'Sem dor em FID',abnormal:'Dor em FID ao comprimir FIE (Rovsing +)'},
+  {title:'Ponto de McBurney',subtitle:'Apendicite típica',steps:['1/3 externo linha umbigo-EIAS direita','Pressão pontual com polegar'],normal:'Sem sensibilidade especial',abnormal:'Dor máxima → apendicite típica'}
+ ]}
+];
+
+// ── Filter chips ──
+var filterState = 'all';
+function buildFilters(){
+  var html = '<div class="filter-chip active" data-f="all" onclick="setFilter(this,\'all\')"><span class="pt">Todos os temas</span><span class="es">Todos los temas</span></div>';
+  THEMES.forEach(function(t){
+    html += '<div class="filter-chip" data-f="'+t.id+'" onclick="setFilter(this,\''+t.id+'\')">'+t.icon+' <span class="pt">'+t.name+'</span><span class="es">'+t.nameEs+'</span></div>';
+  });
+  document.getElementById('filters').innerHTML = html;
+}
+function setFilter(el, id){
+  filterState = id;
+  document.querySelectorAll('.filter-chip').forEach(function(c){c.classList.toggle('active', c===el)});
+  renderAll();
+}
+
+function buildMnemonicsHTML(mnemonics){
+  if(!mnemonics || !mnemonics.length) return '';
+  var html='';
+  mnemonics.forEach(function(m){
+    html+='<div class="mnem-card"><div class="mnem-card-head"><span class="mnem-kw">'+m.kw+'</span><span class="mnem-name">'+m.name+'</span></div>';
+    m.rows.forEach(function(r){
+      html+='<div class="mnem-row"><span class="mnem-letter">'+r[0]+'</span><span><span class="mnem-term">'+r[1]+'</span><span class="mnem-hint">'+r[2]+'</span></span></div>';
+    });
+    html+='</div>';
+  });
+  return html;
+}
+
+function buildManobrasHTML(manobras, themeId){
+  if(!manobras || !manobras.length) return '';
+  var html='';
+  manobras.forEach(function(m,i){
+    var accId = 'acc-'+themeId+'-'+i;
+    html+='<div class="acc" id="'+accId+'">';
+    html+='<div class="acc-head" onclick="this.closest(\'.acc\').classList.toggle(\'open\')">';
+    html+='<span class="acc-num">'+(i+1)+'</span>';
+    html+='<div><div class="acc-title">'+m.title+'</div><div class="acc-subtitle">'+m.subtitle+'</div></div>';
+    html+='<span class="acc-toggle">+</span></div>';
+    html+='<div class="acc-body"><ul class="acc-steps">';
+    m.steps.forEach(function(s,j){
+      html+='<li class="acc-step"><span class="acc-step-n">'+(j+1)+'</span><span>'+s+'</span></li>';
+    });
+    html+='</ul><div class="acc-findings">';
+    html+='<div class="acc-finding normal"><span class="acc-finding-lbl">Normal</span>'+m.normal+'</div>';
+    html+='<div class="acc-finding abnormal"><span class="acc-finding-lbl">Alterado</span>'+m.abnormal+'</div>';
+    html+='</div></div></div>';
+  });
+  return html;
+}
+
+function matchesSearch(text, q){
+  return text.toLowerCase().indexOf(q) !== -1;
+}
+
+function themeMatchesQuery(theme, q){
+  if(!q) return true;
+  if(matchesSearch(theme.name+' '+theme.nameEs, q)) return true;
+  var hit = false;
+  (theme.mnemonics||[]).forEach(function(m){
+    if(matchesSearch(m.kw+' '+m.name, q)) hit = true;
+    m.rows.forEach(function(r){ if(matchesSearch(r.join(' '), q)) hit = true; });
+  });
+  (theme.manobras||[]).forEach(function(m){
+    if(matchesSearch(m.title+' '+m.subtitle+' '+m.normal+' '+m.abnormal+' '+m.steps.join(' '), q)) hit = true;
+  });
+  return hit;
+}
+
+function renderAll(){
+  var q = document.getElementById('search').value.trim().toLowerCase();
+  var html = '';
+  var any = false;
+  THEMES.forEach(function(theme){
+    if(filterState !== 'all' && filterState !== theme.id) return;
+    if(!themeMatchesQuery(theme, q)) return;
+    any = true;
+    html += '<div class="theme-section">';
+    html += '<div class="theme-head"><div class="theme-icon">'+theme.icon+'</div><div class="theme-title">'+(LANG==='es'?theme.nameEs:theme.name)+'</div></div>';
+    var mn = buildMnemonicsHTML(theme.mnemonics);
+    var mb = buildManobrasHTML(theme.manobras, theme.id);
+    if(mn){
+      html += '<div class="section-label"><span class="pt">Mnemônicas</span><span class="es">Mnemotécnicas</span></div>'+mn;
+    }
+    if(mb){
+      html += '<div class="section-label"><span class="pt">Manobras Semiológicas</span><span class="es">Maniobras Semiológicas</span></div>'+mb;
+    }
+    html += '</div>';
+  });
+  if(!any){
+    html = '<div class="empty-msg"><span class="pt">Nenhum resultado encontrado. Tente outra busca ou filtro.</span><span class="es">Ningún resultado encontrado. Intente otra búsqueda o filtro.</span></div>';
+  }
+  document.getElementById('content').innerHTML = html;
+}
+
+buildFilters();
+renderAll();
+</script>
+</body>
+</html>
