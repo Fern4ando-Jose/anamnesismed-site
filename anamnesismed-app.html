@@ -454,22 +454,18 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     <div class="sb-item" onclick="showSpec('semiologia');setSBActive(this)">
       <span class="sb-item-icon">📖</span>
       <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
-      <span class="sb-item-badge new">v1</span>
     </div>
     <div class="sb-item active" onclick="showSpec('clinica');setSBActive(this)">
       <span class="sb-item-icon">🩺</span>
       <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
-      <span class="sb-item-badge new">v2</span>
     </div>
     <div class="sb-item" onclick="showSpec('cirurgia');setSBActive(this)">
       <span class="sb-item-icon">🔪</span>
       <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
-      <span class="sb-item-badge new">v1</span>
     </div>
     <div class="sb-item" style="opacity:.4;pointer-events:none">
       <span class="sb-item-icon">🦴</span>
       <span class="pt">Traumatologia</span><span class="es">Traumatología</span>
-      <span class="sb-item-badge">breve</span>
     </div>
     <div class="sb-cat pt" style="margin-top:8px">HCs recentes</div>
     <div class="sb-cat es" style="margin-top:8px">HCs recientes</div>
@@ -1965,8 +1961,11 @@ const MOTIVOS = {
       {id:'tosse',name:'Tosse',nameEs:'Tos',icon:'😮‍💨',color:'mc-primary',
        aeaGuide:[
          {q:'Início — há quanto tempo?',qEs:'Inicio — ¿hace cuánto tiempo?',type:'radio',opts:['Aguda (<3 semanas)','Subaguda (3-8 semanas)','Crônica (>8 semanas)']},
-         {q:'Tipo',qEs:'Tipo',type:'radio',opts:['Seca (não produtiva)','Produtiva/Úmida','Metálica/rouca']},
-         {q:'Características do escarro (cor, quantidade, odor)',qEs:'Características del esputo (color, cantidad, olor)',type:'input',ph:'Descreva cor, quantidade e odor',ph2:'Describa color, cantidad y olor'},
+         {q:'Tipo',qEs:'Tipo',type:'radio',opts:['Seca (não produtiva)','Produtiva/Úmida','Metálica/rouca'],optsEs:['Seca (no productiva)','Productiva/Húmeda','Metálica/ronca']},
+         {q:'Há expectoração (escarro)?',qEs:'¿Hay expectoración (esputo)?',type:'yn'},
+         {q:'Caráter do escarro',qEs:'Carácter del esputo',type:'radio',opts:['Mucoide (claro/branco — comum em asma, DRGE)','Mucopurulento (amarelado — infecção ou DPOC)','Purulento (esverdeado/fétido — infecção bacteriana)','Hemoptoico (raiado de sangue — alarme)','Seroso/espumoso (rosado — edema pulmonar)'],optsEs:['Mucoide (claro/blanco — común en asma, ERGE)','Mucopurulento (amarillento — infección o EPOC)','Purulento (verdoso/fétido — infección bacteriana)','Hemoptoico (con sangre — alarma)','Seroso/espumoso (rosado — edema pulmonar)']},
+         {q:'Volume diário de escarro',qEs:'Volumen diario de esputo',type:'radio',opts:['Escasso (<10 mL/dia)','Moderado (10–50 mL/dia)','Abundante (>50 mL/dia — sugere bronquiectasia)'],optsEs:['Escaso (<10 mL/día)','Moderado (10–50 mL/día)','Abundante (>50 mL/día — sugiere bronquiectasia)']},
+         {q:'Observações sobre o escarro (odor, aspecto, horário de maior produção)',qEs:'Observaciones sobre el esputo (olor, aspecto, horario de mayor producción)',type:'input',ph:'Descreva odor, aspecto e momento de maior produção',ph2:'Describa olor, aspecto y momento de mayor producción'},
          {q:'Sangue no escarro (hemoptise)?',qEs:'¿Sangre en el esputo (hemoptisis)?',type:'yn'},
          {q:'Momento de predomínio',qEs:'Momento de predominio',type:'radio',opts:['Noturna','Matutina (ao acordar)','Constante ao longo do dia','Pós-prandial/ao deitar']},
          {q:'Fatores desencadeantes ou que pioram (frio, exercício, posição, alérgenos, irritantes)?',qEs:'¿Factores desencadenantes o que empeoran (frío, ejercicio, posición, alérgenos, irritantes)?',type:'input',ph:'Descreva os fatores desencadeantes',ph2:'Describa los factores desencadenantes'},
@@ -2138,7 +2137,7 @@ const MOTIVOS = {
   ],
   semiologia: [
     {cat:'Dor e Dispneia',catEs:'Dolor y Disnea',items:[
-      {id:'semio-dor',name:'Dor (Inespecífica)',nameEs:'Dolor (Inespecífico)',icon:'🤕',color:'mc-danger',isPain:true,
+      {id:'semio-dor',name:'Dor',nameEs:'Dolor',icon:'🤕',color:'mc-danger',isPain:true,
        aeaGuide:[
          {q:'Localização da dor?',qEs:'¿Localización del dolor?',type:'input',ph:'Ex: abdominal, torácica, cabeça, membros',ph2:'Ej: abdominal, torácica, cabeza, miembros'},
          {q:'Irradiação?',qEs:'¿Irradiación?',type:'input',ph:'Ex: para o ombro, braço, virilha',ph2:'Ej: hacia el hombro, brazo, ingle'},
