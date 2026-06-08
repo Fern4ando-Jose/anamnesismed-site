@@ -414,13 +414,17 @@ async function hcSave(motivoId, motivo, especialidade, dados) {
  */
 function pdfExportsKey(userId) { return 'am-pdf-exports-' + userId; }
 
-async function pdfExportRecord() {
+async function pdfExportRecord(meta) {
   const user = await authGetUser();
   if (!user) return { ok: false, error: 'Não autenticado' };
   const key = pdfExportsKey(user.id);
   let arr = [];
   try { arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
-  arr.push(new Date().toISOString());
+  arr.push({
+    ts: new Date().toISOString(),
+    motivo: (meta && meta.motivo) || null,
+    motivoId: (meta && meta.motivoId) || null
+  });
   try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {}
   return { ok: true, total: arr.length };
 }
@@ -430,7 +434,8 @@ async function pdfExportList() {
   if (!user) return [];
   let arr = [];
   try { arr = JSON.parse(localStorage.getItem(pdfExportsKey(user.id)) || '[]'); } catch (e) {}
-  return arr;
+  // Compatibilidade: registros antigos eram strings ISO simples (sem motivo associado)
+  return arr.map(e => typeof e === 'string' ? { ts: e, motivo: null, motivoId: null } : e);
 }
 
 window.pdfExportRecord = pdfExportRecord;
@@ -723,7 +728,7 @@ async function uiLoadStats() {
   const pdfsDeltaEs = document.getElementById('stat-pdfs-delta-es');
   if (pdfsDeltaPt && pdfsDeltaEs) {
     const weekAgoPdf = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    const novosEstaSemanaPdf = pdfExports.filter(ts => new Date(ts).getTime() >= weekAgoPdf).length;
+    const novosEstaSemanaPdf = pdfExports.filter(e => new Date(e.ts).getTime() >= weekAgoPdf).length;
     if (novosEstaSemanaPdf > 0) {
       pdfsDeltaPt.textContent = `+${novosEstaSemanaPdf} essa semana`;
       pdfsDeltaEs.textContent = `+${novosEstaSemanaPdf} esta semana`;
@@ -752,6 +757,89 @@ async function uiLoadStats() {
     }
   }
 }
+
+/**
+ * Formata um timestamp ISO em rótulo relativo bilíngue (Hoje/Hoy, Ontem/Ayer, ou data)
+ */
+function activityFormatTime(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return { pt: '', es: '' };
+  const now = new Date();
+  const startOf = (dt) => new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime();
+  const diffDias = Math.round((startOf(now) - startOf(d)) / (24 * 60 * 60 * 1000));
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  if (diffDias === 0) return { pt: `Hoje · ${hh}h${mm}`, es: `Hoy · ${hh}:${mm}` };
+  if (diffDias === 1) return { pt: `Ontem · ${hh}h${mm}`, es: `Ayer · ${hh}:${mm}` };
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mo = String(d.getMonth() + 1).padStart(2, '0');
+  return { pt: `${dd}/${mo} · ${hh}h${mm}`, es: `${dd}/${mo} · ${hh}:${mm}` };
+}
+
+/**
+ * Carrega a "Atividade recente" do dashboard a partir de dados reais
+ * (HCs criadas/editadas + PDFs exportados) — substitui a lista estática de exemplo.
+ */
+async function uiLoadRecentActivity(limit = 6) {
+  const list = document.querySelector('.activity-list');
+  if (!list) return;
+
+  const hcs = await hcListAll(20);
+  const pdfExports = window.pdfExportList ? await window.pdfExportList() : [];
+
+  const eventos = [];
+  hcs.forEach(hc => {
+    const nome = hc.motivo || hc.motivo_id || '—';
+    const criado = hc.criado_em;
+    const atualizado = hc.atualizado_em;
+    if (atualizado && atualizado !== criado) {
+      eventos.push({ tipo: 'edited', motivo: nome, ts: atualizado });
+    }
+    if (criado) {
+      eventos.push({ tipo: 'created', motivo: nome, ts: criado });
+    }
+  });
+  pdfExports.forEach(exp => {
+    eventos.push({ tipo: 'exported', motivo: exp.motivo, ts: exp.ts });
+  });
+
+  eventos.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
+  const recentes = eventos.slice(0, limit);
+
+  if (recentes.length === 0) {
+    list.innerHTML = `
+      <div class="act-item">
+        <div>
+          <div class="act-text pt">Nenhuma atividade ainda — crie sua primeira história clínica para começar.</div>
+          <div class="act-text es">Ninguna actividad todavía — crea tu primera historia clínica para empezar.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const labels = {
+    created: { dot: 'created', pt: 'HC criada', es: 'HC creada' },
+    edited:  { dot: 'edited',  pt: 'HC editada', es: 'HC editada' },
+    exported:{ dot: 'exported',pt: 'PDF exportado', es: 'PDF exportado' }
+  };
+
+  list.innerHTML = recentes.map(ev => {
+    const lab = labels[ev.tipo] || labels.created;
+    const time = activityFormatTime(ev.ts);
+    const motivoTxt = ev.motivo ? ` — ${ev.motivo}` : '';
+    return `
+      <div class="act-item">
+        <div class="act-dot ${lab.dot}"></div>
+        <div>
+          <div class="act-text pt"><strong>${lab.pt}</strong>${motivoTxt}</div>
+          <div class="act-text es"><strong>${lab.es}</strong>${motivoTxt}</div>
+          <div class="act-time pt">${time.pt}</div>
+          <div class="act-time es">${time.es}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+window.uiLoadRecentActivity = uiLoadRecentActivity;
 
 /**
  * Mostra paywall quando trial expirou
@@ -939,6 +1027,7 @@ function showSaveFeedback() {
     await uiUpdateUserInfo();
     await uiLoadRecentHCs();
     await uiLoadStats();
+    await uiLoadRecentActivity();
 
     // Deep-link: retorno do Stripe Checkout (?payment=success) — mostra confirmação,
     // re-checa o plano (o webhook pode ter atualizado o acesso) e limpa a URL

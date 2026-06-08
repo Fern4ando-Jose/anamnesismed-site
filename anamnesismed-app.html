@@ -3715,7 +3715,8 @@ function exportPDF(){
   // Salva a HC (igual ao botão "Salvar") e registra a exportação para o contador "PDFs exportados"
   try{ saveHC(); }catch(e){ console.warn('saveHC erro ao exportar PDF:', e); }
   if (window.pdfExportRecord) {
-    window.pdfExportRecord().catch(function(e){ console.warn('pdfExportRecord erro:', e); });
+    var expMotivoNome = currentMotivo ? (lang==='es' ? (currentMotivo.nameEs||currentMotivo.name) : currentMotivo.name) : null;
+    window.pdfExportRecord({ motivo: expMotivoNome, motivoId: currentMotivo ? currentMotivo.id : null }).catch(function(e){ console.warn('pdfExportRecord erro:', e); });
   }
   var mNome = document.getElementById('dp-nome').value || (lang==='pt'?'Não informado':'No informado');
   var mSexo = document.getElementById('dp-sexo').value || '—';
