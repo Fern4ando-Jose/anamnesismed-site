@@ -625,11 +625,11 @@ function updateTrialUI(access) {
 /**
  * Preenche lista de HCs recentes no dashboard
  */
-async function uiLoadRecentHCs() {
+async function uiLoadRecentHCs(limit) {
   const container = document.querySelector('.hc-list');
   if (!container) return;
 
-  const hcs = await hcListAll(5);
+  const hcs = await hcListAll(limit || 5);
 
   if (hcs.length === 0) {
     container.innerHTML = `

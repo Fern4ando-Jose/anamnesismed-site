@@ -307,7 +307,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <nav class="sidebar-nav">
     <div class="nav-section-label pt">Principal</div>
     <div class="nav-section-label es">Principal</div>
-    <button class="nav-item active" onclick="setView('dashboard')">
+    <button class="nav-item active" onclick="setView('dashboard')" id="nav-dashboard">
       <span class="nav-icon">🏠</span>
       <span class="pt">Início</span><span class="es">Inicio</span>
     </button>
@@ -316,7 +316,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
       <span class="nav-badge">+</span>
     </a>
-    <button class="nav-item" onclick="setView('hcs')">
+    <button class="nav-item" onclick="setView('hcs')" id="nav-hcs">
       <span class="nav-icon">📋</span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
       <span class="nav-badge hcs-badge">0</span>
@@ -398,7 +398,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <div class="content">
 
     <!-- STATS -->
-    <div class="stats-row">
+    <div class="stats-row" id="stats-row">
       <div class="stat-card">
         <div class="stat-card-top">
           <span class="stat-label pt">HCs criadas</span>
@@ -444,20 +444,20 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
 
     <!-- RECENT HCs -->
-    <div class="section-head">
-      <h2 class="section-title-sm pt">HCs recentes</h2>
-      <h2 class="section-title-sm es">HCs recientes</h2>
-      <a href="anamnesismed-app.html" class="view-all pt">Ver todas →</a>
-      <a href="anamnesismed-app.html" class="view-all es">Ver todas →</a>
+    <div class="section-head" id="recent-hcs-head">
+      <h2 class="section-title-sm pt" id="recent-hcs-title-pt">HCs recentes</h2>
+      <h2 class="section-title-sm es" id="recent-hcs-title-es">HCs recientes</h2>
+      <a href="javascript:void(0)" onclick="setView('hcs')" class="view-all pt">Ver todas →</a>
+      <a href="javascript:void(0)" onclick="setView('hcs')" class="view-all es">Ver todas →</a>
     </div>
     <div class="hc-list" id="hc-list"></div>
 
     <!-- QUICK ACCESS -->
-    <div class="section-head">
+    <div class="section-head" id="quick-access-head">
       <h2 class="section-title-sm pt">Acesso rápido</h2>
       <h2 class="section-title-sm es">Acceso rápido</h2>
     </div>
-    <div class="quick-grid">
+    <div class="quick-grid" id="quick-grid">
       <a href="anamnesismed-app.html" class="quick-card">
         <div class="quick-icon">🏥</div>
         <div class="quick-title pt">Clínica Médica</div>
@@ -590,8 +590,39 @@ function encerrarSessao(){
   if(window.authLogout) window.authLogout();
   else window.location.href = 'anamnesismed-auth.html';
 }
+var currentDashView = 'dashboard';
 function setView(v){
-  // future: show/hide panels
+  currentDashView = v;
+  var isHcs = (v === 'hcs');
+
+  // Estado ativo na sidebar
+  var navDash = document.getElementById('nav-dashboard');
+  var navHcs = document.getElementById('nav-hcs');
+  if(navDash) navDash.classList.toggle('active', !isHcs);
+  if(navHcs) navHcs.classList.toggle('active', isHcs);
+
+  // Mostra/oculta blocos do dashboard
+  var statsRow = document.getElementById('stats-row');
+  var quickHead = document.getElementById('quick-access-head');
+  var quickGrid = document.getElementById('quick-grid');
+  if(statsRow) statsRow.style.display = isHcs ? 'none' : '';
+  if(quickHead) quickHead.style.display = isHcs ? 'none' : '';
+  if(quickGrid) quickGrid.style.display = isHcs ? 'none' : '';
+
+  // Título da seção e link "Ver todas"
+  var titlePt = document.getElementById('recent-hcs-title-pt');
+  var titleEs = document.getElementById('recent-hcs-title-es');
+  if(titlePt) titlePt.textContent = isHcs ? 'Minhas HCs' : 'HCs recentes';
+  if(titleEs) titleEs.textContent = isHcs ? 'Mis HCs' : 'HCs recientes';
+  var head = document.getElementById('recent-hcs-head');
+  if(head){
+    head.querySelectorAll('.view-all').forEach(function(a){ a.style.display = isHcs ? 'none' : ''; });
+  }
+
+  // Carrega a lista — todas as HCs na visão "Minhas HCs", só as recentes no dashboard
+  if(window.uiLoadRecentHCs) window.uiLoadRecentHCs(isHcs ? 100 : 5);
+
+  if(isHcs) window.scrollTo({top:0, behavior:'smooth'});
 }
 (function(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
