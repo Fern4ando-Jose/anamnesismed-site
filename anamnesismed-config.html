@@ -222,6 +222,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <div class="plan-badge" id="cfg-plano">—</div>
           <div class="plan-desc pt">Acesso completo às histórias clínicas guiadas, mnemônicas e escalas</div>
           <div class="plan-desc es">Acceso completo a las historias clínicas guiadas, mnemotécnicas y escalas</div>
+          <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.5)">
+            <span class="pt">Membro desde: <strong id="cfg-membro-desde">—</strong></span>
+            <span class="es">Miembro desde: <strong id="cfg-membro-desde-es">—</strong></span>
+            <span id="cfg-trial-wrap" style="display:none">
+              · <span class="pt">Dias restantes de trial: <strong id="cfg-trial-dias">—</strong></span>
+              <span class="es">Días restantes de prueba: <strong id="cfg-trial-dias-es">—</strong></span>
+            </span>
+          </div>
         </div>
         <a href="anamnesismed-landing.html#pricing" class="btn-upgrade">
           <span class="pt">Fazer upgrade para Pro →</span><span class="es">Upgrade a Pro →</span>
@@ -258,5 +266,46 @@ function setLang(l){
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-integration.js"></script>
+<script>
+// ── Popular dados reais do usuário (plano, membro desde, trial) ──
+(async function(){
+  try {
+    if (!window.profileGet) return;
+    var profile = await window.profileGet();
+    if (!profile) return;
+
+    if (window.uiUpdateUserInfo) await window.uiUpdateUserInfo();
+
+    // Membro desde
+    var criadoEm = profile.criado_em || profile.created_at;
+    if (criadoEm) {
+      var d = new Date(criadoEm);
+      var fmt = d.toLocaleDateString(undefined, {day:'2-digit',month:'2-digit',year:'numeric'});
+      var elPt = document.getElementById('cfg-membro-desde');
+      var elEs = document.getElementById('cfg-membro-desde-es');
+      if (elPt) elPt.textContent = fmt;
+      if (elEs) elEs.textContent = fmt;
+    }
+
+    // Plano + trial
+    if (window.profileCheckAccess) {
+      var access = await window.profileCheckAccess();
+      var badge = document.getElementById('cfg-plano');
+      if (badge) badge.textContent = (access.type === 'pro') ? 'Pro' : (access.type === 'trial' ? 'Trial' : access.type);
+
+      if (access.type === 'trial') {
+        var wrap = document.getElementById('cfg-trial-wrap');
+        if (wrap) wrap.style.display = 'inline';
+        var diasPt = document.getElementById('cfg-trial-dias');
+        var diasEs = document.getElementById('cfg-trial-dias-es');
+        if (diasPt) diasPt.textContent = access.daysLeft;
+        if (diasEs) diasEs.textContent = access.daysLeft;
+      }
+    }
+  } catch (e) {
+    console.warn('Falha ao carregar dados do perfil em config:', e);
+  }
+})();
+</script>
 </body>
 </html>

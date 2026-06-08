@@ -3653,6 +3653,7 @@ function calcIMC(){
 
 // ── SAVE HC ───────────────────────────────────────────
 function saveHC(){
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
   var key = 'am-hc-'+(currentMotivo?currentMotivo.id:'new')+'-'+Date.now();
   var data = {
     motivo: currentMotivo ? currentMotivo.id : '',
@@ -3660,6 +3661,17 @@ function saveHC(){
     ts: new Date().toISOString()
   };
   try{localStorage.setItem(key,JSON.stringify(data))}catch(e){}
+
+  // Persiste também no Supabase (se disponível e usuário autenticado)
+  if (window.hcSave && currentMotivo) {
+    var motivoNome = (lang==='es' ? (currentMotivo.nameEs||currentMotivo.name) : currentMotivo.name);
+    window.hcSave(currentMotivo.id, motivoNome, currentSpec, data).then(function(res){
+      if (!res || !res.ok) {
+        console.warn('hcSave falhou ou usuário não autenticado:', res && res.error);
+      }
+    }).catch(function(e){ console.warn('hcSave erro:', e); });
+  }
+
   showToast('pt','HC salva com sucesso!');
   showToast('es','¡HC guardada con éxito!');
 }
@@ -3804,5 +3816,25 @@ function exportPDF(){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-integration.js"></script>
+<script>
+// ── INTEGRAÇÃO SUPABASE: acesso real, dados do usuário, onboarding ──
+(async function(){
+  try {
+    if (!window.guardCheckAccess) return; // supabase-integration.js não carregou
+
+    var ok = await window.guardCheckAccess();
+    if (!ok) return; // sem acesso ativo (paywall já exibido por guardCheckAccess)
+
+    if (window.uiUpdateUserInfo) await window.uiUpdateUserInfo();
+
+    if (window.profileGet && window.onboardingCheckAndShow) {
+      var profile = await window.profileGet();
+      await window.onboardingCheckAndShow(profile);
+    }
+  } catch (e) {
+    console.warn('Falha ao inicializar integração Supabase:', e);
+  }
+})();
+</script>
 </body>
 </html>

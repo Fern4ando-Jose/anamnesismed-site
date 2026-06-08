@@ -52,6 +52,9 @@ Erros:
 6- falta a descrição dos motivos de tos, quando dizer que sim deve abrir os itens (quantidade, color, olor...)
 7 - Mnemonicas etcs, está tudo corrido na mesma pagina, sendo nada ditatico, devemos corrigir isso
 
+obs> continuar com o google está ok, deve entrar na conta salva, porem a opção de criar nova conta deve abrir para um novo registro
+
+
 Pag inicial
 [CORRIGIDO 2026-06-07] App: entra direto na pagina sem fazer login
 roadmap: está aparecendo no site? pq? deveria ser um arquivo interno
