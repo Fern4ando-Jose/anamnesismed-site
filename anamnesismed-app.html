@@ -3615,6 +3615,56 @@ function collectFormSnapshot(){
   return snap;
 }
 
+// ── RESTORE HC (irmã de collectFormSnapshot — repopula o formulário
+// a partir do snapshot salvo, usada no deep-link "HCs recentes" do dashboard) ──
+function restoreFormSnapshot(snap){
+  var root = document.getElementById('hc-sections');
+  if(!root || !snap) return;
+
+  // 1) Campos de texto/select/textarea — seta o valor bruto e dispara eventos
+  // (alguns campos têm listeners de input/change, ex: cálculo de IMC)
+  if(snap.campos){
+    Object.keys(snap.campos).forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      el.value = snap.campos[id];
+      el.dispatchEvent(new Event('input', {bubbles:true}));
+      el.dispatchEvent(new Event('change', {bubbles:true}));
+    });
+  }
+
+  // 2) Grupos Sim/Não/Ex — clica no botão do grupo cujo valor bate com a
+  // resposta salva (clicar, e não só marcar a classe, garante que o estado
+  // interno do app fique consistente, igual a uma seleção manual)
+  if(snap.simNao){
+    var ynBtns = root.querySelectorAll('.yn-btn');
+    Object.keys(snap.simNao).forEach(function(gid){
+      var resp = snap.simNao[gid] && snap.simNao[gid].resposta;
+      if(!resp) return;
+      for(var i=0;i<ynBtns.length;i++){
+        var b = ynBtns[i];
+        var m = (b.getAttribute('onclick')||'').match(/\(this,\s*'([^']+)'\s*,\s*'([^']+)'\)/);
+        if(m && m[1]===gid && m[2]===resp){ b.click(); break; }
+      }
+    });
+  }
+
+  // 3) Seleções tipo chip/radio/eva/ecto — clica no(s) elemento(s) cujo texto
+  // bate com o salvo, dentro do contêiner com o mesmo id usado na captura
+  if(snap.selecoes){
+    Object.keys(snap.selecoes).forEach(function(contId){
+      var cont = document.getElementById(contId);
+      if(!cont) return;
+      var opts = cont.querySelectorAll('[onclick^="selectRadio"], [onclick^="selectMultiChip"], [onclick^="selectEva"], [onclick^="ectoSel"]');
+      (snap.selecoes[contId]||[]).forEach(function(txt){
+        for(var i=0;i<opts.length;i++){
+          if(opts[i].textContent.trim()===txt){ opts[i].click(); return; }
+        }
+      });
+    });
+  }
+}
+
 // ── SAVE HC ───────────────────────────────────────────
 function saveHC(){
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
@@ -3991,9 +4041,14 @@ function exportPDF(){
     if (window.__deepLinkHcId && window.hcLoad) {
       try {
         var rec = await window.hcLoad(window.__deepLinkHcId);
-        if (rec && rec.dados && rec.dados.nome) {
-          var elNome = document.getElementById('dp-nome');
-          if (elNome) elNome.value = rec.dados.nome;
+        if (rec && rec.dados) {
+          if (typeof restoreFormSnapshot === 'function') {
+            restoreFormSnapshot(rec.dados);
+          } else if (rec.dados.nome) {
+            // fallback antigo, caso restoreFormSnapshot não esteja disponível
+            var elNome = document.getElementById('dp-nome');
+            if (elNome) elNome.value = rec.dados.nome;
+          }
         }
         if (typeof hcDirty !== 'undefined') hcDirty = false;
       } catch (e) {
