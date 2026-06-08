@@ -502,7 +502,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   <!-- TOPBAR -->
   <header class="topbar" id="topbar">
     <button class="hamburger" onclick="toggleSidebar()">☰</button>
-    <a href="anamnesismed-dashboard.html" class="topbar-back">← <span class="pt">Início</span><span class="es">Inicio</span></a>
+    <a href="anamnesismed-dashboard.html" class="topbar-back" onclick="return confirmDiscardHC()">← <span class="pt">Início</span><span class="es">Inicio</span></a>
     <div class="topbar-breadcrumb">
       <span id="tb-spec" class="pt">Clínica Médica</span>
       <span id="tb-spec-es" class="es">Clínica Médica</span>
@@ -1789,9 +1789,11 @@ function setLang(l){
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sb-overlay').classList.toggle('open')}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open')}
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
-function goToDashboard(){window.location.href='anamnesismed-dashboard.html'}
-function encerrarSessao(){ if(window.authLogout) window.authLogout(); else window.location.href = 'anamnesismed-auth.html'; }
+function goToDashboard(){ if(!confirmDiscardHC()) return; window.location.href='anamnesismed-dashboard.html'}
+function encerrarSessao(){ if(!confirmDiscardHC()) return; if(window.authLogout) window.authLogout(); else window.location.href = 'anamnesismed-auth.html'; }
 function newHC(){
+  if(!confirmDiscardHC()) return;
+  hcDirty = false;
   // Reset motivo
   currentMotivo = null;
   document.getElementById('mc-a').value = '';
@@ -2376,6 +2378,21 @@ document.addEventListener('click', function(e){
 // ── CURRENT STATE ─────────────────────────────────────
 var currentMotivo = null;
 var currentSpec = 'clinica';
+
+// ── HC DIRTY / UNSAVED-CHANGES GUARD ─────────────────
+var hcDirty = false;
+function markHCDirty(){ hcDirty = true; }
+function confirmDiscardHC(){
+  if(!hcDirty) return true;
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var msg = (lang==='es')
+    ? 'Tienes cambios no guardados en esta HC. ¿Deseas salir sin guardarlos?'
+    : 'Você tem alterações não salvas nesta HC. Deseja sair sem salvá-las?';
+  return window.confirm(msg);
+}
+window.addEventListener('beforeunload', function(e){
+  if(hcDirty){ e.preventDefault(); e.returnValue=''; return ''; }
+});
 var hcData = {};
 
 // ── INDEX SCREEN ──────────────────────────────────────
@@ -3677,6 +3694,7 @@ function saveHC(){
     }).catch(function(e){ console.warn('hcSave erro:', e); });
   }
 
+  hcDirty = false;
   showToast('pt','HC salva com sucesso!');
   showToast('es','¡HC guardada con éxito!');
 }
@@ -3810,6 +3828,15 @@ function exportPDF(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
   updateSpecCounts();
   showSpec('clinica');
+  // Marca a HC como "com alterações não salvas" a partir de qualquer interação no formulário
+  var hcScreen = document.getElementById('screen-hc');
+  if(hcScreen){
+    hcScreen.addEventListener('input', markHCDirty);
+    hcScreen.addEventListener('change', markHCDirty);
+    hcScreen.addEventListener('click', function(e){
+      if(e.target.closest('.f-radio,.yn-btn,.f-eva-btn,.opt-pill,.f-check,.opt-chip')) markHCDirty();
+    });
+  }
   // Auto-set today's date
   var today = new Date().toISOString().split('T')[0];
   document.getElementById('dp-dtingresso').value = today;
