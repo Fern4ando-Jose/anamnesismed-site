@@ -149,7 +149,7 @@ async function profileGet() {
     .from('profiles')
     .select('*')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (error) { console.error('Profile get error:', error); return null; }
   return data;
@@ -332,8 +332,24 @@ async function onboardingCheckAndShow(profile) {
  * Retorna: { active: bool, type: 'trial'|'pro'|'expired', daysLeft: number }
  */
 async function profileCheckAccess() {
-  const profile = await profileGet();
-  if (!profile) return { active: false, type: 'no_profile', daysLeft: 0 };
+  let profile = await profileGet();
+
+  // Perfil inexistente = primeiro acesso do usuário (ex: Google OAuth sem onboarding)
+  // Cria automaticamente com trial de 30 dias para não bloquear o acesso na hora
+  if (!profile) {
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      const trialEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: newProfile } = await sb.from('profiles').upsert({
+        id: user.id,
+        email: user.email,
+        plano: 'trial',
+        trial_end: trialEnd
+      }).select().maybeSingle();
+      profile = newProfile;
+    }
+    if (!profile) return { active: false, type: 'no_profile', daysLeft: 0 };
+  }
 
   if (profile.plano === 'pro') {
     return { active: true, type: 'pro', daysLeft: 999 };
@@ -470,7 +486,7 @@ async function hcListAll(limit = 20) {
 
   const { data, error } = await sb
     .from('historias_clinicas')
-    .select('id, motivo, motivo_id, especialidade, status, criado_em, atualizado_em')
+    .select('id, motivo, motivo_id, especialidade, status, criado_em, atualizado_em, dados')
     .eq('user_id', user.id)
     .order('atualizado_em', { ascending: false })
     .limit(limit);
@@ -654,33 +670,34 @@ async function uiLoadRecentHCs(limit) {
     return;
   }
 
-  const specColors = { clinica: 'teal', cirurgia: 'red' };
+  const specColors = { clinica: '#0e7490', cirurgia: '#c0392b' };
   const statusLabels = {
-    rascunho: { es: 'Borrador', pt: 'Rascunho', cls: 'st-draft' },
-    completa: { es: 'Completa', pt: 'Completa', cls: 'st-complete' },
+    rascunho: { es: 'Borrador', pt: 'Rascunho', cls: 'draft' },
+    completa: { es: 'Completa', pt: 'Completa', cls: 'complete' },
   };
 
   container.innerHTML = hcs.map(hc => {
-    const color = specColors[hc.especialidade] || 'slate';
+    const color = specColors[hc.especialidade] || '#6b7c8a';
     const st = statusLabels[hc.status] || statusLabels.rascunho;
     const date = new Date(hc.atualizado_em).toLocaleDateString('pt-BR');
+    const nomePaciente = (hc.dados && hc.dados.campos && hc.dados.campos['dp-nome']) || '';
+    const specLabel = hc.especialidade === 'clinica' ? 'Clínica Médica' : 'Cirugía General';
 
     return `
-    <div class="hc-item" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')">
-      <div class="hc-type-dot" style="background:var(--${color})"></div>
-      <div class="hc-item-info">
-        <div class="hc-item-title">${hc.motivo || hc.motivo_id}</div>
-        <div class="hc-item-meta">
-          <span>${hc.especialidade === 'clinica' ? 'Clínica Médica' : 'Cirugía General'}</span>
+    <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" style="cursor:pointer">
+      <div class="hc-color" style="background:${color}"></div>
+      <div class="hc-info">
+        <div class="hc-name">${hc.motivo || hc.motivo_id}${nomePaciente ? ' — ' + nomePaciente : ''}</div>
+        <div class="hc-meta">
+          <span>${specLabel}</span>
+          <span class="hc-dot"></span>
           <span>${date}</span>
         </div>
       </div>
-      <div class="hc-item-right">
+      <div class="hc-actions">
         <span class="hc-status ${st.cls} es">${st.es}</span>
         <span class="hc-status ${st.cls} pt">${st.pt}</span>
-        <div class="hc-actions">
-          <button class="hc-action-btn" onclick="event.stopPropagation();hcDelete('${hc.id}').then(()=>uiLoadRecentHCs())" title="Eliminar">🗑️</button>
-        </div>
+        <button class="hc-btn" onclick="event.stopPropagation();hcDelete('${hc.id}').then(()=>uiLoadRecentHCs())" title="Eliminar / Excluir">🗑️</button>
       </div>
     </div>`;
   }).join('');
