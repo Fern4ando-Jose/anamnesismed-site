@@ -110,10 +110,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <nav class="sidebar-nav">
     <div class="nav-section-label pt">Principal</div>
     <div class="nav-section-label es">Principal</div>
-    <a href="anamnesismed-dashboard.html" class="nav-item">
-      <span class="nav-icon">🏠</span>
-      <span class="pt">Dashboard</span><span class="es">Dashboard</span>
-    </a>
     <a href="anamnesismed-app.html" class="nav-item">
       <span class="nav-icon">🩺</span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
@@ -133,7 +129,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
   <div class="sidebar-foot">
     <div class="user-info">
-      <div class="user-av" data-user-name>FJ</div>
+      <div class="user-av user-avatar">—</div>
       <div>
         <div class="user-name" data-user-name>Fernando Jose</div>
         <div class="user-plan pt">Carregando...</div>
@@ -222,12 +218,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <div class="plan-badge" id="cfg-plano">—</div>
           <div class="plan-desc pt">Acesso completo às histórias clínicas guiadas, mnemônicas e escalas</div>
           <div class="plan-desc es">Acceso completo a las historias clínicas guiadas, mnemotécnicas y escalas</div>
-          <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.5)">
+          <div style="margin-top:8px;font-size:12px;color:var(--muted)">
             <span class="pt">Membro desde: <strong id="cfg-membro-desde">—</strong></span>
             <span class="es">Miembro desde: <strong id="cfg-membro-desde-es">—</strong></span>
             <span id="cfg-trial-wrap" style="display:none">
               · <span class="pt">Dias restantes de trial: <strong id="cfg-trial-dias">—</strong></span>
               <span class="es">Días restantes de prueba: <strong id="cfg-trial-dias-es">—</strong></span>
+              · <span class="pt">Trial até: <strong id="cfg-trial-fim">—</strong></span>
+              <span class="es">Prueba hasta: <strong id="cfg-trial-fim-es">—</strong></span>
             </span>
           </div>
         </div>
@@ -300,6 +298,15 @@ function setLang(l){
         var diasEs = document.getElementById('cfg-trial-dias-es');
         if (diasPt) diasPt.textContent = access.daysLeft;
         if (diasEs) diasEs.textContent = access.daysLeft;
+
+        if (profile.trial_end) {
+          var dEnd = new Date(profile.trial_end);
+          var fmtEnd = dEnd.toLocaleDateString(undefined, {day:'2-digit',month:'2-digit',year:'numeric'});
+          var fimPt = document.getElementById('cfg-trial-fim');
+          var fimEs = document.getElementById('cfg-trial-fim-es');
+          if (fimPt) fimPt.textContent = fmtEnd;
+          if (fimEs) fimEs.textContent = fmtEnd;
+        }
       }
     }
   } catch (e) {
