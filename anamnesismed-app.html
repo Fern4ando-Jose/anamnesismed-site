@@ -859,118 +859,6 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <!-- Guided AEA injected by JS based on motivo -->
             <div id="aea-guided-content"></div>
 
-            <!-- LITIDIFIS — só aparece para motivos de dor -->
-            <div id="litidifis-block">
-            <div class="f-section-lbl pt">Semiologia da dor — LITIDIFIS</div>
-            <div class="f-section-lbl es">Semiología del dolor — LITIDIFIS</div>
-            <div class="f-row">
-              <label class="f-label pt">L — Localização</label>
-              <label class="f-label es">L — Localización</label>
-              <input class="f-input" type="text" id="aea-local" placeholder="">
-            </div>
-            <div class="f-row">
-              <label class="f-label pt">I — Irradiação</label>
-              <label class="f-label es">I — Irradiación</label>
-              <input class="f-input" type="text" id="aea-irrad" placeholder="">
-            </div>
-            <div class="f-row">
-              <label class="f-label pt">T — Tipo / Qualidade</label>
-              <label class="f-label es">T — Tipo / Calidad</label>
-              <div class="f-radios" id="aea-tipo">
-                <div class="f-radio" onclick="selectRadio(this,'aea-tipo')">
-                  <span class="pt">Queimação</span><span class="es">Ardor/Quemante</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-tipo')">
-                  <span class="pt">Aperto/Pressão</span><span class="es">Opresivo</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-tipo')">
-                  <span class="pt">Pontada</span><span class="es">Punzante/Lancinante</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-tipo')">
-                  <span class="pt">Cólica</span><span class="es">Cólico</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-tipo')">
-                  <span class="pt">Latejamento</span><span class="es">Pulsátil</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-tipo')">
-                  <span class="pt">Peso</span><span class="es">Sordo/Pesado</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-tipo')">
-                  <span class="pt">Desgarramento</span><span class="es">Desgarrante</span>
-                </div>
-              </div>
-            </div>
-            <div class="f-row-2">
-              <div class="f-row">
-                <label class="f-label pt">I — Intensidade (EVA 0–10)</label>
-                <label class="f-label es">I — Intensidad (EVA 0–10)</label>
-                <div class="f-eva-lbl"><span class="pt">Sem dor</span><span class="es">Sin dolor</span><span class="pt">Dor máxima</span><span class="es">Dolor máximo</span></div>
-                <div class="f-eva" id="aea-eva">
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">0</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">1</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">2</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">3</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">4</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">5</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">6</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">7</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">8</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">9</div>
-                  <div class="f-eva-btn" onclick="selectEva(this,'aea-eva')">10</div>
-                </div>
-              </div>
-              <div class="f-row">
-                <label class="f-label pt">D — Duração / Temporalidade</label>
-                <label class="f-label es">D — Duración / Temporalidad</label>
-                <div class="f-radios" id="aea-duracao" style="flex-direction:column;gap:4px">
-                  <div class="f-radio" onclick="selectRadio(this,'aea-duracao')">
-                    <span class="pt">Contínuo (não cessa)</span><span class="es">Continuo (no cede)</span>
-                  </div>
-                  <div class="f-radio" onclick="selectRadio(this,'aea-duracao')">
-                    <span class="pt">Intermitente (vem e vai)</span><span class="es">Intermitente (va y viene)</span>
-                  </div>
-                  <div class="f-radio" onclick="selectRadio(this,'aea-duracao')">
-                    <span class="pt">Em crises</span><span class="es">En crisis</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="f-row">
-              <label class="f-label pt">I — Início (forma de aparecimento)</label>
-              <label class="f-label es">I — Inicio (forma de aparición)</label>
-              <div class="f-radios" id="aea-inicio">
-                <div class="f-radio" onclick="selectRadio(this,'aea-inicio')">
-                  <span class="pt">Brusco / Súbito</span><span class="es">Brusco / Súbito</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-inicio')">
-                  <span class="pt">Gradual / Progressivo</span><span class="es">Gradual / Progresivo</span>
-                </div>
-                <div class="f-radio" onclick="selectRadio(this,'aea-inicio')">
-                  <span class="pt">Insidioso (imperceptível)</span><span class="es">Insidioso (imperceptible)</span>
-                </div>
-              </div>
-            </div>
-            <div class="f-row">
-              <label class="f-label pt">F — Fatores agravantes</label>
-              <label class="f-label es">F — Factores agravantes</label>
-              <input class="f-input" type="text" id="aea-agrav" placeholder="">
-            </div>
-            <div class="f-row">
-              <label class="f-label pt">I — Fatores de melhora (atenuantes)</label>
-              <label class="f-label es">I — Factores de mejoría (atenuantes)</label>
-              <input class="f-input" type="text" id="aea-atenua" placeholder="">
-            </div>
-            <div class="f-row">
-              <label class="f-label pt">S — Sintomas associados</label>
-              <label class="f-label es">S — Síntomas asociados</label>
-              <input class="f-input" type="text" id="aea-sintass" placeholder="Ex: febre, náuseas, dispneia..." data-ph-pt="Ex: febre, náuseas, dispneia..." data-ph-es="Ej: fiebre, náuseas, disnea...">
-            </div>
-            <div class="f-row">
-              <label class="f-label pt">Tratamento já realizado para esta queixa</label>
-              <label class="f-label es">Tratamiento ya realizado para esta queja</label>
-              <input class="f-input" type="text" id="aea-trat" placeholder="Medicação, dose, resposta..." data-ph-pt="Medicação, dose, resposta..." data-ph-es="Medicación, dosis, respuesta...">
-            </div>
-            </div><!-- /litidifis-block -->
             <div class="f-row">
               <label class="f-label pt">Relato livre (AEA em texto)</label>
               <label class="f-label es">Relato libre (AEA en texto)</label>
@@ -1800,7 +1688,6 @@ function newHC(){
   document.getElementById('mc-motivo-badge').style.display = 'none';
   document.getElementById('mc-suggestions').style.display = 'none';
   document.getElementById('aea-guided-content').innerHTML = '';
-  updateLITIDIFIS(null); // show LITIDIFIS generic
   // Reset HC header
   document.getElementById('hc-icon').textContent = '📋';
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
@@ -1811,7 +1698,7 @@ function newHC(){
   document.getElementById('hc-progress').style.width = '0%';
   // Reset key text fields
   ['dp-nome','dp-ci','dp-idade','dp-ocup','dp-proc','dp-res','dp-tel','dp-acomp-nome','dp-acomp-vinculo','dp-aportado',
-   'mc-a','mc-b','mc-c','aea-local','aea-irrad','aea-agrav','aea-atenua','aea-sintass','aea-trat','aea-texto',
+   'mc-a','mc-b','mc-c','aea-texto',
    'area-desc','app-cirurg','app-trauma','app-intern','app-outras','adm-texto',
    'sum-achados','sum-sindromes','sum-hipoteses','plan-exames','plan-trat','plan-conduta','plan-obs'
   ].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
@@ -2341,7 +2228,6 @@ function selectMotivoFromMC(id){
   document.getElementById('tb-motivo').textContent = nm;
   // Update dynamic sections
   renderAEAGuide(mObj);
-  updateLITIDIFIS(mObj);
   renderRAS(mObj.rasHighlight || []);
   renderGuideContent(mObj);
   updateProgress();
@@ -2355,17 +2241,9 @@ function clearMotivo(){
   document.getElementById('mc-a').value = '';
   document.getElementById('mc-motivo-badge').style.display = 'none';
   document.getElementById('aea-guided-content').innerHTML = '';
-  updateLITIDIFIS(null);
   renderRAS([]);
 }
 
-function updateLITIDIFIS(mObj){
-  var block = document.getElementById('litidifis-block');
-  if(!block) return;
-  // Show LITIDIFIS only for pain motivos OR if no motivo selected (generic)
-  var show = !mObj || mObj.isPain;
-  block.style.display = show ? '' : 'none';
-}
 
 // Close suggestions when clicking outside
 document.addEventListener('click', function(e){
@@ -2461,8 +2339,6 @@ function openHC(id){
   document.getElementById('mc-motivo-badge').style.display = 'block';
   document.getElementById('mc-badge-icon').textContent = mObj.icon;
   document.getElementById('mc-badge-name').textContent = nm;
-  // LITIDIFIS visibility
-  updateLITIDIFIS(mObj);
   // Load AEA guided questions
   renderAEAGuide(mObj);
   // Load RAS filtered
@@ -3658,7 +3534,7 @@ function toggleAPGO(){
 
 // ── PROGRESS ──────────────────────────────────────────
 function updateProgress(){
-  var fields = ['dp-nome','mc-a','aea-local','aea-texto'];
+  var fields = ['dp-nome','mc-a','aea-texto'];
   var filled = fields.filter(function(id){var el=document.getElementById(id);return el&&el.value&&el.value.trim()}).length;
   var pct = Math.min(100, Math.round((filled/fields.length)*100));
   var bar = document.getElementById('hc-progress');
