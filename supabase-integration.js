@@ -816,9 +816,17 @@ async function uiLoadRecentActivity(limit = 6) {
       eventos.push({ tipo: 'created', motivo: nome, ts: criado });
     }
   });
-  pdfExports.forEach(exp => {
-    eventos.push({ tipo: 'exported', motivo: exp.motivo, ts: exp.ts });
-  });
+  // PDF exports: deduplicar por motivoId — manter apenas o mais recente de cada motivo
+  const pdfSeen = new Set();
+  pdfExports
+    .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
+    .forEach(exp => {
+      const key = exp.motivoId || exp.motivo || 'unknown';
+      if (!pdfSeen.has(key)) {
+        pdfSeen.add(key);
+        eventos.push({ tipo: 'exported', motivo: exp.motivo, ts: exp.ts });
+      }
+    });
 
   eventos.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
   const recentes = eventos.slice(0, limit);
