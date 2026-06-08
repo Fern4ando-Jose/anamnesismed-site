@@ -579,6 +579,10 @@ async function uiUpdateUserInfo() {
   const lang = document.documentElement.dataset.lang || 'es';
 
   document.querySelectorAll('.sb-uplan, .user-plan').forEach(el => {
+    // No dashboard, .user-plan contém o contador dinâmico "Plano Gratuito · X/5 HCs"
+    // (span#hcs-count-pt/es, populado por uiLoadStats). Sobrescrever o textContent aqui
+    // destruiria esse span — pular esses elementos e deixar uiLoadStats cuidar deles.
+    if (el.querySelector('[id^="hcs-count-"]')) return;
     if (access.type === 'pro') {
       el.textContent = 'Pro';
     } else if (access.type === 'trial') {
