@@ -44,6 +44,14 @@ FUNCIONALIDADES:
 ✅ Design system "Saúde Confiável" aplicado em 3 páginas
 
 Erros:
+1- msg trial aparecendo em novos usuarios antes dos 30 dias
+2 - não está aparecendo a mensagem de assinar o termo para novos usuarios
+3 -não está salvando novas Hcs
+4- quando clicar no nome em (Fernando José trial) deve levar a pagina de configuração
+5- dentro da pagina de configuração deve constar a data de inscrição e quantos dias ainda tem de trial
+6- falta a descrição dos motivos de tos, quando dizer que sim deve abrir os itens (quantidade, color, olor...)
+7 - Mnemonicas etcs, está tudo corrido na mesma pagina, sendo nada ditatico, devemos corrigir isso
+
 Pag inicial
 [CORRIGIDO 2026-06-07] App: entra direto na pagina sem fazer login
 roadmap: está aparecendo no site? pq? deveria ser um arquivo interno
