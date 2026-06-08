@@ -3849,6 +3849,24 @@ function exportPDF(){
   ['sv-peso','sv-altura'].forEach(function(id){
     document.getElementById(id).addEventListener('input',calcIMC);
   });
+
+  // Deep-link: abrir uma HC específica vinda do dashboard ("HCs recentes" → ?hc=<motivoId>)
+  try{
+    var hcParams = new URLSearchParams(window.location.search);
+    var deepHcId = hcParams.get('hc');
+    if(deepHcId){
+      openHC(deepHcId);
+      if(window.hcLoad){
+        window.hcLoad(deepHcId).then(function(rec){
+          if(rec && rec.dados && rec.dados.nome){
+            var elNome = document.getElementById('dp-nome');
+            if(elNome) elNome.value = rec.dados.nome;
+          }
+          hcDirty = false;
+        }).catch(function(e){ console.warn('hcLoad erro ao abrir HC via deep-link:', e); });
+      }
+    }
+  }catch(e){ console.warn('deep-link de HC erro:', e); }
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

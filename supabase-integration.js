@@ -657,7 +657,7 @@ async function uiLoadRecentHCs() {
     const date = new Date(hc.atualizado_em).toLocaleDateString('pt-BR');
 
     return `
-    <div class="hc-item" onclick="window.location.href='anamnesismed-app.html'">
+    <div class="hc-item" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')">
       <div class="hc-type-dot" style="background:var(--${color})"></div>
       <div class="hc-item-info">
         <div class="hc-item-title">${hc.motivo || hc.motivo_id}</div>
