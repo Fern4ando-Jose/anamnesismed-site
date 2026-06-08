@@ -111,6 +111,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     <div class="nav-section-label pt">Principal</div>
     <div class="nav-section-label es">Principal</div>
     <a href="anamnesismed-app.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span class="pt">Início</span><span class="es">Inicio</span>
+    </a>
+    <a href="anamnesismed-app.html" class="nav-item">
       <span class="nav-icon">🩺</span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
     </a>
@@ -125,6 +129,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <span class="nav-icon">✦</span>
       <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>
     </a>
+    <button class="nav-item" onclick="encerrarSessao()" style="color:rgba(255,255,255,.4)">
+      <span class="nav-icon" style="display:inline-flex;align-items:center;justify-content:center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </span>
+      <span class="pt">Encerrar sessão</span><span class="es">Cerrar sesión</span>
+    </button>
   </nav>
 
   <div class="sidebar-foot">
@@ -250,6 +260,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 </div>
 
 <script>
+function encerrarSessao(){
+  if(window.authLogout) window.authLogout();
+  else window.location.href = 'anamnesismed-auth.html';
+}
 function setLang(l){
   document.documentElement.setAttribute('data-lang', l);
   document.getElementById('btn-pt').classList.toggle('active', l==='pt');

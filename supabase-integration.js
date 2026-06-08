@@ -532,7 +532,8 @@ async function uiUpdateUserInfo() {
   const profile = await profileGet();
   if (!profile) return;
 
-  const nome = profile.nome || profile.email?.split('@')[0] || 'Estudante';
+  let nome = profile.nome || profile.email?.split('@')[0] || 'Estudante';
+  nome = nome.charAt(0).toUpperCase() + nome.slice(1);
 
   // Atualiza em todos os elementos que mostram o nome
   document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = nome);
