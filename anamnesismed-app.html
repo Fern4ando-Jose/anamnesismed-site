@@ -4050,24 +4050,77 @@ function exportPDF(){
     return texto;
   }
 
-  // Gerador genérico — usado pelos motivos sem template narrativo dedicado ainda
-  function gerarNarrativaAEA_generica(ans, lng){
-    var pt = (lng!=='es');
-    var frases = [];
-    ans.forEach(function(a){
-      if(!a.resp || a.resp==='—') return;
-      var q = (a.qText||'').replace(/[?¿]/g,'').trim();
-      var qLow = q.charAt(0).toLowerCase()+q.slice(1);
-      if(a.type==='yn'){
-        var afirmativo = /^(Sim|Sí)/.test(a.resp);
-        frases.push((afirmativo ? (pt?'Refere ':'Refiere ') : (pt?'Nega ':'Niega ')) + qLow + '.');
-      } else if(a.type==='multi'){
-        frases.push((pt?'Quanto a '+qLow+', destaca: ':'En cuanto a '+qLow+', destaca: ') + a.resp.toLowerCase() + '.');
+  // Motor narrativo universal — gera prosa clínica para QUALQUER motivo automaticamente
+  function gerarNarrativaAEA_generica(ans, lng, mObj){
+    var pt = (lng !== 'es');
+    var respondidas = ans.filter(function(a){ return a.resp && a.resp !== '—'; });
+    if(!respondidas.length) return '';
+
+    var nomeMotivo = mObj ? (pt ? (mObj.name||'') : (mObj.nameEs||mObj.name||'')) : '';
+
+    // Classifica cada resposta por tipo
+    var descritivos = [], ynSim = [], ynNao = [], alarme = [];
+    respondidas.forEach(function(a){
+      var qL = (a.qText||'').toLowerCase();
+      if(/alarme|alarma|red\s*flag/.test(qL)){
+        alarme.push(a);
+      } else if(a.type === 'yn'){
+        if(/^(Sim|Sí)/.test(a.resp)) ynSim.push(a);
+        else ynNao.push(a);
       } else {
-        frases.push((pt?'Quanto a '+qLow+', relata: ':'En cuanto a '+qLow+', relata: ') + a.resp + '.');
+        descritivos.push(a);
       }
     });
-    return frases.join(' ');
+
+    var partes = [];
+
+    // Abertura: "Paciente refere quadro de [motivo], com [1ª resposta descritiva]."
+    var abertura = (pt ? 'Paciente refere quadro de ' : 'Paciente refiere cuadro de ') + nomeMotivo.toLowerCase();
+    if(descritivos.length > 0){
+      abertura += (pt ? ', com ' : ', con ') + descritivos[0].resp.toLowerCase() + '.';
+      partes.push(abertura);
+      // Demais descritivos: rótulo + valor
+      descritivos.slice(1).forEach(function(a){
+        var q = (a.qText||'').replace(/[?¿]/g,'').trim();
+        var qCap = q.charAt(0).toUpperCase() + q.slice(1);
+        if(a.type === 'multi'){
+          partes.push(qCap + (pt ? ', destaca: ' : ', destaca: ') + a.resp.toLowerCase() + '.');
+        } else {
+          partes.push(qCap + ': ' + a.resp + '.');
+        }
+      });
+    } else {
+      partes.push(abertura + '.');
+    }
+
+    // yn positivos agrupados: "Refere A, B e C."
+    if(ynSim.length){
+      var items = ynSim.map(function(a){
+        return (a.qText||'').replace(/[?¿]/g,'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase();
+      });
+      var last = items.length > 1 ? items.pop() : null;
+      partes.push((pt ? 'Refere ' : 'Refiere ') + (last ? items.join(', ')+(pt?' e ':' y ')+last : items[0]) + '.');
+    }
+
+    // yn negativos agrupados: "Nega A, B e C."
+    if(ynNao.length){
+      var items = ynNao.map(function(a){
+        return (a.qText||'').replace(/[?¿]/g,'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase();
+      });
+      var last = items.length > 1 ? items.pop() : null;
+      partes.push((pt ? 'Nega ' : 'Niega ') + (last ? items.join(', ')+(pt?' e ':' y ')+last : items[0]) + '.');
+    }
+
+    // Alarme — destaque especial
+    alarme.forEach(function(a){
+      if(/^(Sim|Sí)/.test(a.resp)){
+        partes.push(pt ? '⚠ Sinais de alarme presentes — avaliação prioritária indicada.' : '⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
+      } else {
+        partes.push(pt ? 'Nega sinais de alarme.' : 'Niega signos de alarma.');
+      }
+    });
+
+    return partes.join(' ');
   }
 
   var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia };
@@ -4087,7 +4140,7 @@ function exportPDF(){
     var hasAny = ansArr.some(function(a){ return a.resp && a.resp!=='—'; });
     if(!hasAny) return null;
     var gen = AEA_NARRATIVE_GEN[mObj.id];
-    return gen ? gen(ansArr, lng) : gerarNarrativaAEA_generica(ansArr, lng);
+    return gen ? gen(ansArr, lng) : gerarNarrativaAEA_generica(ansArr, lng, mObj);
   }
 
   var feSel = document.querySelector('#dp-fe .sel');
