@@ -1059,4 +1059,10 @@ async function stripeCheckout() {
 window.authLogout         = authLogout;
 window.authSendMagicLink  = authSendMagicLink;
 window.authGoogleLogin    = authGoogleLogin;
-window.stripe
+window.stripeCheckout     = stripeCheckout;
+window.hcSave             = hcSave;
+window.hcDelete           = hcDelete;
+window.hcListAll          = hcListAll;
+window.uiLoadRecentHCs    = uiLoadRecentHCs;
+window.profileCheckAccess = profileCheckAccess;
+window.onboardingCheckAndShow = onboardingCheckAndShow;
