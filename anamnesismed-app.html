@@ -450,6 +450,11 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   <nav class="sb-nav" id="sb-nav">
     <div class="sb-cat pt">Especialidades</div>
     <div class="sb-cat es">Especialidades</div>
+    <div class="sb-item" onclick="showSpec('semiologia');setSBActive(this)">
+      <span class="sb-item-icon">📖</span>
+      <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
+      <span class="sb-item-badge new">v1</span>
+    </div>
     <div class="sb-item active" onclick="showSpec('clinica');setSBActive(this)">
       <span class="sb-item-icon">🩺</span>
       <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
@@ -516,6 +521,15 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
   <!-- INDEX SCREEN -->
   <div class="index-screen active" id="screen-index">
+    <div class="spec-header" id="spec-header-semiologia" style="display:none">
+      <div class="spec-icon-big">📖</div>
+      <div>
+        <h1 class="spec-title pt">Semiologia Básica</h1>
+        <h1 class="spec-title es">Semiología Básica</h1>
+        <div class="spec-subtitle pt">Sinais e sintomas fundamentais — avaliação semiológica completa</div>
+        <div class="spec-subtitle es">Signos y síntomas fundamentales — evaluación semiológica completa</div>
+      </div>
+    </div>
     <div class="spec-header" id="spec-header-clinica">
       <div class="spec-icon-big">🩺</div>
       <div>
@@ -536,6 +550,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div>
 
     <div class="spec-tabs">
+      <div class="spec-tab" id="stab-semiologia" onclick="showSpec('semiologia')">
+        📖 <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
+        <span class="spec-tab-count" id="count-semiologia">0</span>
+      </div>
       <div class="spec-tab active" id="stab-clinica" onclick="showSpec('clinica')">
         🩺 <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
         <span class="spec-tab-count" id="count-clinica">0</span>
@@ -2113,6 +2131,104 @@ const MOTIVOS = {
       },
     ]},
   ],
+  semiologia: [
+    {cat:'Dor e Dispneia / Dolor y Disnea',items:[
+      {id:'semio-dor',name:'Dor (Inespecífica)',nameEs:'Dolor (Inespecífico)',icon:'🤕',color:'mc-danger',isPain:true,
+       aeaGuide:[
+         {q:'Localização da dor?',qEs:'¿Localización del dolor?',type:'input',ph:'Ex: abdominal, torácica, cabeça, membros',ph2:'Ej: abdominal, torácica, cabeza, miembros'},
+         {q:'Irradiação?',qEs:'¿Irradiación?',type:'input',ph:'Ex: para o ombro, braço, virilha',ph2:'Ej: hacia el hombro, brazo, ingle'},
+         {q:'Caráter da dor?',qEs:'¿Carácter del dolor?',type:'radio',opts:['Queimação','Pontada','Cólica','Pressão/aperto','Latejante','Surda/em peso'],optsEs:['Ardor/quemazón','Punzada','Cólico','Presión/opresión','Pulsátil','Sorda/pesada']},
+         {q:'Intensidade (EVA 0–10)?',qEs:'¿Intensidad (EVA 0–10)?',type:'radio',opts:['1-3 (leve)','4-6 (moderada)','7-8 (intensa)','9-10 (insuportável)'],optsEs:['1-3 (leve)','4-6 (moderada)','7-8 (intensa)','9-10 (insoportable)']},
+         {q:'Início e duração?',qEs:'¿Inicio y duración?',type:'radio',opts:['Agudo (<24h)','Subagudo (dias)','Crônico (>4 semanas)'],optsEs:['Agudo (<24h)','Subagudo (días)','Crónico (>4 semanas)']},
+         {q:'Fatores de melhora?',qEs:'¿Factores que alivian?',type:'multi',opts:['Repouso','Analgésicos','Calor local','Frio local','Alimentação','Posição antálgica'],optsEs:['Reposo','Analgésicos','Calor local','Frío local','Alimentación','Posición antiálgica']},
+         {q:'Fatores de piora?',qEs:'¿Factores que agravan?',type:'multi',opts:['Esforço físico','Alimentação','Palpação','Movimento','Inspiração profunda','Defecação'],optsEs:['Esfuerzo físico','Alimentación','Palpación','Movimiento','Inspiración profunda','Defecación']},
+         {q:'Sintomas associados?',qEs:'¿Síntomas asociados?',type:'multi',opts:['Náuseas/vômitos','Febre','Dispneia','Sudorese','Palidez','Alteração intestinal'],optsEs:['Náuseas/vómitos','Fiebre','Disnea','Sudoración','Palidez','Alteración intestinal']},
+       ]},
+      {id:'semio-disnea',name:'Dispneia',nameEs:'Disnea',icon:'🫁',color:'mc-primary',
+       aeaGuide:[
+         {q:'Início?',qEs:'¿Inicio?',type:'radio',opts:['Súbito (minutos)','Progressivo (horas/dias)','Crônico (semanas/meses)'],optsEs:['Súbito (minutos)','Progresivo (horas/días)','Crónico (semanas/meses)']},
+         {q:'Grau de dispneia (MRC)?',qEs:'¿Grado de disnea (MRC)?',type:'radio',opts:['Grau 1 — só esforço intenso','Grau 2 — sobe escadas/ladeiras','Grau 3 — caminhada plana em ritmo normal','Grau 4 — repouso ou mínimo esforço'],optsEs:['Grado 1 — solo esfuerzo intenso','Grado 2 — sube escaleras/cuestas','Grado 3 — caminata plana a ritmo normal','Grado 4 — reposo o mínimo esfuerzo']},
+         {q:'Ortopneia (dispneia ao deitar)?',qEs:'¿Ortopnea (disnea al acostarse)?',type:'yn'},
+         {q:'Dispneia paroxística noturna (acorda com falta de ar)?',qEs:'¿Disnea paroxística nocturna (se despierta con falta de aire)?',type:'yn'},
+         {q:'Sibilos ou chiado no peito?',qEs:'¿Sibilancias o pito en el pecho?',type:'yn'},
+         {q:'Tosse? Descreva se produtiva e cor do escarro.',qEs:'¿Tos? Describa si productiva y color del esputo.',type:'input',ph:'Seca / produtiva — cor, quantidade',ph2:'Seca / productiva — color, cantidad'},
+         {q:'Dor torácica associada?',qEs:'¿Dolor torácico asociado?',type:'yn'},
+         {q:'Edema de membros inferiores?',qEs:'¿Edema de miembros inferiores?',type:'yn'},
+         {q:'Tabagismo ou exposição ocupacional (poeiras, gases)?',qEs:'¿Tabaquismo o exposición ocupacional (polvos, gases)?',type:'input',ph:'Anos / maços-ano / tipo de exposição',ph2:'Años / paquetes-año / tipo de exposición'},
+       ]},
+    ]},
+    {cat:'Sinais Clínicos / Signos Clínicos',items:[
+      {id:'semio-cianose',name:'Cianose',nameEs:'Cianosis',icon:'🔵',color:'mc-navy',
+       aeaGuide:[
+         {q:'Localização da cianose?',qEs:'¿Localización de la cianosis?',type:'radio',opts:['Central (lábios, língua, mucosas)','Periférica (extremidades, dedos)','Mista (central + periférica)'],optsEs:['Central (labios, lengua, mucosas)','Periférica (extremidades, dedos)','Mixta (central + periférica)']},
+         {q:'Início?',qEs:'¿Inicio?',type:'radio',opts:['Congênita (desde o nascimento)','Progressiva (anos/meses)','Aguda (horas/minutos)'],optsEs:['Congénita (desde el nacimiento)','Progresiva (años/meses)','Aguda (horas/minutos)']},
+         {q:'Melhora com administração de oxigênio?',qEs:'¿Mejora con administración de oxígeno?',type:'yn'},
+         {q:'Dispneia associada?',qEs:'¿Disnea asociada?',type:'yn'},
+         {q:'Saturação de O₂ medida?',qEs:'¿Saturación de O₂ medida?',type:'input',ph:'% SpO₂',ph2:'% SpO₂'},
+         {q:'Cardiopatia ou pneumopatia conhecida?',qEs:'¿Cardiopatía o neumopatía conocida?',type:'input',ph:'Ex: DPOC, ICC, cardiopatia congênita',ph2:'Ej: EPOC, ICC, cardiopatía congénita'},
+         {q:'Temperatura dos membros?',qEs:'¿Temperatura de los miembros?',type:'radio',opts:['Extremidades frias (sugere cianose periférica)','Extremidades quentes (sugere cianose central)'],optsEs:['Extremidades frías (sugiere cianosis periférica)','Extremidades calientes (sugiere cianosis central)']},
+       ]},
+      {id:'semio-edema',name:'Edema',nameEs:'Edema',icon:'🦵',color:'mc-secondary',
+       aeaGuide:[
+         {q:'Localização?',qEs:'¿Localización?',type:'radio',opts:['MMII bilateral','MMII unilateral','Facial/periorbital','Generalizado (anasarca)','Ascite isolada'],optsEs:['MMII bilateral','MMII unilateral','Facial/periorbitario','Generalizado (anasarca)','Ascitis aislada']},
+         {q:'Cacifo (pitting — deixa impressão digital)?',qEs:'¿Fóvea (pitting — deja marca digital)?',type:'yn'},
+         {q:'Piora com ortostase e melhora com elevação dos MMII?',qEs:'¿Empeora con ortostatismo y mejora con elevación de MMII?',type:'yn'},
+         {q:'Dispneia ou ortopneia associada (insuficiência cardíaca)?',qEs:'¿Disnea u ortopnea asociada (insuficiencia cardíaca)?',type:'yn'},
+         {q:'Oligúria ou alteração da cor da urina (nefrótico/nefrítico)?',qEs:'¿Oliguria o alteración del color de la orina (nefrótico/nefrítico)?',type:'yn'},
+         {q:'Uso de medicamentos (BCC, corticoides, AINEs, hormônios)?',qEs:'¿Uso de medicamentos (BCC, corticoides, AINEs, hormonas)?',type:'input',ph:'Liste os medicamentos',ph2:'Liste los medicamentos'},
+         {q:'Dor, hiperemia ou calor local (trombose venosa profunda)?',qEs:'¿Dolor, hiperemia o calor local (trombosis venosa profunda)?',type:'yn'},
+         {q:'Febre ou ferida local (erisipela / linfedema infeccioso)?',qEs:'¿Fiebre o herida local (erisipela / linfedema infeccioso)?',type:'yn'},
+       ]},
+      {id:'semio-ictericia',name:'Icterícia',nameEs:'Ictericia',icon:'🟡',color:'mc-accent',
+       aeaGuide:[
+         {q:'Colúria (urina escura, cor de chá ou Coca-Cola)?',qEs:'¿Coluria (orina oscura, color té o Coca-Cola)?',type:'yn'},
+         {q:'Acolia ou hipocolia (fezes claras/esbranquiçadas)?',qEs:'¿Acolia o hipocolia (heces claras/blanquecinas)?',type:'yn'},
+         {q:'Prurido (coceira)?',qEs:'¿Prurito (picazón)?',type:'yn'},
+         {q:'Dor em hipocôndrio direito?',qEs:'¿Dolor en hipocondrio derecho?',type:'yn'},
+         {q:'Febre associada?',qEs:'¿Fiebre asociada?',type:'yn'},
+         {q:'Uso de álcool? Quantidade e frequência?',qEs:'¿Consumo de alcohol? ¿Cantidad y frecuencia?',type:'input',ph:'Ex: dose diária, fins de semana, quantidade',ph2:'Ej: dosis diaria, fines de semana, cantidad'},
+         {q:'Medicamentos hepatotóxicos (paracetamol, antibióticos, fitoterápicos)?',qEs:'¿Medicamentos hepatotóxicos (paracetamol, antibióticos, fitoterapéuticos)?',type:'input',ph:'Liste os medicamentos e doses',ph2:'Liste los medicamentos y dosis'},
+         {q:'Contato com água contaminada, viagens ou contato com hepatite?',qEs:'¿Contacto con agua contaminada, viajes recientes o contacto con hepatitis?',type:'yn'},
+         {q:'Antecedente de hepatopatia, colelitíase ou cirurgia biliar?',qEs:'¿Antecedente de hepatopatía, colelitiasis o cirugía biliar?',type:'input',ph:'Ex: fígado gorduroso, cálculos, colecistectomia',ph2:'Ej: hígado graso, cálculos, colecistectomía'},
+       ]},
+    ]},
+    {cat:'Sintomas Constitucionais / Síntomas Constitucionales',items:[
+      {id:'semio-febre',name:'Febre',nameEs:'Fiebre',icon:'🌡️',color:'mc-danger',
+       aeaGuide:[
+         {q:'Temperatura máxima registrada?',qEs:'¿Temperatura máxima registrada?',type:'input',ph:'°C — se não medida, descrever como subjetiva',ph2:'°C — si no medida, describir como subjetiva'},
+         {q:'Padrão da febre?',qEs:'¿Patrón de la fiebre?',type:'radio',opts:['Contínua (não normaliza)','Remitente (cai mas não normaliza)','Intermitente (normaliza entre picos)','Héctica/séptica (oscilações com calafrios intensos)'],optsEs:['Continua (no normaliza)','Remitente (baja pero no normaliza)','Intermitente (normaliza entre picos)','Héctica/séptica (oscilaciones con escalofríos intensos)']},
+         {q:'Calafrios e tremores?',qEs:'¿Escalofríos y temblores?',type:'yn'},
+         {q:'Sudorese (especialmente noturna)?',qEs:'¿Sudoración (especialmente nocturna)?',type:'yn'},
+         {q:'Focos infecciosos identificados?',qEs:'¿Focos infecciosos identificados?',type:'multi',opts:['Odinofagia/faringite','Tosse/dispneia (pulmonar)','Disúria/polaciúria (urinário)','Dor abdominal (digestivo)','Secreção ou ferida local'],optsEs:['Odinofagia/faringitis','Tos/disnea (pulmonar)','Disuria/polaquiuria (urinario)','Dolor abdominal (digestivo)','Secreción o herida local']},
+         {q:'Viagens recentes ou contato com animais?',qEs:'¿Viajes recientes o contacto con animales?',type:'input',ph:'Local da viagem / tipo de animal',ph2:'Lugar del viaje / tipo de animal'},
+         {q:'Uso de medicamentos ou internação recente?',qEs:'¿Uso de medicamentos o internación reciente?',type:'input',ph:'Liste medicamentos e data de internação',ph2:'Liste medicamentos y fecha de internación'},
+         {q:'Imunossupressão ou doenças de base (HIV, neoplasia, corticoides)?',qEs:'¿Inmunosupresión o enfermedades de base (HIV, neoplasia, corticoides)?',type:'yn'},
+       ]},
+      {id:'semio-astenia',name:'Astenia / Fadiga',nameEs:'Astenia / Fatiga',icon:'😔',color:'mc-purple',
+       aeaGuide:[
+         {q:'Início?',qEs:'¿Inicio?',type:'radio',opts:['Agudo (dias)','Progressivo (semanas/meses)','Crônico (>6 meses)'],optsEs:['Agudo (días)','Progresivo (semanas/meses)','Crónico (>6 meses)']},
+         {q:'Relação com atividade física?',qEs:'¿Relación con actividad física?',type:'radio',opts:['Presente mesmo em repouso','Piora com esforço mínimo','Só com esforço moderado/intenso'],optsEs:['Presente incluso en reposo','Empeora con esfuerzo mínimo','Solo con esfuerzo moderado/intenso']},
+         {q:'Melhora com repouso?',qEs:'¿Mejora con el reposo?',type:'yn'},
+         {q:'Palidez ou dispneia de esforço (suspeita de anemia)?',qEs:'¿Palidez o disnea de esfuerzo (sospecha de anemia)?',type:'yn'},
+         {q:'Perda de peso não intencional associada?',qEs:'¿Pérdida de peso no intencional asociada?',type:'yn'},
+         {q:'Alterações do sono (insônia, hipersonia, ronco)?',qEs:'¿Alteraciones del sueño (insomnio, hipersomnia, ronquidos)?',type:'input',ph:'Descreva as alterações',ph2:'Describa las alteraciones'},
+         {q:'Poliúria e polidipsia (suspeita de diabetes)?',qEs:'¿Poliuria y polidipsia (sospecha de diabetes)?',type:'yn'},
+         {q:'Intolerância ao frio, obstipação, queda de cabelo (suspeita de hipotireoidismo)?',qEs:'¿Intolerancia al frío, estreñimiento, caída de cabello (sospecha de hipotiroidismo)?',type:'yn'},
+         {q:'Humor depressivo, anedonia ou ansiedade?',qEs:'¿Estado de ánimo depresivo, anhedonia o ansiedad?',type:'yn'},
+       ]},
+      {id:'semio-peso',name:'Perda / Ganho de Peso',nameEs:'Pérdida / Ganancia de Peso',icon:'⚖️',color:'mc-secondary',
+       aeaGuide:[
+         {q:'Quanto kg? Em quanto tempo?',qEs:'¿Cuántos kg? ¿En cuánto tiempo?',type:'input',ph:'Ex: −8 kg em 2 meses / +5 kg em 1 mês',ph2:'Ej: −8 kg en 2 meses / +5 kg en 1 mes'},
+         {q:'A variação de peso foi intencional?',qEs:'¿La variación de peso fue intencional?',type:'yn'},
+         {q:'Apetite?',qEs:'¿Apetito?',type:'radio',opts:['Aumentado (hiperfagia)','Diminuído / anorexia','Normal'],optsEs:['Aumentado (hiperfagia)','Disminuido / anorexia','Normal']},
+         {q:'Poliúria e polidipsia (diabetes)?',qEs:'¿Poliuria y polidipsia (diabetes)?',type:'yn'},
+         {q:'Sudorese, taquicardia, tremores, nervosismo (hipertireoidismo)?',qEs:'¿Sudoración, taquicardia, temblores, nerviosismo (hipertiroidismo)?',type:'yn'},
+         {q:'Intolerância ao frio, fadiga, obstipação (hipotireoidismo)?',qEs:'¿Intolerancia al frío, fatiga, estreñimiento (hipotiroidismo)?',type:'yn'},
+         {q:'Sintomas digestivos associados?',qEs:'¿Síntomas digestivos asociados?',type:'multi',opts:['Disfagia','Diarreia crônica','Náuseas/vômitos','Sangue nas fezes','Esteatorreia'],optsEs:['Disfagia','Diarrea crónica','Náuseas/vómitos','Sangre en heces','Esteatorrea']},
+         {q:'Febre, sudorese noturna ou adenomegalia (neoplasia / infecção crônica)?',qEs:'¿Fiebre, sudoración nocturna o adenomegalias (neoplasia / infección crónica)?',type:'yn'},
+       ]},
+    ]},
+  ],
   cirurgia: [
     {cat:'Abdome Agudo',items:[
       {id:'apendicite',name:'Apendicite / Abdome Agudo',nameEs:'Apendicitis / Abdomen Agudo',icon:'🔪',color:'mc-danger',isPain:true,
@@ -2283,18 +2399,20 @@ function updateSpecCounts(){
     data.forEach(function(cat){ n += (cat.items||[]).length; });
     return n;
   }
+  var elSem = document.getElementById('count-semiologia');
   var elClin = document.getElementById('count-clinica');
   var elCir = document.getElementById('count-cirurgia');
+  if (elSem) elSem.textContent = String(countMotivos('semiologia'));
   if (elClin) elClin.textContent = String(countMotivos('clinica'));
   if (elCir) elCir.textContent = String(countMotivos('cirurgia'));
 }
 
 function showSpec(spec){
   currentSpec = spec;
-  document.getElementById('spec-header-clinica').style.display = spec==='clinica'?'':'none';
-  document.getElementById('spec-header-cirurgia').style.display = spec==='cirurgia'?'':'none';
-  document.getElementById('stab-clinica').classList.toggle('active', spec==='clinica');
-  document.getElementById('stab-cirurgia').classList.toggle('active', spec==='cirurgia');
+  ['semiologia','clinica','cirurgia'].forEach(function(s){
+    document.getElementById('spec-header-'+s).style.display = spec===s?'':'none';
+    document.getElementById('stab-'+s).classList.toggle('active', spec===s);
+  });
   renderMotivoGrid(spec);
 }
 
