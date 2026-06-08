@@ -239,3 +239,11 @@ febre") que havia sido replicado por engano em todos os 8 motivos de consulta.
 Mantido SOMENTE em Febre/Fiebre — é específico de febre e não fazia sentido
 aparecer em Cefaleia, Dor Torácica, etc. Cada motivo volta a exibir apenas
 suas próprias mnemotécnicas.
+
+[CORRIGIDO 2026-06-07] BUG: card de exemplo "Paciente A.P.L. — Cefaleia"
+aparecia por 1-2s no dashboard mobile e depois sumia. Causa: havia 3 cards de
+exemplo fixos no HTML de "HCs recentes" — 2 com style="display:none" e UM
+sem (o da Cefaleia), que ficava visível até uiLoadRecentHCs() rodar e
+substituir o conteúdo pelos dados reais (vazio, no caso). Removidos os 3
+cards de exemplo do HTML — a lista agora começa vazia e só é preenchida
+dinamicamente pela função real.
