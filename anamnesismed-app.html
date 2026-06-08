@@ -2148,7 +2148,7 @@ const MOTIVOS = {
          {q:'Fatores de piora?',qEs:'¿Factores que agravan?',type:'multi',opts:['Esforço físico','Alimentação','Palpação','Movimento','Inspiração profunda','Defecação'],optsEs:['Esfuerzo físico','Alimentación','Palpación','Movimiento','Inspiración profunda','Defecación']},
          {q:'Sintomas associados?',qEs:'¿Síntomas asociados?',type:'multi',opts:['Náuseas/vômitos','Febre','Dispneia','Sudorese','Palidez','Alteração intestinal'],optsEs:['Náuseas/vómitos','Fiebre','Disnea','Sudoración','Palidez','Alteración intestinal']},
        ]},
-      {id:'semio-disnea',name:'Dispneia',nameEs:'Disnea',icon:'🫁',color:'mc-primary',
+      {id:'semio-disnea',name:'Dispneia',nameEs:'Disnea',icon:'🫁',color:'mc-primary',rasHighlight:['resp','cardio'],
        aeaGuide:[
          {q:'Início?',qEs:'¿Inicio?',type:'radio',opts:['Súbito (minutos)','Progressivo (horas/dias)','Crônico (semanas/meses)'],optsEs:['Súbito (minutos)','Progresivo (horas/días)','Crónico (semanas/meses)']},
          {q:'Grau de dispneia (MRC)?',qEs:'¿Grado de disnea (MRC)?',type:'radio',opts:['Grau 1 — só esforço intenso','Grau 2 — sobe escadas/ladeiras','Grau 3 — caminhada plana em ritmo normal','Grau 4 — repouso ou mínimo esforço'],optsEs:['Grado 1 — solo esfuerzo intenso','Grado 2 — sube escaleras/cuestas','Grado 3 — caminata plana a ritmo normal','Grado 4 — reposo o mínimo esfuerzo']},
@@ -2172,7 +2172,7 @@ const MOTIVOS = {
          {q:'Cardiopatia ou pneumopatia conhecida?',qEs:'¿Cardiopatía o neumopatía conocida?',type:'input',ph:'Ex: DPOC, ICC, cardiopatia congênita',ph2:'Ej: EPOC, ICC, cardiopatía congénita'},
          {q:'Temperatura dos membros?',qEs:'¿Temperatura de los miembros?',type:'radio',opts:['Extremidades frias (sugere cianose periférica)','Extremidades quentes (sugere cianose central)'],optsEs:['Extremidades frías (sugiere cianosis periférica)','Extremidades calientes (sugiere cianosis central)']},
        ]},
-      {id:'semio-edema',name:'Edema',nameEs:'Edema',icon:'🦵',color:'mc-secondary',
+      {id:'semio-edema',name:'Edema',nameEs:'Edema',icon:'🦵',color:'mc-secondary',rasHighlight:['cardio','genito','resp','digest','pele'],
        aeaGuide:[
          {q:'Localização?',qEs:'¿Localización?',type:'radio',opts:['MMII bilateral','MMII unilateral','Facial/periorbital','Generalizado (anasarca)','Ascite isolada'],optsEs:['MMII bilateral','MMII unilateral','Facial/periorbitario','Generalizado (anasarca)','Ascitis aislada']},
          {q:'Cacifo (pitting — deixa impressão digital)?',qEs:'¿Fóvea (pitting — deja marca digital)?',type:'yn'},
@@ -2183,7 +2183,7 @@ const MOTIVOS = {
          {q:'Dor, hiperemia ou calor local (trombose venosa profunda)?',qEs:'¿Dolor, hiperemia o calor local (trombosis venosa profunda)?',type:'yn'},
          {q:'Febre ou ferida local (erisipela / linfedema infeccioso)?',qEs:'¿Fiebre o herida local (erisipela / linfedema infeccioso)?',type:'yn'},
        ]},
-      {id:'semio-ictericia',name:'Icterícia',nameEs:'Ictericia',icon:'🟡',color:'mc-accent',
+      {id:'semio-ictericia',name:'Icterícia',nameEs:'Ictericia',icon:'🟡',color:'mc-accent',rasHighlight:['digest','pele'],
        aeaGuide:[
          {q:'Colúria (urina escura, cor de chá ou Coca-Cola)?',qEs:'¿Coluria (orina oscura, color té o Coca-Cola)?',type:'yn'},
          {q:'Acolia ou hipocolia (fezes claras/esbranquiçadas)?',qEs:'¿Acolia o hipocolia (heces claras/blanquecinas)?',type:'yn'},
@@ -2197,7 +2197,7 @@ const MOTIVOS = {
        ]},
     ]},
     {cat:'Sintomas Constitucionais',catEs:'Síntomas Constitucionales',items:[
-      {id:'semio-febre',name:'Febre',nameEs:'Fiebre',icon:'🌡️',color:'mc-danger',
+      {id:'semio-febre',name:'Febre',nameEs:'Fiebre',icon:'🌡️',color:'mc-danger',rasHighlight:['cabeca','resp','cardio','digest','genito','pele'],
        aeaGuide:[
          {q:'Temperatura máxima registrada?',qEs:'¿Temperatura máxima registrada?',type:'input',ph:'°C — se não medida, descrever como subjetiva',ph2:'°C — si no medida, describir como subjetiva'},
          {q:'Padrão da febre?',qEs:'¿Patrón de la fiebre?',type:'radio',opts:['Contínua (não normaliza)','Remitente (cai mas não normaliza)','Intermitente (normaliza entre picos)','Héctica/séptica (oscilações com calafrios intensos)'],optsEs:['Continua (no normaliza)','Remitente (baja pero no normaliza)','Intermitente (normaliza entre picos)','Héctica/séptica (oscilaciones con escalofríos intensos)']},
@@ -3485,6 +3485,12 @@ const GUIDE_CONTENT = {
   }
 }
 }; // end GUIDE_CONTENT
+
+// Aliases: motivos da Semiologia Básica reutilizam o GUIDE_CONTENT da Clínica Médica
+GUIDE_CONTENT['semio-febre']     = GUIDE_CONTENT['febre'];
+GUIDE_CONTENT['semio-disnea']    = GUIDE_CONTENT['dispneia'];
+GUIDE_CONTENT['semio-ictericia'] = GUIDE_CONTENT['ictericia'];
+GUIDE_CONTENT['semio-edema']     = GUIDE_CONTENT['edema'];
 
 // ── GUIDE CONTENT BUILDERS ────────────────────────────
 function buildMnemonicsHTML(gc){
