@@ -1799,7 +1799,7 @@ const MOTIVOS = {
          {q:'Intensidade (EVA 0-10)',qEs:'Intensidad (EVA 0-10)',type:'input',ph:'0 a 10',ph2:'0 a 10'},
          {q:'Duração de cada episódio',qEs:'Duración de cada episodio',type:'radio',opts:['Minutos','Horas (4-72h)','Mais de 72h/contínua']},
          {q:'Início',qEs:'Inicio',type:'radio',opts:['Súbito/explosivo (thunderclap — pico em <1min)','Gradual/progressivo']},
-         {q:'Fatores desencadeantes ou que aliviam (estresse, sono, jejum, álcool, menstruação, posição, repouso em ambiente escuro)',qEs:'Factores desencadenantes o que alivian (estrés, sueño, ayuno, alcohol, menstruación, posición, reposo en ambiente oscuro)',type:'input',ph:'Descreva os fatores',ph2:'Describa los factores'},
+         {q:'Fatores desencadeantes ou que aliviam',qEs:'Factores desencadenantes o que alivian',type:'multi',opts:['Estresse/tensão emocional','Privação de sono ou sono em excesso','Jejum prolongado/pular refeições','Consumo de álcool','Período menstrual/ciclo hormonal','Mudança de posição (piora ao deitar/curvar-se)','Luz forte ou brilho intenso (fotofobia)','Odores fortes/perfumes','Mudanças climáticas/pressão atmosférica','Esforço físico','Repouso em ambiente escuro e silencioso alivia','Sem fator identificado'],optsEs:['Estrés/tensión emocional','Privación de sueño o exceso de sueño','Ayuno prolongado/saltarse comidas','Consumo de alcohol','Período menstrual/ciclo hormonal','Cambio de posición (empeora al acostarse/agacharse)','Luz fuerte o brillo intenso (fotofobia)','Olores fuertes/perfumes','Cambios climáticos/presión atmosférica','Esfuerzo físico','El reposo en ambiente oscuro y silencioso alivia','Sin factor identificado']},
          {q:'Periodicidade — episódica, em crises (salvas) ou diária/contínua?',qEs:'¿Periodicidad — episódica, en racimos (salvas) o diaria/continua?',type:'radio',opts:['Episódica esporádica','Em crises/salvas (cluster)','Crônica diária ou quase diária']},
          {q:'Piora com Valsalva, tosse ou esforço físico?',qEs:'¿Empeora con Valsalva, tos o esfuerzo físico?',type:'yn'},
          {q:'Náuseas/vômitos associados?',qEs:'¿Náuseas/vómitos asociados?',type:'yn'},
@@ -1809,7 +1809,8 @@ const MOTIVOS = {
          {q:'Sinais de alarme — pior cefaleia da vida, início súbito, febre, rigidez de nuca, déficit neurológico focal, alteração do nível de consciência, primeira crise após os 50 anos, gravidez/puerpério, mudança no padrão habitual (SNOOP)?',qEs:'¿Signos de alarma — peor cefalea de la vida, inicio súbito, fiebre, rigidez de nuca, déficit neurológico focal, alteración del nivel de conciencia, primera crisis después de los 50 años, embarazo/puerperio, cambio en el patrón habitual (SNOOP)?',type:'yn'},
          {q:'Antecedentes pessoais ou familiares de enxaqueca/cefaleias?',qEs:'¿Antecedentes personales o familiares de migraña/cefaleas?',type:'yn'},
          {q:'Trauma craniano recente?',qEs:'¿Traumatismo craneal reciente?',type:'yn'},
-         {q:'Uso frequente de analgésicos (risco de cefaleia por uso excessivo de medicação)? Quais e com que frequência?',qEs:'¿Uso frecuente de analgésicos (riesgo de cefalea por uso excesivo de medicación)? ¿Cuáles y con qué frecuencia?',type:'input',ph:'Liste os medicamentos e frequência de uso',ph2:'Liste los medicamentos y frecuencia de uso'},
+         {q:'Frequência de uso de analgésicos (risco de cefaleia por uso excessivo de medicação)',qEs:'Frecuencia de uso de analgésicos (riesgo de cefalea por uso excesivo de medicación)',type:'radio',opts:['Não usa analgésicos para a dor de cabeça','Uso ocasional (poucas vezes ao mês)','Uso frequente (≥2x/semana)','Uso quase diário (≥10-15 dias/mês — sugere cefaleia por uso excessivo de medicação)'],optsEs:['No usa analgésicos para el dolor de cabeza','Uso ocasional (pocas veces al mes)','Uso frecuente (≥2x/semana)','Uso casi diario (≥10-15 días/mes — sugiere cefalea por uso excesivo de medicación)']},
+        {q:'Quais medicamentos costuma usar (nome/marca)?',qEs:'¿Qué medicamentos suele usar (nombre/marca)?',type:'input',ph:'Ex: dipirona, paracetamol, ibuprofeno, triptano...',ph2:'Ej: dipirona, paracetamol, ibuprofeno, triptán...'},
        ],
        rasHighlight:['cabeca','neuro']
       },
@@ -2382,6 +2383,15 @@ function renderAEAGuide(mObj){
       q.opts.forEach(function(o,oi){
         var oEs = (q.optsEs && q.optsEs[oi]) || o;
         html += '<div class="f-radio" onclick="selectRadio(this,\''+id+'\')"><span class="pt">'+o+'</span><span class="es">'+oEs+'</span></div>';
+      });
+      html += '</div>';
+    } else if(q.type==='multi'){
+      html += '<div class="aea-q-hint pt" style="font-size:11px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Selecione quantas opções forem aplicáveis</div>';
+      html += '<div class="aea-q-hint es" style="font-size:11px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Seleccione todas las opciones que correspondan</div>';
+      html += '<div class="f-radios" id="'+id+'">';
+      q.opts.forEach(function(o,oi){
+        var oEs = (q.optsEs && q.optsEs[oi]) || o;
+        html += '<div class="f-radio" onclick="selectMultiChip(this,\''+id+'\')"><span class="pt">'+o+'</span><span class="es">'+oEs+'</span></div>';
       });
       html += '</div>';
     } else if(q.type==='yn'){
@@ -3498,6 +3508,15 @@ function selectRadio(el, groupId){
   if(!parent) return;
   parent.querySelectorAll('.f-radio').forEach(function(r){r.classList.remove('sel','sel-danger')});
   el.classList.add('sel');
+  updateProgress();
+}
+
+// Seleção múltipla (toggle): usada quando vários fatores podem coexistir
+// (ex: fatores desencadeantes de cefaleia — estresse + jejum + privação de sono ao mesmo tempo)
+function selectMultiChip(el, groupId){
+  var parent = document.getElementById(groupId);
+  if(!parent) return;
+  el.classList.toggle('sel');
   updateProgress();
 }
 
