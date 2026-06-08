@@ -127,8 +127,11 @@ async function authGetSession() {
  * Obter usuário atual
  */
 async function authGetUser() {
-  const { data: { user } } = await sb.auth.getUser();
-  return user;
+  // OBS: sb.auth.getUser() faz uma chamada de rede ao servidor de Auth que pode
+  // travar/deadlockar o navegador (bug conhecido do supabase-js v2 com navigator.locks).
+  // getSession() lê a sessão local (instantâneo) e já contém o usuário — usamos isso.
+  const { data: { session } } = await sb.auth.getSession();
+  return session ? session.user : null;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1056,10 +1059,4 @@ async function stripeCheckout() {
 window.authLogout         = authLogout;
 window.authSendMagicLink  = authSendMagicLink;
 window.authGoogleLogin    = authGoogleLogin;
-window.stripeCheckout     = stripeCheckout;
-window.hcSave             = hcSave;
-window.hcDelete           = hcDelete;
-window.hcListAll          = hcListAll;
-window.uiLoadRecentHCs    = uiLoadRecentHCs;
-window.profileCheckAccess = profileCheckAccess;
-window.onboardingCheckAndShow = onboardingCheckAndShow;
+window.stripe
