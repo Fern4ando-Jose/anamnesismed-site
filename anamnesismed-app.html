@@ -1689,6 +1689,10 @@ function setLang(l){
     el.setAttribute('placeholder', ph);
   });
   try{localStorage.setItem('am-lang',l)}catch(e){}
+  // Re-renderiza o grid de motivos com o novo idioma
+  if(typeof currentSpec !== 'undefined' && document.getElementById('motivo-content')){
+    renderMotivoGrid(currentSpec);
+  }
 }
 
 // ── SIDEBAR ───────────────────────────────────────────
@@ -2132,7 +2136,7 @@ const MOTIVOS = {
     ]},
   ],
   semiologia: [
-    {cat:'Dor e Dispneia / Dolor y Disnea',items:[
+    {cat:'Dor e Dispneia',catEs:'Dolor y Disnea',items:[
       {id:'semio-dor',name:'Dor (Inespecífica)',nameEs:'Dolor (Inespecífico)',icon:'🤕',color:'mc-danger',isPain:true,
        aeaGuide:[
          {q:'Localização da dor?',qEs:'¿Localización del dolor?',type:'input',ph:'Ex: abdominal, torácica, cabeça, membros',ph2:'Ej: abdominal, torácica, cabeza, miembros'},
@@ -2157,7 +2161,7 @@ const MOTIVOS = {
          {q:'Tabagismo ou exposição ocupacional (poeiras, gases)?',qEs:'¿Tabaquismo o exposición ocupacional (polvos, gases)?',type:'input',ph:'Anos / maços-ano / tipo de exposição',ph2:'Años / paquetes-año / tipo de exposición'},
        ]},
     ]},
-    {cat:'Sinais Clínicos / Signos Clínicos',items:[
+    {cat:'Sinais Clínicos',catEs:'Signos Clínicos',items:[
       {id:'semio-cianose',name:'Cianose',nameEs:'Cianosis',icon:'🔵',color:'mc-navy',
        aeaGuide:[
          {q:'Localização da cianose?',qEs:'¿Localización de la cianosis?',type:'radio',opts:['Central (lábios, língua, mucosas)','Periférica (extremidades, dedos)','Mista (central + periférica)'],optsEs:['Central (labios, lengua, mucosas)','Periférica (extremidades, dedos)','Mixta (central + periférica)']},
@@ -2192,7 +2196,7 @@ const MOTIVOS = {
          {q:'Antecedente de hepatopatia, colelitíase ou cirurgia biliar?',qEs:'¿Antecedente de hepatopatía, colelitiasis o cirugía biliar?',type:'input',ph:'Ex: fígado gorduroso, cálculos, colecistectomia',ph2:'Ej: hígado graso, cálculos, colecistectomía'},
        ]},
     ]},
-    {cat:'Sintomas Constitucionais / Síntomas Constitucionales',items:[
+    {cat:'Sintomas Constitucionais',catEs:'Síntomas Constitucionales',items:[
       {id:'semio-febre',name:'Febre',nameEs:'Fiebre',icon:'🌡️',color:'mc-danger',
        aeaGuide:[
          {q:'Temperatura máxima registrada?',qEs:'¿Temperatura máxima registrada?',type:'input',ph:'°C — se não medida, descrever como subjetiva',ph2:'°C — si no medida, describir como subjetiva'},
@@ -2421,7 +2425,8 @@ function renderMotivoGrid(spec){
   var lang = document.documentElement.getAttribute('data-lang') || 'pt';
   var html = '';
   data.forEach(function(cat){
-    html += '<div class="cat-section"><div class="cat-lbl">'+cat.cat+'</div>';
+    var catLabel = lang==='es'?(cat.catEs||cat.cat):cat.cat;
+    html += '<div class="cat-section"><div class="cat-lbl">'+catLabel+'</div>';
     html += '<div class="motivo-grid">';
     cat.items.forEach(function(m){
       var nm = lang==='es'?(m.nameEs||m.name):m.name;
