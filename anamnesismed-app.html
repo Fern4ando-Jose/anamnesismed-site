@@ -2411,6 +2411,12 @@ function updateSpecCounts(){
   if (elCir) elCir.textContent = String(countMotivos('cirurgia'));
 }
 
+// Lê hash da URL (ex: #semiologia, #clinica, #cirurgia) e abre a especialidade correta
+(function(){
+  var hash = (window.location.hash||'').replace('#','').toLowerCase();
+  if(hash === 'semiologia' || hash === 'clinica' || hash === 'cirurgia') currentSpec = hash;
+})();
+
 function showSpec(spec){
   currentSpec = spec;
   ['semiologia','clinica','cirurgia'].forEach(function(s){
@@ -4309,7 +4315,7 @@ function exportPDF(){
 (function(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
   updateSpecCounts();
-  showSpec('clinica');
+  showSpec(currentSpec); // usa hash da URL se presente (#semiologia, #clinica, #cirurgia)
   // Marca a HC como "com alterações não salvas" a partir de qualquer interação no formulário
   var hcScreen = document.getElementById('screen-hc');
   if(hcScreen){
