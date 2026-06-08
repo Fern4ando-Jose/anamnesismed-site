@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt" data-lang="pt">
+<html lang="es" data-lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,8 +74,8 @@ nav{
   <a href="anamnesismed-landing.html" class="nav-logo">Anamnesis<span>Med</span></a>
   <div class="nav-right">
     <div class="lang-toggle">
-      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
     </div>
   </div>
 </nav>
@@ -226,7 +226,7 @@ function setLang(l){
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');
   try{localStorage.setItem('am-lang',l)}catch(e){}
 }
-(function(){try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}})();
+(function(){var s;try{s=localStorage.getItem('am-lang')}catch(e){}setLang(s||'es');})();
 </script>
 </body>
 </html>

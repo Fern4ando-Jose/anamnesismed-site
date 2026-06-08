@@ -77,8 +77,8 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
   <div class="topbar">
     <a class="topbar-back" href="anamnesismed-dashboard.html">← <span class="pt">Voltar ao início</span><span class="es">Volver al inicio</span></a>
     <div class="lang-switch">
-      <div class="lang-btn active" data-lang="pt" onclick="setLang('pt')">PT</div>
-      <div class="lang-btn" data-lang="es" onclick="setLang('es')">ES</div>
+      <div class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</div>
+      <div class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</div>
     </div>
   </div>
 
@@ -95,12 +95,18 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 </div>
 
 <script>
-var LANG = 'pt';
+var LANG = 'es';
 function setLang(l){
   LANG = l;
   document.body.classList.toggle('lang-es', l==='es');
   document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active', b.dataset.lang===l)});
+  try{localStorage.setItem('am-lang', l)}catch(e){}
 }
+(function(){
+  var saved;
+  try{saved = localStorage.getItem('am-lang')}catch(e){}
+  setLang(saved || 'es');
+})();
 
 // Theme registry — id, display name (pt/es), icon, and the GUIDE_CONTENT-style data (mnemonics + manobras only)
 var THEMES = [

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt" data-lang="pt">
+<html lang="es" data-lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -478,8 +478,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   </nav>
   <div class="sb-bottom">
     <div class="sb-lang">
-      <button class="sb-lang-btn" id="slang-es" onclick="setLang('es')">ES</button>
-      <button class="sb-lang-btn active" id="slang-pt" onclick="setLang('pt')">PT</button>
+      <button class="sb-lang-btn active" id="slang-es" onclick="setLang('es')">ES</button>
+      <button class="sb-lang-btn" id="slang-pt" onclick="setLang('pt')">PT</button>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <a href="anamnesismed-dashboard.html" class="sb-user" style="flex:1;min-width:0">
@@ -2488,8 +2488,8 @@ function renderAEAGuide(mObj){
       html += '</div>';
     } else if(q.type==='yn'){
       html += '<div class="yn-btns" style="justify-content:flex-start;gap:6px;display:flex">';
-      html += '<button class="yn-btn" onclick="ynBtnSel(this,\''+id+'\',\'sim\')">Sim / Sí</button>';
-      html += '<button class="yn-btn" onclick="ynBtnSel(this,\''+id+'\',\'nao\')">Não / No</button>';
+      html += '<button class="yn-btn" onclick="ynBtnSel(this,\''+id+'\',\'sim\')"><span class="pt">Sim</span><span class="es">Sí</span></button>';
+      html += '<button class="yn-btn" onclick="ynBtnSel(this,\''+id+'\',\'nao\')"><span class="pt">Não</span><span class="es">No</span></button>';
       html += '</div>';
     } else if(q.type==='input'){
       html += '<input class="f-input" type="text" id="'+id+'" placeholder="'+(q.ph||'')+'">';
@@ -3802,7 +3802,7 @@ function exportPDF(){
 
 // ── INIT ──────────────────────────────────────────────
 (function(){
-  try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
+  try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
   updateSpecCounts();
   showSpec('clinica');
   // Auto-set today's date

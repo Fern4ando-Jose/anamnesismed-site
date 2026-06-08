@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt" data-lang="pt">
+<html lang="es" data-lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -159,8 +159,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <div class="topbar-subtitle es">Gestiona tus datos y preferencias</div>
     </div>
     <div class="lang-toggle">
-      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
     </div>
   </header>
 
@@ -268,11 +268,12 @@ function setLang(l){
   document.documentElement.setAttribute('data-lang', l);
   document.getElementById('btn-pt').classList.toggle('active', l==='pt');
   document.getElementById('btn-es').classList.toggle('active', l==='es');
-  localStorage.setItem('am_lang', l);
+  try{localStorage.setItem('am-lang', l)}catch(e){}
 }
 (function(){
-  var saved = localStorage.getItem('am_lang');
-  if(saved) setLang(saved);
+  var saved;
+  try{saved = localStorage.getItem('am-lang')}catch(e){}
+  setLang(saved || 'es');
 })();
 </script>
 

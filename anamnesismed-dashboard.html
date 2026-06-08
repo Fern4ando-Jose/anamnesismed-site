@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt" data-lang="pt">
+<html lang="es" data-lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -380,8 +380,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
     <div class="topbar-right">
       <div class="lang-toggle">
-        <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
-        <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
       </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
@@ -594,7 +594,7 @@ function setView(v){
   // future: show/hide panels
 }
 (function(){
-  try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
+  try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
   // Show menu button on mobile
   if(window.innerWidth<=768){
     document.getElementById('menu-btn').style.display='block';
