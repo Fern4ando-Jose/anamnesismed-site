@@ -220,6 +220,110 @@ var THEMES = [
   {title:'Sinal de Blumberg',subtitle:'Irritação peritoneal',steps:['Palpar FID lentamente','Comprimir profundo com 3 dedos','Retirar mão de modo súbito'],normal:'Sem dor à descompressão',abnormal:'Dor aguda ao soltar (Blumberg +) → peritonite local'},
   {title:'Sinal de Rovsing',subtitle:'Foco em FID',steps:['Comprimir firmemente o QIE/FIE','Manter 10 segundos'],normal:'Sem dor em FID',abnormal:'Dor em FID ao comprimir FIE (Rovsing +)'},
   {title:'Ponto de McBurney',subtitle:'Apendicite típica',steps:['1/3 externo linha umbigo-EIAS direita','Pressão pontual com polegar'],normal:'Sem sensibilidade especial',abnormal:'Dor máxima → apendicite típica'}
+ ]},
+{id:'tontura-vertigem', name:'Tontura/Vertigem', nameEs:'Mareo/Vértigo', icon:'🌀',
+ mnemonics:[{kw:'VERTIGEM', name:'Causas de tontura/vertigem',rows:[
+   ['V','Vestibular periférico','VPPB, neurite vestibular, doença de Ménière'],['E','Encefálico/central','AVC de fossa posterior, esclerose múltipla, enxaqueca vestibular'],['R','Repercussão cardiovascular','Hipotensão ortostática, arritmias, baixo débito'],['T','Tóxico/medicamentoso','Ototóxicos, anticonvulsivantes, álcool'],['I','Infeccioso/inflamatório','Labirintite, otite média'],['G','Glicemia/metabólico','Hipoglicemia, distúrbios eletrolíticos'],['E²','Emocional/psicogênico','Ansiedade, transtorno de pânico'],['M','Multissensorial (idoso)','Combinação de déficits visuais, proprioceptivos e vestibulares']
+ ]}],
+ manobras:[
+  {title:'Dix-Hallpike',subtitle:'VPPB de canal posterior',steps:['Sentar, virar a cabeça 45° para um lado','Deitar rapidamente com a cabeça pendente 20°','Observar nistagmo e latência/duração'],normal:'Sem nistagmo ou vertigem',abnormal:'Nistagmo rotatório com latência e fadigabilidade → VPPB'},
+  {title:'Romberg',subtitle:'Avaliação do equilíbrio/propriocepção',steps:['Paciente em pé, pés juntos, olhos abertos depois fechados','Observar oscilação/queda'],normal:'Mantém-se estável de olhos fechados',abnormal:'Desequilíbrio ao fechar os olhos (Romberg+) → causa proprioceptiva/vestibular'},
+  {title:'HINTS (head impulse, nistagmo, skew)',subtitle:'Diferenciar causa central x periférica',steps:['Head impulse test (rotação rápida da cabeça observando o olhar)','Avaliar padrão do nistagmo','Teste do desvio ocular vertical (skew)'],normal:'Impulso cefálico normal, nistagmo unidirecional, sem skew → periférico',abnormal:'Impulso normal + nistagmo bidirecional + skew presente → sugere causa central (AVC)'},
+  {title:'PA ortostática',subtitle:'Hipotensão postural',steps:['Medir PA/FC deitado e após 1-3min em pé'],normal:'Queda <20/10mmHg sem sintomas',abnormal:'Queda significativa com sintomas → hipotensão ortostática'}
+ ]},
+{id:'perda-peso', name:'Perda de Peso', nameEs:'Pérdida de Peso', icon:'⚖️',
+ mnemonics:[{kw:'EMAGRECE', name:'Causas de emagrecimento involuntário',rows:[
+   ['E','Endócrino','Hipertireoidismo, diabetes descompensado, insuficiência adrenal'],['M','Maligno (neoplasia)','Tumores ocultos — perda progressiva, sintomas B'],['A','Aparelho digestivo','Má-absorção, doença celíaca, DII'],['G','Gastrointestinal infeccioso/parasitário','Parasitoses, tuberculose intestinal'],['R','Repercussão psiquiátrica','Depressão, transtornos alimentares'],['E²','Estado infeccioso crônico','TB, HIV, endocardite'],['C','Crônico/medicamentoso','Doenças crônicas avançadas, polifarmácia, idosos'],['E³','Esofagogástrico (disfagia)','Neoplasia esofágica/gástrica, estenoses']
+ ]}],
+ manobras:[
+  {title:'Avaliação nutricional/IMC',subtitle:'Quantificar a perda',steps:['Calcular IMC e % de perda em relação ao peso habitual','Avaliar prega cutânea e massa muscular'],normal:'Peso estável, IMC adequado',abnormal:'Perda >5% em 1 mês ou >10% em 6 meses → investigar'},
+  {title:'Palpação de linfonodos',subtitle:'Pesquisa de doença sistêmica',steps:['Palpar cadeias cervicais, axilares e inguinais'],normal:'Sem linfonodomegalias',abnormal:'Linfonodos aumentados/endurecidos → investigar neoplasia/infecção'},
+  {title:'Palpação de tireoide',subtitle:'Suspeita de hipertireoidismo',steps:['Palpar a glândula durante a deglutição'],normal:'Tireoide não palpável/normal',abnormal:'Bócio ou nódulos → investigar disfunção tireoidiana'},
+  {title:'Exame abdominal',subtitle:'Pesquisa de massas/organomegalias',steps:['Palpação sistemática dos quadrantes'],normal:'Sem massas ou organomegalias',abnormal:'Massa ou hepatoesplenomegalia → investigação de neoplasia'}
+ ]},
+{id:'nauseas-vomitos', name:'Náuseas e Vômitos', nameEs:'Náuseas y Vómitos', icon:'🤢',
+ mnemonics:[{kw:'VOMITAR', name:'Causas de náuseas e vômitos',rows:[
+   ['V','Vestibular/SNC','Vertigem, hipertensão intracraniana, enxaqueca'],['O','Obstrução/causas GI','Obstrução intestinal, gastroparesia, úlcera, colecistite'],['M','Medicamentos/toxinas','Quimioterápicos, opioides, álcool, intoxicações'],['I','Infecção','Gastroenterite, ITU, meningite'],['T','Transtornos metabólicos','Cetoacidose, uremia, hipercalcemia'],['A','Abdome agudo','Apendicite, pancreatite, isquemia mesentérica'],['R','Reprodutivo (gravidez)','Hiperêmese gravídica']
+ ]}],
+ manobras:[
+  {title:'Avaliação de desidratação',subtitle:'Gravidade do quadro',steps:['Turgor cutâneo, mucosas, PA/FC, nível de consciência'],normal:'Mucosas úmidas, sinais vitais estáveis',abnormal:'Mucosas secas, taquicardia, hipotensão → desidratação significativa'},
+  {title:'Exame abdominal sistemático',subtitle:'Identificar causa abdominal',steps:['Inspeção, ausculta, percussão e palpação dos quadrantes'],normal:'Abdome flácido, RHA normais',abnormal:'Distensão, RHA alterados, dor localizada → investigar obstrução/abdome agudo'},
+  {title:'Sinal de Murphy',subtitle:'Suspeita de colecistite',steps:['Palpar hipocôndrio direito durante inspiração profunda'],normal:'Inspiração completa sem dor',abnormal:'Interrupção da inspiração por dor (Murphy+) → colecistite'}
+ ]},
+{id:'diarreia', name:'Diarreia', nameEs:'Diarrea', icon:'💧',
+ mnemonics:[{kw:'DIARREIA', name:'Causas e mecanismos da diarreia',rows:[
+   ['D','Disabsortiva','Doença celíaca, insuficiência pancreática'],['I','Infecciosa aguda','Viral, bacteriana, parasitária'],['A','Alimentar/intolerâncias','Lactose, laxantes (osmótica)'],['R','Resposta inflamatória (DII)','Crohn, retocolite ulcerativa'],['R²','Redução de absorção (secretora)','Toxinas bacterianas, tumores neuroendócrinos'],['E','Endócrina/medicamentosa','Hipertireoidismo, antibióticos'],['I²','Intestino irritável','Funcional, sem sinais de alarme'],['A²','AIDS/imunossupressão','Infecções oportunistas']
+ ]}],
+ manobras:[
+  {title:'Avaliação de desidratação',subtitle:'Gravidade da diarreia aguda',steps:['Turgor cutâneo, mucosas, PA/FC, diurese'],normal:'Sinais vitais estáveis, mucosas úmidas',abnormal:'Sinais de desidratação moderada/grave → reposição EV'},
+  {title:'Toque retal',subtitle:'Sangramento e massas',steps:['Inspeção perianal e toque digital'],normal:'Sem massas/sangue',abnormal:'Sangue, massa ou impactação → investigar causa orgânica'},
+  {title:'Exame abdominal',subtitle:'Dor localizada/distensão/massas',steps:['Inspeção, ausculta, percussão, palpação'],normal:'Abdome flácido e indolor',abnormal:'Dor localizada, massas ou distensão → causa orgânica/inflamatória'}
+ ]},
+{id:'palpitacoes', name:'Palpitações', nameEs:'Palpitaciones', icon:'💓',
+ mnemonics:[{kw:'PULSAR', name:'Causas de palpitações',rows:[
+   ['P','Pânico/ansiedade','Sensação de coração disparado, sudorese, dispneia'],['U','Uso de estimulantes','Cafeína, álcool, tabaco, drogas'],['L','Labilidade hormonal (tireoide)','Hipertireoidismo'],['S','Sangue (anemia)','Palidez, fadiga, taquicardia compensatória'],['A','Arritmias','FA, TSV, extrassístoles, flutter'],['R','Repercussão estrutural cardíaca','Valvopatias, cardiomiopatias, IC']
+ ]}],
+ manobras:[
+  {title:'Palpação do pulso radial/carotídeo',subtitle:'Identificar irregularidade do ritmo',steps:['Palpar o pulso por 30-60s avaliando frequência, ritmo e amplitude'],normal:'Pulso regular 60-100bpm',abnormal:'Irregularmente irregular → FA; rápido e regular → TSV'},
+  {title:'Manobra de Valsalva',subtitle:'Manobra vagal diagnóstica/terapêutica',steps:['Inspirar profundamente e fazer força expiratória contra glote fechada por 10-15s'],normal:'Variação discreta da FC',abnormal:'Reversão de TSV ou queda abrupta da FC → resposta vagal'},
+  {title:'Ausculta cardíaca completa',subtitle:'Identificar arritmias e sopros',steps:['Auscultar os 4 focos clássicos avaliando ritmo e sopros'],normal:'Bulhas rítmicas, sem sopros',abnormal:'Ritmo irregular ou sopros → investigar arritmia/cardiopatia'}
+ ]},
+{id:'sintomas-urinarios', name:'Sintomas Urinários', nameEs:'Síntomas Urinarios', icon:'🚽',
+ mnemonics:[{kw:'URINA', name:'Causas de disúria/sintomas urinários',rows:[
+   ['U','Uretrite/DST','Corrimento uretral, relação de risco, disúria'],['R','Renal/litíase','Cólica nefrética, dor lombar irradiada, hematúria'],['I','Infecção baixa (cistite)','Disúria, polaciúria, urgência, dor suprapúbica'],['N','Nefrite/pielonefrite (ITU alta)','Febre alta, calafrios, dor lombar, Giordano+'],['A','Adenoma/prostatite','Jato fraco, dor perineal, retenção']
+ ]}],
+ manobras:[
+  {title:'Sinal de Giordano',subtitle:'Suspeita de pielonefrite',steps:['Percutir suavemente o ângulo costovertebral comparando lados'],normal:'Sem dor à percussão',abnormal:'Dor importante (Giordano+) → pielonefrite/litíase'},
+  {title:'Exame de genitália externa',subtitle:'Investigação de uretrite/DST',steps:['Inspecionar meato uretral e corrimento; palpar testículos/região vulvovaginal'],normal:'Sem corrimento ou dor',abnormal:'Corrimento ou dor testicular → DST/epididimite'},
+  {title:'Toque retal (avaliação prostática)',subtitle:'Suspeita de prostatite/HPB',steps:['Toque retal avaliando tamanho, consistência e dor da próstata'],normal:'Próstata normal, indolor',abnormal:'Próstata aumentada/dolorosa ou endurecida → prostatite/suspeita neoplásica'}
+ ]},
+{id:'lombalgia', name:'Lombalgia', nameEs:'Lumbalgia', icon:'🦴',
+ mnemonics:[{kw:'TUNAFISH', name:'Sinais de alarme (red flags) na lombalgia',rows:[
+   ['T','Trauma significativo','Risco de fratura'],['U','Urinário/intestinal','Retenção/incontinência — cauda equina'],['N','Neurológico progressivo','Fraqueza/alteração sensitiva progressivas'],['A','Anestesia em sela','Emergência neurocirúrgica'],['F','Febre/infecção','Espondilodiscite/abscesso'],['I','Idade (extremos)','<18 ou >50 anos com lombalgia nova'],['S','Sem melhora ao repouso','Dor noturna — causa neoplásica/inflamatória'],['H','História de câncer/perda de peso','Suspeita de metástase óssea']
+ ]}],
+ manobras:[
+  {title:'Manobra de Lasègue',subtitle:'Radiculopatia lombar (L4-S1)',steps:['Elevar a perna estendida lentamente observando dor irradiada'],normal:'Elevação até 70-90° sem dor irradiada',abnormal:'Dor radicular entre 30-70° (Lasègue+) → hérnia discal'},
+  {title:'Teste de Patrick/FABERE',subtitle:'Articulação sacroilíaca e quadril',steps:['Posição de "4" e pressão suave sobre o joelho fletido'],normal:'Sem dor',abnormal:'Dor sacroilíaca/quadril (Patrick+) → disfunção sacroilíaca'},
+  {title:'Palpação paravertebral',subtitle:'Dor mecânica/miofascial',steps:['Palpar musculatura paravertebral e processos espinhosos'],normal:'Sem espasmo ou dor',abnormal:'Espasmo/dor localizada → lombalgia mecânica/miofascial'},
+  {title:'Avaliação neurológica de MMII',subtitle:'Pesquisa de déficit radicular',steps:['Testar força (L5/S1), sensibilidade e reflexos patelar/aquileu'],normal:'Força, sensibilidade e reflexos preservados',abnormal:'Déficit motor/sensitivo ou reflexo abolido → radiculopatia'}
+ ]},
+{id:'artralgia', name:'Artralgia', nameEs:'Artralgia', icon:'🦵',
+ mnemonics:[
+  {kw:'GASA', name:'Causas de monoartrite aguda',rows:[
+   ['G','Gota/pseudogota','Início súbito, podagra ou joelho — cristais'],['A','Artrite séptica','Febre + monoartrite + derrame — emergência'],['S','Sinovite por trauma/hemartrose','Antecedente de trauma/anticoagulantes'],['A²','Artrite reativa/espondiloartrite','Infecção prévia, entesite, uveíte']
+  ]},
+  {kw:'SOAP-BRAIN', name:'Causas de poliartrite',rows:[
+   ['S','SLE (lúpus)','Poliartrite simétrica não erosiva, rash malar'],['O','Osteoartrite','Padrão mecânico, mãos/joelhos, idosos'],['A','Artrite reumatoide','Simétrica, pequenas articulações, FR/anti-CCP+'],['P','Psoriásica','Dactilite, entesite, padrão assimétrico'],['B','Bacteriana/viral','Quadro agudo, febre, infecção prévia'],['R','Reumática (febre reumática)','Migratória após faringite estreptocócica'],['A²','Artrite gotosa/cristais','Tofos, hiperuricemia'],['I','Inflamatória/espondiloartrites','Rigidez prolongada, sacroileíte, uveíte'],['N','Neoplásica','Idosos, perda de peso, investigar neoplasia oculta']
+  ]}],
+ manobras:[
+  {title:'Sinal da tecla patelar',subtitle:'Derrame articular no joelho',steps:['Comprimir recesso suprapatelar e pressionar a patela contra o fêmur'],normal:'Patela em contato direto, sem "flutuar"',abnormal:'Sensação de tecla (sinal+) → derrame articular significativo'},
+  {title:'Avaliação da amplitude de movimento',subtitle:'Limitação funcional e dor',steps:['Movimentos ativos e passivos comparando os lados'],normal:'ADM completa, simétrica, sem dor',abnormal:'Limitação, dor ou crepitação → processo inflamatório/degenerativo'},
+  {title:'Palpação de ênteses',subtitle:'Inserções tendíneas/ligamentares',steps:['Palpar Aquiles, fáscia plantar, epicôndilos, trocânter'],normal:'Sem dor à palpação',abnormal:'Dor localizada (entesite) → sugere espondiloartrite'},
+  {title:'Inspeção e palpação articular geral',subtitle:'Sinais inflamatórios e deformidades',steps:['Inspecionar simetria/edema/eritema; palpar calor e derrame'],normal:'Sem edema, calor ou deformidade',abnormal:'Calor/edema/eritema (sinovite) ou deformidades → doença crônica/erosiva'}
+ ]},
+{id:'ictericia', name:'Icterícia', nameEs:'Ictericia', icon:'🟡',
+ mnemonics:[{kw:'PRÉ/HEPÁTICA/PÓS', name:'Classificação topográfica da icterícia',rows:[
+   ['Pré-hepática','Hemólise/eritropoiese ineficaz','Bb indireta↑, urina escura, fezes normais, sem prurido'],['Hepática','Lesão hepatocelular','Transaminases muito altas, hepatomegalia dolorosa'],['Pós-hepática','Obstrução biliar','Colúria + acolia + prurido, FA/GGT muito altas, Courvoisier']
+ ]}],
+ manobras:[
+  {title:'Sinal de Murphy',subtitle:'Colecistite aguda',steps:['Palpar ponto cístico durante inspiração profunda'],normal:'Sem dor',abnormal:'Interrupção da inspiração por dor (Murphy+) → colecistite'},
+  {title:'Palpação hepática e esplênica',subtitle:'Hepato/esplenomegalia',steps:['Palpar rebordo hepático e hipocôndrio esquerdo'],normal:'Fígado/baço não palpáveis ou normais',abnormal:'Hepatomegalia irregular ou esplenomegalia → hepatopatia/causa hemolítica'},
+  {title:'Sinal de Courvoisier',subtitle:'Vesícula palpável e indolor',steps:['Palpar hipocôndrio direito buscando massa arredondada indolor'],normal:'Vesícula não palpável',abnormal:'Vesícula palpável e indolor (Courvoisier+) → obstrução biliar maligna'},
+  {title:'Pesquisa de ascite',subtitle:'Líquido livre na cavidade',steps:['Piparote e macicez móvel'],normal:'Sem onda líquida ou macicez móvel',abnormal:'Piparote/macicez móvel positivos → ascite (hepatopatia crônica)'}
+ ]},
+{id:'convulsao-sincope', name:'Convulsão/Síncope', nameEs:'Convulsión/Síncope', icon:'⚡',
+ mnemonics:[
+  {kw:'SÍNCOPE x CONVULSÃO', name:'Diferenciação entre síncope e crise convulsiva',rows:[
+   ['Pródromo','Síncope: tontura/sudorese/náusea. Convulsão: aura específica ou ausência de aviso',''],['Movimentos','Síncope: breves abalos mioclônicos possíveis. Convulsão: tônico-clônicos rítmicos prolongados',''],['Mordedura de língua','Lateral sugere convulsão; na ponta é inespecífica',''],['Pós-evento','Síncope: recuperação rápida. Convulsão: confusão pós-ictal prolongada','']
+  ]},
+  {kw:'CAUSAS DE SÍNCOPE', name:'Classificação etiológica da síncope',rows:[
+   ['Cardíaca','Arritmias, estenose aórtica, cardiomiopatia hipertrófica','Síncope de esforço, sem pródromo — "cardíaca até prova em contrário"'],['Reflexa (vasovagal)','Estímulo vagal — dor, emoção, calor, micção','Pródromo típico, recuperação rápida, jovens'],['Ortostática','Hipovolemia, disautonomia, anti-hipertensivos','Ao levantar-se, queda da PA documentada']
+  ]}],
+ manobras:[
+  {title:'Teste ortostático',subtitle:'Hipotensão ortostática',steps:['Medir PA/FC deitado e após 1-3min em pé'],normal:'Queda <20/10mmHg sem sintomas',abnormal:'Queda significativa com sintomas (positivo) → síncope ortostática'},
+  {title:'Ausculta cardíaca dirigida',subtitle:'Causas cardíacas de síncope',steps:['Auscultar focos buscando sopros, ritmo e sinais de IC'],normal:'Bulhas normais, sem sopros',abnormal:'Sopro sistólico aórtico, arritmia ou sinais de IC → síncope cardíaca'},
+  {title:'Exame neurológico pós-ictal',subtitle:'Déficits focais e nível de consciência',steps:['Avaliar consciência, orientação, déficits focais (paralisia de Todd)'],normal:'Recuperação rápida sem déficit',abnormal:'Confusão prolongada/déficit focal → crise epiléptica'},
+  {title:'Inspeção da língua',subtitle:'Mordedura lateral',steps:['Examinar bordas laterais da língua'],normal:'Sem lesões',abnormal:'Mordedura lateral → boa especificidade para crise convulsiva'}
  ]}
 ];
 
