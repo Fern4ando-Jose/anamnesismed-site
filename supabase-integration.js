@@ -408,6 +408,35 @@ async function hcSave(motivoId, motivo, especialidade, dados) {
 }
 
 /**
+ * Registrar uma exportação de PDF (contador "PDFs exportados" do dashboard).
+ * Não há tabela própria no banco para isso ainda; persistimos no localStorage,
+ * por usuário, seguindo o mesmo padrão local já usado em saveHC().
+ */
+function pdfExportsKey(userId) { return 'am-pdf-exports-' + userId; }
+
+async function pdfExportRecord() {
+  const user = await authGetUser();
+  if (!user) return { ok: false, error: 'Não autenticado' };
+  const key = pdfExportsKey(user.id);
+  let arr = [];
+  try { arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
+  arr.push(new Date().toISOString());
+  try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {}
+  return { ok: true, total: arr.length };
+}
+
+async function pdfExportList() {
+  const user = await authGetUser();
+  if (!user) return [];
+  let arr = [];
+  try { arr = JSON.parse(localStorage.getItem(pdfExportsKey(user.id)) || '[]'); } catch (e) {}
+  return arr;
+}
+
+window.pdfExportRecord = pdfExportRecord;
+window.pdfExportList = pdfExportList;
+
+/**
  * Carregar dados de uma HC específica
  */
 async function hcLoad(motivoId) {
@@ -682,15 +711,22 @@ async function uiLoadStats() {
     }
   }
 
-  // PDFs exportados — ainda não há rastreamento real de exportações no banco;
-  // mostrar 0 em vez de um número de exemplo até essa funcionalidade existir.
+  // PDFs exportados — rastreados localmente por usuário via pdfExportRecord()
+  const pdfExports = window.pdfExportList ? await window.pdfExportList() : [];
   const pdfsValueEl = document.getElementById('stat-pdfs-value');
-  if (pdfsValueEl) pdfsValueEl.textContent = '0';
+  if (pdfsValueEl) pdfsValueEl.textContent = String(pdfExports.length);
   const pdfsDeltaPt = document.getElementById('stat-pdfs-delta-pt');
   const pdfsDeltaEs = document.getElementById('stat-pdfs-delta-es');
   if (pdfsDeltaPt && pdfsDeltaEs) {
-    pdfsDeltaPt.textContent = 'Nenhum ainda';
-    pdfsDeltaEs.textContent = 'Ninguno aún';
+    const weekAgoPdf = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const novosEstaSemanaPdf = pdfExports.filter(ts => new Date(ts).getTime() >= weekAgoPdf).length;
+    if (novosEstaSemanaPdf > 0) {
+      pdfsDeltaPt.textContent = `+${novosEstaSemanaPdf} essa semana`;
+      pdfsDeltaEs.textContent = `+${novosEstaSemanaPdf} esta semana`;
+    } else {
+      pdfsDeltaPt.textContent = pdfExports.length === 0 ? 'Nenhum ainda' : '';
+      pdfsDeltaEs.textContent = pdfExports.length === 0 ? 'Ninguno aún' : '';
+    }
   }
 
   // Motivos consultados (distintos)
