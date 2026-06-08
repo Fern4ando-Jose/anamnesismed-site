@@ -157,9 +157,13 @@ async function profileGet() {
  */
 async function profileAcceptTerms() {
   const user = await authGetUser();
-  if (!user) return { ok: false };
-  const { error } = await sb.from('profiles').update({ termos_aceitos: true }).eq('id', user.id);
+  if (!user) return { ok: false, error: 'no_user' };
+  const { data, error } = await sb.from('profiles').update({ termos_aceitos: true }).eq('id', user.id).select();
   if (error) { console.error('Accept terms error:', error); return { ok: false, error }; }
+  if (!data || data.length === 0) {
+    console.error('Accept terms: 0 linhas atualizadas (RLS bloqueou ou perfil não existe) — user.id=', user.id);
+    return { ok: false, error: 'zero_rows_updated' };
+  }
   return { ok: true };
 }
 
@@ -168,9 +172,13 @@ async function profileAcceptTerms() {
  */
 async function profileSetTipoUsuario(tipo) {
   const user = await authGetUser();
-  if (!user) return { ok: false };
-  const { error } = await sb.from('profiles').update({ tipo_usuario: tipo }).eq('id', user.id);
+  if (!user) return { ok: false, error: 'no_user' };
+  const { data, error } = await sb.from('profiles').update({ tipo_usuario: tipo }).eq('id', user.id).select();
   if (error) { console.error('Set tipo_usuario error:', error); return { ok: false, error }; }
+  if (!data || data.length === 0) {
+    console.error('Set tipo_usuario: 0 linhas atualizadas (RLS bloqueou ou perfil não existe) — user.id=', user.id);
+    return { ok: false, error: 'zero_rows_updated' };
+  }
   return { ok: true };
 }
 
@@ -259,7 +267,14 @@ async function onboardingCheckAndShow(profile) {
     btn.addEventListener('click', async () => {
       if (!allChecked()) return;
       btn.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
-      await profileAcceptTerms();
+      const r = await profileAcceptTerms();
+      if (!r.ok) {
+        btn.textContent = lang==='pt'
+          ? (r.error === 'zero_rows_updated' ? 'Não foi possível salvar (perfil não encontrado) — toque para tentar de novo' : 'Erro ao salvar — tentar novamente')
+          : (r.error === 'zero_rows_updated' ? 'No se pudo guardar (perfil no encontrado) — toca para reintentar' : 'Error al guardar — reintentar');
+        btn.disabled = false;
+        return;
+      }
       if (needsTipo) renderTipo();
       else overlay.remove();
     });
@@ -293,7 +308,13 @@ async function onboardingCheckAndShow(profile) {
       b.addEventListener('mouseleave', () => { b.style.borderColor = 'rgba(13,45,61,0.16)'; });
       b.addEventListener('click', async () => {
         b.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
-        await profileSetTipoUsuario(b.dataset.tipo);
+        const r = await profileSetTipoUsuario(b.dataset.tipo);
+        if (!r.ok) {
+          b.textContent = lang==='pt'
+            ? (r.error === 'zero_rows_updated' ? 'Não foi possível salvar (perfil não encontrado) — toque para tentar de novo' : 'Erro ao salvar — toque para tentar novamente')
+            : (r.error === 'zero_rows_updated' ? 'No se pudo guardar (perfil no encontrado) — toca para reintentar' : 'Error al guardar — toca para reintentar');
+          return;
+        }
         overlay.remove();
       });
     });
@@ -635,6 +656,13 @@ async function uiLoadStats() {
   // HCs criadas
   const hcsValueEl = document.getElementById('stat-hcs-value');
   if (hcsValueEl) hcsValueEl.textContent = String(hcs.length);
+
+  // Badge "Minhas HCs" e contador no rodapé da sidebar — refletem o usuário real
+  document.querySelectorAll('.hcs-badge').forEach(el => { el.textContent = String(hcs.length); });
+  const hcsCountPt = document.getElementById('hcs-count-pt');
+  const hcsCountEs = document.getElementById('hcs-count-es');
+  if (hcsCountPt) hcsCountPt.textContent = String(hcs.length);
+  if (hcsCountEs) hcsCountEs.textContent = String(hcs.length);
 
   const hcsDeltaPt = document.getElementById('stat-hcs-delta-pt');
   const hcsDeltaEs = document.getElementById('stat-hcs-delta-es');

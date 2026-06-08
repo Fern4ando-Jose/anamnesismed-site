@@ -205,3 +205,31 @@ PRÓXIMOS PASSOS:
 5. Deploy — publicar em anamnesismed.com via Vercel
 
 © 2025 AnamnesísMed · anamnesismed.com
+
+[CORRIGIDO 2026-06-07] BUG: tela de aceitar termos pedindo toda hora
+Causa provável: a tabela "profiles" no Supabase tem RLS ativado mas falta uma
+política de UPDATE — o salvamento de termos_aceitos/tipo_usuario falha
+silenciosamente (erro só aparecia no console), e a cada novo carregamento o
+perfil ainda está com termos_aceitos=false, então o gate aparece de novo.
+Correção: o JS agora verifica o resultado do salvamento e mostra erro no botão
+em vez de seguir adiante silenciosamente. MAS é necessário rodar este SQL no
+Supabase (SQL Editor) para permitir que o próprio usuário atualize seu perfil:
+
+  CREATE POLICY "Usuarios podem atualizar o proprio perfil"
+  ON profiles FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+
+Sem essa política, o UPDATE é bloqueado pelo RLS e o aceite nunca é salvo.
+
+[CORRIGIDO 2026-06-07] Dashboard mobile — 3 ajustes:
+1. Menu lateral (☰) travava no celular: não havia como fechar (sem X, sem
+   fundo escurecido clicável, e o botão ☰ ficava coberto pelo sidebar aberto).
+   Adicionado: backdrop semitransparente clicável (#sidebar-backdrop) e botão
+   "✕" dentro do cabeçalho do sidebar (visível só em telas <=768px).
+2. Badge "Minhas HCs" e "X/5 HCs" no rodapé da sidebar mostravam "5" fixo para
+   todo mundo. Agora são preenchidos dinamicamente em uiLoadStats() a partir
+   de hcListAll() — refletem a quantidade real de HCs de cada usuário (zerado
+   para usuários novos).
+3. Adicionado item "Encerrar sessão" na sidebar, logo após "Upgrade para Pro",
+   chamando authLogout() (já existente em supabase-integration.js).
