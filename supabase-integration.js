@@ -940,6 +940,29 @@ function showSaveFeedback() {
     await uiLoadRecentHCs();
     await uiLoadStats();
 
+    // Deep-link: retorno do Stripe Checkout (?payment=success) — mostra confirmação,
+    // re-checa o plano (o webhook pode ter atualizado o acesso) e limpa a URL
+    try {
+      const payParams = new URLSearchParams(window.location.search);
+      if (payParams.get('payment') === 'success') {
+        const lang = document.documentElement.getAttribute('data-lang') || 'es';
+        const msg = lang === 'es'
+          ? '✅ ¡Pago confirmado! Tu plan fue actualizado.'
+          : '✅ Pagamento confirmado! Seu plano foi atualizado.';
+        const banner = document.createElement('div');
+        banner.textContent = msg;
+        banner.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#0e7490;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2)';
+        document.body.appendChild(banner);
+        setTimeout(function(){ banner.remove(); }, 6000);
+
+        payParams.delete('payment');
+        const cleanQuery = payParams.toString();
+        window.history.replaceState({}, '', window.location.pathname + (cleanQuery ? '?' + cleanQuery : ''));
+
+        await uiUpdateUserInfo();
+      }
+    } catch (e) { console.warn('aviso de pagamento erro:', e); }
+
     // Logout button
     const logoutBtn = document.querySelector('[data-action="logout"]');
     if (logoutBtn) logoutBtn.addEventListener('click', authLogout);
