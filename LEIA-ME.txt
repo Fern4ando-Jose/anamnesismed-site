@@ -233,3 +233,9 @@ Sem essa política, o UPDATE é bloqueado pelo RLS e o aceite nunca é salvo.
    para usuários novos).
 3. Adicionado item "Encerrar sessão" na sidebar, logo após "Upgrade para Pro",
    chamando authLogout() (já existente em supabase-integration.js).
+
+[CORRIGIDO 2026-06-07] CONTEÚDO: removido o cartão IIDET ("Semiologia da
+febre") que havia sido replicado por engano em todos os 8 motivos de consulta.
+Mantido SOMENTE em Febre/Fiebre — é específico de febre e não fazia sentido
+aparecer em Cefaleia, Dor Torácica, etc. Cada motivo volta a exibir apenas
+suas próprias mnemotécnicas.
