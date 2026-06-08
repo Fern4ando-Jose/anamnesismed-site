@@ -481,14 +481,19 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
       <button class="sb-lang-btn" id="slang-es" onclick="setLang('es')">ES</button>
       <button class="sb-lang-btn active" id="slang-pt" onclick="setLang('pt')">PT</button>
     </div>
-    <a href="anamnesismed-dashboard.html" class="sb-user">
-      <div class="sb-avatar">FJ</div>
-      <div>
-        <div class="sb-uname">Fernando Jose</div>
-        <div class="sb-uplan pt">Trial — 27 dias restantes</div>
-        <div class="sb-uplan es">Trial — 27 días restantes</div>
-      </div>
-    </a>
+    <div style="display:flex;align-items:center;gap:6px">
+      <a href="anamnesismed-dashboard.html" class="sb-user" style="flex:1;min-width:0">
+        <div class="sb-avatar">FJ</div>
+        <div>
+          <div class="sb-uname">Fernando Jose</div>
+          <div class="sb-uplan pt">Trial — 27 dias restantes</div>
+          <div class="sb-uplan es">Trial — 27 días restantes</div>
+        </div>
+      </a>
+      <button onclick="encerrarSessao()" title="Sair" aria-label="Sair" style="flex:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;border-radius:10px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);cursor:pointer;transition:background .15s,color .15s" onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.color='rgba(255,255,255,.55)'">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
   </div>
 </aside>
 
@@ -497,7 +502,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   <!-- TOPBAR -->
   <header class="topbar" id="topbar">
     <button class="hamburger" onclick="toggleSidebar()">☰</button>
-    <a href="anamnesismed-dashboard.html" class="topbar-back">← <span class="pt">Dashboard</span><span class="es">Dashboard</span></a>
+    <a href="anamnesismed-dashboard.html" class="topbar-back">← <span class="pt">Início</span><span class="es">Inicio</span></a>
     <div class="topbar-breadcrumb">
       <span id="tb-spec" class="pt">Clínica Médica</span>
       <span id="tb-spec-es" class="es">Clínica Médica</span>
@@ -533,11 +538,11 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     <div class="spec-tabs">
       <div class="spec-tab active" id="stab-clinica" onclick="showSpec('clinica')">
         🩺 <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
-        <span class="spec-tab-count">25</span>
+        <span class="spec-tab-count" id="count-clinica">0</span>
       </div>
       <div class="spec-tab" id="stab-cirurgia" onclick="showSpec('cirurgia')">
         🔪 <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
-        <span class="spec-tab-count">26</span>
+        <span class="spec-tab-count" id="count-cirurgia">0</span>
       </div>
     </div>
 
@@ -1781,6 +1786,7 @@ function toggleSidebar(){document.getElementById('sidebar').classList.toggle('op
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open')}
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
 function goToDashboard(){window.location.href='anamnesismed-dashboard.html'}
+function encerrarSessao(){ if(window.authLogout) window.authLogout(); else window.location.href = 'anamnesismed-auth.html'; }
 function newHC(){
   // Reset motivo
   currentMotivo = null;
@@ -2083,6 +2089,19 @@ var currentSpec = 'clinica';
 var hcData = {};
 
 // ── INDEX SCREEN ──────────────────────────────────────
+function updateSpecCounts(){
+  function countMotivos(spec){
+    var data = MOTIVOS[spec] || [];
+    var n = 0;
+    data.forEach(function(cat){ n += (cat.items||[]).length; });
+    return n;
+  }
+  var elClin = document.getElementById('count-clinica');
+  var elCir = document.getElementById('count-cirurgia');
+  if (elClin) elClin.textContent = String(countMotivos('clinica'));
+  if (elCir) elCir.textContent = String(countMotivos('cirurgia'));
+}
+
 function showSpec(spec){
   currentSpec = spec;
   document.getElementById('spec-header-clinica').style.display = spec==='clinica'?'':'none';
@@ -3009,6 +3028,7 @@ function exportPDF(){
 // ── INIT ──────────────────────────────────────────────
 (function(){
   try{var s=localStorage.getItem('am-lang');if(s)setLang(s);}catch(e){}
+  updateSpecCounts();
   showSpec('clinica');
   // Auto-set today's date
   var today = new Date().toISOString().split('T')[0];
