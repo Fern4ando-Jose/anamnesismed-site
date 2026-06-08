@@ -3814,6 +3814,150 @@ function exportPDF(){
     });
     return lines;
   }
+  // ── GERADOR DE NARRATIVA CLÍNICA DA AEA (substitui a listagem "pergunta: resposta") ──
+  function gerarNarrativaAEA_cefaleia(ans, lng){
+    var pt = (lng!=='es');
+    function v(i){ var a=ans[i]; return (a && a.resp && a.resp!=='—') ? a.resp : null; }
+    var L=v(0), IRR=v(1), CAR=v(2), EVA=v(3), DUR=v(4), INI=v(5),
+        FAT=v(6), PER=v(7), VALS=v(8), NAUS=v(9), FOTO=v(10),
+        AURA=v(11), AUTO=v(12), SNOOP=v(13), HIST=v(14), TRAUMA=v(15),
+        ANALG=v(16), MEDS=v(17);
+    var partes = [], alarmes = [];
+    var yes = function(x){ return /^(Sim|Sí)/.test(x||''); };
+
+    if(L||CAR||EVA||DUR){
+      var f = pt ? 'Paciente refere quadro de cefaleia' : 'El paciente refiere cuadro de cefalea';
+      if(L) f += (pt?' de localização ':' de localización ') + L.toLowerCase();
+      if(IRR && !/^(Sem|Sin) irradia/.test(IRR)) f += (pt?', com irradiação ':', con irradiación ') + IRR.toLowerCase();
+      if(CAR) f += (pt?', de caráter ':', de carácter ') + CAR.toLowerCase();
+      if(EVA) f += (pt?', de intensidade ':', de intensidad ') + EVA + '/10 ' + (pt?'na escala visual analógica (EVA)':'en la escala visual analógica (EVA)');
+      f += '.';
+      if(DUR) f += ' ' + (pt?'Cada episódio tem duração aproximada de ':'Cada episodio tiene una duración aproximada de ') + DUR.toLowerCase() + '.';
+      partes.push(f);
+    }
+
+    if(INI){
+      if(/[Ss]úbito\/explosivo|[Tt]hunderclap/.test(INI)){
+        partes.push(pt
+          ? 'O início da dor foi súbito e explosivo (padrão thunderclap), com pico de intensidade em menos de um minuto.'
+          : 'El inicio del dolor fue súbito y explosivo (patrón thunderclap), con pico de intensidad en menos de un minuto.');
+        alarmes.push(pt ? 'início explosivo em "trovoada" (thunderclap)' : 'inicio explosivo "en trueno" (thunderclap)');
+      } else {
+        partes.push((pt?'O início da dor foi de caráter ':'El inicio del dolor fue de carácter ') + INI.toLowerCase().replace(/\s*\(.*?\)/,'') + '.');
+      }
+    }
+
+    if(FAT && !/[Ss]em fator|[Ss]in factor/.test(FAT)){
+      partes.push((pt?'Como fatores desencadeantes ou de alívio, identifica: ':'Como factores desencadenantes o de alivio, identifica: ') + FAT.toLowerCase() + '.');
+    }
+    if(PER){
+      partes.push((pt?'Quanto à periodicidade, o quadro se apresenta de forma ':'En cuanto a la periodicidad, el cuadro se presenta de forma ') + PER.toLowerCase() + '.');
+    }
+
+    if(VALS){
+      if(yes(VALS)){
+        partes.push(pt
+          ? 'Chama atenção o relato de piora da cefaleia com manobra de Valsalva, tosse ou esforço físico — achado sugestivo de hipertensão intracraniana, que indica investigação complementar.'
+          : 'Llama la atención el relato de empeoramiento de la cefalea con la maniobra de Valsalva, la tos o el esfuerzo físico — hallazgo sugestivo de hipertensión intracraneal, que amerita investigación complementaria.');
+        alarmes.push(pt ? 'piora da dor com Valsalva/esforço físico' : 'empeoramiento del dolor con Valsalva/esfuerzo físico');
+      } else {
+        partes.push(pt ? 'Nega piora da dor com manobra de Valsalva, tosse ou esforço físico.' : 'Niega empeoramiento del dolor con la maniobra de Valsalva, la tos o el esfuerzo físico.');
+      }
+    }
+
+    var assoc = [];
+    if(NAUS) assoc.push(yes(NAUS) ? (pt?'náuseas e/ou vômitos':'náuseas y/o vómitos') : (pt?'nega náuseas ou vômitos':'niega náuseas o vómitos'));
+    if(FOTO) assoc.push(yes(FOTO) ? (pt?'fotofobia e/ou fonofobia':'fotofobia y/o fonofobia') : (pt?'nega fotofobia ou fonofobia':'niega fotofobia o fonofobia'));
+    if(AURA) assoc.push(yes(AURA) ? (pt?'episódios de aura visual ou sensitiva precedendo a dor (escotomas, zigue-zague, formigamento)':'episodios de aura visual o sensitiva que preceden el dolor (escotomas, zigzag, hormigueo)') : (pt?'nega aura precedendo a dor':'niega aura que preceda el dolor'));
+    if(AUTO) assoc.push(yes(AUTO) ? (pt?'sinais autonômicos ipsilaterais (lacrimejamento, congestão nasal ou ptose do mesmo lado da dor)':'signos autonómicos ipsilaterales (lagrimeo, congestión nasal o ptosis del mismo lado del dolor)') : (pt?'nega sinais autonômicos associados':'niega signos autonómicos asociados'));
+    if(assoc.length){
+      partes.push((pt?'Associadamente, ':'De forma asociada, ') + assoc.join('; ') + '.');
+    }
+
+    if(SNOOP){
+      if(yes(SNOOP)){
+        partes.push(pt
+          ? 'Refere ainda a presença de outros sinais de alarme (critérios SNOOP — pior cefaleia da vida, início súbito, febre, rigidez de nuca, déficit neurológico focal, alteração do nível de consciência, primeira crise após os 50 anos, gestação/puerpério ou mudança no padrão habitual da dor), o que reforça a indicação de investigação complementar urgente.'
+          : 'Refiere además la presencia de otros signos de alarma (criterios SNOOP — peor cefalea de la vida, inicio súbito, fiebre, rigidez de nuca, déficit neurológico focal, alteración del nivel de conciencia, primera crisis después de los 50 años, embarazo/puerperio o cambio en el patrón habitual del dolor), lo que refuerza la indicación de investigación complementaria urgente.');
+        alarmes.push(pt ? 'critérios de alarme SNOOP positivos' : 'criterios de alarma SNOOP positivos');
+      } else {
+        partes.push(pt ? 'Nega outros sinais de alarme associados (critérios SNOOP).' : 'Niega otros signos de alarma asociados (criterios SNOOP).');
+      }
+    }
+
+    if(HIST){
+      partes.push(yes(HIST)
+        ? (pt? 'Relata antecedentes pessoais e/ou familiares de enxaqueca/cefaleias recorrentes.' : 'Relata antecedentes personales y/o familiares de migraña/cefaleas recurrentes.')
+        : (pt? 'Nega antecedentes pessoais ou familiares de enxaqueca.' : 'Niega antecedentes personales o familiares de migraña.'));
+    }
+
+    if(TRAUMA){
+      if(yes(TRAUMA)){
+        partes.push(pt
+          ? 'Importante destacar o relato de traumatismo craniano recente — sinal de alarme que impõe a exclusão de complicações pós-traumáticas (ex.: hematoma subdural ou extradural).'
+          : 'Es importante destacar el relato de traumatismo craneal reciente — signo de alarma que impone la exclusión de complicaciones postraumáticas (p. ej., hematoma subdural o extradural).');
+        alarmes.push(pt ? 'traumatismo craniano recente' : 'traumatismo craneal reciente');
+      } else {
+        partes.push(pt ? 'Nega traumatismo craniano recente.' : 'Niega traumatismo craneal reciente.');
+      }
+    }
+
+    if(ANALG || MEDS){
+      var fr2 = pt ? 'Quanto ao uso de analgésicos, ' : 'En cuanto al uso de analgésicos, ';
+      if(ANALG) fr2 += ANALG.toLowerCase() + (MEDS ? '; ' : '.');
+      if(MEDS) fr2 += (pt? 'faz uso de '+MEDS+' para alívio do quadro.' : 'utiliza '+MEDS+' para el alivio del cuadro.');
+      partes.push(fr2);
+    }
+
+    var texto = partes.join(' ');
+    if(alarmes.length){
+      texto += '\n\n' + (pt
+        ? '⚠ Sinais de alarme (red flags) identificados nesta anamnese: ' + alarmes.join('; ') + '. Recomenda-se atenção redobrada e investigação complementar direcionada para descartar causas secundárias de cefaleia.'
+        : '⚠ Señales de alarma (red flags) identificadas en esta anamnesis: ' + alarmes.join('; ') + '. Se recomienda atención redoblada e investigación complementaria dirigida para descartar causas secundarias de cefalea.');
+    }
+    return texto;
+  }
+
+  // Gerador genérico — usado pelos motivos sem template narrativo dedicado ainda
+  function gerarNarrativaAEA_generica(ans, lng){
+    var pt = (lng!=='es');
+    var frases = [];
+    ans.forEach(function(a){
+      if(!a.resp || a.resp==='—') return;
+      var q = (a.qText||'').replace(/[?¿]/g,'').trim();
+      var qLow = q.charAt(0).toLowerCase()+q.slice(1);
+      if(a.type==='yn'){
+        var afirmativo = /^(Sim|Sí)/.test(a.resp);
+        frases.push((afirmativo ? (pt?'Refere ':'Refiere ') : (pt?'Nega ':'Niega ')) + qLow + '.');
+      } else if(a.type==='multi'){
+        frases.push((pt?'Quanto a '+qLow+', destaca: ':'En cuanto a '+qLow+', destaca: ') + a.resp.toLowerCase() + '.');
+      } else {
+        frases.push((pt?'Quanto a '+qLow+', relata: ':'En cuanto a '+qLow+', relata: ') + a.resp + '.');
+      }
+    });
+    return frases.join(' ');
+  }
+
+  var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia };
+
+  function gerarNarrativaAEA(mObj, lng){
+    if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length) return null;
+    var ansArr = [];
+    mObj.aeaGuide.forEach(function(q,i){
+      var id = 'aea-g-'+i;
+      var resp = '—';
+      if(q.type==='radio') resp = selOne(id);
+      else if(q.type==='multi') resp = selMulti(id);
+      else if(q.type==='yn') resp = ynAns(id);
+      else if(q.type==='input') resp = fieldVal(id) || '—';
+      ansArr.push({qText:(lng==='es'?(q.qEs||q.q):q.q), type:q.type, resp:resp});
+    });
+    var hasAny = ansArr.some(function(a){ return a.resp && a.resp!=='—'; });
+    if(!hasAny) return null;
+    var gen = AEA_NARRATIVE_GEN[mObj.id];
+    return gen ? gen(ansArr, lng) : gerarNarrativaAEA_generica(ansArr, lng);
+  }
+
   var feSel = document.querySelector('#dp-fe .sel');
   var feVal = selLangText(feSel);
   var ingr = document.querySelector('#dp-ingresso .sel');
@@ -3828,20 +3972,10 @@ function exportPDF(){
     {n:'3', tPt:'AEA — Antecedentes da Enfermidade Atual', tEs:'AEA — Antecedentes de la Enfermedad Actual',
      txt: function(){
       var t = mAEA;
-      // Perguntas guiadas (chips/sim-não/input) específicas do motivo selecionado
+      // Texto narrativo clínico gerado a partir das perguntas guiadas (substitui a listagem "pergunta: resposta")
       if(currentMotivo && currentMotivo.aeaGuide && currentMotivo.aeaGuide.length){
-        var gl = [];
-        currentMotivo.aeaGuide.forEach(function(q,i){
-          var id = 'aea-g-'+i;
-          var qText = (lang==='es'?(q.qEs||q.q):q.q);
-          var resp = '—';
-          if(q.type==='radio'){ resp = selOne(id); }
-          else if(q.type==='multi'){ resp = selMulti(id); }
-          else if(q.type==='yn'){ resp = ynAns(id); }
-          else if(q.type==='input'){ resp = fieldVal(id) || '—'; }
-          gl.push(qText+': '+resp);
-        });
-        if(gl.length) t += '\n\n'+(lang==='pt'?'Perguntas guiadas:':'Preguntas guiadas:')+'\n'+gl.join('\n');
+        var narrativa = gerarNarrativaAEA(currentMotivo, lang);
+        if(narrativa) t += (t && t!=='—' ? '\n\n' : '') + narrativa;
       }
       return t;
     }},
