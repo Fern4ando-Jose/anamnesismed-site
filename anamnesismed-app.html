@@ -3856,15 +3856,7 @@ function exportPDF(){
     var deepHcId = hcParams.get('hc');
     if(deepHcId){
       openHC(deepHcId);
-      if(window.hcLoad){
-        window.hcLoad(deepHcId).then(function(rec){
-          if(rec && rec.dados && rec.dados.nome){
-            var elNome = document.getElementById('dp-nome');
-            if(elNome) elNome.value = rec.dados.nome;
-          }
-          hcDirty = false;
-        }).catch(function(e){ console.warn('hcLoad erro ao abrir HC via deep-link:', e); });
-      }
+      window.__deepLinkHcId = deepHcId; // usado pelo bloco de integração Supabase abaixo, que carrega depois
     }
   }catch(e){ console.warn('deep-link de HC erro:', e); }
 })();
@@ -3885,6 +3877,20 @@ function exportPDF(){
     if (window.profileGet && window.onboardingCheckAndShow) {
       var profile = await window.profileGet();
       await window.onboardingCheckAndShow(profile);
+    }
+
+    // Deep-link: restaura dados salvos da HC aberta via ?hc=<motivoId> (vindo do dashboard)
+    if (window.__deepLinkHcId && window.hcLoad) {
+      try {
+        var rec = await window.hcLoad(window.__deepLinkHcId);
+        if (rec && rec.dados && rec.dados.nome) {
+          var elNome = document.getElementById('dp-nome');
+          if (elNome) elNome.value = rec.dados.nome;
+        }
+        if (typeof hcDirty !== 'undefined') hcDirty = false;
+      } catch (e) {
+        console.warn('hcLoad erro ao restaurar HC via deep-link:', e);
+      }
     }
   } catch (e) {
     console.warn('Falha ao inicializar integração Supabase:', e);
