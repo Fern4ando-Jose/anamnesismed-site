@@ -608,7 +608,6 @@ async function uiUpdateUserInfo() {
 
   // Plano e dias restantes
   const access = await profileCheckAccess();
-  const lang = document.documentElement.dataset.lang || 'es';
 
   document.querySelectorAll('.sb-uplan, .user-plan').forEach(el => {
     // No dashboard, .user-plan contém o contador dinâmico "Plano Gratuito · X/5 HCs"
