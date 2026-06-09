@@ -20,9 +20,6 @@ const sbAdmin = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Vercel não faz streaming por padrão — desativamos o bodyParser via config export
-export const config = { api: { bodyParser: false } };
-
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
 
