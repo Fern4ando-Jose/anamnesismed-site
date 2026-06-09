@@ -3,6 +3,43 @@
 // REGRA: alterações no layout/conteúdo do PDF vão SOMENTE aqui.
 // Depende de: anamnesismed-motivos.js, anamnesismed-narrativa.js, anamnesismed-guide.js
 
+
+// -- Helpers globais de leitura do DOM ------------------------------------------
+// Expostos globalmente para que anamnesismed-narrativa.js possa usa-los
+// ao construir a narrativa AEA a partir das respostas guiadas.
+function selLangText(sel){
+  if(!sel) return '—';
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var span = sel.querySelector('.'+lang);
+  if(span) return span.textContent.trim();
+  return sel.textContent.trim();
+}
+function fieldVal(id){
+  var el = document.getElementById(id);
+  if(!el) return '';
+  if(el.tagName==='SELECT'){ return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text.trim() : el.value; }
+  return el.value;
+}
+function selOne(containerId){ return selLangText(document.querySelector('#'+containerId+' .sel')); }
+function selMulti(containerId){
+  var els = document.querySelectorAll('#'+containerId+' .sel');
+  if(!els.length) return '—';
+  return Array.prototype.map.call(els, selLangText).join(', ');
+}
+function ynAns(groupId){
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var btns = document.querySelectorAll('.yn-btn');
+  for(var i=0;i<btns.length;i++){
+    var b=btns[i];
+    var m=(b.getAttribute('onclick')||'').match(/\(this,\s*'([^']+)'\s*,\s*'([^']+)'\)/);
+    if(m && m[1]===groupId && (b.classList.contains('sim')||b.classList.contains('nao')||b.classList.contains('ex'))){
+      return m[2]==='sim'?(lang==='pt'?'Sim':'Sí'):(m[2]==='ex'?'Ex':(lang==='pt'?'Não':'No'));
+    }
+  }
+  return '—';
+}
+// -------------------------------------------------------------------------------
+
 function exportPDF(){
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
   // Salva a HC (igual ao botão "Salvar") e registra a exportação para o contador "PDFs exportados"
@@ -124,11 +161,11 @@ function exportPDF(){
      txt: function(){return 'a) '+mMC+(document.getElementById('mc-b').value?'\nb) '+document.getElementById('mc-b').value:'')+(document.getElementById('mc-c').value?'\nc) '+document.getElementById('mc-c').value:'');}},
     {n:'3', tPt:'AEA — Antecedentes da Enfermidade Atual', tEs:'AEA — Antecedentes de la Enfermedad Actual',
      txt: function(){
-      var t = mAEA;
-      // Texto narrativo clínico gerado a partir das perguntas guiadas (substitui a listagem "pergunta: resposta")
+      var t = (mAEA && mAEA !== '—') ? mAEA : '';
+      // Texto narrativo clínico gerado a partir das perguntas guiadas
       if(currentMotivo && currentMotivo.aeaGuide && currentMotivo.aeaGuide.length){
         var narrativa = gerarNarrativaAEA(currentMotivo, lang, 'aea-g-');
-        if(narrativa) t += (t && t!=='—' ? '\n\n' : '') + narrativa;
+        if(narrativa) t += (t ? '\n\n' : '') + narrativa;
       }
       if(currentMotivo2 && currentMotivo2.aeaGuide && currentMotivo2.aeaGuide.length){
         var nm2 = lang==='es'?(currentMotivo2.nameEs||currentMotivo2.name):currentMotivo2.name;
