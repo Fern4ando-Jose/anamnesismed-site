@@ -582,17 +582,28 @@ async function uiUpdateUserInfo() {
   const profile = await profileGet();
   if (!profile) return;
 
-  let nome = profile.nome || profile.email?.split('@')[0] || 'Estudante';
-  nome = nome.charAt(0).toUpperCase() + nome.slice(1);
+  let nomeBase = profile.nome || profile.email?.split('@')[0] || 'Usuário';
+  nomeBase = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
+
+  // Prefixo Dr. para médicos
+  const ehMedico = profile.tipo_usuario === 'medico';
+  const nome = ehMedico ? 'Dr. ' + nomeBase : nomeBase;
 
   // Atualiza em todos os elementos que mostram o nome
   document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = nome);
   document.querySelectorAll('.sb-uname').forEach(el => el.textContent = nome);
   document.querySelectorAll('.user-name').forEach(el => el.textContent = nome);
 
-  // Avatar com inicial
+  // Saudação no topbar do dashboard (ids page-title / page-title-es)
+  const lang = document.documentElement.dataset.lang || 'pt';
+  const saudPt = document.getElementById('page-title');
+  const saudEs = document.getElementById('page-title-es');
+  if (saudPt) saudPt.textContent = 'Olá, ' + nome + ' 👋';
+  if (saudEs) saudEs.textContent = 'Hola, ' + nome + ' 👋';
+
+  // Avatar com inicial (após o prefixo, usar inicial do nome base)
   document.querySelectorAll('.sb-avatar, .user-avatar').forEach(el => {
-    el.textContent = nome.charAt(0).toUpperCase();
+    el.textContent = nomeBase.charAt(0).toUpperCase();
   });
 
   // Plano e dias restantes

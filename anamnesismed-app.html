@@ -2455,6 +2455,7 @@ function saveHC(){
   var snap = collectFormSnapshot();
   var data = {
     motivo: currentMotivo ? currentMotivo.id : '',
+    motivo2: currentMotivo2 ? currentMotivo2.id : null,
     nome: document.getElementById('dp-nome').value,
     ts: new Date().toISOString(),
     campos: snap.campos,
@@ -2710,66 +2711,78 @@ function exportPDF(){
     var nomeMotivo = mObj ? (pt ? (mObj.name||'') : (mObj.nameEs||mObj.name||'')) : '';
 
     // Classifica cada resposta por tipo
-    var descritivos = [], ynSim = [], ynNao = [], alarme = [];
+    var descr = [], sim = [], nao = [], alarme_sim = false, alarme_nao = false;
     respondidas.forEach(function(a){
       var qL = (a.qText||'').toLowerCase();
-      if(/alarme|alarma|red\s*flag/.test(qL)){
-        alarme.push(a);
-      } else if(a.type === 'yn'){
-        if(/^(Sim|Sí)/.test(a.resp)) ynSim.push(a);
-        else ynNao.push(a);
+      var isAlarm = /alarme|alarma|red\s*flag/.test(qL);
+      if(a.type === 'yn'){
+        if(isAlarm){
+          if(/^(Sim|Sí)/.test(a.resp)) alarme_sim = true; else alarme_nao = true;
+        } else {
+          if(/^(Sim|Sí)/.test(a.resp)) sim.push(a); else nao.push(a);
+        }
       } else {
-        descritivos.push(a);
+        descr.push(a);
       }
     });
+
+    // ── helpers ──────────────────────────────────────────────────────
+    function cleanQ(a){ return (a.qText||'').replace(/[?¿]/g,'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase(); }
+    function joinList(arr, andWord){ var cp=arr.slice(); var last=cp.length>1?cp.pop():null; return last?cp.join(', ')+andWord+last:cp[0]||''; }
 
     var partes = [];
 
-    // Abertura: "Paciente refere quadro de [motivo], com [1ª resposta descritiva]."
-    var abertura = (pt ? 'Paciente refere quadro de ' : 'Paciente refiere cuadro de ') + nomeMotivo.toLowerCase();
-    if(descritivos.length > 0){
-      abertura += (pt ? ', com ' : ', con ') + descritivos[0].resp.toLowerCase() + '.';
-      partes.push(abertura);
-      // Demais descritivos: rótulo + valor
-      descritivos.slice(1).forEach(function(a){
+    // ── Frase de abertura ─────────────────────────────────────────────
+    // Pega os primeiros 2-3 descritivos e os integra sem label:
+    // "Paciente refere dor torácica precordial, em aperto, com irradiação para MSE."
+    var aberturaParts = descr.slice(0, 3).map(function(a){
+      return a.resp.toLowerCase();
+    }).filter(Boolean);
+
+    var abertura = (pt ? 'Paciente refere ' : 'Paciente refiere ') + nomeMotivo.toLowerCase();
+    if(aberturaParts.length === 1){
+      abertura += ' ' + aberturaParts[0];
+    } else if(aberturaParts.length >= 2){
+      abertura += ' ' + aberturaParts[0];
+      abertura += ', ' + aberturaParts.slice(1).join(', ');
+    }
+    abertura += '.';
+    partes.push(abertura);
+
+    // ── Descritivos restantes (sem label, só o valor) ─────────────────
+    descr.slice(3).forEach(function(a){
+      var val = a.resp;
+      if(!val || val === '—') return;
+      if(a.type === 'input'){
         var q = (a.qText||'').replace(/[?¿]/g,'').trim();
-        var qCap = q.charAt(0).toUpperCase() + q.slice(1);
-        if(a.type === 'multi'){
-          partes.push(qCap + (pt ? ', destaca: ' : ', destaca: ') + a.resp.toLowerCase() + '.');
-        } else {
-          partes.push(qCap + ': ' + a.resp + '.');
+        partes.push(q + ': ' + val + '.');
+      } else if(a.type === 'multi'){
+        var items = val.split(',').map(function(s){ return s.trim().toLowerCase(); }).filter(Boolean);
+        if(items.length > 1){
+          partes.push((pt ? 'Destaca: ' : 'Destaca: ') + joinList(items, pt ? ' e ' : ' y ') + '.');
+        } else if(items.length === 1){
+          partes.push(items[0] + '.');
         }
-      });
-    } else {
-      partes.push(abertura + '.');
-    }
-
-    // yn positivos agrupados: "Refere A, B e C."
-    if(ynSim.length){
-      var items = ynSim.map(function(a){
-        return (a.qText||'').replace(/[?¿]/g,'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase();
-      });
-      var last = items.length > 1 ? items.pop() : null;
-      partes.push((pt ? 'Refere ' : 'Refiere ') + (last ? items.join(', ')+(pt?' e ':' y ')+last : items[0]) + '.');
-    }
-
-    // yn negativos agrupados: "Nega A, B e C."
-    if(ynNao.length){
-      var items = ynNao.map(function(a){
-        return (a.qText||'').replace(/[?¿]/g,'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase();
-      });
-      var last = items.length > 1 ? items.pop() : null;
-      partes.push((pt ? 'Nega ' : 'Niega ') + (last ? items.join(', ')+(pt?' e ':' y ')+last : items[0]) + '.');
-    }
-
-    // Alarme — destaque especial
-    alarme.forEach(function(a){
-      if(/^(Sim|Sí)/.test(a.resp)){
-        partes.push(pt ? '⚠ Sinais de alarme presentes — avaliação prioritária indicada.' : '⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
       } else {
-        partes.push(pt ? 'Nega sinais de alarme.' : 'Niega signos de alarma.');
+        partes.push(val + '.');
       }
     });
+
+    // ── yn positivos: "Associa dispneia, sudorese e febre." ───────────
+    if(sim.length){
+      var items = sim.map(cleanQ).filter(Boolean);
+      partes.push((pt ? 'Associa ' : 'Asocia ') + joinList(items, pt ? ' e ' : ' y ') + '.');
+    }
+
+    // ── yn negativos: "Nega síncope, vômitos e irradiação." ──────────
+    if(nao.length){
+      var items = nao.map(cleanQ).filter(Boolean);
+      partes.push((pt ? 'Nega ' : 'Niega ') + joinList(items, pt ? ' e ' : ' y ') + '.');
+    }
+
+    // ── Alarme ────────────────────────────────────────────────────────
+    if(alarme_sim) partes.push(pt ? '⚠ Sinais de alarme presentes — avaliação prioritária indicada.' : '⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
+    else if(alarme_nao) partes.push(pt ? 'Nega sinais de alarme.' : 'Niega signos de alarma.');
 
     return partes.join(' ');
   }
@@ -3167,6 +3180,35 @@ function exportPDF(){
         if (rec && rec.dados) {
           if (typeof restoreFormSnapshot === 'function') {
             restoreFormSnapshot(rec.dados);
+            // Reativar 2º motivo se estava salvo
+            if(rec.dados.motivo2 && typeof selectMotivo2FromMC === 'function'){
+              selectMotivo2FromMC(rec.dados.motivo2);
+              // Restaurar seleções dos chips do 2º motivo (aea-g2-N)
+              var sel2 = rec.dados.selecoes || {};
+              Object.keys(sel2).forEach(function(cid){
+                if(!cid.startsWith('aea-g2-')) return;
+                var cont = document.getElementById(cid);
+                if(!cont) return;
+                var opts = cont.querySelectorAll('[onclick^="selectRadio"],[onclick^="selectMultiChip"]');
+                (sel2[cid]||[]).forEach(function(txt){
+                  for(var i=0;i<opts.length;i++){
+                    if(opts[i].textContent.trim()===txt){opts[i].click();return;}
+                  }
+                });
+              });
+              // Restaurar yn do 2º motivo
+              var sn2 = rec.dados.simNao || {};
+              Object.keys(sn2).forEach(function(gid){
+                if(!gid.startsWith('aea-g2-')) return;
+                var resp = sn2[gid] && sn2[gid].resposta;
+                if(!resp) return;
+                var btns = document.querySelectorAll('.yn-btn');
+                for(var i=0;i<btns.length;i++){
+                  var m=(btns[i].getAttribute('onclick')||'').match(/\(this,'([^']+)','([^']+)'\)/);
+                  if(m&&m[1]===gid&&m[2]===resp){btns[i].click();break;}
+                }
+              });
+            }
           } else if (rec.dados.nome) {
             // fallback antigo, caso restoreFormSnapshot não esteja disponível
             var elNome = document.getElementById('dp-nome');
