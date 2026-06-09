@@ -38,6 +38,31 @@ Antes de escrever uma função nova, verificar se já existe equivalente em `sup
 
 `supabase-integration.js` é carregado DEPOIS do primeiro bloco `<script>` inline em `anamnesismed-app.html`. Qualquer código que dependa de funções dele (`hcLoad`, `hcSave`, `authGetUser` etc.) deve rodar dentro do bloco de integração Supabase (o segundo `<script>`, após `guardCheckAccess`), nunca no primeiro bloco/INIT — senão `window.hcLoad` (etc.) ainda será `undefined` e o `if(window.hcLoad)` falha silenciosamente.
 
+## 7. Novo conteúdo clínico vai APENAS em `anamnesismed-motivos.js`
+
+O arquivo `anamnesismed-motivos.js` contém todos os dados clínicos: `MOTIVOS`, `RAS_SYSTEMS` e `GUIDE_CONTENT`. Para adicionar ou modificar especialidades, motivos, perguntas AEA, mnemônicos ou manobras, editar **somente** esse arquivo. **Nunca** inserir blocos de dados clínicos em `anamnesismed-app.html`.
+
+`anamnesismed-app.html` contém exclusivamente lógica de UI e renderização — não tem dados clínicos inline.
+
+## 8. Rodar `bash scripts/verify.sh` antes de cada commit
+
+Após qualquer edição, executar o script de verificação de integridade antes de commitar:
+
+```
+bash scripts/verify.sh
+```
+
+O script verifica: contagem de linhas, fechamento correto de HTML, presença de funções-chave, integridade do motivos.js e do vercel.json. **Não commitar se houver erros.**
+
+Se um arquivo estiver truncado (erro de linha ou função ausente), restaurar com:
+```
+git checkout HEAD -- <arquivo>
+```
+
+## 9. Arquivos modificados pelo filesystem Linux podem ser truncados
+
+O mount Windows↔Linux pode truncar arquivos grandes ao gravá-los via bash. Para gravar arquivos grandes (>500 linhas), usar sempre `cat > arquivo << 'EOF' ... EOF` ou `cp /tmp/arquivo_preparado destino` em vez de ferramentas que fazem write incremental. Verificar com `wc -l` e `tail -3` imediatamente após gravar.
+
 ## Contexto do produto
 
 Meta: 100 mil usuários até o fim de 2026 — tratar tudo como produto profissional, sem "detalhes menores".
