@@ -1667,7 +1667,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
       <span class="bnav-icon">➕</span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
     </div>
-    <div class="bnav-item" onclick="goToDashboard()">
+    <div class="bnav-item" onclick="goToDashboard('hcs')">
       <span class="bnav-icon">📋</span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
     </div>
@@ -1697,7 +1697,7 @@ function setLang(l){
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sb-overlay').classList.toggle('open')}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open')}
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
-function goToDashboard(){ if(!confirmDiscardHC()) return; window.location.href='anamnesismed-dashboard.html'}
+function goToDashboard(view){ if(!confirmDiscardHC()) return; window.location.href='anamnesismed-dashboard.html'+(view?'?view='+view:'');}
 function encerrarSessao(){ if(!confirmDiscardHC()) return; if(window.authLogout) window.authLogout(); else window.location.href = 'anamnesismed-auth.html'; }
 function newHC(){
   if(!confirmDiscardHC()) return;
@@ -2247,7 +2247,7 @@ const MOTIVOS = {
     ]},
   ],
   cirurgia: [
-    {cat:'Abdome Agudo',items:[
+    {cat:'Abdome Agudo',catEs:'Abdomen Agudo',items:[
       {id:'apendicite',name:'Apendicite / Abdome Agudo',nameEs:'Apendicitis / Abdomen Agudo',icon:'🔪',color:'mc-danger',isPain:true,
        aeaGuide:[
          {q:'Início e migração da dor',qEs:'Inicio y migración del dolor',type:'radio',opts:['Periumbilical/epigástrica migrando para FID (clássico)','FID desde o início','Difusa, sem migração definida','Epigástrica persistente']},
@@ -2326,7 +2326,7 @@ const MOTIVOS = {
        rasHighlight:['digest']
       },
     ]},
-    {cat:'Hérnias',items:[
+    {cat:'Hérnias',catEs:'Hernias',items:[
       {id:'hernia-abdominal',name:'Hérnia da Parede Abdominal',nameEs:'Hernia de Pared Abdominal',icon:'🫸',color:'mc-secondary',
        aeaGuide:[
          {q:'Localização da tumoração',qEs:'Localización de la tumoración',type:'radio',opts:['Inguinal direita','Inguinal esquerda','Umbilical','Epigástrica / linha branca','Incisional (sobre cicatriz cirúrgica)','Femoral','Outra'],optsEs:['Inguinal derecha','Inguinal izquierda','Umbilical','Epigástrica / línea blanca','Incisional (sobre cicatriz quirúrgica)','Femoral','Otra']},
@@ -2379,7 +2379,7 @@ const MOTIVOS = {
        rasHighlight:['digest']
       },
     ]},
-    {cat:'Doenças Colorretais',items:[
+    {cat:'Doenças Colorretais',catEs:'Enfermedades Colorrectales',items:[
       {id:'doenca-diverticular',name:'Doença Diverticular / Diverticulite',nameEs:'Enfermedad Diverticular / Diverticulitis',icon:'🫧',color:'mc-accent',isPain:true,
        aeaGuide:[
          {q:'Localização da dor',qEs:'Localización del dolor',type:'radio',opts:['Fossa ilíaca esquerda (FIE) — clássico','Hipogástrio','Difusa / periumbilical','Fossa ilíaca direita'],optsEs:['Fosa ilíaca izquierda (FII) — clásico','Hipogastrio','Difusa / periumbilical','Fosa ilíaca derecha']},
