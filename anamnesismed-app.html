@@ -830,10 +830,24 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <small style="margin-left:10px;font-size:11px;color:var(--muted)" class="pt">AEA e guias atualizados para este motivo</small>
               <small style="margin-left:10px;font-size:11px;color:var(--muted)" class="es">AEA y guías actualizados para este motivo</small>
             </div>
-            <div class="f-row">
+            <div class="f-row" style="position:relative">
               <label class="f-label pt">b) Segunda queixa (se houver)</label>
               <label class="f-label es">b) Segunda queja (si hubiera)</label>
-              <input class="f-input" type="text" id="mc-b" placeholder="">
+              <input class="f-input" type="text" id="mc-b"
+                data-ph-pt="Digite ou selecione o 2º motivo..."
+                data-ph-es="Escriba o seleccione el 2.º motivo..."
+                placeholder="Digite ou selecione o 2º motivo..."
+                autocomplete="off" oninput="mcbSearch(this.value)">
+              <div id="mc-b-suggestions" style="display:none;position:absolute;z-index:500;background:var(--bg-card);border:1.5px solid var(--secondary);border-radius:10px;max-height:220px;overflow-y:auto;box-shadow:0 8px 32px rgba(13,45,61,.15);width:100%;top:calc(100% + 2px);left:0"></div>
+              <div id="mc-b-badge" style="display:none;margin-top:6px">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.25);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--secondary)">
+                  <span id="mc-b-badge-icon">🩺</span>
+                  <span id="mc-b-badge-name"></span>
+                  <span style="cursor:pointer;opacity:.6;font-size:16px;font-weight:300" onclick="clearMotivo2()">×</span>
+                </div>
+                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="pt">2º motivo com AEA guiada ativa</small>
+                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="es">2.º motivo con AEA guiada activa</small>
+              </div>
             </div>
             <div class="f-row">
               <label class="f-label pt">c) Terceira queixa (se houver)</label>
@@ -874,6 +888,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
           <div class="hc-panel-content">
             <!-- Guided AEA injected by JS based on motivo -->
             <div id="aea-guided-content"></div>
+            <div id="aea-mc2-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
 
             <div class="f-row">
               <label class="f-label pt">Relato livre (AEA em texto)</label>
@@ -1709,6 +1724,11 @@ function newHC(){
   document.getElementById('mc-motivo-badge').style.display = 'none';
   document.getElementById('mc-suggestions').style.display = 'none';
   document.getElementById('aea-guided-content').innerHTML = '';
+  currentMotivo2 = null;
+  document.getElementById('mc-b-badge').style.display = 'none';
+  document.getElementById('mc-b-suggestions').style.display = 'none';
+  var mc2s = document.getElementById('aea-mc2-section');
+  if(mc2s){mc2s.style.display='none';mc2s.innerHTML='';}
   // Reset HC header
   document.getElementById('hc-icon').textContent = '📋';
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
@@ -1843,6 +1863,49 @@ function clearMotivo(){
   renderRAS([]);
 }
 
+function clearMotivo2(){
+  currentMotivo2 = null;
+  var inp = document.getElementById('mc-b'); if(inp) inp.value = '';
+  document.getElementById('mc-b-badge').style.display = 'none';
+  var sect = document.getElementById('aea-mc2-section');
+  if(sect){sect.style.display='none';sect.innerHTML='';}
+}
+
+function mcbSearch(val){
+  var sug = document.getElementById('mc-b-suggestions');
+  if(!val || val.length < 1){ sug.style.display='none'; return; }
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var term = val.toLowerCase().trim();
+  var matches = getAllMotivos().filter(function(m){
+    var nm = (lang==='es'?(m.nameEs||m.name):m.name).toLowerCase();
+    return nm.includes(term);
+  }).slice(0,7);
+  if(!matches.length){ sug.style.display='none'; return; }
+  sug.innerHTML = matches.map(function(m){
+    var nm = lang==='es'?(m.nameEs||m.name):m.name;
+    return '<div onclick="selectMotivo2FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="font-size:17px;flex-shrink:0">'+m.icon+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
+  }).join('');
+  var inp = document.getElementById('mc-b');
+  sug.style.display = 'block';
+}
+
+function selectMotivo2FromMC(id){
+  document.getElementById('mc-b-suggestions').style.display='none';
+  var mObj = findMotivo(id);
+  if(!mObj) return;
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var nm = lang==='es'?(mObj.nameEs||mObj.name):mObj.name;
+  document.getElementById('mc-b').value = nm;
+  document.getElementById('mc-b-badge').style.display = 'block';
+  document.getElementById('mc-b-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-b-badge-name').textContent = nm;
+  currentMotivo2 = mObj;
+  renderAEAGuide2(mObj);
+  // Abre painel AEA se fechado
+  var aeaPanel = document.getElementById('panel-aea');
+  if(aeaPanel && !aeaPanel.classList.contains('open')) aeaPanel.classList.add('open');
+}
+
 
 // Close suggestions when clicking outside
 document.addEventListener('click', function(e){
@@ -1850,10 +1913,15 @@ document.addEventListener('click', function(e){
     var sug = document.getElementById('mc-suggestions');
     if(sug) sug.style.display='none';
   }
+  if(!e.target.closest('#mc-b-suggestions') && e.target.id !== 'mc-b'){
+    var sug2 = document.getElementById('mc-b-suggestions');
+    if(sug2) sug2.style.display='none';
+  }
 });
 
 // ── CURRENT STATE ─────────────────────────────────────
 var currentMotivo = null;
+var currentMotivo2 = null;
 var currentSpec = 'clinica';
 
 // ── HC DIRTY / UNSAVED-CHANGES GUARD ─────────────────
@@ -1976,15 +2044,13 @@ function findMotivo(id){
 }
 
 // ── AEA GUIDED QUESTIONS ──────────────────────────────
-function renderAEAGuide(mObj){
-  var cont = document.getElementById('aea-guided-content');
-  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){cont.innerHTML='';return;}
-  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
+  var ts = titleStyle||'';
   var html = '<div class="aea-guided">';
-  html += '<div class="aea-guided-title pt">Perguntas guiadas — '+mObj.name+'</div>';
-  html += '<div class="aea-guided-title es">Preguntas guiadas — '+(mObj.nameEs||mObj.name)+'</div>';
+  html += '<div class="aea-guided-title pt" style="'+ts+'">Perguntas guiadas — '+mObj.name+'</div>';
+  html += '<div class="aea-guided-title es" style="'+ts+'">Preguntas guiadas — '+(mObj.nameEs||mObj.name)+'</div>';
   mObj.aeaGuide.forEach(function(q,i){
-    var id = 'aea-g-'+i;
+    var id = idPfx+i;
     html += '<div class="aea-q">';
     html += '<div class="aea-q-lbl pt">'+q.q+'</div>';
     html += '<div class="aea-q-lbl es">'+(q.qEs||q.q)+'</div>';
@@ -2015,7 +2081,22 @@ function renderAEAGuide(mObj){
     html += '</div>';
   });
   html += '</div>';
-  cont.innerHTML = html;
+  return html;
+}
+
+function renderAEAGuide(mObj){
+  var cont = document.getElementById('aea-guided-content');
+  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){cont.innerHTML='';return;}
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  cont.innerHTML = buildAEAGuideHTML(mObj, 'aea-g-', lang);
+}
+
+function renderAEAGuide2(mObj){
+  var sect = document.getElementById('aea-mc2-section');
+  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){sect.style.display='none';sect.innerHTML='';return;}
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  sect.innerHTML = buildAEAGuideHTML(mObj, 'aea-g2-', lang, 'color:var(--secondary)');
+  sect.style.display = 'block';
 }
 
 function ynBtnSel(el,groupId,val){
@@ -2835,11 +2916,12 @@ function exportPDF(){
   }
   var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia, 'tosse': gerarNarrativaAEA_tosse, 'semio-tosse': gerarNarrativaAEA_tosse };
 
-  function gerarNarrativaAEA(mObj, lng){
+  function gerarNarrativaAEA(mObj, lng, idPfx){
     if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length) return null;
+    idPfx = idPfx || 'aea-g-';
     var ansArr = [];
     mObj.aeaGuide.forEach(function(q,i){
-      var id = 'aea-g-'+i;
+      var id = idPfx+i;
       var resp = '—';
       if(q.type==='radio') resp = selOne(id);
       else if(q.type==='multi') resp = selMulti(id);
@@ -2869,8 +2951,13 @@ function exportPDF(){
       var t = mAEA;
       // Texto narrativo clínico gerado a partir das perguntas guiadas (substitui a listagem "pergunta: resposta")
       if(currentMotivo && currentMotivo.aeaGuide && currentMotivo.aeaGuide.length){
-        var narrativa = gerarNarrativaAEA(currentMotivo, lang);
+        var narrativa = gerarNarrativaAEA(currentMotivo, lang, 'aea-g-');
         if(narrativa) t += (t && t!=='—' ? '\n\n' : '') + narrativa;
+      }
+      if(currentMotivo2 && currentMotivo2.aeaGuide && currentMotivo2.aeaGuide.length){
+        var nm2 = lang==='es'?(currentMotivo2.nameEs||currentMotivo2.name):currentMotivo2.name;
+        var narrativa2 = gerarNarrativaAEA(currentMotivo2, lang, 'aea-g2-');
+        if(narrativa2) t += '\n\n' + (lang==='pt'?'2º motivo — ':'2.º motivo — ') + nm2 + ':\n' + narrativa2;
       }
       return t;
     }},
