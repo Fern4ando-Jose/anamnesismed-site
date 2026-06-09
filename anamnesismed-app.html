@@ -2601,16 +2601,30 @@ function exportPDF(){
   // ── GERADOR DE NARRATIVA CLÍNICA DA AEA (substitui a listagem "pergunta: resposta") ──
   function gerarNarrativaAEA_cefaleia(ans, lng){
     var pt = (lng!=='es');
+    // Demographics
+    var idadeEl = document.getElementById('dp-idade');
+    var sexoEl  = document.getElementById('dp-sexo');
+    var idadeVal = idadeEl ? (idadeEl.value||'').trim() : '';
+    var sexoRaw  = sexoEl  ? (sexoEl.value ||'')        : '';
+    var sexoTxt  = sexoRaw === 'M' ? (pt?'sexo masculino':'sexo masculino')
+                 : sexoRaw === 'F' ? (pt?'sexo feminino':'sexo femenino') : '';
     function v(i){ var a=ans[i]; return (a && a.resp && a.resp!=='—') ? a.resp : null; }
     var L=v(0), IRR=v(1), CAR=v(2), EVA=v(3), DUR=v(4), INI=v(5),
         FAT=v(6), PER=v(7), VALS=v(8), NAUS=v(9), FOTO=v(10),
         AURA=v(11), AUTO=v(12), SNOOP=v(13), HIST=v(14), TRAUMA=v(15),
-        ANALG=v(16), MEDS=v(17);
+        ANALG=v(16), MEDS=v(17),
+        EVOL=v(18), MOTIVOBUSCA=v(19);
     var partes = [], alarmes = [];
     var yes = function(x){ return /^(Sim|Sí)/.test(x||''); };
 
     if(L||CAR||EVA||DUR){
-      var f = pt ? 'Paciente refere quadro de cefaleia' : 'El paciente refiere cuadro de cefalea';
+      var f = 'Paciente';
+      if(idadeVal && /^\d+$/.test(idadeVal)){
+        f += (pt?' de ':' de ') + idadeVal + (pt?' anos':' años');
+        if(sexoTxt) f += ', ' + sexoTxt;
+        f += ', ';
+      } else { f += ' '; }
+      f += pt ? 'refere quadro de cefaleia' : 'refiere cuadro de cefalea';
       if(L) f += (pt?' de localização ':' de localización ') + L.toLowerCase();
       if(IRR && !/^(Sem|Sin) irradia/.test(IRR)) f += (pt?', com irradiação ':', con irradiación ') + IRR.toLowerCase();
       if(CAR) f += (pt?', de caráter ':', de carácter ') + CAR.toLowerCase();
@@ -2693,6 +2707,14 @@ function exportPDF(){
       partes.push(fr2);
     }
 
+    // ── Evolução e motivo de busca ──────────────────────────────
+    if(EVOL){
+      partes.push((pt?'Evoluiu de forma ':'Evolucionó de forma ')+EVOL.toLowerCase()+'.');
+    }
+    if(MOTIVOBUSCA && MOTIVOBUSCA!=='—'){
+      partes.push((pt?'Buscou atendimento médico ':'Buscó atención médica ')+MOTIVOBUSCA.toLowerCase().replace(/\.$/,'')+'.');
+    }
+
     var texto = partes.join(' ');
     if(alarmes.length){
       texto += '\n\n' + (pt
@@ -2702,7 +2724,7 @@ function exportPDF(){
     return texto;
   }
 
-  // Motor narrativo universal — gera prosa clínica para QUALQUER motivo automaticamente
+  // Motor narrativo cronológico universal — gera prosa clínica para QUALQUER motivo automaticamente
   function gerarNarrativaAEA_generica(ans, lng, mObj){
     var pt = (lng !== 'es');
     var respondidas = ans.filter(function(a){ return a.resp && a.resp !== '—'; });
@@ -2710,79 +2732,87 @@ function exportPDF(){
 
     var nomeMotivo = mObj ? (pt ? (mObj.name||'') : (mObj.nameEs||mObj.name||'')) : '';
 
-    // Classifica cada resposta por tipo
-    var descr = [], sim = [], nao = [], alarme_sim = false, alarme_nao = false;
+    // Demographics
+    var idadeEl = document.getElementById('dp-idade');
+    var sexoEl  = document.getElementById('dp-sexo');
+    var idadeVal = idadeEl ? (idadeEl.value||'').trim() : '';
+    var sexoRaw  = sexoEl  ? (sexoEl.value ||'')        : '';
+    var sexoTxt  = sexoRaw === 'M' ? (pt?'sexo masculino':'sexo masculino')
+                 : sexoRaw === 'F' ? (pt?'sexo feminino':'sexo femenino') : '';
+
+    // Detecção de perguntas cronológicas por qText
+    function isInicioQ(a){   return /iníci|início e dur|inicio.*duración|há quanto tempo|hace cuánto/i.test(a.qText||''); }
+    function isEvolucaoQ(a){ return /evolução.*quadro|evolución.*cuadro/i.test(a.qText||''); }
+    function isMotivoQ(a){   return /motivou buscar|motivó buscar/i.test(a.qText||''); }
+
+    var inicioAns=null, evolucaoAns=null, motivoAns=null, restAns=[];
     respondidas.forEach(function(a){
-      var qL = (a.qText||'').toLowerCase();
-      var isAlarm = /alarme|alarma|red\s*flag/.test(qL);
-      if(a.type === 'yn'){
-        if(isAlarm){
-          if(/^(Sim|Sí)/.test(a.resp)) alarme_sim = true; else alarme_nao = true;
-        } else {
-          if(/^(Sim|Sí)/.test(a.resp)) sim.push(a); else nao.push(a);
-        }
-      } else {
-        descr.push(a);
-      }
+      if(!inicioAns   && isInicioQ(a))   inicioAns   = a;
+      else if(!evolucaoAns && isEvolucaoQ(a)) evolucaoAns = a;
+      else if(!motivoAns   && isMotivoQ(a))   motivoAns   = a;
+      else                                    restAns.push(a);
     });
 
-    // ── helpers ──────────────────────────────────────────────────────
+    var descr=[], sim=[], nao=[], alarme_sim=false, alarme_nao=false;
+    restAns.forEach(function(a){
+      var qL=(a.qText||'').toLowerCase();
+      var isAlarm=/alarme|alarma|red\s*flag/.test(qL);
+      if(a.type==='yn'){
+        if(isAlarm){ if(/^(Sim|Sí)/.test(a.resp)) alarme_sim=true; else alarme_nao=true; }
+        else { if(/^(Sim|Sí)/.test(a.resp)) sim.push(a); else nao.push(a); }
+      } else { descr.push(a); }
+    });
+
     function cleanQ(a){ return (a.qText||'').replace(/[?¿]/g,'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase(); }
-    function joinList(arr, andWord){ var cp=arr.slice(); var last=cp.length>1?cp.pop():null; return last?cp.join(', ')+andWord+last:cp[0]||''; }
+    function joinList(arr,andWord){ var cp=arr.slice(); var last=cp.length>1?cp.pop():null; return last?cp.join(', ')+andWord+last:cp[0]||''; }
 
-    var partes = [];
+    var partes=[];
 
-    // ── Frase de abertura ─────────────────────────────────────────────
-    // Pega os primeiros 2-3 descritivos e os integra sem label:
-    // "Paciente refere dor torácica precordial, em aperto, com irradiação para MSE."
-    var aberturaParts = descr.slice(0, 3).map(function(a){
-      return a.resp.toLowerCase();
-    }).filter(Boolean);
+    // ── Abertura cronológica ──────────────────────────────────────
+    var abertura = 'Paciente';
+    if(idadeVal && /^\d+$/.test(idadeVal)){
+      abertura += (pt?' de ':' de ') + idadeVal + (pt?' anos':' años');
+      if(sexoTxt) abertura += ', ' + sexoTxt;
+      abertura += ', ';
+    } else { abertura += ' '; }
 
-    var abertura = (pt ? 'Paciente refere ' : 'Paciente refiere ') + nomeMotivo.toLowerCase();
-    if(aberturaParts.length === 1){
-      abertura += ' ' + aberturaParts[0];
-    } else if(aberturaParts.length >= 2){
-      abertura += ' ' + aberturaParts[0];
-      abertura += ', ' + aberturaParts.slice(1).join(', ');
+    if(inicioAns){
+      abertura += (pt?'refere que há ':'refiere que hace ') + inicioAns.resp.toLowerCase() + (pt?' iniciou com ':' inició con ') + nomeMotivo.toLowerCase();
+    } else {
+      abertura += (pt?'refere ':'refiere ') + nomeMotivo.toLowerCase();
     }
+
+    var descrMain = descr.slice(0,2).map(function(a){ return a.resp.toLowerCase(); }).filter(Boolean);
+    if(descrMain.length) abertura += ' ' + descrMain.join(', ');
     abertura += '.';
     partes.push(abertura);
 
-    // ── Descritivos restantes (sem label, só o valor) ─────────────────
-    descr.slice(3).forEach(function(a){
-      var val = a.resp;
-      if(!val || val === '—') return;
-      if(a.type === 'input'){
-        var q = (a.qText||'').replace(/[?¿]/g,'').trim();
-        partes.push(q + ': ' + val + '.');
-      } else if(a.type === 'multi'){
-        var items = val.split(',').map(function(s){ return s.trim().toLowerCase(); }).filter(Boolean);
-        if(items.length > 1){
-          partes.push((pt ? 'Destaca: ' : 'Destaca: ') + joinList(items, pt ? ' e ' : ' y ') + '.');
-        } else if(items.length === 1){
-          partes.push(items[0] + '.');
-        }
-      } else {
-        partes.push(val + '.');
-      }
+    // ── Descritivos adicionais ────────────────────────────────────
+    descr.slice(2).forEach(function(a){
+      var val=a.resp; if(!val||val==='—') return;
+      if(a.type==='multi'){
+        var items=val.split(',').map(function(s){ return s.trim().toLowerCase(); }).filter(Boolean);
+        if(items.length>1) partes.push((pt?'Apresenta: ':'Presenta: ')+joinList(items,pt?' e ':' y ')+'.');
+        else if(items.length===1) partes.push(items[0]+'.');
+      } else { partes.push(val+'.'); }
     });
 
-    // ── yn positivos: "Associa dispneia, sudorese e febre." ───────────
-    if(sim.length){
-      var items = sim.map(cleanQ).filter(Boolean);
-      partes.push((pt ? 'Associa ' : 'Asocia ') + joinList(items, pt ? ' e ' : ' y ') + '.');
+    // ── Evolução ─────────────────────────────────────────────────
+    if(evolucaoAns){
+      var ev=evolucaoAns.resp.toLowerCase();
+      partes.push((pt?'Evoluiu de forma ':'Evolucionó de forma ')+ev+'.');
     }
 
-    // ── yn negativos: "Nega síncope, vômitos e irradiação." ──────────
-    if(nao.length){
-      var items = nao.map(cleanQ).filter(Boolean);
-      partes.push((pt ? 'Nega ' : 'Niega ') + joinList(items, pt ? ' e ' : ' y ') + '.');
-    }
+    // ── Sintomas associados ───────────────────────────────────────
+    if(sim.length) partes.push((pt?'Associa ':'Asocia ')+joinList(sim.map(cleanQ).filter(Boolean),pt?' e ':' y ')+'.');
+    if(nao.length) partes.push((pt?'Nega ':'Niega ')+joinList(nao.map(cleanQ).filter(Boolean),pt?' e ':' y ')+'.');
+    if(alarme_sim) partes.push(pt?'⚠ Sinais de alarme presentes — avaliação prioritária indicada.':'⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
+    else if(alarme_nao) partes.push(pt?'Nega sinais de alarme.':'Niega signos de alarma.');
 
-    // ── Alarme ────────────────────────────────────────────────────────
-    if(alarme_sim) partes.push(pt ? '⚠ Sinais de alarme presentes — avaliação prioritária indicada.' : '⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
-    else if(alarme_nao) partes.push(pt ? 'Nega sinais de alarme.' : 'Niega signos de alarma.');
+    // ── Motivo de busca ───────────────────────────────────────────
+    if(motivoAns && motivoAns.resp && motivoAns.resp!=='—'){
+      partes.push((pt?'Buscou atendimento médico ':'Buscó atención médica ')+motivoAns.resp.toLowerCase().replace(/\.$/,'')+'.');
+    }
 
     return partes.join(' ');
   }
@@ -2796,6 +2826,13 @@ function exportPDF(){
     // 16=Tabagismo, 17=IECA, 18=Antec.resp(multi), 19=Exposição(multi)
     // 20=Perda peso, 21=Sudorese noturna, 22=Vacinal, 23=Contato TB
     var pt = (lng !== 'es');
+    // Demographics
+    var idadeEl = document.getElementById('dp-idade');
+    var sexoEl  = document.getElementById('dp-sexo');
+    var idadeVal = idadeEl ? (idadeEl.value||'').trim() : '';
+    var sexoRaw  = sexoEl  ? (sexoEl.value ||'')        : '';
+    var sexoTxt  = sexoRaw === 'M' ? (pt?'sexo masculino':'sexo masculino')
+                 : sexoRaw === 'F' ? (pt?'sexo feminino':'sexo femenino') : '';
     function v(i){ var a=ans[i]; return (a && a.resp && a.resp!=='—') ? a.resp : null; }
     var yes = function(x){ return /^(Sim|Sí)/.test(x||''); };
 
@@ -2804,12 +2841,19 @@ function exportPDF(){
         FEBRE=v(10), DISPN=v(11), SIBIL=v(12), DORT=v(13),
         CORIZA=v(14), PIROSE=v(15), TABACO=v(16), IECA=v(17),
         ANTEC_RESP=v(18), EXPOS=v(19),
-        PESO=v(20), SUDOR=v(21), VACIN=v(22), TB=v(23);
+        PESO=v(20), SUDOR=v(21), VACIN=v(22), TB=v(23),
+        EVOL=v(24), MOTIVOBUSCA=v(25);
 
     var partes=[], alarmes=[];
 
-    // ── Frase de abertura: início + tipo + expectoração + momento ──
-    var p1 = pt ? 'Paciente refere quadro de tosse' : 'Paciente refiere cuadro de tos';
+    // ── Frase de abertura cronológica: início + tipo + expectoração + momento ──
+    var p1 = 'Paciente';
+    if(idadeVal && /^\d+$/.test(idadeVal)){
+      p1 += (pt?' de ':' de ') + idadeVal + (pt?' anos':' años');
+      if(sexoTxt) p1 += ', ' + sexoTxt;
+      p1 += ', ';
+    } else { p1 += ' '; }
+    p1 += pt ? 'refere quadro de tosse' : 'refiere cuadro de tos';
     if(INI){
       if(/Aguda/.test(INI))    p1 += pt?' aguda (menos de 3 semanas de evolução)'  :' aguda (menos de tres semanas de evolución)';
       else if(/Subaguda/.test(INI)) p1 += pt?' subaguda (3 a 8 semanas de evolução)':' subaguda (entre tres y ocho semanas de evolución)';
@@ -2916,6 +2960,14 @@ function exportPDF(){
     // ── Vacinal ──
     if(VACIN && yes(VACIN)){
       partes.push(pt?'Situação vacinal referida.':'Esquema vacunal referido.');
+    }
+
+    // ── Evolução e motivo de busca ──────────────────────────────
+    if(EVOL){
+      partes.push((pt?'Evoluiu de forma ':'Evolucionó de forma ')+EVOL.toLowerCase()+'.');
+    }
+    if(MOTIVOBUSCA && MOTIVOBUSCA!=='—'){
+      partes.push((pt?'Buscou atendimento médico ':'Buscó atención médica ')+MOTIVOBUSCA.toLowerCase().replace(/\.$/,'')+'.');
     }
 
     // ── Texto final + alarmes ──

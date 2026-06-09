@@ -37,6 +37,9 @@ const MOTIVOS = {
          {q:'Antecedentes cardiovasculares (IAM, angina, revascularização, arritmias)?',qEs:'¿Antecedentes cardiovasculares (IAM, angina, revascularización, arritmias)?',type:'yn'},
          {q:'Fatores de risco cardiovascular (HAS, diabetes, dislipidemia, tabagismo, obesidade, história familiar)?',qEs:'¿Factores de riesgo cardiovascular (HTA, diabetes, dislipidemia, tabaquismo, obesidad, antecedentes familiares)?',type:'yn'},
          {q:'Uso de medicamentos (anticoagulantes, antiagregantes, anti-hipertensivos, estatinas)?',qEs:'¿Uso de medicamentos (anticoagulantes, antiagregantes, antihipertensivos, estatinas)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['resp','cardio'],
        ddx:[['IAM','Opressão, irradiação MSE, sudorese, >20min','Sem alívio NTG, enzimas ↑'],['Angina instável','Opressão típica, <20min','Alivia NTG, enzimas normais'],['Dissecção aórtica','Desgarrante, dorso, HTA','Assimetria pulsos'],['TEP','Pleurítica, dispneia súbita','SpO2 ↓, TVP'],['Pericardite','Melhora sentado, atrito','Difusa, ECG ST difuso'],['DRGE','Queimação, pós-prandial','Melhora IBP/antiácido']]
@@ -66,6 +69,9 @@ const MOTIVOS = {
          {q:'Exposições ocupacionais ou alérgenos (poeiras, fumaças, animais, mofo)?',qEs:'¿Exposiciones ocupacionales o alérgenos (polvos, humos, animales, moho)?',type:'yn'},
          {q:'Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?',qEs:'¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?',type:'input',ph:'Descreva episódios anteriores e tratamento',ph2:'Describa episodios anteriores y tratamiento'},
          {q:'Uso de medicamentos (broncodilatadores, diuréticos, anti-hipertensivos, IECA)?',qEs:'¿Uso de medicamentos (broncodilatadores, diuréticos, antihipertensivos, IECA)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['resp','cardio']
       },
@@ -91,6 +97,9 @@ const MOTIVOS = {
          {q:'Trauma craniano recente?',qEs:'¿Traumatismo craneal reciente?',type:'yn'},
          {q:'Frequência de uso de analgésicos (risco de cefaleia por uso excessivo de medicação)',qEs:'Frecuencia de uso de analgésicos (riesgo de cefalea por uso excesivo de medicación)',type:'radio',opts:['Não usa analgésicos para a dor de cabeça','Uso ocasional (poucas vezes ao mês)','Uso frequente (≥2x/semana)','Uso quase diário (≥10-15 dias/mês — sugere cefaleia por uso excessivo de medicação)'],optsEs:['No usa analgésicos para el dolor de cabeza','Uso ocasional (pocas veces al mes)','Uso frecuente (≥2x/semana)','Uso casi diario (≥10-15 días/mes — sugiere cefalea por uso excesivo de medicación)']},
         {q:'Quais medicamentos costuma usar (nome/marca)?',qEs:'¿Qué medicamentos suele usar (nombre/marca)?',type:'input',ph:'Ex: dipirona, paracetamol, ibuprofeno, triptano...',ph2:'Ej: dipirona, paracetamol, ibuprofeno, triptán...'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['cabeca','neuro']
       },
@@ -113,6 +122,9 @@ const MOTIVOS = {
          {q:'Antecedentes pessoais de epilepsia, cardiopatia, AVC prévio ou diabetes?',qEs:'¿Antecedentes personales de epilepsia, cardiopatía, ACV previo o diabetes?',type:'yn'},
          {q:'Antecedentes familiares de epilepsia ou morte súbita cardíaca?',qEs:'¿Antecedentes familiares de epilepsia o muerte súbita cardíaca?',type:'yn'},
          {q:'Uso de medicamentos que possam causar hipotensão, arritmia ou reduzir o limiar convulsivo (anti-hipertensivos, antidepressivos, antipsicóticos)?',qEs:'¿Uso de medicamentos que puedan causar hipotensión, arritmia o reducir el umbral convulsivo (antihipertensivos, antidepresivos, antipsicóticos)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['cabeca','cardio','neuro']
       },
@@ -142,6 +154,9 @@ const MOTIVOS = {
          {q:'Situação vacinal em dia (incluindo febre amarela, influenza, COVID)?',qEs:'¿Situación de vacunación al día (incluyendo fiebre amarilla, influenza, COVID)?',type:'yn'},
          {q:'Condições de imunossupressão (HIV, quimioterapia, corticoide crônico, diabetes descompensado, transplante)?',qEs:'¿Condiciones de inmunosupresión (VIH, quimioterapia, corticoide crónico, diabetes descompensada, trasplante)?',type:'yn'},
          {q:'Uso de outros medicamentos recentes (incluindo antibióticos)?',qEs:'¿Uso de otros medicamentos recientes (incluyendo antibióticos)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['cabeca','resp','cardio','digest','genito','pele']
       },
@@ -169,6 +184,9 @@ const MOTIVOS = {
          {q:'Antecedentes cirúrgicos abdominais ou ginecológicos?',qEs:'¿Antecedentes quirúrgicos abdominales o ginecológicos?',type:'yn'},
          {q:'Uso de medicamentos (AINEs, anticoagulantes, corticoides, antibióticos)?',qEs:'¿Uso de medicamentos (AINEs, anticoagulantes, corticoides, antibióticos)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
          {q:'Data da última menstruação / possibilidade de gravidez (se aplicável)?',qEs:'¿Fecha de la última menstruación / posibilidad de embarazo (si aplica)?',type:'input',ph:'DUM / possibilidade de gravidez',ph2:'FUM / posibilidad de embarazo'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest','genito']
       },
@@ -192,6 +210,9 @@ const MOTIVOS = {
          {q:'Viagens recentes para áreas de saneamento precário ou contato com pessoas ictéricas?',qEs:'¿Viajes recientes a zonas de saneamiento precario o contacto con personas ictéricas?',type:'yn'},
          {q:'Uso recente de medicamentos, fitoterápicos ou suplementos potencialmente hepatotóxicos (paracetamol em altas doses, antibióticos, anticonvulsivantes, anabolizantes)?',qEs:'¿Uso reciente de medicamentos, fitoterápicos o suplementos potencialmente hepatotóxicos (paracetamol en altas dosis, antibióticos, anticonvulsivantes, anabolizantes)?',type:'input',ph:'Liste os medicamentos/substâncias em uso',ph2:'Liste los medicamentos/sustancias en uso'},
          {q:'Histórico pessoal de neoplasia (especialmente digestiva, pancreática ou hepatobiliar)?',qEs:'¿Historial personal de neoplasia (especialmente digestiva, pancreática o hepatobiliar)?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest','pele']
       },
@@ -221,6 +242,9 @@ const MOTIVOS = {
          {q:'Possibilidade de gravidez / atraso menstrual (em mulheres)?',qEs:'¿Posibilidad de embarazo / atraso menstrual (en mujeres)?',type:'yn'},
          {q:'Dieta rica em sal ou baixa ingestão proteica?',qEs:'¿Dieta rica en sal o baja ingesta proteica?',type:'yn'},
          {q:'Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?',qEs:'¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?',type:'input',ph:'Descreva episódios anteriores e tratamento',ph2:'Describa episodios anteriores y tratamiento'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['cardio','genito','resp','digest','pele']
       },
@@ -250,6 +274,9 @@ const MOTIVOS = {
          {q:'Sudorese noturna?',qEs:'¿Sudoración nocturna?',type:'yn'},
          {q:'Situação vacinal (influenza, pneumocócica, coqueluche)?',qEs:'¿Estado vacunal (influenza, neumocócica, tos ferina)?',type:'yn'},
          {q:'Contato com pessoa doente ou caso suspeito de TB?',qEs:'¿Contacto con persona enferma o caso sospechoso de TB?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['resp','cabeca']
       },
@@ -265,6 +292,9 @@ const MOTIVOS = {
          {q:'Diplopia, disartria, fraqueza ou alterações sensitivas associadas?',qEs:'¿Diplopía, disartria, debilidad o alteraciones sensitivas asociadas?',type:'yn'},
          {q:'Palpitações ou síncope associadas?',qEs:'¿Palpitaciones o síncope asociados?',type:'yn'},
          {q:'Uso de medicamentos (anti-hipertensivos, sedativos, ototóxicos)?',qEs:'¿Uso de medicamentos (antihipertensivos, sedantes, ototóxicos)?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['cabeca','neuro','cardio']
       },
@@ -280,6 +310,9 @@ const MOTIVOS = {
          {q:'Sintomas depressivos, ansiedade, estresse recente?',qEs:'¿Síntomas depresivos, ansiedad, estrés reciente?',type:'yn'},
          {q:'Uso de álcool, drogas ou medicamentos novos?',qEs:'¿Uso de alcohol, drogas o medicamentos nuevos?',type:'yn'},
          {q:'Antecedentes familiares de neoplasia?',qEs:'¿Antecedentes familiares de neoplasia?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest','endocrino','psiquismo']
       },
@@ -299,6 +332,9 @@ const MOTIVOS = {
          {q:'Possibilidade de gravidez (mulheres em idade fértil)?',qEs:'¿Posibilidad de embarazo (mujeres en edad fértil)?',type:'yn'},
          {q:'Sinais de desidratação (sede intensa, diminuição da diurese, tontura postural)?',qEs:'¿Signos de deshidratación (sed intensa, disminución de la diuresis, mareo postural)?',type:'yn'},
          {q:'Uso recente de medicamentos, álcool ou alimentos suspeitos?',qEs:'¿Uso reciente de medicamentos, alcohol o alimentos sospechosos?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest','cabeca']
       },
@@ -317,6 +353,9 @@ const MOTIVOS = {
          {q:'Uso recente de antibióticos ou outros medicamentos?',qEs:'¿Uso reciente de antibióticos u otros medicamentos?',type:'yn'},
          {q:'Sinais de desidratação?',qEs:'¿Signos de deshidratación?',type:'yn'},
          {q:'Perda de peso associada (se crônica)?',qEs:'¿Pérdida de peso asociada (si es crónica)?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -336,6 +375,9 @@ const MOTIVOS = {
          {q:'Ansiedade ou crises de pânico associadas?',qEs:'¿Ansiedad o crisis de pánico asociadas?',type:'yn'},
          {q:'Uso de cafeína, álcool, tabaco, drogas estimulantes ou medicamentos (broncodilatadores, hormônio tireoidiano)?',qEs:'¿Uso de cafeína, alcohol, tabaco, drogas estimulantes o medicamentos (broncodilatadores, hormona tiroidea)?',type:'yn'},
          {q:'Antecedentes pessoais ou familiares de arritmia, morte súbita ou doença cardíaca?',qEs:'¿Antecedentes personales o familiares de arritmia, muerte súbita o enfermedad cardíaca?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['cardio','resp']
       },
@@ -355,6 +397,9 @@ const MOTIVOS = {
          {q:'Nictúria (quantas vezes urina à noite)?',qEs:'¿Nicturia (cuántas veces orina por la noche)?',type:'input',ph:'Nº de vezes',ph2:'Nº de veces'},
          {q:'Hábitos sexuais e história de infecções sexualmente transmissíveis?',qEs:'¿Hábitos sexuales e historia de infecciones de transmisión sexual?',type:'yn'},
          {q:'Episódios prévios semelhantes (infecções urinárias de repetição, cálculos)?',qEs:'¿Episodios previos similares (infecciones urinarias de repetición, cálculos)?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['genito']
       },
@@ -374,6 +419,9 @@ const MOTIVOS = {
          {q:'Trauma recente?',qEs:'¿Trauma reciente?',type:'yn'},
          {q:'História de neoplasia, uso crônico de corticoides ou osteoporose?',qEs:'¿Historia de neoplasia, uso crónico de corticoides u osteoporosis?',type:'yn'},
          {q:'Fatores ocupacionais/posturais associados',qEs:'Factores ocupacionales/posturales asociados',type:'multi',opts:['Trabalho com levantamento de peso/carga','Longos períodos sentado','Longos períodos em pé','Movimentos repetitivos de tronco/coluna','Vibração ocupacional (ex: dirigir, máquinas)','Postura inadequada no trabalho ou em casa','Sedentarismo','Nenhum fator ocupacional identificado'],optsEs:['Trabajo con levantamiento de peso/carga','Largos períodos sentado','Largos períodos de pie','Movimientos repetitivos de tronco/columna','Vibración ocupacional (ej: conducir, máquinas)','Postura inadecuada en el trabajo o en casa','Sedentarismo','Ningún factor ocupacional identificado']},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['osteo','neuro']
       },
@@ -399,6 +447,9 @@ const MOTIVOS = {
          {q:'Antecedentes pessoais ou familiares de doença autoimune, psoríase, gota ou espondiloartrite?',qEs:'¿Antecedentes personales o familiares de enfermedad autoinmune, psoriasis, gota o espondiloartritis?',type:'yn'},
          {q:'Infecção recente (gastrointestinal, urinária, de vias aéreas, picada de carrapato) nas últimas semanas?',qEs:'¿Infección reciente (gastrointestinal, urinaria, de vías respiratorias, picadura de garrapata) en las últimas semanas?',type:'yn'},
          {q:'Uso de medicamentos (diuréticos, corticoides, imunossupressores, anticoagulantes)?',qEs:'¿Uso de medicamentos (diuréticos, corticoides, inmunosupresores, anticoagulantes)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['osteo','pele']
       },
@@ -416,6 +467,8 @@ const MOTIVOS = {
          {q:'Fatores de melhora?',qEs:'¿Factores que alivian?',type:'multi',opts:['Repouso','Analgésicos','Calor local','Frio local','Alimentação','Posição antálgica'],optsEs:['Reposo','Analgésicos','Calor local','Frío local','Alimentación','Posición antiálgica']},
          {q:'Fatores de piora?',qEs:'¿Factores que agravan?',type:'multi',opts:['Esforço físico','Alimentação','Palpação','Movimento','Inspiração profunda','Defecação'],optsEs:['Esfuerzo físico','Alimentación','Palpación','Movimiento','Inspiración profunda','Defecación']},
          {q:'Sintomas associados?',qEs:'¿Síntomas asociados?',type:'multi',opts:['Náuseas/vômitos','Febre','Dispneia','Sudorese','Palidez','Alteração intestinal'],optsEs:['Náuseas/vómitos','Fiebre','Disnea','Sudoración','Palidez','Alteración intestinal']},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
       {id:'semio-disnea',name:'Dispneia',nameEs:'Disnea',icon:'🫁',color:'mc-primary',rasHighlight:['resp','cardio'],
        aeaGuide:[
@@ -434,6 +487,8 @@ const MOTIVOS = {
          {q:'Dor torácica associada?',qEs:'¿Dolor torácico asociado?',type:'yn'},
          {q:'Edema de membros inferiores?',qEs:'¿Edema de miembros inferiores?',type:'yn'},
          {q:'Tabagismo ou exposição ocupacional (poeiras, gases)?',qEs:'¿Tabaquismo o exposición ocupacional (polvos, gases)?',type:'input',ph:'Anos / maços-ano / tipo de exposição',ph2:'Años / paquetes-año / tipo de exposición'},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
       {id:'semio-tosse',name:'Tosse',nameEs:'Tos',icon:'😮‍💨',color:'mc-primary',
        aeaGuide:[
@@ -461,6 +516,9 @@ const MOTIVOS = {
          {q:'Sudorese noturna?',qEs:'¿Sudoración nocturna?',type:'yn'},
          {q:'Situação vacinal (influenza, pneumocócica, coqueluche)?',qEs:'¿Estado vacunal (influenza, neumocócica, tos ferina)?',type:'yn'},
          {q:'Contato com pessoa doente ou caso suspeito de TB?',qEs:'¿Contacto con persona enferma o caso sospechoso de TB?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['resp','cabeca']
       },
@@ -475,6 +533,8 @@ const MOTIVOS = {
          {q:'Saturação de O₂ medida?',qEs:'¿Saturación de O₂ medida?',type:'input',ph:'% SpO₂',ph2:'% SpO₂'},
          {q:'Cardiopatia ou pneumopatia conhecida?',qEs:'¿Cardiopatía o neumopatía conocida?',type:'input',ph:'Ex: DPOC, ICC, cardiopatia congênita',ph2:'Ej: EPOC, ICC, cardiopatía congénita'},
          {q:'Temperatura dos membros?',qEs:'¿Temperatura de los miembros?',type:'radio',opts:['Extremidades frias (sugere cianose periférica)','Extremidades quentes (sugere cianose central)'],optsEs:['Extremidades frías (sugiere cianosis periférica)','Extremidades calientes (sugiere cianosis central)']},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
       {id:'semio-edema',name:'Edema',nameEs:'Edema',icon:'🦵',color:'mc-secondary',rasHighlight:['cardio','genito','resp','digest','pele'],
        aeaGuide:[
@@ -486,6 +546,8 @@ const MOTIVOS = {
          {q:'Uso de medicamentos (BCC, corticoides, AINEs, hormônios)?',qEs:'¿Uso de medicamentos (BCC, corticoides, AINEs, hormonas)?',type:'input',ph:'Liste os medicamentos',ph2:'Liste los medicamentos'},
          {q:'Dor, hiperemia ou calor local (trombose venosa profunda)?',qEs:'¿Dolor, hiperemia o calor local (trombosis venosa profunda)?',type:'yn'},
          {q:'Febre ou ferida local (erisipela / linfedema infeccioso)?',qEs:'¿Fiebre o herida local (erisipela / linfedema infeccioso)?',type:'yn'},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
       {id:'semio-ictericia',name:'Icterícia',nameEs:'Ictericia',icon:'🟡',color:'mc-accent',rasHighlight:['digest','pele'],
        aeaGuide:[
@@ -498,6 +560,11 @@ const MOTIVOS = {
          {q:'Medicamentos hepatotóxicos (paracetamol, antibióticos, fitoterápicos)?',qEs:'¿Medicamentos hepatotóxicos (paracetamol, antibióticos, fitoterapéuticos)?',type:'input',ph:'Liste os medicamentos e doses',ph2:'Liste los medicamentos y dosis'},
          {q:'Contato com água contaminada, viagens ou contato com hepatite?',qEs:'¿Contacto con agua contaminada, viajes recientes o contacto con hepatitis?',type:'yn'},
          {q:'Antecedente de hepatopatia, colelitíase ou cirurgia biliar?',qEs:'¿Antecedente de hepatopatía, colelitiasis o cirugía biliar?',type:'input',ph:'Ex: fígado gorduroso, cálculos, colecistectomia',ph2:'Ej: hígado graso, cálculos, colecistectomía'},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',
+          opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],
+          optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',
+          type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
     ]},
     {cat:'Sintomas Constitucionais',catEs:'Síntomas Constitucionales',items:[
@@ -516,6 +583,8 @@ const MOTIVOS = {
          {q:'Viagens recentes ou contato com animais?',qEs:'¿Viajes recientes o contacto con animales?',type:'input',ph:'Local da viagem / tipo de animal',ph2:'Lugar del viaje / tipo de animal'},
          {q:'Uso de medicamentos ou internação recente?',qEs:'¿Uso de medicamentos o internación reciente?',type:'input',ph:'Liste medicamentos e data de internação',ph2:'Liste medicamentos y fecha de internación'},
          {q:'Imunossupressão ou doenças de base (HIV, neoplasia, corticoides)?',qEs:'¿Inmunosupresión o enfermedades de base (HIV, neoplasia, corticoides)?',type:'yn'},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
       {id:'semio-astenia',name:'Astenia / Fadiga',nameEs:'Astenia / Fatiga',icon:'😔',color:'mc-purple',
        aeaGuide:[
@@ -528,6 +597,8 @@ const MOTIVOS = {
          {q:'Poliúria e polidipsia (suspeita de diabetes)?',qEs:'¿Poliuria y polidipsia (sospecha de diabetes)?',type:'yn'},
          {q:'Intolerância ao frio, obstipação, queda de cabelo (suspeita de hipotireoidismo)?',qEs:'¿Intolerancia al frío, estreñimiento, caída de cabello (sospecha de hipotiroidismo)?',type:'yn'},
          {q:'Humor depressivo, anedonia ou ansiedade?',qEs:'¿Estado de ánimo depresivo, anhedonia o ansiedad?',type:'yn'},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
       {id:'semio-peso',name:'Perda / Ganho de Peso',nameEs:'Pérdida / Ganancia de Peso',icon:'⚖️',color:'mc-secondary',
        aeaGuide:[
@@ -539,6 +610,11 @@ const MOTIVOS = {
          {q:'Intolerância ao frio, fadiga, obstipação (hipotireoidismo)?',qEs:'¿Intolerancia al frío, fatiga, estreñimiento (hipotiroidismo)?',type:'yn'},
          {q:'Sintomas digestivos associados?',qEs:'¿Síntomas digestivos asociados?',type:'multi',opts:['Disfagia','Diarreia crônica','Náuseas/vômitos','Sangue nas fezes','Esteatorreia'],optsEs:['Disfagia','Diarrea crónica','Náuseas/vómitos','Sangre en heces','Esteatorrea']},
          {q:'Febre, sudorese noturna ou adenomegalia (neoplasia / infecção crônica)?',qEs:'¿Fiebre, sudoración nocturna o adenomegalias (neoplasia / infección crónica)?',type:'yn'},
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',
+          opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],
+          optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',
+          type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ]},
     ]},
   ],
@@ -560,6 +636,9 @@ const MOTIVOS = {
          {q:'Data da última menstruação / possibilidade de gravidez (mulheres em idade fértil)?',qEs:'¿Fecha de la última menstruación / posibilidad de embarazo (mujeres en edad fértil)?',type:'input',ph:'DUM / possibilidade de gravidez',ph2:'FUM / posibilidad de embarazo'},
          {q:'Resposta ao uso de analgésico para essa dor',qEs:'Respuesta al uso de analgésico para este dolor',type:'radio',opts:['Não usou analgésico','Usou e a dor melhorou bem','Usou e a dor melhorou parcialmente','Usou e não houve melhora (sinal de alerta)'],optsEs:['No usó analgésico','Usó y el dolor mejoró bien','Usó y el dolor mejoró parcialmente','Usó y no hubo mejoría (señal de alarma)']},
          {q:'Qual medicamento usou?',qEs:'¿Qué medicamento usó?',type:'input',ph:'Ex: dipirona, paracetamol, ibuprofeno...',ph2:'Ej: dipirona, paracetamol, ibuprofeno...'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest','genito']
       },
@@ -581,6 +660,9 @@ const MOTIVOS = {
          {q:'Sinal de alarme — febre alta com calafrios + icterícia (tríade de Charcot — sugere colangite)?',qEs:'¿Signo de alarma — fiebre alta con escalofríos + ictericia (tríada de Charcot — sugiere colangitis)?',type:'yn'},
          {q:'Fatores de risco: sexo feminino, obesidade, multiparidade, uso de ACO, emagrecimento rápido?',qEs:'¿Factores de riesgo: sexo femenino, obesidad, multiparidad, uso de ACO, adelgazamiento rápido?',type:'yn'},
          {q:'Medicamentos em uso (anticoncepcionais, fibratos, ceftriaxona)?',qEs:'¿Medicamentos en uso (anticonceptivos, fibratos, ceftriaxona)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -601,6 +683,9 @@ const MOTIVOS = {
          {q:'Etilismo — quantidade e frequência de consumo de álcool?',qEs:'¿Etilismo — cantidad y frecuencia de consumo de alcohol?',type:'input',ph:'Descreva padrão de consumo de álcool',ph2:'Describa patrón de consumo de alcohol'},
          {q:'Episódios prévios de pancreatite ou cálculos biliares conhecidos?',qEs:'¿Episodios previos de pancreatitis o cálculos biliares conocidos?',type:'yn'},
          {q:'Medicamentos potencialmente pancreatotóxicos em uso (azatioprina, furosemida, tetraciclinas, estrógenos)?',qEs:'¿Medicamentos potencialmente pancreatotóxicos en uso (azatioprina, furosemida, tetraciclinas, estrógenos)?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -618,6 +703,9 @@ const MOTIVOS = {
          {q:'Sinal de alarme — dor contínua sem alívio, febre alta, peritonismo (isquemia / estrangulamento)?',qEs:'¿Signo de alarma — dolor continuo sin alivio, fiebre alta, peritonismo (isquemia / estrangulamiento)?',type:'yn'},
          {q:'Perda de peso recente ou alteração progressiva do hábito intestinal (suspeita de neoplasia)?',qEs:'¿Pérdida de peso reciente o alteración progresiva del hábito intestinal (sospecha de neoplasia)?',type:'yn'},
          {q:'Uso de opioides, antidepressivos tricíclicos ou outros medicamentos constipantes?',qEs:'¿Uso de opioides, antidepresivos tricíclicos u otros medicamentos estreñidores?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -636,6 +724,9 @@ const MOTIVOS = {
          {q:'Fatores precipitantes: constipação crônica, tosse crônica, esforço físico intenso?',qEs:'¿Factores precipitantes: estreñimiento crónico, tos crónica, esfuerzo físico intenso?',type:'yn'},
          {q:'Cirurgias abdominais anteriores (hérnia incisional)?',qEs:'¿Cirugías abdominales anteriores (hernia incisional)?',type:'yn'},
          {q:'Antecedentes de hérnia reparada anteriormente (recidiva)?',qEs:'¿Antecedentes de hernia reparada anteriormente (recidiva)?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest','motor']
       },
@@ -654,6 +745,9 @@ const MOTIVOS = {
          {q:'Antecedente de doença hepática (cirrose, hepatite) ou varizes esofágicas conhecidas?',qEs:'¿Antecedente de enfermedad hepática (cirrosis, hepatitis) o várices esofágicas conocidas?',type:'yn'},
          {q:'Vômitos fortes e repetidos antes do sangramento (síndrome de Mallory-Weiss)?',qEs:'¿Vómitos intensos y repetidos antes del sangrado (síndrome de Mallory-Weiss)?',type:'yn'},
          {q:'Episódios semelhantes anteriores? Como foram tratados?',qEs:'¿Episodios similares anteriores? ¿Cómo fueron tratados?',type:'input',ph:'Descreva episódios e tratamento anterior',ph2:'Describa episodios y tratamiento anterior'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -671,6 +765,9 @@ const MOTIVOS = {
          {q:'Antecedentes: diverticulose, doença inflamatória intestinal (Crohn / RCU), pólipos ou câncer colorretal?',qEs:'¿Antecedentes: diverticulosis, enfermedad inflamatoria intestinal (Crohn / CU), pólipos o cáncer colorrectal?',type:'yn'},
          {q:'História familiar de câncer colorretal ou pólipos?',qEs:'¿Antecedentes familiares de cáncer colorrectal o pólipos?',type:'yn'},
          {q:'Episódios semelhantes anteriores?',qEs:'¿Episodios similares anteriores?',type:'input',ph:'Descreva episódios e tratamento anterior',ph2:'Describa episodios y tratamiento anterior'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -690,6 +787,9 @@ const MOTIVOS = {
          {q:'Sinal de complicação — peritonite difusa, massa palpável em FIE (abscesso), saída de gás ou fezes pela urina / vagina (fístula)?',qEs:'¿Signo de complicación — peritonitis difusa, masa palpable en FII (absceso), salida de gas o heces por la orina / vagina (fístula)?',type:'yn'},
          {q:'Dieta pobre em fibras?',qEs:'¿Dieta pobre en fibra?',type:'yn'},
          {q:'Uso de AINEs, opioides ou corticoides?',qEs:'¿Uso de AINEs, opioides o corticoides?',type:'input',ph:'Liste os medicamentos em uso',ph2:'Liste los medicamentos en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -705,6 +805,9 @@ const MOTIVOS = {
          {q:'Febre ou calafrios — sugere abscesso anorretal?',qEs:'¿Fiebre o escalofríos — sugiere absceso anorrectal?',type:'yn'},
          {q:'Diagnóstico prévio de hemorroidas, fissura anal, fístula ou doença de Crohn perianal?',qEs:'¿Diagnóstico previo de hemorroides, fisura anal, fístula o enfermedad de Crohn perianal?',type:'yn'},
          {q:'Cirurgia anorretal anterior (hemorroidectomia, esfincteroplastia)?',qEs:'¿Cirugía anorrectal anterior (hemorroidectomía, esfinteroplastia)?',type:'yn'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest']
       },
@@ -724,6 +827,9 @@ const MOTIVOS = {
          {q:'Vômitos ou sangue no vômito após o trauma?',qEs:'¿Vómitos o sangre en el vómito después del trauma?',type:'yn'},
          {q:'Usava cinto de segurança / capacete?',qEs:'¿Usaba cinturón de seguridad / casco?',type:'yn'},
          {q:'Antecedentes de coagulopatia ou uso de anticoagulantes?',qEs:'¿Antecedentes de coagulopatía o uso de anticoagulantes?',type:'input',ph:'Liste medicamentos anticoagulantes em uso',ph2:'Liste medicamentos anticoagulantes en uso'},
+       
+         {q:'Evolução do quadro',qEs:'Evolución del cuadro',type:'radio',opts:['Progressiva (piora contínua)','Flutuante (piora e melhora)','Estável (sem mudança)','Regressiva (melhorando)'],optsEs:['Progresiva (empeoramiento continuo)','Fluctuante (empeora y mejora)','Estable (sin cambio)','Regresiva (mejorando)']},
+         {q:'O que motivou buscar atendimento hoje?',qEs:'¿Qué motivó buscar atención hoy?',type:'input',ph:'Descreva o que motivou vir hoje',ph2:'Describa qué motivó venir hoy'},
        ],
        rasHighlight:['digest','motor','cardio']
       },
