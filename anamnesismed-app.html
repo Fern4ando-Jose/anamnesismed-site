@@ -2694,110 +2694,145 @@ function exportPDF(){
   }
 
   function gerarNarrativaAEA_tosse(ans, lng){
+    // Índices (24 perguntas, iguais para tosse e semio-tosse):
+    // 0=Início, 1=Tipo, 2=Expectoração, 3=Caráter escarro, 4=Hemoptise
+    // 5=Momento, 6=Desencadeantes(multi), 7=Outros desencad.(input)
+    // 8=Alívio(multi), 9=Outros alívio(input), 10=Febre, 11=Dispneia
+    // 12=Sibilância, 13=Dor torácica, 14=Coriza, 15=Pirose
+    // 16=Tabagismo, 17=IECA, 18=Antec.resp(multi), 19=Exposição(multi)
+    // 20=Perda peso, 21=Sudorese noturna, 22=Vacinal, 23=Contato TB
     var pt = (lng !== 'es');
     function v(i){ var a=ans[i]; return (a && a.resp && a.resp!=='—') ? a.resp : null; }
     var yes = function(x){ return /^(Sim|Sí)/.test(x||''); };
-    var isSemio = (ans.length <= 17);
-    var INI=v(0),TIPO=v(1),EXPEC=v(2),CARAC=v(3);
-    var SANGUE,MOM,FATORES,FEBRE,DISPN,SIBIL,PIROSE,CORIZA,PESO,ALARME,TABACO,IECA,VACIN,ANTEC,EXPOS;
-    if(isSemio){
-      SANGUE=v(4);MOM=v(5);FATORES=v(6);FEBRE=v(7);DISPN=v(8);
-      SIBIL=v(9);PIROSE=v(10);CORIZA=v(11);PESO=v(12);ALARME=v(13);
-      TABACO=v(14);IECA=v(15);VACIN=v(16);
-    } else {
-      SANGUE=v(6);MOM=v(7);FATORES=v(8);FEBRE=v(10);DISPN=v(11);
-      SIBIL=v(12);PIROSE=v(13);CORIZA=v(14);PESO=v(15);ALARME=v(16);
-      ANTEC=v(17);TABACO=v(18);EXPOS=v(19);VACIN=v(20);
-    }
+
+    var INI=v(0), TIPO=v(1), EXPEC=v(2), CARAC=v(3), HEMOPT=v(4),
+        MOM=v(5), DESENC=v(6), DESENC2=v(7), ALIVIO=v(8), ALIVIO2=v(9),
+        FEBRE=v(10), DISPN=v(11), SIBIL=v(12), DORT=v(13),
+        CORIZA=v(14), PIROSE=v(15), TABACO=v(16), IECA=v(17),
+        ANTEC_RESP=v(18), EXPOS=v(19),
+        PESO=v(20), SUDOR=v(21), VACIN=v(22), TB=v(23);
+
     var partes=[], alarmes=[];
 
-    // Frase de abertura: duração + tipo + expectoração + momento
+    // ── Frase de abertura: início + tipo + expectoração + momento ──
     var p1 = pt ? 'Paciente refere quadro de tosse' : 'Paciente refiere cuadro de tos';
     if(INI){
-      if(/Aguda/.test(INI))    p1 += pt ? ' aguda (menos de 3 semanas de evolução)' : ' aguda (menos de tres semanas de evolución)';
-      else if(/Subaguda/.test(INI)) p1 += pt ? ' subaguda (3 a 8 semanas de evolução)' : ' subaguda (entre tres y ocho semanas de evolución)';
-      else if(/Crônica|Crónica/.test(INI)) p1 += pt ? ' crônica (mais de 8 semanas de evolução)' : ' crónica (más de ocho semanas de evolución)';
+      if(/Aguda/.test(INI))    p1 += pt?' aguda (menos de 3 semanas de evolução)'  :' aguda (menos de tres semanas de evolución)';
+      else if(/Subaguda/.test(INI)) p1 += pt?' subaguda (3 a 8 semanas de evolução)':' subaguda (entre tres y ocho semanas de evolución)';
+      else if(/Crônica|Crónica/.test(INI)){
+        p1 += pt?' crônica (mais de 8 semanas de evolução)':' crónica (más de ocho semanas de evolución)';
+        alarmes.push(pt?'tosse crônica (> 8 semanas)':'tos crónica (> 8 semanas)');
+      }
     }
     if(TIPO){
-      if(/Seca/.test(TIPO))       p1 += pt ? ', seca (não produtiva)' : ', seca (no productiva)';
-      else if(/Produtiva|Productiva/.test(TIPO)) p1 += pt ? ', produtiva' : ', productiva';
-      else if(/Metálica/.test(TIPO)) p1 += pt ? ', de caráter metálico/rouco' : ', de carácter metálico/ronco';
+      if(/Seca/.test(TIPO))          p1 += pt?', seca (não produtiva)':', seca (no productiva)';
+      else if(/Produtiva|Productiva/.test(TIPO)) p1 += pt?', produtiva':', productiva';
+      else if(/Metálica|Metálica/.test(TIPO))    p1 += pt?', metálica/rouca':', metálica/ronca';
     }
     if(EXPEC && yes(EXPEC) && CARAC){
-      var dc = CARAC.indexOf('Mucopurulento')!==-1 ? (pt?'mucopurulenta (amarelada)':'mucopurulenta (amarillenta)')
-             : CARAC.indexOf('Purulento')!==-1      ? (pt?'purulenta (esverdeada)':'purulenta (verdosa)')
-             : CARAC.indexOf('Hemoptoico')!==-1     ? (pt?'hemoptoica (com sangue)':'hemoptoica (con sangre)')
-             : CARAC.indexOf('Seroso')!==-1         ? (pt?'serosa/espumosa':'serosa/espumosa')
-             :                                        (pt?'mucoide':'mucoide');
-      p1 += pt ? ', com expectoração '+dc : ', con expectoración '+dc;
+      var dc = /Mucopurulento/.test(CARAC) ? (pt?'mucopurulenta (amarelada — sugestivo de infecção)':'mucopurulenta (amarillenta — sugestivo de infección)')
+             : /Purulento/.test(CARAC)     ? (pt?'purulenta (esverdeada/fétida)':'purulenta (verdosa/fétida)')
+             : /Hemoptoico/.test(CARAC)    ? (pt?'hemoptoica (com sangue)':'hemoptoica (con sangre)')
+             : /Seroso/.test(CARAC)        ? (pt?'serosa/espumosa':'serosa/espumosa')
+             :                               (pt?'mucoide':'mucoide');
+      p1 += pt?', com expectoração '+dc:', con expectoración '+dc;
     }
     if(MOM){
-      if(/Matutina/.test(MOM))      p1 += pt?', de predomínio matutino':', predominantemente matutina';
-      else if(/Noturna/.test(MOM))  p1 += pt?', de predomínio noturno':', predominantemente nocturna';
-      else if(/Constante/.test(MOM))p1 += pt?', constante ao longo do dia':', de forma constante a lo largo del día';
-      else if(/Pós-prandial|Postprandial/.test(MOM)) p1 += pt?', com piora pós-prandial ou ao deitar':', con empeoramiento posprandial o al acostarse';
+      if(/Constante/.test(MOM))       p1 += pt?', de caráter constante':', de carácter constante';
+      else if(/Noturna|Nocturna/.test(MOM))  p1 += pt?', de predomínio noturno':', predominantemente nocturna';
+      else if(/Matutina/.test(MOM))   p1 += pt?', de predomínio matutino':', predominantemente matutina';
+      else if(/Pós-prandial|Posprandial/.test(MOM)) p1 += pt?', com piora pós-prandial ou ao deitar':', con empeoramiento posprandial o al acostarse';
     }
     p1 += '.';
     partes.push(p1);
 
-    // Hemoptise
-    if(SANGUE && yes(SANGUE)){
-      partes.push(pt ? 'Refere hemoptise associada.' : 'Refiere hemoptisis asociada.');
+    // ── Hemoptise ──
+    if(HEMOPT && yes(HEMOPT)){
+      partes.push(pt?'Refere hemoptise associada.':'Refiere hemoptisis asociada.');
       alarmes.push(pt?'hemoptise':'hemoptisis');
     }
 
-    // Fatores desencadeantes
-    if(FATORES && FATORES!=='—'){
-      partes.push((pt?'A tosse é desencadeada ou agravada por: ':'La tos es desencadenada o agravada por: ')+FATORES.toLowerCase()+'.');
+    // ── Fatores desencadeantes ──
+    var desencArr = [];
+    if(DESENC && DESENC!=='—') desencArr.push(DESENC.toLowerCase());
+    if(DESENC2 && DESENC2!=='—') desencArr.push(DESENC2.toLowerCase());
+    if(desencArr.length){
+      partes.push((pt?'A tosse é desencadeada ou agravada por: ':'La tos es desencadenada o agravada por: ')+desencArr.join('; ')+'.');
     }
 
-    // Sintomas associados (positivos)
+    // ── Fatores de alívio ──
+    var alivArr = [];
+    if(ALIVIO && ALIVIO!=='—' && !/Nenhum|Ningún/.test(ALIVIO)) alivArr.push(ALIVIO.toLowerCase());
+    if(ALIVIO2 && ALIVIO2!=='—') alivArr.push(ALIVIO2.toLowerCase());
+    if(alivArr.length){
+      partes.push((pt?'Apresenta alívio com: ':'Presenta alivio con: ')+alivArr.join('; ')+'.');
+    }
+
+    // ── Sintomas associados positivos ──
     var assoc=[];
-    if(FEBRE  && yes(FEBRE))  assoc.push(pt?'febre':'fiebre');
-    if(DISPN  && yes(DISPN))  assoc.push(pt?'dispneia':'disnea');
+    if(FEBRE  && yes(FEBRE))  { assoc.push(pt?'febre':'fiebre'); alarmes.push(pt?'febre persistente':'fiebre persistente'); }
+    if(DISPN  && yes(DISPN))  { assoc.push(pt?'dispneia':'disnea'); alarmes.push(pt?'dispneia associada':'disnea asociada'); }
     if(SIBIL  && yes(SIBIL))  assoc.push(pt?'sibilância':'sibilancias');
-    if(PIROSE && yes(PIROSE)) assoc.push(pt?'pirose ou regurgitação':'pirosis o regurgitación');
+    if(DORT   && yes(DORT))   assoc.push(pt?'dor torácica':'dolor torácico');
     if(CORIZA && yes(CORIZA)) assoc.push(pt?'coriza e gotejamento pós-nasal':'rinorrea y goteo posnasal');
+    if(PIROSE && yes(PIROSE)) assoc.push(pt?'pirose ou regurgitação':'pirosis o regurgitación');
     if(assoc.length){
-      partes.push((pt?'Acompanha-se de ':'Se acompaña de ')+assoc.join(', ')+'.');
+      partes.push((pt?'Associa-se a ':'Se acompaña de ')+assoc.join(', ')+'.');
     }
 
-    // Perda de peso
+    // ── Perda de peso / sudorese noturna ──
     if(PESO && yes(PESO)){
-      partes.push(pt?'Refere perda de peso associada.':'Refiere además pérdida de peso.');
+      partes.push(pt?'Refere perda de peso não intencional.':'Refiere pérdida de peso no intencional.');
       alarmes.push(pt?'perda de peso não intencional':'pérdida de peso no intencional');
     }
-
-    // Tabagismo
-    if(TABACO && TABACO!=='—'){
-      partes.push((pt?'Antecedente de tabagismo: ':'Antecedente de tabaquismo: ')+TABACO.toLowerCase()+'.');
-      alarmes.push(pt?'tabagismo (fator de risco para neoplasia e DPOC)':'tabaquismo (factor de riesgo para neoplasia y EPOC)');
+    if(SUDOR && yes(SUDOR)){
+      partes.push(pt?'Relata sudorese noturna.':'Relata sudoración nocturna.');
+      alarmes.push(pt?'sudorese noturna':'sudoración nocturna');
     }
 
-    // IECA
+    // ── Tabagismo ──
+    if(TABACO && TABACO!=='—'){
+      partes.push((pt?'Tabagismo: ':'Tabaquismo: ')+TABACO.toLowerCase()+'.');
+      alarmes.push(pt?'tabagismo (fator de risco)':'tabaquismo (factor de riesgo)');
+    }
+
+    // ── IECA ──
     if(IECA && yes(IECA)){
       partes.push(pt
-        ?'Faz uso de inibidor da ECA (IECA) — causa frequente de tosse seca persistente.'
-        :'Refiere uso de inhibidor de la ECA (IECA) — causa frecuente de tos seca persistente.');
+        ?'Faz uso de IECA — causa frequente de tosse seca persistente.'
+        :'Refiere uso de IECA — causa frecuente de tos seca persistente.');
     }
 
-    // Antecedentes e exposições (tosse clínica)
-    if(ANTEC && yes(ANTEC)) partes.push(pt?'Apresenta antecedentes pessoais relevantes.':'Presenta antecedentes personales relevantes.');
-    if(EXPOS && yes(EXPOS)) partes.push(pt?'Refere exposições ocupacionais relevantes.':'Refiere exposiciones ocupacionales relevantes.');
-    if(VACIN && yes(VACIN)) partes.push(pt?'Situação vacinal referida.':'Esquema de vacunación referido.');
+    // ── Antecedentes respiratórios ──
+    if(ANTEC_RESP && ANTEC_RESP!=='—' && !/Nenhum|Sin antecedente/.test(ANTEC_RESP)){
+      partes.push((pt?'Antecedentes respiratórios: ':'Antecedentes respiratorios: ')+ANTEC_RESP.toLowerCase()+'.');
+    }
 
-    // Alarme do campo
-    if(ALARME && yes(ALARME)) alarmes.push(pt?'sinais de alarme clínico identificados':'signos de alarma clínico identificados');
+    // ── Exposição ──
+    if(EXPOS && EXPOS!=='—' && !/Sem exposição|Sin exposición/.test(EXPOS)){
+      partes.push((pt?'Exposição relevante: ':'Exposición relevante: ')+EXPOS.toLowerCase()+'.');
+    }
 
+    // ── Contato TB ──
+    if(TB && yes(TB)){
+      partes.push(pt?'Refere contato com pessoa doente ou caso suspeito de tuberculose.':'Refiere contacto con persona enferma o caso sospechoso de tuberculosis.');
+      alarmes.push(pt?'contato com caso suspeito de TB':'contacto con caso sospechoso de TB');
+    }
+
+    // ── Vacinal ──
+    if(VACIN && yes(VACIN)){
+      partes.push(pt?'Situação vacinal referida.':'Esquema vacunal referido.');
+    }
+
+    // ── Texto final + alarmes ──
     var texto = partes.join(' ');
     if(alarmes.length){
       texto += '\n\n'+(pt
-        ?'⚠ Sinais de alarme identificados: '+alarmes.join('; ')+'. Recomenda-se investigação complementar prioritária (imagem torácica; broncoscopia se hemoptise volumosa).'
-        :'⚠ Signos de alarma identificados: '+alarmes.join('; ')+'. Se recomienda investigación complementaria prioritaria (imagen torácica; broncoscopia si hemoptisis abundante).');
+        ?'⚠ Sinais de alarme identificados: '+alarmes.join('; ')+'. Recomenda-se investigação complementar prioritária (imagem torácica, broncoscopia se hemoptise volumosa, PPD/IGRA se suspeita de TB).'
+        :'⚠ Signos de alarma identificados: '+alarmes.join('; ')+'. Se recomienda investigación complementaria prioritaria (imagen torácica, broncoscopia si hemoptisis abundante, PPD/IGRA si sospecha de TB).');
     }
     return texto;
   }
-
   var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia, 'tosse': gerarNarrativaAEA_tosse, 'semio-tosse': gerarNarrativaAEA_tosse };
 
   function gerarNarrativaAEA(mObj, lng){
