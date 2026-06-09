@@ -40,7 +40,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .sidebar-logo span{color:#5dd0e8}
 .sidebar-role{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.3px}
 
-.sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px}
+.sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;min-height:0}
 .nav-section-label{
   font-size:9px;font-weight:700;letter-spacing:1.5px;
   text-transform:uppercase;color:rgba(255,255,255,.28);
@@ -540,7 +540,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 <!-- MOBILE NAV -->
 <nav class="mobile-nav">
   <div class="mobile-nav-items">
-    <button class="mn-item active">
+    <button class="mn-item active" id="mn-inicio" onclick="setView('dashboard')">
       <span class="mn-icon">🏠</span>
       <span class="pt">Início</span><span class="es">Inicio</span>
     </button>
@@ -548,7 +548,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <span class="mn-icon">🩺</span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
     </a>
-    <button class="mn-item" onclick="window.location.href='anamnesismed-dashboard.html#hcs'">
+    <button class="mn-item" id="mn-hcs" onclick="setView('hcs')">
       <span class="mn-icon">📋</span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
     </button>
@@ -579,11 +579,15 @@ function setView(v){
   currentDashView = v;
   var isHcs = (v === 'hcs');
 
-  // Estado ativo na sidebar
+  // Estado ativo na sidebar e mobile nav
   var navDash = document.getElementById('nav-dashboard');
   var navHcs = document.getElementById('nav-hcs');
   if(navDash) navDash.classList.toggle('active', !isHcs);
   if(navHcs) navHcs.classList.toggle('active', isHcs);
+  var mnInicio = document.getElementById('mn-inicio');
+  var mnHcs = document.getElementById('mn-hcs');
+  if(mnInicio) mnInicio.classList.toggle('active', !isHcs);
+  if(mnHcs) mnHcs.classList.toggle('active', isHcs);
 
   // Mostra/oculta blocos do dashboard
   var statsRow = document.getElementById('stats-row');
@@ -602,7 +606,6 @@ function setView(v){
   if(head){
     head.querySelectorAll('.view-all').forEach(function(a){ a.style.display = isHcs ? 'none' : ''; });
   }
-
   // Carrega a lista — todas as HCs na visão "Minhas HCs", só as recentes no dashboard
   if(window.uiLoadRecentHCs) window.uiLoadRecentHCs(isHcs ? 100 : 5);
 
@@ -610,6 +613,8 @@ function setView(v){
 }
 (function(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
+  // Ler parâmetro view da URL (ex: ?view=hcs ao vir do app)
+  try{var vp=new URLSearchParams(window.location.search).get('view');if(vp)setView(vp);}catch(e){}
   // Show menu button on mobile
   if(window.innerWidth<=768){
     document.getElementById('menu-btn').style.display='block';
@@ -619,7 +624,7 @@ function setView(v){
   var days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   var months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
   var daysEs=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  var monthsEs=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var monthsEs=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','outubro','noviembre','diciembre'];
   var d=now.getDate();
   document.getElementById('page-sub').textContent=days[now.getDay()]+', '+d+' de '+months[now.getMonth()]+' de '+now.getFullYear();
   document.getElementById('page-sub-es').textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
