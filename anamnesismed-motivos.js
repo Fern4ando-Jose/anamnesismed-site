@@ -413,6 +413,26 @@ const MOTIVOS = {
          {q:'Edema de membros inferiores?',qEs:'¿Edema de miembros inferiores?',type:'yn'},
          {q:'Tabagismo ou exposição ocupacional (poeiras, gases)?',qEs:'¿Tabaquismo o exposición ocupacional (polvos, gases)?',type:'input',ph:'Anos / maços-ano / tipo de exposição',ph2:'Años / paquetes-año / tipo de exposición'},
        ]},
+      {id:'semio-tosse',name:'Tosse',nameEs:'Tos',icon:'😮‍💨',color:'mc-primary',rasHighlight:['resp','cabeca'],
+       aeaGuide:[
+         {q:'Início — há quanto tempo?',qEs:'Inicio — ¿hace cuánto tiempo?',type:'radio',opts:['Aguda (<3 semanas)','Subaguda (3-8 semanas)','Crônica (>8 semanas)']},
+         {q:'Tipo',qEs:'Tipo',type:'radio',opts:['Seca (não produtiva)','Produtiva/Úmida','Metálica/rouca'],optsEs:['Seca (no productiva)','Productiva/Húmeda','Metálica/ronca']},
+         {q:'Há expectoração (escarro)?',qEs:'¿Hay expectoración (esputo)?',type:'yn'},
+         {q:'Caráter do escarro',qEs:'Carácter del esputo',type:'radio',opts:['Mucoide (claro/branco)','Mucopurulento (amarelado — infecção)','Purulento (esverdeado/fétido — bacteriana)','Hemoptoico (raiado de sangue — alarme)','Seroso/espumoso (rosado — edema pulmonar)'],optsEs:['Mucoide (claro/blanco)','Mucopurulento (amarillento — infección)','Purulento (verdoso/fétido — bacteriana)','Hemoptoico (con sangre — alarma)','Seroso/espumoso (rosado — edema pulmonar)']},
+         {q:'Sangue no escarro (hemoptise)?',qEs:'¿Sangre en el esputo (hemoptisis)?',type:'yn'},
+         {q:'Momento de predomínio',qEs:'Momento de predominio',type:'radio',opts:['Noturna','Matutina (ao acordar)','Constante ao longo do dia','Pós-prandial/ao deitar']},
+         {q:'Fatores desencadeantes (frio, exercício, posição, alérgenos)?',qEs:'¿Factores desencadenantes (frío, ejercicio, posición, alérgenos)?',type:'input',ph:'Descreva os fatores',ph2:'Describa los factores'},
+         {q:'Febre associada?',qEs:'¿Fiebre asociada?',type:'yn'},
+         {q:'Dispneia associada?',qEs:'¿Disnea asociada?',type:'yn'},
+         {q:'Sibilância/chiado associado?',qEs:'¿Sibilancias asociadas?',type:'yn'},
+         {q:'Pirose ou regurgitação (DRGE)?',qEs:'¿Pirosis o regurgitación (ERGE)?',type:'yn'},
+         {q:'Coriza ou gotejamento pós-nasal?',qEs:'¿Rinorrea o goteo posnasal?',type:'yn'},
+         {q:'Perda de peso associada?',qEs:'¿Pérdida de peso asociada?',type:'yn'},
+         {q:'Sinais de alarme — hemoptise, perda de peso, sudorese noturna?',qEs:'¿Signos de alarma — hemoptisis, pérdida de peso, sudoración nocturna?',type:'yn'},
+         {q:'Tabagismo e carga tabágica',qEs:'Tabaquismo y carga tabáquica',type:'input',ph:'Anos-maço',ph2:'Años-paquete'},
+         {q:'Uso de IECA (captopril, enalapril, lisinopril)?',qEs:'¿Uso de IECA (captopril, enalapril, lisinopril)?',type:'yn'},
+         {q:'Situação vacinal (influenza, pneumocócica, coqueluche)?',qEs:'¿Situación vacunal (influenza, neumocócica, tos ferina)?',type:'yn'},
+       ]},
     ]},
     {cat:'Sinais Clínicos',catEs:'Signos Clínicos',items:[
       {id:'semio-cianose',name:'Cianose',nameEs:'Cianosis',icon:'🔵',color:'mc-navy',
@@ -1626,3 +1646,4 @@ GUIDE_CONTENT['semio-febre']     = GUIDE_CONTENT['febre'];
 GUIDE_CONTENT['semio-disnea']    = GUIDE_CONTENT['dispneia'];
 GUIDE_CONTENT['semio-ictericia'] = GUIDE_CONTENT['ictericia'];
 GUIDE_CONTENT['semio-edema']     = GUIDE_CONTENT['edema'];
+GUIDE_CONTENT['semio-tosse']     = GUIDE_CONTENT['tosse'];
