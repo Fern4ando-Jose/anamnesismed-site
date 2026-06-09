@@ -38,11 +38,20 @@ Antes de escrever uma função nova, verificar se já existe equivalente em `sup
 
 `supabase-integration.js` é carregado DEPOIS do primeiro bloco `<script>` inline em `anamnesismed-app.html`. Qualquer código que dependa de funções dele (`hcLoad`, `hcSave`, `authGetUser` etc.) deve rodar dentro do bloco de integração Supabase (o segundo `<script>`, após `guardCheckAccess`), nunca no primeiro bloco/INIT — senão `window.hcLoad` (etc.) ainda será `undefined` e o `if(window.hcLoad)` falha silenciosamente.
 
-## 7. Novo conteúdo clínico vai APENAS em `anamnesismed-motivos.js`
+## 7. Cada arquivo tem responsabilidade única — editar somente o arquivo certo
 
-O arquivo `anamnesismed-motivos.js` contém todos os dados clínicos: `MOTIVOS`, `RAS_SYSTEMS` e `GUIDE_CONTENT`. Para adicionar ou modificar especialidades, motivos, perguntas AEA, mnemônicos ou manobras, editar **somente** esse arquivo. **Nunca** inserir blocos de dados clínicos em `anamnesismed-app.html`.
+O projeto segue separação estrita de responsabilidades:
 
-`anamnesismed-app.html` contém exclusivamente lógica de UI e renderização — não tem dados clínicos inline.
+| Arquivo | O que contém | Quando editar |
+|---|---|---|
+| `anamnesismed-motivos.js` | Dados clínicos: `MOTIVOS`, `RAS_SYSTEMS`, `GUIDE_CONTENT` | Novo motivo, nova pergunta AEA, mnemônico, DDx |
+| `anamnesismed-narrativa.js` | Geradores de texto da HC (`gerarNarrativaAEA_*`) | Melhorar narrativa, adicionar gerador específico por motivo |
+| `anamnesismed-pdf.js` | Função `exportPDF` — layout e montagem do PDF | Mudar layout do PDF, adicionar seção ao documento |
+| `anamnesismed-guide.js` | Builders HTML do painel guia (`buildAEAGuideHTML`, `buildMnemonicsHTML`, etc.) | Mudar visual do painel AEA ou das mnemônicas |
+| `supabase-integration.js` | Auth, perfil, salvamento no Supabase | Persistência, autenticação, trial |
+| `anamnesismed-app.html` | Markup HTML + CSS + lógica de UI (navegação, formulário, snapshots) | Telas, botões, CSS, fluxo de navegação |
+
+**Nunca** inserir dados clínicos, geradores de narrativa, código do PDF ou builders de guia dentro de `anamnesismed-app.html`.
 
 ## 8. Rodar `bash scripts/verify.sh` antes de cada commit
 

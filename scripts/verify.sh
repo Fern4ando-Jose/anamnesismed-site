@@ -30,17 +30,22 @@ echo ""
 echo "▸ anamnesismed-app.html"
 
 LINES=$(wc -l < "$APP")
-[ "$LINES" -ge 2800 ] && check "Linhas ($LINES ≥ 2800)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 2800"
+[ "$LINES" -ge 2300 ] && check "Linhas ($LINES ≥ 2300)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 2300"
 grep -q "</html>" "$APP" && check "Tag </html> presente" "ok" || check "Tag </html>" "AUSENTE"
 grep -q "</body>" "$APP" && check "Tag </body> presente" "ok" || check "Tag </body>" "AUSENTE"
-grep -q "function exportPDF" "$APP" && check "exportPDF presente" "ok" || check "exportPDF" "AUSENTE"
 grep -q "function renderMotivoGrid" "$APP" && check "renderMotivoGrid presente" "ok" || check "renderMotivoGrid" "AUSENTE"
 grep -q "function saveHC" "$APP" && check "saveHC presente" "ok" || check "saveHC" "AUSENTE"
 grep -q "function showScreen" "$APP" && check "showScreen presente" "ok" || check "showScreen" "AUSENTE"
 grep -q "anamnesismed-motivos.js" "$APP" && check "Referência a motivos.js" "ok" || check "Referência a motivos.js" "AUSENTE"
+grep -q "anamnesismed-guide.js" "$APP" && check "Referência a guide.js" "ok" || check "Referência a guide.js" "AUSENTE"
+grep -q "anamnesismed-narrativa.js" "$APP" && check "Referência a narrativa.js" "ok" || check "Referência a narrativa.js" "AUSENTE"
+grep -q "anamnesismed-pdf.js" "$APP" && check "Referência a pdf.js" "ok" || check "Referência a pdf.js" "AUSENTE"
 grep -q "supabase-integration.js" "$APP" && check "Referência a supabase-integration.js" "ok" || check "Referência a supabase-integration.js" "AUSENTE"
 ! grep -q "^const MOTIVOS" "$APP" && check "Dados MOTIVOS fora do app.html" "ok" || check "Dados MOTIVOS" "AINDA NO app.html — mover para motivos.js"
 ! grep -q "^const GUIDE_CONTENT" "$APP" && check "Dados GUIDE_CONTENT fora do app.html" "ok" || check "Dados GUIDE_CONTENT" "AINDA NO app.html — mover para motivos.js"
+! grep -q "function exportPDF" "$APP" && check "exportPDF fora do app.html" "ok" || check "exportPDF" "AINDA NO app.html — mover para pdf.js"
+! grep -q "function gerarNarrativaAEA_" "$APP" && check "Geradores de narrativa fora do app.html" "ok" || check "Geradores narrativa" "AINDA NO app.html — mover para narrativa.js"
+! grep -q "function buildAEAGuideHTML" "$APP" && check "buildAEAGuideHTML fora do app.html" "ok" || check "buildAEAGuideHTML" "AINDA NO app.html — mover para guide.js"
 
 # ── anamnesismed-motivos.js ────────────────────────────────
 MOTIVOS="$ROOT/anamnesismed-motivos.js"
@@ -59,44 +64,74 @@ grep -q "id:'tosse'" "$MOTIVOS" && check "Motivo tosse presente" "ok" || check "
 grep -q "id:'dor-toracica'" "$MOTIVOS" && check "Motivo dor-toracica presente" "ok" || check "Motivo dor-toracica" "AUSENTE"
 grep -q "}; // end GUIDE_CONTENT" "$MOTIVOS" && check "Fechamento GUIDE_CONTENT" "ok" || check "Fechamento GUIDE_CONTENT" "AUSENTE — arquivo provavelmente truncado"
 
-# ── supabase-integration.js ────────────────────────────────
+# ── anamnesismed-guide.js ─────────────────────────────────
+GUIDE="$ROOT/anamnesismed-guide.js"
+echo ""
+echo "▸ anamnesismed-guide.js"
+
+LINES=$(wc -l < "$GUIDE")
+[ "$LINES" -ge 150 ] && check "Linhas ($LINES ≥ 150)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 150"
+grep -q "function buildAEAGuideHTML" "$GUIDE" && check "buildAEAGuideHTML presente" "ok" || check "buildAEAGuideHTML" "AUSENTE"
+grep -q "function buildMnemonicsHTML" "$GUIDE" && check "buildMnemonicsHTML presente" "ok" || check "buildMnemonicsHTML" "AUSENTE"
+grep -q "function renderGuideContent" "$GUIDE" && check "renderGuideContent presente" "ok" || check "renderGuideContent" "AUSENTE"
+
+# ── anamnesismed-narrativa.js ──────────────────────────────
+NARRATIVA="$ROOT/anamnesismed-narrativa.js"
+echo ""
+echo "▸ anamnesismed-narrativa.js"
+
+LINES=$(wc -l < "$NARRATIVA")
+[ "$LINES" -ge 380 ] && check "Linhas ($LINES ≥ 380)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 380"
+grep -q "function gerarNarrativaAEA_cefaleia" "$NARRATIVA" && check "gerador cefaleia presente" "ok" || check "gerador cefaleia" "AUSENTE"
+grep -q "function gerarNarrativaAEA_generica" "$NARRATIVA" && check "gerador generico presente" "ok" || check "gerador generico" "AUSENTE"
+grep -q "function gerarNarrativaAEA_tosse" "$NARRATIVA" && check "gerador tosse presente" "ok" || check "gerador tosse" "AUSENTE"
+grep -q "function gerarNarrativaAEA(" "$NARRATIVA" && check "dispatch gerarNarrativaAEA presente" "ok" || check "dispatch gerarNarrativaAEA" "AUSENTE"
+
+# -- anamnesismed-pdf.js
+PDF="$ROOT/anamnesismed-pdf.js"
+echo ""
+echo "> anamnesismed-pdf.js"
+LINES=$(wc -l < "$PDF")
+[ "$LINES" -ge 250 ] && check "Linhas ($LINES >= 250)" "ok" || check "Linhas ($LINES)" "TRUNCADO"
+grep -q "function exportPDF" "$PDF" && check "exportPDF presente" "ok" || check "exportPDF" "AUSENTE"
+grep -q "w.document.write" "$PDF" && check "Geracao HTML do PDF" "ok" || check "Geracao HTML do PDF" "AUSENTE"
+grep -q "w.document.close" "$PDF" && check "Fechamento PDF" "ok" || check "Fechamento PDF" "AUSENTE"
+
+# -- supabase-integration.js
 SUPA="$ROOT/supabase-integration.js"
 echo ""
-echo "▸ supabase-integration.js"
-
+echo "> supabase-integration.js"
 LINES=$(wc -l < "$SUPA")
-[ "$LINES" -ge 1200 ] && check "Linhas ($LINES ≥ 1200)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 1200"
+[ "$LINES" -ge 1200 ] && check "Linhas ($LINES >= 1200)" "ok" || check "Linhas ($LINES)" "TRUNCADO"
 grep -q "window.hcSave" "$SUPA" && check "hcSave presente" "ok" || check "hcSave" "AUSENTE"
 grep -q "guardCheckAccess" "$SUPA" && check "guardCheckAccess presente" "ok" || check "guardCheckAccess" "AUSENTE"
 
-# ── anamnesismed-dashboard.html ────────────────────────────
+# -- anamnesismed-dashboard.html
 DASH="$ROOT/anamnesismed-dashboard.html"
 echo ""
-echo "▸ anamnesismed-dashboard.html"
-
+echo "> anamnesismed-dashboard.html"
 LINES=$(wc -l < "$DASH")
-[ "$LINES" -ge 600 ] && check "Linhas ($LINES ≥ 600)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 600"
+[ "$LINES" -ge 600 ] && check "Linhas ($LINES >= 600)" "ok" || check "Linhas ($LINES)" "TRUNCADO"
 grep -q "</html>" "$DASH" && check "Tag </html> presente" "ok" || check "Tag </html>" "AUSENTE"
 grep -q "function setView" "$DASH" && check "setView presente" "ok" || check "setView" "AUSENTE"
 grep -q "URLSearchParams" "$DASH" && check "URLSearchParams presente" "ok" || check "URLSearchParams" "AUSENTE"
 
-# ── vercel.json ────────────────────────────────────────────
+# -- vercel.json
 VERCEL="$ROOT/vercel.json"
 echo ""
-echo "▸ vercel.json"
+echo "> vercel.json"
+grep -q "maxDuration" "$VERCEL" && check "maxDuration presente" "ok" || check "maxDuration" "AUSENTE"
+grep -q "}" "$VERCEL" && check "JSON fechado" "ok" || check "JSON fechado" "TRUNCADO"
 
-grep -q "maxDuration" "$VERCEL" && check "maxDuration presente (sem bodyParser)" "ok" || check "maxDuration" "AUSENTE — risco de erro no deploy"
-grep -q "}" "$VERCEL" && check "JSON fechado" "ok" || check "JSON fechado" "PROVAVELMENTE TRUNCADO"
-
-# ── Resultado ──────────────────────────────────────────────
+# -- Resultado
 echo ""
-echo "═══════════════════════════════════════════════════════"
+echo "======================================================="
 if [ "$ERRORS" -eq 0 ]; then
-  echo "  ✅  TUDO OK — seguro para commitar"
+  echo "  OK  TUDO OK - seguro para commitar"
 else
-  echo "  ❌  $ERRORS ERRO(S) ENCONTRADO(S) — NÃO commitar"
-  echo "      Restaure os arquivos com: git checkout HEAD -- <arquivo>"
+  echo "  FALHOU  $ERRORS ERRO(S) - NAO commitar"
+  echo "  Restaure: git checkout HEAD -- <arquivo>"
 fi
-echo "═══════════════════════════════════════════════════════"
+echo "======================================================="
 echo ""
 exit $ERRORS
