@@ -17,6 +17,160 @@
 
 var GUIDE_ES = {
 
+'apendicite': {
+  mnemonics:[
+    { name:'Características clínicas', rows:[
+      ['Anorexia','>90% de los casos'],
+      ['Migración del dolor','Periumbilical → FID (más específico)'],
+      ['Náuseas','Presentes después del dolor'],
+      ['Náusea DESPUÉS del dolor','IMPORTANTE: el dolor precede a los vómitos (≠ gastroenteritis)'],
+      ['Defensa en FID','Peritonitis local'],
+      ['Incapacitante','Empeora al caminar, sentarse, toser'],
+      ['Escalofrío/fiebre','Fiebre baja — alta → perforación'],
+      ['Inestabilidad','FC↑, T>38,5°C, Leuco>18.000 → perforación'],
+      ['Tacto rectal','Apendicitis pélvica — Douglas doloroso'],
+      ['Exámenes','Leucocitosis + USG/TC']
+    ]}
+  ],
+  manobras:[
+    { title:'Signo de Blumberg', subtitle:'Irritación peritoneal',
+      steps:['Palpar FID lentamente','Comprimir profundo con 3 dedos','Retirar la mano de forma súbita'],
+      normal:'Sin dolor a la descompresión', abnormal:'Dolor agudo al soltar (Blumberg +) → peritonitis local' },
+    { title:'Signo de Rovsing', subtitle:'Foco en FID',
+      steps:['Comprimir firmemente el CII/FII','Mantener 10 segundos'],
+      normal:'Sin dolor en FID', abnormal:'Dolor en FID al comprimir FII (Rovsing +)' },
+    { title:'Punto de McBurney', subtitle:'Apendicitis típica',
+      steps:['1/3 externo línea ombligo-EIAS derecha','Presión puntual con el pulgar'],
+      normal:'Sin sensibilidad especial', abnormal:'Dolor máximo → apendicitis típica' }
+  ],
+  sinais:[
+    { name:'Punto de McBurney', eponym:'Apendicitis típica', how:'Dolor máximo en el 1/3 externo de la línea ombligo-EIAS derecha', means:'Apendicitis con localización típica' },
+    { name:'Signo del Psoas', eponym:'Apendicitis retrocecal', how:'Hiperextensión de la cadera derecha en DL izquierdo → dolor FID', means:'Apéndice retrocecal — variante común' },
+    { name:'Contractura de la pared', eponym:'Peritonitis posperforación', how:'"Vientre en tabla" — rigidez difusa involuntaria', means:'Peritonitis difusa → cirugía de urgencia inmediata' }
+  ],
+  ddx:[
+    ['Apendicitis','Migración periumbilical→FID, anorexia, náuseas DESPUÉS del dolor, fiebre baja, Blumberg+','Dolor difuso, diarrea ANTES del dolor, sin migración'],
+    ['Gastroenteritis','Diarrea+vómitos ANTES del dolor, difuso, sin rigidez localizada','Migración del dolor, defensa FID, anorexia precediendo'],
+    ['Cólico ureteral','Cólico lumbar→FID, hematuria, agitación, inquieto','Continuo, defensa, fiebre, sin hematuria'],
+    ['EPI','Mujer, bilateral, flujo, movilización uterina dolorosa','Hombre, migración típica, sin flujo'],
+    ['Embarazo ectópico','β-HCG+, amenorrea, USG sin saco intrauterino, dolor agudo+inestabilidad','Hombre, β-HCG negativo']
+  ],
+  escalas:[
+    { title:'Alvarado Score (MANTRELS)', headers:['Criterio','Puntos'],
+      rows:[['Migración del dolor a FID','1'],['Anorexia','1'],['Náuseas/Vómitos','1'],['Dolor FID a la palpación','2'],['Blumberg+','1'],['Temperatura >37,3°C','1'],['Leucocitosis >10.000','2'],['Desviación a la izquierda','1']],
+      note:'1-4: Baja | 5-6: Observación | 7-8: Probable → cirugía | 9-10: Alta → cirugía inmediata' },
+    { title:'AIR Score', headers:['Criterio','Puntos'],
+      rows:[['Vómito','1'],['Dolor FID','1'],['Defensa FID leve','1'],['Defensa FID moderada/grave','2'],['Rebote FID','1'],['Temperatura ≥38,5°C','1'],['Leuco 10.000-14.900','1'],['Leuco ≥15.000','2'],['PCR 10-49','1'],['PCR ≥50','2']],
+      note:'0-4: Alta con indicaciones | 5-8: Observación + imagen | 9-12: Cirugía directa' }
+  ],
+  conduta:{
+    exames:['Hemograma + PCR','β-HCG (mujeres)','Orina rutina','USG abdominal (1ª línea)','TC abdomen+pelvis c/ contraste (gold standard)','Rx abdomen (neumoperitoneo)'],
+    drugs:['NPO + hidratación EV','Dipirona/Tramadol EV (no retrasa el diagnóstico)','Ondansetrón 4-8mg EV','ATB prequirúrgico: Cefazolina 2g EV 30min antes','Perforada: Metronidazol 500mg + Ceftriaxona 2g EV'],
+    steps:['1. Anamnesis + examen → Alvarado score','2. Laboratorio + β-HCG + USG','3. NPO + acceso EV + analgesia','4. Alvarado ≤4 + USG normal: alta con indicaciones','5. Alvarado 5-6: observación 12-24h','6. Alvarado ≥7 o TC confirma: apendicectomía laparoscópica <24h']
+  }
+},
+'colecistite-colelitiase': {
+  mnemonics:[
+    { name:'Factores de riesgo para colelitiasis', rows:[
+      ['Female','Sexo femenino'],['Forty','Edad ~40 años'],['Fat','Obesidad / dislipidemia'],['Fertile','Multiparidad / estrógeno'],['Family','Antecedente familiar']
+    ]},
+    { name:'Tríada de la colangitis', rows:[
+      ['Fiebre','Fiebre con escalofríos'],['Ictericia','Ictericia obstructiva'],['Dolor HCD','Dolor en el hipocondrio derecho']
+    ]},
+    { name:'Complicaciones de la litiasis biliar', rows:[
+      ['Colecistitis','Inflamación aguda de la vesícula'],['Obstrucción','Coledocolitiasis → ictericia'],['colangitis','Infección de la vía biliar'],['Pancreatitis','Cálculo impactado en la papila'],['Íleo biliar','Fístula + obstrucción por cálculo'],['Absceso/empiema','Vesícula supurada']
+    ]}
+  ],
+  manobras:[
+    { title:'Signo de Murphy', subtitle:'Colecistitis aguda',
+      steps:['Mano bajo el reborde costal derecho (línea hemiclavicular)','Pedir al paciente inspirar profundamente','Observar interrupción súbita de la inspiración por dolor'],
+      normal:'Inspiración completa sin dolor', abnormal:'Detención inspiratoria dolorosa (Murphy +) → colecistitis aguda' },
+    { title:'Murphy ecográfico', subtitle:'Confirmación por imagen',
+      steps:['Transductor sobre la vesícula durante la USG','Buscar dolor máximo sobre la vesícula visualizada'],
+      normal:'Sin dolor focal; pared fina <3 mm', abnormal:'Dolor focal + pared >3 mm + líquido perivesicular → colecistitis' },
+    { title:'Búsqueda de ictericia', subtitle:'Sospecha de coledocolitiasis',
+      steps:['Inspeccionar esclera bajo luz natural','Evaluar coluria y acolia fecal'],
+      normal:'Esclera anictérica', abnormal:'Ictericia + coluria → obstrucción biliar (coledocolitiasis/colangitis)' }
+  ],
+  sinais:[
+    { name:'Signo de Murphy', eponym:'Colecistitis aguda', how:'Detención inspiratoria a la palpación del HCD', means:'Colecistitis aguda — alta sensibilidad' },
+    { name:'Tríada de Charcot', eponym:'Colangitis', how:'Fiebre + ictericia + dolor HCD', means:'Colangitis aguda — antibiótico + drenaje biliar' },
+    { name:'Signo de Courvoisier', eponym:'Obstrucción maligna', how:'Vesícula palpable, indolora, con ictericia', means:'Sugiere obstrucción maligna (tumor de cabeza de páncreas), no litiasis' },
+    { name:'Péntada de Reynolds', eponym:'Colangitis tóxica', how:'Charcot + hipotensión + confusión', means:'Colangitis supurativa grave — drenaje de urgencia' }
+  ],
+  ddx:[
+    ['Cólico biliar','Dolor HCD posgraso, <6h, sin fiebre, Murphy -','Fiebre, leucocitosis, Murphy +'],
+    ['Colecistitis aguda','Dolor HCD >6h, fiebre, Murphy +, pared vesicular engrosada','Dolor corto autolimitado, sin inflamación'],
+    ['Coledocolitiasis','Ictericia, coluria, FA/GGT ↑, dilatación de vía biliar','Bilirrubina normal, vía biliar fina'],
+    ['Colangitis','Tríada de Charcot, sepsis biliar','Sin fiebre/ictericia'],
+    ['Pancreatitis biliar','Dolor epigástrico en faja, amilasa/lipasa ↑','Enzimas pancreáticas normales'],
+    ['Úlcera péptica perforada','Dolor súbito, abdomen en tabla, neumoperitoneo','Dolor localizado HCD, Murphy +'],
+    ['Hepatitis aguda','Transaminasas muy elevadas, ictericia, astenia','Predominio de FA/GGT, dolor tipo cólico']
+  ],
+  escalas:[
+    { title:'Tokyo Guidelines — Gravedad de la colecistitis', headers:['Grado','Criterio'],
+      rows:[['I (leve)','Sin disfunción orgánica, inflamación leve'],['II (moderada)','Leucocitos >18.000, masa palpable, >72h, inflamación local marcada'],['III (grave)','Disfunción de órgano (cardiovascular, neurológica, respiratoria, renal, hepática, hematológica)']],
+      note:'El grado III exige soporte de órgano + drenaje precoz' },
+    { title:'Predictores de coledocolitiasis (ASGE)', headers:['Predictor','Fuerza'],
+      rows:[['Cálculo en el colédoco en la USG','Muy fuerte'],['Bilirrubina total >4 mg/dL','Muy fuerte'],['Vía biliar dilatada + Bili 1,8-4','Fuerte'],['Colangitis clínica','Muy fuerte']],
+      note:'Alto riesgo → CPRE; riesgo intermedio → colangio-RM o USG endoscópica' }
+  ],
+  conduta:{
+    exames:['Hemograma, PCR','Bilirrubinas, FA, GGT, TGO, TGP','Amilasa y lipasa (excluir pancreatitis)','USG de abdomen (examen de elección)','Colangio-RM/USG endoscópica si sospecha de coledocolitiasis'],
+    drugs:['Ayuno + hidratación venosa','Analgesia (dipirona/AINE; opioide si es intensa)','Antieméticos','Antibiótico (ej.: ceftriaxona + metronidazol) en colecistitis/colangitis','CPRE para desobstrucción en la coledocolitiasis/colangitis'],
+    steps:['1. Confirmar diagnóstico clínico + USG','2. Ayuno, hidratación y analgesia','3. ATB si colecistitis/colangitis','4. Colecistectomía videolaparoscópica precoz (idealmente <72h) en la colecistitis aguda','5. Coledocolitiasis/colangitis: CPRE para drenaje + colecistectomía posterior']
+  }
+},
+'pancreatite-aguda': {
+  mnemonics:[
+    { name:'Etiologías de la pancreatitis', rows:[
+      ['Gallstones','Litiasis biliar (causa más común)'],['Ethanol','Alcohol (2ª causa más común)'],['Trauma','Trauma abdominal / pos-CPRE'],['Steroids','Corticoides'],['Mumps','Parotiditis / infecciones virales'],['Autoimmune','Pancreatitis autoinmune'],['Scorpion','Picadura de escorpión'],['Hyper','Hipertrigliceridemia / hipercalcemia'],['ERCP','Pos-CPRE'],['Drugs','Fármacos (azatioprina, tiazidas, valproato)']
+    ]},
+    { name:'Criterios de Ranson (admisión)', rows:[
+      ['Edad','>55 años'],['Leucocitos','>16.000/mm³'],['Glucosa','>200 mg/dL'],['LDH','>350 UI/L'],['AST/TGO','>250 UI/L']
+    ]}
+  ],
+  manobras:[
+    { title:'Signo de Cullen', subtitle:'Hemorragia retroperitoneal',
+      steps:['Inspeccionar la región periumbilical','Buscar equimosis azulada alrededor del ombligo'],
+      normal:'Piel periumbilical normal', abnormal:'Equimosis periumbilical (Cullen +) → pancreatitis hemorrágica/grave' },
+    { title:'Signo de Grey-Turner', subtitle:'Hemorragia en flancos',
+      steps:['Inspeccionar los flancos','Buscar equimosis en los flancos'],
+      normal:'Flancos sin equimosis', abnormal:'Equimosis en flancos (Grey-Turner +) → pancreatitis necrohemorrágica' },
+    { title:'Palpación epigástrica', subtitle:'Dolor pancreático',
+      steps:['Palpar el epigastrio','Evaluar irradiación del dolor hacia el dorso'],
+      normal:'Sin dolor a la palpación', abnormal:'Dolor epigástrico en faja, irradiado al dorso → pancreatitis' }
+  ],
+  sinais:[
+    { name:'Signo de Cullen', eponym:'Pancreatitis hemorrágica', how:'Equimosis periumbilical', means:'Sangrado retroperitoneal — pancreatitis grave' },
+    { name:'Signo de Grey-Turner', eponym:'Pancreatitis necrohemorrágica', how:'Equimosis en los flancos', means:'Necrosis hemorrágica — mal pronóstico' },
+    { name:'Signo de Fox', eponym:'Sangrado retroperitoneal', how:'Equimosis en la base del ligamento inguinal', means:'Disección de sangre retroperitoneal' },
+    { name:'Dolor en faja', eponym:'Pancreatitis aguda', how:'Dolor epigástrico que irradia "en cinturón" hacia el dorso, alivio al inclinarse hacia adelante', means:'Patrón clásico del dolor pancreático' }
+  ],
+  ddx:[
+    ['Pancreatitis aguda','Dolor en faja, lipasa >3x LSN, irradiación dorsal','Enzimas normales; dolor localizado sin irradiación'],
+    ['Úlcera perforada','Dolor súbito, abdomen en tabla, neumoperitoneo','Lipasa elevada, sin neumoperitoneo'],
+    ['Colecistitis/colangitis','Dolor HCD, Murphy +, fiebre, alteración de FA/GGT','Dolor epigástrico en faja, lipasa muy elevada'],
+    ['Obstrucción intestinal','Distensión, parada de eliminación, niveles hidroaéreos','Lipasa elevada, dolor epigástrico continuo'],
+    ['IAM de pared inferior','Dolor epigástrico, sudoración, ECG alterado, troponina ↑','ECG normal, lipasa elevada'],
+    ['Aneurisma de aorta roto','Dolor + masa pulsátil + shock','Lipasa elevada, sin masa pulsátil'],
+    ['Isquemia mesentérica','Dolor desproporcionado al examen, acidosis láctica','Lipasa muy elevada, USG/TC con páncreas alterado']
+  ],
+  escalas:[
+    { title:'BISAP — gravedad (0-5)', headers:['Componente','Punto'],
+      rows:[['BUN >25 mg/dL','1'],['Alteración del estado mental','1'],['SIRS','1'],['Edad >60','1'],['Derrame pleural','1']],
+      note:'BISAP ≥3 → mayor mortalidad; considerar UCI' },
+    { title:'Criterios de Ranson (0h y 48h)', headers:['Momento','Criterios'],
+      rows:[['Admisión','Edad>55, Leuco>16k, Glucosa>200, LDH>350, TGO>250'],['48h','Caída Hto>10%, BUN↑>5, Ca<8, PaO₂<60, EB>4, secuestro de fluido>6L']],
+      note:'≥3 criterios → pancreatitis grave (mortalidad creciente con la puntuación)' }
+  ],
+  conduta:{
+    exames:['Lipasa (preferible) y amilasa séricas','Hemograma, PCR (48h pronóstica)','Urea, creatinina, glucemia, calcio, electrolitos','TGO, TGP, FA, GGT, bilirrubinas, triglicéridos','USG de abdomen (etiología biliar)','TC de abdomen con contraste (tras 72h) para necrosis si es grave/duda'],
+    drugs:['Hidratación venosa vigorosa (Ringer lactato) — pilar del tratamiento','Analgesia (opioides si es necesario)','Antieméticos','Soporte nutricional precoz (enteral preferible)','ATB solo si necrosis infectada/colangitis — no profiláctico'],
+    steps:['1. Diagnóstico: 2 de 3 (dolor típico + lipasa >3x LSN + imagen)','2. Estratificar gravedad (BISAP/Ranson, PCR 48h)','3. Reposición volémica agresiva precoz','4. Analgesia y control de náuseas','5. Tratar la causa: CPRE si colangitis/obstrucción biliar; suspender alcohol; controlar triglicéridos','6. Casos graves/necrosis → UCI; ATB solo si infección documentada']
+  }
+},
+
 'semio-dor': {
   mnemonics:[
     { name:'Caracterización semiológica del dolor', rows:[
