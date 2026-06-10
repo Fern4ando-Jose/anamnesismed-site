@@ -877,6 +877,242 @@ const RAS_SYSTEMS = [
 // ── GUIDE CONTENT DATA ────────────────────────────────
 
 const GUIDE_CONTENT = {
+'colecistite-colelitiase': {
+  mnemonics: [
+    {kw:'5 F', name:'Fatores de risco para colelitíase', rows:[
+      ['F','Female','Sexo feminino'],
+      ['F','Forty','Idade ~40 anos'],
+      ['F','Fat','Obesidade / dislipidemia'],
+      ['F','Fertile','Multiparidade / estrógeno'],
+      ['F','Family','História familiar']
+    ]},
+    {kw:'CHARCOT', name:'Tríade da colangite', rows:[
+      ['F','Febre','Febre com calafrios'],
+      ['I','Icterícia','Icterícia obstrutiva'],
+      ['D','Dor HCD','Dor no hipocôndrio direito']
+    ]},
+    {kw:'COMPLICA', name:'Complicações da litíase biliar', rows:[
+      ['C','Colecistite','Inflamação aguda da vesícula'],
+      ['O','Obstrução','Coledocolitíase → icterícia'],
+      ['M','colangite','Infecção da via biliar'],
+      ['P','Pancreatite','Cálculo impactado na papila'],
+      ['I','Íleo biliar','Fístula + obstrução por cálculo'],
+      ['A','Abscesso/empiema','Vesícula supurada']
+    ]}
+  ],
+  manobras: [
+    {title:'Sinal de Murphy',subtitle:'Colecistite aguda',
+     steps:['Mão sob o rebordo costal direito (linha hemiclavicular)','Pedir ao paciente para inspirar profundamente','Observar interrupção súbita da inspiração por dor'],
+     normal:'Inspiração completa sem dor',abnormal:'Parada inspiratória dolorosa (Murphy +) → colecistite aguda'},
+    {title:'Murphy ultrassonográfico',subtitle:'Confirmação por imagem',
+     steps:['Transdutor sobre a vesícula durante a USG','Pesquisar dor máxima sobre a vesícula visualizada'],
+     normal:'Sem dor focal; parede fina <3 mm',abnormal:'Dor focal + parede >3 mm + líquido perivesicular → colecistite'},
+    {title:'Pesquisa de icterícia',subtitle:'Suspeita de coledocolitíase',
+     steps:['Inspecionar esclera sob luz natural','Avaliar colúria e acolia fecal'],
+     normal:'Esclera anictérica',abnormal:'Icterícia + colúria → obstrução biliar (coledocolitíase/colangite)'}
+  ],
+  sinais: [
+    {name:'Sinal de Murphy',eponym:'Colecistite aguda',how:'Parada inspiratória à palpação do HCD',means:'Colecistite aguda — alta sensibilidade'},
+    {name:'Tríade de Charcot',eponym:'Colangite',how:'Febre + icterícia + dor HCD',means:'Colangite aguda — antibiótico + drenagem biliar'},
+    {name:'Sinal de Courvoisier',eponym:'Obstrução maligna',how:'Vesícula palpável, indolor, com icterícia',means:'Sugere obstrução maligna (tumor de cabeça de pâncreas), não litíase'},
+    {name:'Pêntade de Reynolds',eponym:'Colangite tóxica',how:'Charcot + hipotensão + confusão',means:'Colangite supurativa grave — drenagem de urgência'}
+  ],
+  ddx:[
+    ['Cólica biliar','Dor HCD pós-gordurosa, <6h, sem febre, Murphy -','Febre, leucocitose, Murphy +'],
+    ['Colecistite aguda','Dor HCD >6h, febre, Murphy +, parede vesicular espessa','Dor curta autolimitada, sem inflamação'],
+    ['Coledocolitíase','Icterícia, colúria, FA/GGT ↑, dilatação de via biliar','Bilirrubina normal, via biliar fina'],
+    ['Colangite','Tríade de Charcot, sepse biliar','Sem febre/icterícia'],
+    ['Pancreatite biliar','Dor epigástrica em faixa, amilase/lipase ↑','Enzimas pancreáticas normais'],
+    ['Úlcera péptica perfurada','Dor súbita, abdome em tábua, pneumoperitônio','Dor localizada HCD, Murphy +'],
+    ['Hepatite aguda','Transaminases muito elevadas, icterícia, astenia','Predomínio de FA/GGT, dor tipo cólica']
+  ],
+  escalas:[
+    {title:'Tokyo Guidelines — Gravidade da colecistite',headers:['Grau','Critério'],
+     rows:[['I (leve)','Sem disfunção orgânica, inflamação leve'],['II (moderada)','Leucócitos >18.000, massa palpável, >72h, inflamação local marcada'],['III (grave)','Disfunção de órgão (cardiovascular, neurológica, respiratória, renal, hepática, hematológica)']],
+     note:'Grau III exige suporte de órgão + drenagem precoce'},
+    {title:'Preditores de coledocolitíase (ASGE)',headers:['Preditor','Força'],
+     rows:[['Cálculo no colédoco à USG','Muito forte'],['Bilirrubina total >4 mg/dL','Muito forte'],['Via biliar dilatada + Bili 1,8-4','Forte'],['Colangite clínica','Muito forte']],
+     note:'Alto risco → CPRE; risco intermediário → colangio-RM ou USG endoscópica'}
+  ],
+  conduta:{
+    exames:['Hemograma, PCR','Bilirrubinas, FA, GGT, TGO, TGP','Amilase e lipase (excluir pancreatite)','USG de abdome (exame de escolha)','Colangio-RM/USG endoscópica se suspeita de coledocolitíase'],
+    drugs:['Jejum + hidratação venosa','Analgesia (dipirona/AINE; opioide se intensa)','Antieméticos','Antibiótico (ex.: ceftriaxona + metronidazol) na colecistite/colangite','CPRE para desobstrução na coledocolitíase/colangite'],
+    steps:['1. Confirmar diagnóstico clínico + USG','2. Jejum, hidratação e analgesia','3. ATB se colecistite/colangite','4. Colecistectomia videolaparoscópica precoce (idealmente <72h) na colecistite aguda','5. Coledocolitíase/colangite: CPRE para drenagem + colecistectomia posterior']
+  }
+},
+'pancreatite-aguda': {
+  mnemonics: [
+    {kw:'GET SMASHED', name:'Etiologias da pancreatite', rows:[
+      ['G','Gallstones','Litíase biliar (causa mais comum)'],
+      ['E','Ethanol','Álcool (2ª causa mais comum)'],
+      ['T','Trauma','Trauma abdominal / pós-CPRE'],
+      ['S','Steroids','Corticoides'],
+      ['M','Mumps','Caxumba / infecções virais'],
+      ['A','Autoimmune','Pancreatite autoimune'],
+      ['S','Scorpion','Picada de escorpião'],
+      ['H','Hyper','Hipertrigliceridemia / hipercalcemia'],
+      ['E','ERCP','Pós-CPRE'],
+      ['D','Drugs','Fármacos (azatioprina, tiazídicos, valproato)']
+    ]},
+    {kw:'RANSON', name:'Critérios de Ranson (admissão)', rows:[
+      ['I','Idade','>55 anos'],
+      ['L','Leucócitos','>16.000/mm³'],
+      ['G','Glicose','>200 mg/dL'],
+      ['D','DHL','>350 UI/L'],
+      ['A','AST/TGO','>250 UI/L']
+    ]}
+  ],
+  manobras: [
+    {title:'Sinal de Cullen',subtitle:'Hemorragia retroperitoneal',
+     steps:['Inspecionar a região periumbilical','Pesquisar equimose azulada ao redor do umbigo'],
+     normal:'Pele periumbilical normal',abnormal:'Equimose periumbilical (Cullen +) → pancreatite hemorrágica/grave'},
+    {title:'Sinal de Grey-Turner',subtitle:'Hemorragia em flancos',
+     steps:['Inspecionar os flancos','Pesquisar equimose nos flancos'],
+     normal:'Flancos sem equimose',abnormal:'Equimose em flancos (Grey-Turner +) → pancreatite necro-hemorrágica'},
+    {title:'Palpação epigástrica',subtitle:'Dor pancreática',
+     steps:['Palpar o epigástrio','Avaliar irradiação da dor para o dorso'],
+     normal:'Sem dor à palpação',abnormal:'Dor epigástrica em faixa, irradiada ao dorso → pancreatite'}
+  ],
+  sinais: [
+    {name:'Sinal de Cullen',eponym:'Pancreatite hemorrágica',how:'Equimose periumbilical',means:'Sangramento retroperitoneal — pancreatite grave'},
+    {name:'Sinal de Grey-Turner',eponym:'Pancreatite necro-hemorrágica',how:'Equimose nos flancos',means:'Necrose hemorrágica — mau prognóstico'},
+    {name:'Sinal de Fox',eponym:'Sangramento retroperitoneal',how:'Equimose na base do ligamento inguinal',means:'Dissecção de sangue retroperitoneal'},
+    {name:'Dor em faixa',eponym:'Pancreatite aguda',how:'Dor epigástrica que irradia "em cinturão" para o dorso, alívio ao inclinar-se para frente',means:'Padrão clássico da dor pancreática'}
+  ],
+  ddx:[
+    ['Pancreatite aguda','Dor em faixa, lipase >3x LSN, irradiação dorsal','Enzimas normais; dor localizada sem irradiação'],
+    ['Úlcera perfurada','Dor súbita, abdome em tábua, pneumoperitônio','Lipase elevada, sem pneumoperitônio'],
+    ['Colecistite/colangite','Dor HCD, Murphy +, febre, alteração de FA/GGT','Dor epigástrica em faixa, lipase muito elevada'],
+    ['Obstrução intestinal','Distensão, parada de eliminação, níveis hidroaéreos','Lipase elevada, dor epigástrica contínua'],
+    ['IAM de parede inferior','Dor epigástrica, sudorese, ECG alterado, troponina ↑','ECG normal, lipase elevada'],
+    ['Aneurisma de aorta roto','Dor + massa pulsátil + choque','Lipase elevada, sem massa pulsátil'],
+    ['Isquemia mesentérica','Dor desproporcional ao exame, acidose láctica','Lipase muito elevada, USG/TC com pâncreas alterado']
+  ],
+  escalas:[
+    {title:'BISAP — gravidade (0-5)',headers:['Componente','Ponto'],
+     rows:[['BUN >25 mg/dL','1'],['Impaired mental status (alteração mental)','1'],['SIRS','1'],['Age >60','1'],['Pleural effusion (derrame pleural)','1']],
+     note:'BISAP ≥3 → maior mortalidade; considerar UTI'},
+    {title:'Critérios de Ranson (0h e 48h)',headers:['Momento','Critérios'],
+     rows:[['Admissão','Idade>55, Leuco>16k, Glicose>200, DHL>350, TGO>250'],['48h','Queda Ht>10%, BUN↑>5, Ca<8, PaO₂<60, BE>4, sequestro fluido>6L']],
+     note:'≥3 critérios → pancreatite grave (mortalidade crescente com a pontuação)'}
+  ],
+  conduta:{
+    exames:['Lipase (preferível) e amilase séricas','Hemograma, PCR (48h prognóstica)','Ureia, creatinina, glicemia, cálcio, eletrólitos','TGO, TGP, FA, GGT, bilirrubinas, triglicerídeos','USG de abdome (etiologia biliar)','TC de abdome com contraste (após 72h) para necrose se grave/dúvida'],
+    drugs:['Hidratação venosa vigorosa (Ringer lactato) — pilar do tratamento','Analgesia (opioides se necessário)','Antieméticos','Suporte nutricional precoce (enteral preferível)','ATB apenas se necrose infectada/colangite — não profilático'],
+    steps:['1. Diagnóstico: 2 de 3 (dor típica + lipase >3x LSN + imagem)','2. Estratificar gravidade (BISAP/Ranson, PCR 48h)','3. Reposição volêmica agressiva precoce','4. Analgesia e controle de náuseas','5. Tratar a causa: CPRE se colangite/obstrução biliar; suspender álcool; controlar triglicerídeos','6. Casos graves/necrose → UTI; ATB só se infecção documentada']
+  }
+},
+'oclusao-intestinal': {
+  mnemonics: [
+    {kw:'4 SINAIS', name:'Obstrução intestinal', rows:[
+      ['D','Dor','Cólica abdominal (alta) ou contínua (estrangulamento)'],
+      ['V','Vômitos','Precoces na alta; tardios e fecaloides na baixa'],
+      ['D','Distensão','Mais marcada na obstrução baixa'],
+      ['P','Parada','Parada de eliminação de fezes e gases (obstipação)']
+    ]},
+    {kw:'ABC', name:'Causas mais comuns no adulto', rows:[
+      ['A','Aderências','Bridas pós-operatórias (causa mais comum de delgado)'],
+      ['B','Bulge/hérnia','Hérnia encarcerada (2ª causa)'],
+      ['C','Cancer','Neoplasia (causa mais comum no cólon)'],
+      ['V','Vólvulo','Sigmoide/ceco — torção'],
+      ['I','Intussuscepção','Mais comum em crianças']
+    ]}
+  ],
+  manobras: [
+    {title:'Ausculta abdominal',subtitle:'Padrão dos ruídos hidroaéreos',
+     steps:['Auscultar os 4 quadrantes por até 2 minutos','Caracterizar timbre e frequência'],
+     normal:'Ruídos normais (5-30/min)',abnormal:'Ruídos metálicos/aumentados (fase inicial) → silêncio (fase tardia/isquemia)'},
+    {title:'Toque retal',subtitle:'Ampola e fecaloma',
+     steps:['Inspeção perianal e toque retal','Avaliar conteúdo da ampola e massas'],
+     normal:'Ampola com fezes, sem massa',abnormal:'Ampola vazia (obstrução) ou massa/sangue → neoplasia, fecaloma'},
+    {title:'Pesquisa de sinais de estrangulamento',subtitle:'Sofrimento de alça',
+     steps:['Avaliar dor contínua intensa, febre, taquicardia','Pesquisar defesa/irritação peritoneal'],
+     normal:'Dor em cólica intermitente, sem peritonite',abnormal:'Dor contínua + febre + peritonismo + acidose → estrangulamento (emergência cirúrgica)'}
+  ],
+  sinais: [
+    {name:'Distensão + timpanismo',eponym:'Obstrução',how:'Abdome distendido, timpânico à percussão',means:'Acúmulo de gás/líquido a montante da obstrução'},
+    {name:'Vômito fecaloide',eponym:'Obstrução baixa/tardia',how:'Vômito de aspecto e odor fecal',means:'Obstrução distal de longa evolução'},
+    {name:'Sinais de estrangulamento',eponym:'Isquemia de alça',how:'Dor contínua + febre + taquicardia + peritonismo',means:'Sofrimento vascular da alça — cirurgia de urgência'},
+    {name:'Sinal do "grão de café"',eponym:'Vólvulo de sigmoide',how:'Imagem radiológica de alça distendida em U invertido',means:'Vólvulo de sigmoide — descompressão endoscópica/cirurgia'}
+  ],
+  ddx:[
+    ['Obstrução de delgado (aderências)','Vômitos precoces, cólica, cirurgia prévia, distensão central','Sem cirurgia prévia; distensão periférica'],
+    ['Obstrução de cólon (neoplasia)','Distensão marcada, vômito tardio, alteração do hábito, idoso','Início agudo sem alteração de hábito'],
+    ['Hérnia encarcerada','Abaulamento doloroso irredutível na parede/região inguinal','Sem hérnia palpável'],
+    ['Íleo paralítico','Distensão sem dor em cólica, ruídos ausentes, pós-op/distúrbio eletrolítico','Cólica e luta peristáltica presentes'],
+    ['Vólvulo','Distensão súbita, "grão de café" no RX, idoso/acamado','Distribuição difusa de alças'],
+    ['Pseudo-obstrução (Ogilvie)','Dilatação colônica sem obstrução mecânica','Ponto de transição mecânico identificável'],
+    ['Isquemia mesentérica','Dor desproporcional, acidose, fibrilação atrial','Padrão obstrutivo clássico sem acidose precoce']
+  ],
+  escalas:[
+    {title:'Alta x Baixa',headers:['Característica','Obstrução alta (delgado)','Obstrução baixa (cólon)'],
+     rows:[['Vômitos','Precoces, biliosos','Tardios, fecaloides'],['Distensão','Discreta/central','Acentuada/periférica'],['Cólica','Frequente, curta','Menos intensa'],['Desidratação','Rápida','Mais lenta']],
+     note:'A localização orienta a etiologia mais provável e a urgência'},
+    {title:'Sinais de gravidade (estrangulamento)',headers:['Achado','Significado'],
+     rows:[['Dor contínua intensa','Sofrimento de alça'],['Febre + taquicardia','Resposta inflamatória/sepse'],['Defesa/irritação peritoneal','Peritonite'],['Acidose/lactato ↑','Isquemia intestinal']],
+     note:'Qualquer sinal de estrangulamento indica laparotomia de urgência'}
+  ],
+  conduta:{
+    exames:['Hemograma, eletrólitos, função renal, gasometria/lactato','Radiografia de abdome (níveis hidroaéreos, distensão, pneumoperitônio)','TC de abdome com contraste (ponto e causa da obstrução, sinais de isquemia)','Beta-hCG em mulheres em idade fértil'],
+    drugs:['Jejum absoluto','Sonda nasogástrica para descompressão','Hidratação venosa + correção de distúrbios hidroeletrolíticos','Analgesia e antieméticos','ATB se estrangulamento/perfuração/cirurgia'],
+    steps:['1. Jejum + SNG + hidratação ("drip and suck")','2. Corrigir distúrbios hidroeletrolíticos','3. Definir mecânica x funcional e alta x baixa por imagem','4. Sem estrangulamento (bridas): tratamento conservador e observação','5. Estrangulamento, hérnia encarcerada, neoplasia obstrutiva ou falha do conservador → cirurgia']
+  }
+},
+'hernia-abdominal': {
+  mnemonics: [
+    {kw:'RICE', name:'Estados clínicos da hérnia', rows:[
+      ['R','Redutível','Conteúdo retorna à cavidade espontaneamente ou com manobra'],
+      ['I','Irredutível/Encarcerada','Não reduz, sem isquemia — risco de obstrução'],
+      ['C','Comprometimento','Estrangulada — sofrimento vascular, dor intensa, sinais inflamatórios'],
+      ['E','Emergência','Estrangulamento = urgência cirúrgica']
+    ]},
+    {kw:'LOCAIS', name:'Tipos por localização', rows:[
+      ['I','Inguinal indireta','Mais comum; trajeto pelo canal inguinal, lateral aos vasos epigástricos'],
+      ['D','Inguinal direta','Triângulo de Hesselbach, medial aos vasos epigástricos'],
+      ['F','Femoral','Abaixo do ligamento inguinal; maior risco de encarceramento (mulheres)'],
+      ['U','Umbilical','Anel umbilical'],
+      ['I','Incisional','Cicatriz cirúrgica prévia']
+    ]}
+  ],
+  manobras: [
+    {title:'Manobra de redução',subtitle:'Avaliar redutibilidade',
+     steps:['Paciente em decúbito dorsal, relaxado','Pressão suave e sustentada sobre o conteúdo herniário'],
+     normal:'Conteúdo reduz facilmente (hérnia redutível)',abnormal:'Não reduz → encarcerada; dor intensa/sinais inflamatórios → estrangulada (NÃO insistir)'},
+    {title:'Teste de Valsalva em pé',subtitle:'Detectar a hérnia',
+     steps:['Examinar o paciente em pé','Pedir para tossir / fazer força abdominal','Palpar o abaulamento e o anel'],
+     normal:'Sem abaulamento à manobra',abnormal:'Abaulamento que protrui à tosse/esforço → hérnia'},
+    {title:'Diferenciar inguinal x femoral',subtitle:'Relação com o ligamento inguinal',
+     steps:['Localizar o tubérculo púbico e o ligamento inguinal','Determinar se a protrusão é acima/medial (inguinal) ou abaixo/lateral (femoral)'],
+     normal:'—',abnormal:'Abaixo e lateral ao tubérculo púbico → femoral (alto risco de encarceramento)'}
+  ],
+  sinais: [
+    {name:'Hérnia redutível',eponym:'Hérnia não complicada',how:'Abaulamento que aumenta ao esforço e reduz ao decúbito',means:'Tratamento eletivo'},
+    {name:'Encarceramento',eponym:'Hérnia complicada',how:'Abaulamento irredutível, doloroso, sem sinais inflamatórios',means:'Risco de obstrução — cirurgia precoce'},
+    {name:'Estrangulamento',eponym:'Emergência',how:'Dor intensa, pele eritematosa, vômitos, sinais de obstrução/isquemia',means:'Sofrimento vascular — cirurgia de urgência'},
+    {name:'Sinal de Howship-Romberg',eponym:'Hérnia obturatória',how:'Dor na face medial da coxa por compressão do nervo obturador',means:'Hérnia obturatória (idosa, magra) — alto índice de encarceramento'}
+  ],
+  ddx:[
+    ['Hérnia inguinal','Abaulamento na virilha que protrui ao esforço, redutível','Massa fixa, não redutível, sem relação com esforço'],
+    ['Hérnia femoral','Abaulamento abaixo do ligamento inguinal, mulher, encarcera fácil','Protrusão acima do ligamento (inguinal)'],
+    ['Adenomegalia inguinal','Linfonodo firme, não reduz, não muda com Valsalva','Reduz ao decúbito, protrui à tosse'],
+    ['Lipoma/tumor de parede','Massa subcutânea fixa, sem anel herniário','Anel palpável, conteúdo redutível'],
+    ['Hidrocele/varicocele','Transiluminação positiva (hidrocele), "saco de vermes" (varicocele)','Conteúdo intestinal redutível'],
+    ['Abscesso/coleção','Sinais flogísticos, flutuação, febre','Redutível, sem flogose (se não complicada)']
+  ],
+  escalas:[
+    {title:'Quando operar de urgência',headers:['Situação','Conduta'],
+     rows:[['Redutível assintomática','Eletiva (avaliar risco x benefício)'],['Encarcerada recente sem isquemia','Tentar redução suave; cirurgia precoce'],['Estrangulada','Cirurgia de URGÊNCIA'],['Femoral (qualquer)','Correção recomendada pelo alto risco de encarceramento']],
+     note:'Hérnias femorais e sintomáticas têm indicação cirúrgica mais firme'},
+    {title:'Sinais de estrangulamento',headers:['Achado','Significado'],
+     rows:[['Dor intensa e contínua na hérnia','Isquemia do conteúdo'],['Pele eritematosa/edemaciada sobre o saco','Inflamação/necrose'],['Vômitos + distensão','Obstrução associada'],['Febre/taquicardia/leucocitose','Resposta sistêmica/sepse']],
+     note:'NÃO tentar reduzir uma hérnia estrangulada — risco de reduzir alça inviável'}
+  ],
+  conduta:{
+    exames:['Diagnóstico é clínico na maioria dos casos','USG de parede/região inguinal em dúvida diagnóstica','TC de abdome se suspeita de complicação/obstrução','Hemograma, eletrólitos e lactato se suspeita de estrangulamento'],
+    drugs:['Analgesia','Hidratação e SNG se obstrução associada','ATB se estrangulamento/ressecção intestinal','Não há tratamento medicamentoso curativo — a correção é cirúrgica'],
+    steps:['1. Caracterizar localização e estado (redutível/encarcerada/estrangulada)','2. Hérnia não complicada → correção eletiva (tela)','3. Encarcerada recente sem isquemia → redução suave + cirurgia precoce','4. Estrangulada → cirurgia de urgência (NÃO reduzir)','5. Avaliar viabilidade da alça no intraoperatório']
+  }
+},
 'semio-dor': {
   mnemonics: [
     {kw:'ALICIA', name:'Caracterização semiológica da dor', rows:[
