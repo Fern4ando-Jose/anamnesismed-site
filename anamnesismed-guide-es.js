@@ -17,6 +17,196 @@
 
 var GUIDE_ES = {
 
+'tosse': {
+  mnemonics:[
+    { name:'Causas de tos crónica (>8 semanas)', rows:[
+      ['Goteo posnasal','Rinorrea, sensación de flema, empeora al acostarse'],
+      ['Asma','Nocturna, frío/alérgenos, sibilancias, variabilidad del PEF'],
+      ['Cardiovascular (ICC)','Ortopnea, crepitantes, BNP ↑'],
+      ['IECA','Inicio tras IECA, seca irritativa, desaparece al suspender'],
+      ['ERGE (reflujo)','Posprandial, nocturna, pirosis, mejora con IBP']
+    ]}
+  ],
+  manobras:[
+    { title:'Pico flujo (PEF)', subtitle:'Diagnóstico de asma — variabilidad',
+      steps:['Paciente de pie','Inspiración máxima','Soplar con fuerza máxima en el medidor','Repetir 3x — registrar el mayor valor'],
+      normal:'PEF >80% del previsto', abnormal:'<80% o variabilidad >20% → obstrucción bronquial → asma/EPOC' },
+    { title:'Auscultación pulmonar', subtitle:'Patrones en la tos',
+      steps:['6 puntos comparativos bilaterales','Fase inspiratoria y espiratoria'],
+      normal:'Murmullo vesicular presente y simétrico', abnormal:'Sibilancias → broncoespasmo | Crepitantes focales → neumonía | Bibasales → ICC' }
+  ],
+  sinais:[
+    { name:'Sibilancia espiratoria', eponym:'Broncoespasmo', how:'Ruido musical en la auscultación, espiración prolongada', means:'Asma (reversible) o EPOC (parcial) — Salbutamol para prueba terapéutica' },
+    { name:'Dedos en palillo de tambor', eponym:'Hipoxemia crónica', how:'Pérdida del ángulo de Lovibond >180° en la base de la uña', means:'Enfermedad pulmonar crónica, neoplasia, bronquiectasia — investigar con TC' }
+  ],
+  ddx:[
+    ['Goteo posnasal','Sensación de flema, empeora acostado, rinitis, mejora con antihistamínico','Sibilancias, fiebre, hemoptisis'],
+    ['Asma','Nocturna, alérgenos, sibilancias, variabilidad PEF, atopía','Purulenta, fiebre, fumador >40 años'],
+    ['Tos por IECA','Tras IECA, seca irritativa, mejora al suspender el IECA','Productiva, fiebre, antes del IECA'],
+    ['ERGE','Posprandial, nocturna, pirosis, mejora con IBP','Sibilancias, variabilidad, esfuerzo'],
+    ['Neumonía','Productiva purulenta, fiebre, dolor pleurítico, Rx con infiltrado','Crónica, seca, afebril, Rx normal'],
+    ['Neoplasia','Fumador >40 años, hemoptisis, pérdida de peso, Rx con masa','Joven, sin tabaquismo, Rx normal, >8 sem sin alarma']
+  ],
+  escalas:[
+    { title:'Gravedad de la crisis de asma', headers:['Criterio','Leve','Moderada','Grave'],
+      rows:[['Disnea','Al caminar','En reposo','Frases incompletas'],['FR','<25','25-30','>30 rpm'],['Pico flujo','>70%','50-70%','<50%'],['SpO₂','>95%','91-95%','<91%']],
+      note:'Grave: Salbutamol+Ipratropio+Corticoide EV+O₂; Sin mejoría → UCI' }
+  ],
+  conduta:{
+    exames:['Rx tórax PA','Pico flujo','Espirometría (crónico)','Hemograma + PCR','TC tórax (sospecha de neoplasia o bronquiectasia)','Cultivo de esputo (neumonía grave)'],
+    drugs:['Asma leve-mod: Salbutamol 2,5-5mg nebulización o spray','Asma grave: Prednisolona 40-50mg/día VO x5 días','Neumonía comunitaria: Amoxicilina 500mg c/8h x7d','IECA: Suspender → ARA (losartán)','ERGE: Omeprazol 20-40mg antes del desayuno'],
+    steps:['1. ¿Aguda (<3sem), subaguda (3-8sem) o crónica (>8sem)?','2. Alarma: hemoptisis, pérdida de peso, tabaquismo, fiebre persistente, masa en Rx','3. Rx tórax para todos','4. FACTS — tratar la causa más probable','5. Crónica persistente: espirometría + TC tórax']
+  }
+},
+'tontura-vertigem': {
+  mnemonics:[
+    { name:'Causas de mareo/vértigo', rows:[
+      ['VPPB','Crisis breves (<1min) con cambio de posición de la cabeza'],
+      ['Espontánea (Ménière)','Vértigo + acúfeno + hipoacusia fluctuante + plenitud auricular'],
+      ['Reacción vestibular (neuritis)','Vértigo continuo, intenso, días, sin pérdida auditiva'],
+      ['Tronco encefálico/ACV','Vértigo central + diplopía, disartria, ataxia, déficit focal'],
+      ['Isquemia/arritmia','Presíncope, palpitaciones, relación con esfuerzo/postura'],
+      ['Gravedad postural (hipotensión ortostática)','Mareo al levantarse, caída de PA >20/10mmHg'],
+      ['Estímulos/medicamentos','Ototóxicos, antihipertensivos, sedantes, alcohol'],
+      ['Migraña vestibular','Vértigo asociado a cefalea, fotofobia, antecedente de migraña']
+    ]}
+  ],
+  manobras:[
+    { title:'Dix-Hallpike', subtitle:'Diagnóstico de VPPB (canal posterior)',
+      steps:['Paciente sentado, gire la cabeza 45° hacia un lado','Acueste rápidamente en decúbito dorsal con la cabeza colgando 20° bajo la camilla','Observe los ojos por 30-60s esperando nistagmo','Repita para el lado opuesto'],
+      normal:'Sin nistagmo ni vértigo', abnormal:'Nistagmo rotatorio con latencia, fatigable y que reproduce el vértigo → VPPB del lado evaluado' },
+    { title:'Prueba de Romberg', subtitle:'Evaluación del equilibrio/propiocepción',
+      steps:['Paciente de pie, pies juntos, brazos al costado','Pida cerrar los ojos por 30s','Observe oscilación o caída'],
+      normal:'Se mantiene estable con los ojos cerrados', abnormal:'Desequilibrio/caída al cerrar los ojos → disfunción vestibular o propioceptiva (Romberg+)' },
+    { title:'Prueba de impulso cefálico (HINTS - Head Impulse)', subtitle:'Diferenciación periférico vs central',
+      steps:['Pida al paciente fijar la mirada en su nariz','Gire la cabeza del paciente rápidamente 10-20° hacia un lado','Observe si los ojos permanecen fijos en el objetivo'],
+      normal:'Los ojos permanecen fijos (sin sacada de corrección) → sugiere causa central (atención: HINTS "peligroso" cuando es normal en cuadro vertiginoso agudo)', abnormal:'Sacada de corrección (catch-up saccade) → lesión vestibular periférica' },
+    { title:'Medición de PA ortostática', subtitle:'Hipotensión postural',
+      steps:['Mida PA y FC con el paciente acostado tras 5 minutos de reposo','Mida nuevamente tras 1 y 3 minutos de pie'],
+      normal:'Caída <20mmHg sistólica y <10mmHg diastólica', abnormal:'Caída ≥20/10mmHg con síntomas → hipotensión ortostática' }
+  ],
+  sinais:[
+    { name:'Nistagmo vertical o que cambia de dirección', eponym:'Signo de alarma central', how:'Nistagmo bidireccional, vertical puro o no-fatigable al examen', means:'Sugiere lesión de tronco encefálico/cerebelo — investigar ACV vertebrobasilar' },
+    { name:'Skew deviation (desviación ocular vertical)', eponym:'Componente del HINTS', how:'Un ojo se desvía verticalmente respecto al otro al cubrir alternadamente', means:'Fuerte indicio de causa central (tronco encefálico)' },
+    { name:'Dismetría/disdiadococinesia', eponym:'Síndrome cerebelosa', how:'Error de blanco en la prueba índice-nariz y dificultad en movimientos alternos rápidos', means:'Sugiere lesión cerebelosa — vértigo central' }
+  ],
+  ddx:[
+    ['VPPB','Crisis cortas (segundos a 1 min), desencadenadas por movimiento de la cabeza, Dix-Hallpike+, sin pérdida auditiva','Vértigo continuo >1h o síntomas neurológicos asociados'],
+    ['Enfermedad de Ménière','Episodios de minutos a horas + acúfeno + hipoacusia fluctuante + plenitud auricular','Ausencia de síntomas auditivos, episodios muy breves'],
+    ['Neuritis/laberintitis vestibular','Vértigo continuo intenso por días, náuseas/vómitos, sin síntomas auditivos (laberintitis: con hipoacusia)','Inicio súbito con déficit neurológico focal asociado'],
+    ['Causa central (ACV/AIT vertebrobasilar)','Inicio súbito, cefalea occipital, diplopía, disartria, ataxia, déficit focal, HINTS sugestivo de central','Crisis cortas posicionales típicas de VPPB, síntomas auditivos aislados'],
+    ['Hipotensión ortostática/causa cardiovascular','Mareo al levantarse, síncope, palpitaciones, caída de PA postural, arritmia en ECG','Vértigo rotatorio verdadero desencadenado por posición de la cabeza']
+  ],
+  escalas:[
+    { title:'Examen HINTS (a pie de cama, vértigo agudo continuo)', headers:['Componente','Hallazgo periférico','Hallazgo central'],
+      rows:[['Head Impulse','Sacada de corrección presente','Prueba normal (sin sacada)'],['Nystagmus','Unidireccional, horizontal, fatigable','Bidireccional, vertical o que cambia de dirección'],['Test of Skew','Ausente','Presente (desviación vertical)']],
+      note:'"INFARCT" (Impulse Normal, Fast-phase Alternating, Refixation on Cover Test) sugiere causa central → indicación de neuroimagen urgente aun con TC inicial normal' }
+  ],
+  conduta:{
+    exames:['Examen neurológico completo + otoscopia','Evaluación de PA acostado/de pie (ortostatismo)','ECG (arritmias)','Audiometría (si sospecha de Ménière/laberintitis)','RM de cráneo con difusión (sospecha de causa central — la TC tiene baja sensibilidad para fosa posterior)'],
+    drugs:['Sintomáticos de corta duración: Dimenhidrinato 50mg VO/EV o Meclizina 25mg VO','Antiemético: Ondansetrón 4-8mg EV/VO','Evitar supresores vestibulares prolongados (retrasan la compensación central)','Corticoide (Prednisona) en neuritis vestibular según evaluación especializada'],
+    steps:['1. Diferenciar central x periférico (HINTS, signos neurológicos, inicio y duración)','2. Signos de alarma central → neuroimagen urgente (RM) y evaluación neurológica','3. Sospecha de VPPB → confirmar con Dix-Hallpike y tratar con maniobra de Epley (reposicionamiento canalicular)','4. Sospecha de Ménière → derivar a otorrino, dieta hiposódica, diuréticos según evaluación','5. Hipotensión ortostática → revisar medicaciones, hidratación, medias de compresión','6. Reevaluación y seguimiento según evolución']
+  }
+},
+'perda-peso': {
+  mnemonics:[
+    { name:'Causas de pérdida de peso involuntaria', rows:[
+      ['Endocrino','Hipertiroidismo, diabetes mellitus descompensada, insuficiencia adrenal'],
+      ['Maligno (neoplasia)','Adelgazamiento + síntomas B (fiebre, sudoración nocturna) — investigar siempre'],
+      ['Aparato digestivo','EII, malabsorción, enfermedad celíaca, úlcera péptica'],
+      ['Geriátrico/funcional','Disfagia, problemas dentales, aislamiento social, depresión'],
+      ['Infecciones consumptivas','Tuberculosis, VIH/SIDA, endocarditis'],
+      ['Emocional/psiquiátrico','Depresión, trastornos alimentarios (anorexia/bulimia), ansiedad'],
+      ['Crónicas (enfermedades sistémicas)','EPOC, insuficiencia cardíaca, enfermedad renal crónica, hepatopatía'],
+      ['Estimulantes/drogas/alcohol','Uso de sustancias, efectos adversos medicamentosos']
+    ]}
+  ],
+  manobras:[
+    { title:'Evaluación nutricional/IMC', subtitle:'Cuantificación de la pérdida de peso',
+      steps:['Calcular % de pérdida respecto al peso habitual y tiempo transcurrido','IMC = peso(kg)/altura²(m)','Clasificar pérdida significativa: >5% en 1 mes o >10% en 6 meses'],
+      normal:'Peso estable, IMC adecuado', abnormal:'Pérdida ≥5%/mes o ≥10%/6 meses → pérdida de peso clínicamente significativa, investigar' },
+    { title:'Palpación de ganglios linfáticos', subtitle:'Rastreo de neoplasia/infección',
+      steps:['Palpar cadenas cervicales, supraclaviculares, axilares e inguinales','Evaluar tamaño, consistencia, movilidad y dolor'],
+      normal:'Ganglios no palpables o <1cm, móviles, indoloros', abnormal:'Adenomegalia endurecida, fija, indolora (especialmente supraclavicular - nódulo de Virchow) → investigar neoplasia' },
+    { title:'Palpación de la tiroides', subtitle:'Rastreo de hipertiroidismo',
+      steps:['Palpar la glándula durante la deglución, por detrás o por delante del paciente','Evaluar tamaño, nódulos, consistencia y frémito'],
+      normal:'Tiroides no palpable o de tamaño normal, sin nódulos', abnormal:'Bocio difuso o nodular, frémito → investigar disfunción tiroidea' },
+    { title:'Examen abdominal completo', subtitle:'Rastreo de masas y organomegalias',
+      steps:['Inspección, auscultación, percusión y palpación sistemática de los cuadrantes','Buscar hepatomegalia, esplenomegalia y masas palpables'],
+      normal:'Abdomen blando, sin masas ni organomegalias', abnormal:'Masa palpable, hepatoesplenomegalia → investigar causa neoplásica/infecciosa/hepática' }
+  ],
+  sinais:[
+    { name:'Bocio', eponym:'Hipertiroidismo/enfermedad tiroidea', how:'Aumento visible o palpable de la glándula tiroides', means:'Sugiere disfunción tiroidea como causa del adelgazamiento' },
+    { name:'Palidez cutaneomucosa', eponym:'Anemia asociada', how:'Coloración pálida de conjuntivas, mucosa oral y lechos ungueales', means:'Sugiere anemia — puede acompañar enfermedad consumptiva, neoplasia o malabsorción' },
+    { name:'Caquexia', eponym:'Síndrome consumptiva', how:'Pérdida importante de masa muscular y grasa, debilidad, fatiga', means:'Signo de enfermedad sistémica avanzada — neoplasia, infección crónica (TB/VIH), insuficiencia orgánica terminal' }
+  ],
+  ddx:[
+    ['Neoplasia maligna','Adelgazamiento progresivo, síntomas B, masa/adenomegalia, edad avanzada, tabaquismo','Ausencia de masas, exámenes de rastreo normales, mejora con tratamiento de causa benigna'],
+    ['Hipertiroidismo','Pérdida de peso con aumento del apetito, taquicardia, temblor, intolerancia al calor, bocio','TSH normal, sin signos adrenérgicos'],
+    ['Diabetes mellitus descompensada','Poliuria, polidipsia, polifagia con adelgazamiento, glucemia elevada','Glucemia normal, sin síntomas cardinales de DM'],
+    ['Depresión/trastorno psiquiátrico','Ánimo deprimido, anhedonia, alteración del sueño y apetito, aislamiento social','Examen físico y laboratorio completamente normales no excluyen, pero ausencia de síntomas depresivos lo hace menos probable'],
+    ['Enfermedad consumptiva/infecciosa (TB, VIH)','Fiebre, sudoración nocturna, tos crónica, factores de riesgo epidemiológicos, adenomegalia','Serologías e investigación infecciosa negativas'],
+    ['EII/malabsorción','Diarrea crónica, dolor abdominal, sangre en las heces, deficiencias nutricionales','Tránsito intestinal normal, exámenes de malabsorción negativos']
+  ],
+  escalas:[
+    { title:'Clasificación de pérdida de peso significativa (tiempo x porcentaje)', headers:['Período','% de pérdida considerada significativa','% considerada grave'],
+      rows:[['1 semana','1-2%','>2%'],['1 mes','5%','>5%'],['3 meses','7,5%','>7,5%'],['6 meses','10%','>10%']],
+      note:'Pérdida "grave" en el período exige investigación activa y prioritaria de la causa' }
+  ],
+  conduta:{
+    exames:['Hemograma completo + VSG/PCR','Glucemia en ayunas/HbA1c','TSH y T4 libre','Función renal y hepática, electrolitos','Orina rutina','Rastreo de VIH y serologías según epidemiología','Radiografía de tórax ± TC según sospecha','Rastreo oncológico orientado por edad/sexo (endoscopia, colonoscopia, mamografía, etc.)'],
+    drugs:['Tratamiento dirigido a la causa identificada (no hay tratamiento sintomático específico)','Soporte nutricional/suplementación según evaluación','Derivación a especialista según hallazgos (endocrinología, oncología, psiquiatría, gastroenterología)'],
+    steps:['1. Confirmar y cuantificar la pérdida de peso (peso habitual x actual x tiempo)','2. Anamnesis dirigida: apetito, síntomas B, hábito intestinal, ánimo, medicaciones, contexto social','3. Examen físico completo (ganglios, tiroides, abdomen, estado nutricional)','4. Rastreo laboratorial amplio inicial','5. Investigación dirigida según la hipótesis más probable (imagen, endoscopia, serologías)','6. Derivar a especialista si hay hallazgos sugestivos de neoplasia o enfermedad sistémica grave']
+  }
+},
+'nauseas-vomitos': {
+  mnemonics:[
+    { name:'Causas de náuseas y vómitos', rows:[
+      ['Vestibular/SNC','Vértigo, laberintitis, hipertensión intracraneal, migraña'],
+      ['Obstrucción/causas GI','Obstrucción intestinal, gastroparesia, úlcera péptica, colecistitis'],
+      ['Medicamentos/toxinas','Quimioterápicos, opioides, antiinflamatorios, alcohol, intoxicaciones'],
+      ['Infección','Gastroenteritis viral/bacteriana, ITU, meningitis'],
+      ['Trastornos metabólicos','Cetoacidosis diabética, uremia, hipercalcemia, insuficiencia adrenal'],
+      ['Abdomen agudo','Apendicitis, pancreatitis, obstrucción, isquemia mesentérica'],
+      ['Reproductivo (embarazo)','Hiperémesis gravídica, primer trimestre de gestación']
+    ]}
+  ],
+  manobras:[
+    { title:'Evaluación de signos de deshidratación', subtitle:'Gravedad del cuadro de vómitos',
+      steps:['Evaluar turgencia cutánea (pliegue cutáneo)','Inspeccionar mucosas orales (humedad)','Evaluar tiempo de relleno capilar y nivel de conciencia','Medir PA y FC (hipotensión/taquicardia postural)'],
+      normal:'Mucosas húmedas, turgencia normal, signos vitales estables', abnormal:'Mucosas secas, turgencia disminuida, taquicardia, hipotensión → deshidratación significativa' },
+    { title:'Examen abdominal sistemático', subtitle:'Identificar causa abdominal',
+      steps:['Inspección, auscultación de ruidos hidroaéreos, percusión y palpación','Buscar distensión, masas, dolor localizado y signos de irritación peritoneal'],
+      normal:'Abdomen blando, ruidos hidroaéreos normales, sin dolor a la palpación', abnormal:'Distensión, ruidos hidroaéreos aumentados ("de lucha") o ausentes, dolor localizado → investigar obstrucción/abdomen agudo' },
+    { title:'Signo de Murphy', subtitle:'Sospecha de colecistitis',
+      steps:['Palpar el hipocondrio derecho (punto cístico)','Pedir al paciente inspirar profundamente durante la palpación'],
+      normal:'Inspiración completa sin dolor', abnormal:'Interrupción súbita de la inspiración por dolor (Murphy+) → sugiere colecistitis aguda' }
+  ],
+  sinais:[
+    { name:'Vómitos biliosos', eponym:'Obstrucción intestinal baja/pospilórica', how:'Vómito de coloración verdosa/amarillenta (bilis)', means:'Sugiere obstrucción por debajo de la ampolla de Vater — investigación urgente' },
+    { name:'Vómitos fecaloides', eponym:'Obstrucción intestinal avanzada', how:'Vómito con olor y aspecto fecal', means:'Signo de obstrucción intestinal baja avanzada o fístula — emergencia quirúrgica' },
+    { name:'Hematemesis', eponym:'Sangrado digestivo alto', how:'Vómito con sangre fresca o en "borra de café"', means:'Sugiere úlcera péptica, várices esofágicas o laceración de Mallory-Weiss — riesgo de inestabilidad hemodinámica' },
+    { name:'Signos de hipertensión intracraneal', eponym:'Causa central de vómitos', how:'Cefalea matinal, vómitos en proyectil sin náusea previa, papiledema, alteración del nivel de conciencia', means:'Sugiere lesión intracraneal — investigación neurológica de urgencia' }
+  ],
+  ddx:[
+    ['Gastroenteritis aguda','Inicio agudo, diarrea asociada, contactos con síntomas similares, febrícula','Vómitos persistentes sin diarrea, signos de abdomen agudo'],
+    ['Obstrucción intestinal','Distensión abdominal, parada de eliminación de gases/heces, vómitos biliosos/fecaloides, RHA aumentados/ausentes','Tránsito intestinal preservado, abdomen plano e indoloro'],
+    ['Causa central (HIC, migraña, vestibular)','Cefalea, vértigo, alteración neurológica, vómitos en proyectil sin náusea previa','Dolor abdominal prominente, signos de irritación peritoneal'],
+    ['Causa metabólica (cetoacidosis, uremia)','Antecedente de diabetes/enfermedad renal, aliento cetónico, alteración del estado mental, laboratorio alterado','Glucemia y función renal normales'],
+    ['Embarazo/hiperémesis gravídica','Mujer en edad fértil, atraso menstrual, β-HCG positivo, síntomas en el 1er trimestre','β-HCG negativo']
+  ],
+  escalas:[
+    { title:'Criterios de gravedad de la deshidratación (OMS, adaptado)', headers:['Signo','Leve','Moderada','Grave'],
+      rows:[['Estado general','Alerta','Irritado/somnoliento','Letárgico/inconsciente'],['Mucosas','Húmedas','Secas','Muy secas'],['Turgencia cutánea','Normal','Disminuida','Muy disminuida (el pliegue persiste)'],['Pulso/PA','Normales','Levemente alterados','Taquicardia/hipotensión']],
+      note:'La deshidratación grave exige reposición volémica EV inmediata y reevaluación continua' }
+  ],
+  conduta:{
+    exames:['Hemograma, electrolitos, función renal','Glucemia y gasometría (si sospecha metabólica)','β-HCG en mujeres en edad fértil','Amilasa/lipasa (sospecha de pancreatitis)','Imagen abdominal (USG/TC) según sospecha de causa estructural','TC de cráneo si hay signos de alarma neurológico'],
+    drugs:['Hidratación oral o EV según grado de deshidratación (Ringer lactato/SF 0,9%)','Ondansetrón 4-8mg EV/VO o Metoclopramida 10mg EV/VO','Corrección de trastornos electrolíticos y metabólicos identificados','Evitar antieméticos que enmascaren un cuadro de abdomen agudo hasta la definición diagnóstica'],
+    steps:['1. Evaluar gravedad de la deshidratación y signos de alarma (sangre, vómito bilioso/fecaloide, signos neurológicos)','2. Hidratación adecuada según gravedad (oral leve/moderada, EV si grave o intolerancia)','3. Antieméticos sintomáticos cuando sea seguro','4. Investigar la causa de base según el contexto clínico (GI, metabólica, central, gestacional)','5. Tratar la causa específica identificada','6. Reevaluar la respuesta al tratamiento y la necesidad de internación']
+  }
+},
+
 'dispneia': {
   mnemonics:[
     { name:'Causas de disnea aguda', rows:[
