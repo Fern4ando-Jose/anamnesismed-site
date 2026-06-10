@@ -2223,6 +2223,11 @@ function collectFormSnapshot(){
     snap.selecoes[cont.id].push(el.textContent.trim());
   });
 
+  // 4) Notas de conduta — vivem em #guide-content-area (FORA de #hc-sections),
+  // mas entram no PDF; sem esta captura explícita a nota se perde ao salvar/reabrir
+  var cond = document.getElementById('conduta-guide-text');
+  if(cond && cond.value) snap.campos['conduta-guide-text'] = cond.value;
+
   return snap;
 }
 
@@ -2380,36 +2385,14 @@ function showToast(lang,msg){
         var rec = await window.hcLoad(window.__deepLinkHcId);
         if (rec && rec.dados) {
           if (typeof restoreFormSnapshot === 'function') {
-            restoreFormSnapshot(rec.dados);
-            // Reativar 2º motivo se estava salvo
-            if(rec.dados.motivo2 && typeof selectMotivo2FromMC === 'function'){
+            // Reativar o 2º motivo ANTES do restore: selectMotivo2FromMC cria os
+            // elementos aea-g2-* dentro de #hc-sections, então um único
+            // restoreFormSnapshot repopula TUDO do 2º motivo — inclusive os
+            // inputs de texto (EVA, medicamentos), que o bloco antigo perdia.
+            if (rec.dados.motivo2 && typeof selectMotivo2FromMC === 'function') {
               selectMotivo2FromMC(rec.dados.motivo2);
-              // Restaurar seleções dos chips do 2º motivo (aea-g2-N)
-              var sel2 = rec.dados.selecoes || {};
-              Object.keys(sel2).forEach(function(cid){
-                if(!cid.startsWith('aea-g2-')) return;
-                var cont = document.getElementById(cid);
-                if(!cont) return;
-                var opts = cont.querySelectorAll('[onclick^="selectRadio"],[onclick^="selectMultiChip"]');
-                (sel2[cid]||[]).forEach(function(txt){
-                  for(var i=0;i<opts.length;i++){
-                    if(opts[i].textContent.trim()===txt){opts[i].click();return;}
-                  }
-                });
-              });
-              // Restaurar yn do 2º motivo
-              var sn2 = rec.dados.simNao || {};
-              Object.keys(sn2).forEach(function(gid){
-                if(!gid.startsWith('aea-g2-')) return;
-                var resp = sn2[gid] && sn2[gid].resposta;
-                if(!resp) return;
-                var btns = document.querySelectorAll('.yn-btn');
-                for(var i=0;i<btns.length;i++){
-                  var m=(btns[i].getAttribute('onclick')||'').match(/\(this,'([^']+)','([^']+)'\)/);
-                  if(m&&m[1]===gid&&m[2]===resp){btns[i].click();break;}
-                }
-              });
             }
+            restoreFormSnapshot(rec.dados);
           } else if (rec.dados.nome) {
             // fallback antigo, caso restoreFormSnapshot não esteja disponível
             var elNome = document.getElementById('dp-nome');
