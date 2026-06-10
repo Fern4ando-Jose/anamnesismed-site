@@ -321,4 +321,3 @@ function exportPDF(){
   w.document.write('</body></html>');
   w.document.close();
 }
-                         

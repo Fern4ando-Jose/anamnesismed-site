@@ -1254,4 +1254,3 @@ window.hcListAll          = hcListAll;
 window.uiLoadRecentHCs    = uiLoadRecentHCs;
 window.profileCheckAccess = profileCheckAccess;
 window.onboardingCheckAndShow = onboardingCheckAndShow;
-                                                              

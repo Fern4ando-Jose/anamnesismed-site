@@ -12,48 +12,48 @@ check() {
   local label="$1"
   local result="$2"
   if [ "$result" = "ok" ]; then
-    echo "  ✅  $label"
+    echo "  OK  $label"
   else
-    echo "  ❌  $label — $result"
+    echo "  ERRO  $label — $result"
     ERRORS=$((ERRORS + 1))
   fi
 }
 
 echo ""
-echo "═══════════════════════════════════════════════════════"
+echo "======================================================="
 echo "  AnamnesísMed — Verificação de Integridade"
-echo "═══════════════════════════════════════════════════════"
+echo "======================================================="
 
-# ── app.html ──────────────────────────────────────────────
+# -- app.html
 APP="$ROOT/anamnesismed-app.html"
 echo ""
-echo "▸ anamnesismed-app.html"
+echo "> anamnesismed-app.html"
 
 LINES=$(wc -l < "$APP")
-[ "$LINES" -ge 2300 ] && check "Linhas ($LINES ≥ 2300)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 2300"
+[ "$LINES" -ge 2300 ] && check "Linhas ($LINES >= 2300)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado >= 2300"
 grep -q "</html>" "$APP" && check "Tag </html> presente" "ok" || check "Tag </html>" "AUSENTE"
 grep -q "</body>" "$APP" && check "Tag </body> presente" "ok" || check "Tag </body>" "AUSENTE"
 grep -q "function renderMotivoGrid" "$APP" && check "renderMotivoGrid presente" "ok" || check "renderMotivoGrid" "AUSENTE"
 grep -q "function saveHC" "$APP" && check "saveHC presente" "ok" || check "saveHC" "AUSENTE"
 grep -q "function showScreen" "$APP" && check "showScreen presente" "ok" || check "showScreen" "AUSENTE"
-grep -q "anamnesismed-motivos.js" "$APP" && check "Referência a motivos.js" "ok" || check "Referência a motivos.js" "AUSENTE"
-grep -q "anamnesismed-guide.js" "$APP" && check "Referência a guide.js" "ok" || check "Referência a guide.js" "AUSENTE"
-grep -q "anamnesismed-narrativa.js" "$APP" && check "Referência a narrativa.js" "ok" || check "Referência a narrativa.js" "AUSENTE"
-grep -q "anamnesismed-pdf.js" "$APP" && check "Referência a pdf.js" "ok" || check "Referência a pdf.js" "AUSENTE"
-grep -q "supabase-integration.js" "$APP" && check "Referência a supabase-integration.js" "ok" || check "Referência a supabase-integration.js" "AUSENTE"
-! grep -q "^const MOTIVOS" "$APP" && check "Dados MOTIVOS fora do app.html" "ok" || check "Dados MOTIVOS" "AINDA NO app.html — mover para motivos.js"
-! grep -q "^const GUIDE_CONTENT" "$APP" && check "Dados GUIDE_CONTENT fora do app.html" "ok" || check "Dados GUIDE_CONTENT" "AINDA NO app.html — mover para motivos.js"
-! grep -q "function exportPDF" "$APP" && check "exportPDF fora do app.html" "ok" || check "exportPDF" "AINDA NO app.html — mover para pdf.js"
-! grep -q "function gerarNarrativaAEA_" "$APP" && check "Geradores de narrativa fora do app.html" "ok" || check "Geradores narrativa" "AINDA NO app.html — mover para narrativa.js"
-! grep -q "function buildAEAGuideHTML" "$APP" && check "buildAEAGuideHTML fora do app.html" "ok" || check "buildAEAGuideHTML" "AINDA NO app.html — mover para guide.js"
+grep -q "anamnesismed-motivos.js" "$APP" && check "Referencia a motivos.js" "ok" || check "Referencia a motivos.js" "AUSENTE"
+grep -q "anamnesismed-guide.js" "$APP" && check "Referencia a guide.js" "ok" || check "Referencia a guide.js" "AUSENTE"
+grep -q "anamnesismed-narrativa.js" "$APP" && check "Referencia a narrativa.js" "ok" || check "Referencia a narrativa.js" "AUSENTE"
+grep -q "anamnesismed-pdf.js" "$APP" && check "Referencia a pdf.js" "ok" || check "Referencia a pdf.js" "AUSENTE"
+grep -q "supabase-integration.js" "$APP" && check "Referencia a supabase-integration.js" "ok" || check "Referencia a supabase-integration.js" "AUSENTE"
+! grep -q "^const MOTIVOS" "$APP" && check "Dados MOTIVOS fora do app.html" "ok" || check "Dados MOTIVOS" "AINDA NO app.html"
+! grep -q "^const GUIDE_CONTENT" "$APP" && check "Dados GUIDE_CONTENT fora do app.html" "ok" || check "Dados GUIDE_CONTENT" "AINDA NO app.html"
+! grep -q "function exportPDF" "$APP" && check "exportPDF fora do app.html" "ok" || check "exportPDF" "AINDA NO app.html"
+! grep -q "function gerarNarrativaAEA_" "$APP" && check "Geradores de narrativa fora do app.html" "ok" || check "Geradores narrativa" "AINDA NO app.html"
+! grep -q "function buildAEAGuideHTML" "$APP" && check "buildAEAGuideHTML fora do app.html" "ok" || check "buildAEAGuideHTML" "AINDA NO app.html"
 
-# ── anamnesismed-motivos.js ────────────────────────────────
+# -- anamnesismed-motivos.js
 MOTIVOS="$ROOT/anamnesismed-motivos.js"
 echo ""
-echo "▸ anamnesismed-motivos.js"
+echo "> anamnesismed-motivos.js"
 
 LINES=$(wc -l < "$MOTIVOS")
-[ "$LINES" -ge 1500 ] && check "Linhas ($LINES ≥ 1500)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 1500"
+[ "$LINES" -ge 1500 ] && check "Linhas ($LINES >= 1500)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado >= 1500"
 grep -q "^const MOTIVOS" "$MOTIVOS" && check "const MOTIVOS presente" "ok" || check "const MOTIVOS" "AUSENTE"
 grep -q "^const RAS_SYSTEMS" "$MOTIVOS" && check "const RAS_SYSTEMS presente" "ok" || check "const RAS_SYSTEMS" "AUSENTE"
 grep -q "^const GUIDE_CONTENT" "$MOTIVOS" && check "const GUIDE_CONTENT presente" "ok" || check "const GUIDE_CONTENT" "AUSENTE"
@@ -64,24 +64,24 @@ grep -q "id:'tosse'" "$MOTIVOS" && check "Motivo tosse presente" "ok" || check "
 grep -q "id:'dor-toracica'" "$MOTIVOS" && check "Motivo dor-toracica presente" "ok" || check "Motivo dor-toracica" "AUSENTE"
 grep -q "}; // end GUIDE_CONTENT" "$MOTIVOS" && check "Fechamento GUIDE_CONTENT" "ok" || check "Fechamento GUIDE_CONTENT" "AUSENTE — arquivo provavelmente truncado"
 
-# ── anamnesismed-guide.js ─────────────────────────────────
+# -- anamnesismed-guide.js
 GUIDE="$ROOT/anamnesismed-guide.js"
 echo ""
-echo "▸ anamnesismed-guide.js"
+echo "> anamnesismed-guide.js"
 
 LINES=$(wc -l < "$GUIDE")
-[ "$LINES" -ge 150 ] && check "Linhas ($LINES ≥ 150)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 150"
+[ "$LINES" -ge 150 ] && check "Linhas ($LINES >= 150)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado >= 150"
 grep -q "function buildAEAGuideHTML" "$GUIDE" && check "buildAEAGuideHTML presente" "ok" || check "buildAEAGuideHTML" "AUSENTE"
 grep -q "function buildMnemonicsHTML" "$GUIDE" && check "buildMnemonicsHTML presente" "ok" || check "buildMnemonicsHTML" "AUSENTE"
 grep -q "function renderGuideContent" "$GUIDE" && check "renderGuideContent presente" "ok" || check "renderGuideContent" "AUSENTE"
 
-# ── anamnesismed-narrativa.js ──────────────────────────────
+# -- anamnesismed-narrativa.js
 NARRATIVA="$ROOT/anamnesismed-narrativa.js"
 echo ""
-echo "▸ anamnesismed-narrativa.js"
+echo "> anamnesismed-narrativa.js"
 
 LINES=$(wc -l < "$NARRATIVA")
-[ "$LINES" -ge 380 ] && check "Linhas ($LINES ≥ 380)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado ≥ 380"
+[ "$LINES" -ge 380 ] && check "Linhas ($LINES >= 380)" "ok" || check "Linhas ($LINES)" "TRUNCADO — esperado >= 380"
 grep -q "function gerarNarrativaAEA_cefaleia" "$NARRATIVA" && check "gerador cefaleia presente" "ok" || check "gerador cefaleia" "AUSENTE"
 grep -q "function gerarNarrativaAEA_generica" "$NARRATIVA" && check "gerador generico presente" "ok" || check "gerador generico" "AUSENTE"
 grep -q "function gerarNarrativaAEA_tosse" "$NARRATIVA" && check "gerador tosse presente" "ok" || check "gerador tosse" "AUSENTE"
@@ -122,6 +122,33 @@ echo ""
 echo "> vercel.json"
 grep -q "maxDuration" "$VERCEL" && check "maxDuration presente" "ok" || check "maxDuration" "AUSENTE"
 grep -q "}" "$VERCEL" && check "JSON fechado" "ok" || check "JSON fechado" "TRUNCADO"
+
+# -- Bytes nulos (corrupção Linux-Windows)
+echo ""
+echo "> Verificacao de bytes nulos (corrupcao Linux-Windows)"
+NULLCHECK=$(mktemp /tmp/nullcheck_XXXXXX.py)
+cat > "$NULLCHECK" << 'PYEOF2'
+import sys
+data = open(sys.argv[1], 'rb').read()
+sys.exit(1 if b'\x00' in data else 0)
+PYEOF2
+for f in \
+  "$ROOT/supabase-integration.js" \
+  "$ROOT/anamnesismed-motivos.js" \
+  "$ROOT/anamnesismed-narrativa.js" \
+  "$ROOT/anamnesismed-guide.js" \
+  "$ROOT/anamnesismed-pdf.js" \
+  "$ROOT/anamnesismed-app.html" \
+  "$ROOT/anamnesismed-dashboard.html"
+do
+  fname=$(basename "$f")
+  if python3 "$NULLCHECK" "$f" 2>/dev/null; then
+    check "Sem bytes nulos: $fname" "ok"
+  else
+    check "Sem bytes nulos: $fname" "BYTES NULOS DETECTADOS — arquivo corrompido"
+  fi
+done
+rm -f "$NULLCHECK"
 
 # -- Resultado
 echo ""
