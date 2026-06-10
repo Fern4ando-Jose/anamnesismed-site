@@ -223,10 +223,49 @@ function gerarNarrativaAEA_generica(ans, lng, mObj){
   abertura += '.';
   partes.push(abertura);
 
-  // ── Descritivos com rótulo (radio e input não-cronológicos) ───
+  // ── Descritivos: tecer os caracterizadores clássicos do sintoma
+  // (localização, irradiação, caráter, intensidade, duração, frequência)
+  // em UMA frase de prosa clínica; os demais saem como frases rotuladas ───
+  var dLoc=null,dIrr=null,dCar=null,dInt=null,dDurEp=null,dFreq=null,outros=[];
   descr.forEach(function(a){
+    var q = cleanQ(a);
+    if(!dLoc && /localiza/i.test(q)) dLoc=a;
+    else if(!dIrr && /irradia/i.test(q)) dIrr=a;
+    else if(!dCar && /tipo|car[aá]ter|car[aá]cter/i.test(q)) dCar=a;
+    else if(!dInt && /intensidade|intensidad|\beva\b/i.test(q)) dInt=a;
+    else if(!dDurEp && /dura[çc][ãa]o|duraci[óo]n/i.test(q)) dDurEp=a;
+    else if(!dFreq && /frequ[êe]ncia|frecuencia/i.test(q)) dFreq=a;
+    else outros.push(a);
+  });
+
+  var carac = [];
+  if(dLoc) carac.push((pt?'de localização ':'de localización ') + dLoc.resp.toLowerCase());
+  if(dCar) carac.push((pt?'de caráter ':'de carácter ') + dCar.resp.toLowerCase());
+  if(dIrr){
+    var irr = dIrr.resp.toLowerCase();
+    carac.push(/sem irradia|sin irradia/.test(irr)
+      ? (pt?'sem irradiação':'sin irradiación')
+      : (pt?'com irradiação para ':'con irradiación hacia ') + irr);
+  }
+  if(dInt){
+    var iv = dInt.resp.trim();
+    carac.push((pt?'intensidade ':'intensidad ') + (/^\d+$/.test(iv) ? iv + '/10' : iv.toLowerCase()));
+  }
+  if(dDurEp) carac.push((pt?'com duração de ':'con duración de ') + dDurEp.resp.toLowerCase());
+  if(dFreq)  carac.push((pt?'de frequência ':'de frecuencia ') + dFreq.resp.toLowerCase());
+  if(carac.length){
+    partes.push((pt?'Caracteriza o quadro como ':'Caracteriza el cuadro como ')
+              + joinList(carac, pt?' e ':' y ') + '.');
+  }
+
+  outros.forEach(function(a){
     var val = a.resp; if(!val || val==='—') return;
+    if(/medicament/i.test(a.qText||'')){
+      partes.push((pt?'Em uso de: ':'En uso de: ') + val + '.');
+      return;
+    }
     var lbl = shortLabel(a);
+    lbl = lbl.charAt(0).toUpperCase() + lbl.slice(1);
     if(a.type === 'multi'){
       var items = val.split(',').map(function(s){ return s.trim().toLowerCase(); }).filter(Boolean);
       if(items.length) partes.push(lbl + ': ' + joinList(items, pt?' e ':' y ') + '.');
@@ -249,15 +288,21 @@ function gerarNarrativaAEA_generica(ans, lng, mObj){
               + (sim.length > 5 ? (pt?' (e outros).':' (y otros).') : '.'));
   }
 
-  // ── Nega — somente sinais de alarme ou lista curta (≤ 3) ─────
+  // ── Negativos pertinentes — sempre relatados (são clinicamente relevantes);
+  // lista até 6 e resume o restante. Alarme é frase própria, independente. ─────
+  if(nao.length){
+    var negLbls = nao.slice(0,6).map(cleanQ).filter(Boolean);
+    partes.push((pt?'Nega ':'Niega ')
+              + joinList(negLbls, pt?' e ':' y ')
+              + (nao.length > 6
+                  ? (pt?', bem como os demais sintomas pesquisados.':', así como los demás síntomas investigados.')
+                  : '.'));
+  }
   if(alarme_sim){
     partes.push(pt?'⚠ Sinais de alarme presentes — avaliação prioritária indicada.'
                   :'⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
   } else if(alarme_nao){
     partes.push(pt?'Nega sinais de alarme.':'Niega signos de alarma.');
-  } else if(nao.length && nao.length <= 3){
-    partes.push((pt?'Nega ':'Niega ')
-              + joinList(nao.map(cleanQ).filter(Boolean), pt?' e ':' y ') + '.');
   }
 
   // ── Motivo de busca ───────────────────────────────────────────
