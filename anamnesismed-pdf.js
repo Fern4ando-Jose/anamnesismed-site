@@ -252,7 +252,11 @@ function exportPDF(){
   sections.forEach(function(s){
     var tit = lang==='pt'?s.n+'. '+s.tPt:s.n+'. '+s.tEs;
     w.document.write('<h2>'+tit+'</h2>');
-    var txt = s.txt();
+    // Blindagem: uma seção que falhe (ex.: erro no gerador de narrativa) NÃO pode
+    // apagar as demais seções do PDF. Captura o erro e segue.
+    var txt;
+    try { txt = s.txt(); } catch(e){ console.warn('Erro na seção '+s.n+':', e); txt = '—'; }
+    txt = (txt==null) ? '' : String(txt);
     txt.split('\n').forEach(function(line){if(line.trim())w.document.write('<p>'+line+'</p>');});
   });
 
