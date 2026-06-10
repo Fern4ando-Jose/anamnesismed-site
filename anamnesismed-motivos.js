@@ -877,6 +877,287 @@ const RAS_SYSTEMS = [
 // ── GUIDE CONTENT DATA ────────────────────────────────
 
 const GUIDE_CONTENT = {
+'hemorragia-digestiva-alta': {
+  mnemonics: [
+    {kw:'VARIZ x NÃO-VARIZ', name:'Causas de HDA', rows:[
+      ['U','Úlcera péptica','Causa mais comum (gástrica/duodenal) — não varicosa'],
+      ['V','Varizes','Esofágicas/gástricas — hipertensão portal'],
+      ['M','Mallory-Weiss','Laceração após vômitos repetidos'],
+      ['E','Esofagite/gastrite','Erosões, AINEs, álcool'],
+      ['N','Neoplasia','Tumor gástrico/esofágico sangrante'],
+      ['D','Dieulafoy','Artéria submucosa anômala']
+    ]},
+    {kw:'ABCDE', name:'Abordagem inicial do sangramento', rows:[
+      ['A','Airway','Proteger via aérea (rebaixamento/hematêmese maciça)'],
+      ['B','Breathing','Oxigenação'],
+      ['C','Circulation','2 acessos calibrosos, cristaloides, hemoderivados'],
+      ['D','Drugs','IBP EV; vasoativo (terlipressina/octreotide) se suspeita varicosa'],
+      ['E','Endoscopia','Diagnóstica e terapêutica nas primeiras 24h']
+    ]}
+  ],
+  manobras: [
+    {title:'Toque retal',subtitle:'Caracterizar o sangramento',
+     steps:['Realizar toque retal','Avaliar presença de melena ou sangue'],
+     normal:'Fezes de cor normal',abnormal:'Melena (fezes negras, fétidas) → confirma HDA'},
+    {title:'Avaliação hemodinâmica',subtitle:'Estimar a perda',
+     steps:['Aferir PA e FC deitado e em pé (teste ortostático)','Avaliar perfusão, nível de consciência, diurese'],
+     normal:'Sem alterações posturais',abnormal:'Queda de PA / taquicardia postural → perda volêmica significativa'},
+    {title:'Sondagem nasogástrica (seletiva)',subtitle:'Confirmar fonte alta',
+     steps:['Passar SNG e aspirar conteúdo','Avaliar presença de sangue/borra de café'],
+     normal:'Aspirado claro/bilioso',abnormal:'Sangue vivo/borra de café → confirma fonte alta (aspirado limpo não exclui)'}
+  ],
+  sinais: [
+    {name:'Hematêmese',eponym:'HDA',how:'Vômito de sangue vivo ou em "borra de café"',means:'Sangramento acima do ângulo de Treitz'},
+    {name:'Melena',eponym:'HDA',how:'Fezes enegrecidas, pastosas e fétidas',means:'Sangue digerido — geralmente fonte alta'},
+    {name:'Estigmas de hepatopatia',eponym:'HDA varicosa',how:'Ascite, circulação colateral, aranhas vasculares, eritema palmar',means:'Sugere varizes por hipertensão portal'}
+  ],
+  ddx:[
+    ['Úlcera péptica','Epigastralgia, uso de AINE, H. pylori, melena','Estigmas de hepatopatia, hematêmese volumosa em jato'],
+    ['Varizes esofágicas','Hepatopata, hematêmese volumosa, sinais de HP','Dor epigástrica prévia, sem hepatopatia'],
+    ['Mallory-Weiss','Hematêmese após vômitos repetidos/álcool','Sangramento sem história de vômitos prévios'],
+    ['Gastrite erosiva','AINE, álcool, estresse, sangramento em babação','Sangramento arterial pulsátil volumoso'],
+    ['Neoplasia gástrica','Perda de peso, saciedade precoce, anemia crônica','Quadro agudo sem sintomas consumptivos'],
+    ['Lesão de Dieulafoy','Sangramento maciço recorrente sem úlcera evidente','Úlcera/varizes identificadas à EDA'],
+    ['HDA x HDB','Aspirado/SNG com sangue, melena, ureia/creatinina ↑','Sangue vivo retal (hematoquezia) com fonte baixa']
+  ],
+  escalas:[
+    {title:'Escore de Glasgow-Blatchford (triagem)',headers:['Variável','Pontua se'],
+     rows:[['Ureia','Elevada'],['Hemoglobina','Baixa'],['PA sistólica','<110'],['Outros','FC≥100, melena, síncope, hepatopatia, ICC']],
+     note:'Escore 0-1 → baixo risco, possível manejo ambulatorial; ≥7 → alto risco'},
+    {title:'Rockall (pós-endoscopia)',headers:['Componente','Avalia'],
+     rows:[['Idade','Faixa etária'],['Choque','PA/FC'],['Comorbidades','Cardiopatia, hepatopatia, neoplasia'],['Diagnóstico e estigmas','Achados endoscópicos / Forrest']],
+     note:'Estima risco de ressangramento e mortalidade'}
+  ],
+  conduta:{
+    exames:['Hemograma seriado, tipagem e prova cruzada','Coagulograma, ureia/creatinina (ureia ↑ na HDA), eletrólitos','Função hepática se suspeita varicosa','Endoscopia digestiva alta (diagnóstica + terapêutica) em até 24h'],
+    drugs:['Ressuscitação volêmica + hemoderivados (alvo Hb ~7, restritivo)','IBP EV (omeprazol/pantoprazol) em bolus + infusão','HDA varicosa: terlipressina/octreotide + ATB profilático (ceftriaxona)','Suspender anticoagulantes/AINEs; corrigir coagulopatia'],
+    steps:['1. Estabilizar: ABC, 2 acessos calibrosos, reposição volêmica','2. Avaliar gravidade (Glasgow-Blatchford) e transfundir com alvo restritivo','3. IBP EV; se suspeita varicosa, vasoativo + ATB','4. Endoscopia em até 24h (12h se varicosa/instável)','5. Tratamento endoscópico (clipe, escleroterapia, ligadura); cirurgia/radiologia se refratário']
+  }
+},
+'hemorragia-digestiva-baixa': {
+  mnemonics: [
+    {kw:'DRACO', name:'Causas de HDB', rows:[
+      ['D','Diverticular','Causa mais comum de HDB volumosa no adulto'],
+      ['R','Rectal/anorretal','Hemorroidas, fissura — sangue vivo recobrindo as fezes'],
+      ['A','Angiodisplasia','Idoso, sangramento indolor recorrente'],
+      ['C','Colite','Isquêmica, infecciosa, inflamatória (DII)'],
+      ['O','Oncológica','Neoplasia colorretal']
+    ]},
+    {kw:'ALTA x BAIXA', name:'Diferenciar a origem', rows:[
+      ['M','Melena','Sugere fonte alta (sangue digerido)'],
+      ['H','Hematoquezia','Sangue vivo/vinhoso — geralmente fonte baixa'],
+      ['U','Ureia','Relação ureia/creatinina elevada sugere fonte alta'],
+      ['I','Instabilidade','HDB volumosa instável pode ser HDA maciça — excluir com EDA']
+    ]}
+  ],
+  manobras: [
+    {title:'Inspeção anal e toque retal',subtitle:'Fonte anorretal',
+     steps:['Inspecionar a região perianal','Realizar toque retal e anuscopia se disponível'],
+     normal:'Sem lesões, ampola com fezes normais',abnormal:'Hemorroidas/fissura/massa/sangue → orienta a origem'},
+    {title:'Caracterização do sangramento',subtitle:'Cor e relação com as fezes',
+     steps:['Perguntar cor (vivo, vinhoso, escuro)','Relação com as fezes (recobrindo, misturado, no papel)'],
+     normal:'—',abnormal:'Sangue vivo no papel → anorretal baixo; misturado/vinhoso → cólon proximal'},
+    {title:'Avaliação hemodinâmica',subtitle:'Estimar a perda',
+     steps:['PA, FC, sinais de hipoperfusão','Teste ortostático'],
+     normal:'Estável, sem alteração postural',abnormal:'Instabilidade → ressuscitar e excluir HDA maciça'}
+  ],
+  sinais: [
+    {name:'Hematoquezia',eponym:'HDB',how:'Eliminação de sangue vivo/vinhoso pelo reto',means:'Sangramento geralmente abaixo do ângulo de Treitz'},
+    {name:'Sangramento diverticular',eponym:'HDB volumosa',how:'Hematoquezia indolor, súbita, autolimitada na maioria',means:'Causa mais comum de HDB significativa'},
+    {name:'Angiodisplasia',eponym:'HDB do idoso',how:'Sangramento indolor recorrente, associado a estenose aórtica (S. de Heyde)',means:'Lesões vasculares do cólon direito'},
+    {name:'Sangue recobrindo as fezes',eponym:'Doença anorretal',how:'Sangue vivo no papel/sobre as fezes',means:'Hemorroidas ou fissura anal'}
+  ],
+  ddx:[
+    ['Doença diverticular','Hematoquezia volumosa indolor, idoso','Dor anal, sangue só no papel'],
+    ['Doença anorretal (hemorroidas/fissura)','Sangue vivo no papel, dor anal (fissura)','Sangramento volumoso misturado às fezes'],
+    ['Angiodisplasia','Sangramento indolor recorrente, idoso, anemia','Episódio único com dor abdominal'],
+    ['Colite isquêmica','Dor abdominal + sangramento, idoso vasculopata','Sangramento indolor isolado'],
+    ['Doença inflamatória intestinal','Diarreia com sangue/muco, dor, jovem, sintomas crônicos','Sangramento agudo isolado sem diarreia'],
+    ['Neoplasia colorretal','Alteração do hábito, anemia, perda de peso, sangue oculto','Sangramento agudo volumoso sem sintomas consumptivos'],
+    ['HDA maciça simulando HDB','Instável, ureia ↑, aspirado/EDA com sangue','Fonte baixa identificada, hemodinâmica estável']
+  ],
+  escalas:[
+    {title:'Estratificação de risco',headers:['Achado de alto risco','Implicação'],
+     rows:[['Instabilidade hemodinâmica','Ressuscitação + investigação urgente'],['Sangramento contínuo/volumoso','Colonoscopia urgente / angio-TC'],['Idade avançada + comorbidades','Maior morbimortalidade'],['Uso de anticoagulante/antiagregante','Maior gravidade e ressangramento']],
+     note:'A maioria das HDB é autolimitada, mas o alto risco exige investigação rápida'},
+    {title:'Sequência diagnóstica',headers:['Cenário','Exame'],
+     rows:[['Estável','Colonoscopia eletiva (preparo)'],['Sangramento ativo volumoso','Angio-TC / arteriografia'],['Suspeita de fonte alta','EDA'],['Negativo + recorrente','Cápsula endoscópica / cintilografia']],
+     note:'A colonoscopia é o exame de escolha na maioria dos casos estáveis'}
+  ],
+  conduta:{
+    exames:['Hemograma seriado, tipagem e prova cruzada','Coagulograma, ureia/creatinina, eletrólitos','EDA se suspeita de fonte alta','Colonoscopia (diagnóstica e terapêutica)','Angio-TC/arteriografia se sangramento ativo volumoso'],
+    drugs:['Ressuscitação volêmica + hemoderivados conforme necessidade','Correção de coagulopatia; suspender/reverter anticoagulantes quando possível','Tratamento dirigido à causa (endoscópico, embolização ou cirúrgico)'],
+    steps:['1. Avaliar estabilidade e ressuscitar se necessário','2. Excluir HDA maciça (toque retal, SNG/EDA se dúvida)','3. Estável → colonoscopia após preparo','4. Sangramento ativo volumoso → angio-TC/arteriografia com embolização','5. Refratário/recorrente → cirurgia; tratar a causa de base']
+  }
+},
+'doenca-diverticular': {
+  mnemonics: [
+    {kw:'HINCHEY', name:'Classificação da diverticulite complicada', rows:[
+      ['I','Estágio I','Abscesso pericólico/mesentérico localizado'],
+      ['II','Estágio II','Abscesso pélvico/à distância'],
+      ['III','Estágio III','Peritonite purulenta generalizada'],
+      ['IV','Estágio IV','Peritonite fecal (perfuração livre)']
+    ]},
+    {kw:'LOCALIZAÇÃO', name:'Características da diverticulite', rows:[
+      ['S','Sigmoide','Localização mais comum (dor em FIE)'],
+      ['F','Febre','Sinal inflamatório frequente'],
+      ['L','Leucocitose','Resposta inflamatória'],
+      ['A','Alteração do hábito','Constipação/diarreia, alteração do trânsito'],
+      ['C','Complicações','Abscesso, fístula, obstrução, perfuração']
+    ]}
+  ],
+  manobras: [
+    {title:'Palpação da fossa ilíaca esquerda',subtitle:'Diverticulite de sigmoide',
+     steps:['Palpar a FIE','Avaliar dor, massa e defesa'],
+     normal:'Sem dor ou massa',abnormal:'Dor + massa/plastrão em FIE → "apendicite do lado esquerdo" (diverticulite)'},
+    {title:'Pesquisa de irritação peritoneal',subtitle:'Complicação',
+     steps:['Avaliar descompressão dolorosa e defesa','Pesquisar rigidez de parede'],
+     normal:'Abdome depressível, sem peritonismo',abnormal:'Peritonismo difuso → perfuração/peritonite (Hinchey III-IV)'},
+    {title:'Toque retal',subtitle:'Massa/coleção pélvica',
+     steps:['Realizar toque retal','Avaliar dor, abaulamento e sangue'],
+     normal:'Sem abaulamento doloroso',abnormal:'Abaulamento doloroso → abscesso pélvico'}
+  ],
+  sinais: [
+    {name:'Dor em FIE + febre',eponym:'Diverticulite aguda',how:'Dor persistente na fossa ilíaca esquerda com febre',means:'Apresentação clássica da diverticulite de sigmoide'},
+    {name:'Plastrão/massa palpável',eponym:'Diverticulite complicada',how:'Massa inflamatória em FIE',means:'Fleimão/abscesso pericólico'},
+    {name:'Pneumatúria/fecalúria',eponym:'Fístula colovesical',how:'Eliminação de gás/fezes pela urina',means:'Fístula entre cólon e bexiga — complicação tardia'},
+    {name:'Peritonite generalizada',eponym:'Perfuração (Hinchey III-IV)',how:'Abdome em tábua, sepse',means:'Perfuração livre — cirurgia de urgência'}
+  ],
+  ddx:[
+    ['Diverticulite aguda','Dor em FIE, febre, leucocitose, TC com espessamento + densificação','Dor em FID, sem alteração diverticular'],
+    ['Apendicite','Dor migratória para FID, Blumberg +','Dor em FIE no idoso com divertículos'],
+    ['Câncer colorretal','Perda de peso, anemia, alteração do hábito, massa','Quadro inflamatório agudo febril'],
+    ['Colite isquêmica','Dor + sangramento, idoso vasculopata','Febre e plastrão localizado'],
+    ['Cólica renal/ureteral esquerda','Dor lombar irradiada para virilha, hematúria','Febre, dor à palpação abdominal localizada'],
+    ['Doença inflamatória intestinal','Diarreia crônica com sangue, sintomas sistêmicos','Episódio agudo isolado em FIE'],
+    ['Patologia anexial (mulher)','Dor pélvica, alteração menstrual, massa anexial','Dor cólica com divertículos à TC']
+  ],
+  escalas:[
+    {title:'Hinchey modificado',headers:['Estágio','Achado','Conduta usual'],
+     rows:[['0/Ia','Diverticulite não complicada','ATB ± manejo ambulatorial'],['Ib/II','Abscesso','ATB + drenagem percutânea se >4 cm'],['III','Peritonite purulenta','Cirurgia'],['IV','Peritonite fecal','Cirurgia de urgência (Hartmann)']],
+     note:'A classificação orienta diretamente a conduta'},
+    {title:'Não complicada x Complicada',headers:['Característica','Não complicada','Complicada'],
+     rows:[['Abscesso/fístula/perfuração','Ausente','Presente'],['Peritonite','Ausente','Pode haver'],['Tratamento','ATB (às vezes sem ATB em casos leves)','Drenagem/cirurgia'],['Internação','Seletiva','Frequente']],
+     note:'TC de abdome define a presença de complicações'}
+  ],
+  conduta:{
+    exames:['Hemograma, PCR','Função renal, eletrólitos','Urina (diferencial urológico) e beta-hCG em mulheres','TC de abdome e pelve com contraste (exame de escolha)','Colonoscopia ELETIVA após 6 semanas (excluir neoplasia) — evitar na fase aguda'],
+    drugs:['Não complicada: dieta + analgesia; ATB seletivo (amoxicilina-clavulanato ou ciprofloxacino + metronidazol)','Complicada: ATB EV de amplo espectro','Drenagem percutânea de abscessos >4 cm','Analgesia (evitar opioides que reduzem motilidade, quando possível)'],
+    steps:['1. Confirmar com TC e classificar (Hinchey)','2. Não complicada → manejo conservador (ambulatorial em casos leves selecionados)','3. Abscesso → ATB + drenagem percutânea','4. Peritonite (III-IV) → cirurgia de urgência','5. Colonoscopia eletiva após resolução para excluir neoplasia']
+  }
+},
+'doencas-anorretais': {
+  mnemonics: [
+    {kw:'HEMORROIDA', name:'Classificação das hemorroidas internas', rows:[
+      ['I','Grau I','Sangram, não prolapsam'],
+      ['II','Grau II','Prolapsam ao esforço, reduzem espontaneamente'],
+      ['III','Grau III','Prolapsam e exigem redução manual'],
+      ['IV','Grau IV','Prolapso permanente, irredutível']
+    ]},
+    {kw:'DOR x SANGUE', name:'Diferenciar as causas', rows:[
+      ['F','Fissura','Dor anal intensa "em lâmina" ao evacuar + sangue vivo no papel'],
+      ['H','Hemorroida','Sangramento indolor vivo; dor só se trombosada'],
+      ['A','Abscesso','Dor pulsátil contínua + febre + abaulamento perianal'],
+      ['F','Fístula','Drenagem purulenta crônica por orifício perianal'],
+      ['N','Neoplasia','Sangramento + massa + alteração do hábito — sempre excluir']
+    ]}
+  ],
+  manobras: [
+    {title:'Inspeção perianal',subtitle:'Avaliação inicial',
+     steps:['Posição de Sims ou genupeitoral','Inspecionar com afastamento das nádegas','Pedir esforço evacuatório para evidenciar prolapso'],
+     normal:'Pele perianal íntegra, sem lesões',abnormal:'Plicoma, mariscos, prolapso, orifício fistuloso, fissura na linha média posterior'},
+    {title:'Toque retal',subtitle:'Massas e tônus',
+     steps:['Toque retal cuidadoso (evitar se fissura muito dolorosa)','Avaliar tônus, massas, dor e sangue na luva'],
+     normal:'Tônus normal, sem massas, sem sangue',abnormal:'Massa endurecida → neoplasia; dor intensa → fissura/abscesso'},
+    {title:'Anuscopia',subtitle:'Visualização do canal anal',
+     steps:['Introduzir o anuscópio lubrificado','Inspecionar mamilos hemorroidários e mucosa'],
+     normal:'Mucosa normal',abnormal:'Hemorroidas internas, fissura, lesões da mucosa'}
+  ],
+  sinais: [
+    {name:'Sangramento indolor vivo',eponym:'Hemorroidas',how:'Sangue vivo recobrindo as fezes/no papel, indolor',means:'Hemorroidas internas (sempre excluir neoplasia)'},
+    {name:'Dor anal "em lâmina"',eponym:'Fissura anal',how:'Dor intensa ao evacuar + sangramento vivo + espasmo esfincteriano',means:'Fissura anal (linha média posterior)'},
+    {name:'Tríade do abscesso',eponym:'Abscesso perianal',how:'Dor contínua + abaulamento flutuante + febre',means:'Abscesso anorretal — drenagem cirúrgica'},
+    {name:'Orifício com drenagem crônica',eponym:'Fístula perianal',how:'Saída de secreção purulenta por orifício cutâneo perianal',means:'Fístula (frequentemente sequela de abscesso prévio)'}
+  ],
+  ddx:[
+    ['Hemorroidas','Sangramento vivo indolor, prolapso, dor só se trombose','Dor intensa ao evacuar (fissura)'],
+    ['Fissura anal','Dor "em lâmina" ao evacuar, sangue vivo, espasmo esfincteriano','Sangramento indolor; massa endurecida'],
+    ['Abscesso perianal','Dor pulsátil contínua, febre, abaulamento flutuante','Dor apenas à evacuação, sem febre'],
+    ['Fístula perianal','Drenagem purulenta crônica por orifício perianal','Quadro agudo único sem orifício'],
+    ['Câncer anorretal','Massa endurecida, alteração do hábito, perda de peso, sangramento persistente','Lesão benigna típica que regride com tratamento'],
+    ['Plicoma/marisco','Pele redundante indolor, sem sangramento ativo','Sangramento ou dor significativos'],
+    ['Prolapso retal','Protrusão circunferencial de mucosa retal','Prolapso apenas dos mamilos hemorroidários']
+  ],
+  escalas:[
+    {title:'Conduta por grau (hemorroidas internas)',headers:['Grau','Tratamento'],
+     rows:[['I-II','Medidas higienodietéticas, fibras, banho de assento; ligadura elástica'],['III','Ligadura elástica / hemorroidectomia conforme sintomas'],['IV','Hemorroidectomia cirúrgica'],['Trombose','Analgesia; trombectomia se <72h e muito dolorosa']],
+     note:'A maioria responde a medidas conservadoras e aumento de fibras'},
+    {title:'Sinais de alarme anorretal',headers:['Achado','Significado'],
+     rows:[['Massa endurecida/irregular','Suspeita de neoplasia'],['Alteração persistente do hábito intestinal','Investigar cólon'],['Perda de peso/anemia','Doença orgânica/neoplásica'],['Sangramento que não cessa com tratamento','Colonoscopia obrigatória']],
+     note:'Nunca atribuir sangramento a hemorroidas sem excluir neoplasia em pacientes de risco'}
+  ],
+  conduta:{
+    exames:['Diagnóstico essencialmente clínico (inspeção + toque + anuscopia)','Colonoscopia se sinais de alarme, idade >45-50 anos ou sangramento persistente','Hemograma se sangramento crônico (anemia)','RM de pelve para mapeamento de fístulas complexas'],
+    drugs:['Dieta rica em fibras + hidratação + banhos de assento mornos','Laxantes/formadores de bolo fecal','Analgésicos tópicos/sistêmicos; pomadas (anestésico ± corticoide) por curto período','Fissura: pomada de nitrato/bloqueador de canal de cálcio para relaxar o esfíncter'],
+    steps:['1. Caracterizar a queixa (dor x sangramento) e examinar (inspeção, toque, anuscopia)','2. Medidas higienodietéticas como base do tratamento','3. Hemorroidas: tratamento por grau (ligadura/cirurgia)','4. Abscesso → drenagem cirúrgica; fístula → tratamento cirúrgico','5. Excluir neoplasia com colonoscopia nos casos de risco/alarme']
+  }
+},
+'trauma-abdominal': {
+  mnemonics: [
+    {kw:'ABCDE', name:'Atendimento inicial ao trauma (ATLS)', rows:[
+      ['A','Airway','Via aérea + proteção da coluna cervical'],
+      ['B','Breathing','Ventilação e oxigenação'],
+      ['C','Circulation','Controle de hemorragia + reposição; FAST'],
+      ['D','Disability','Avaliação neurológica (Glasgow, pupilas)'],
+      ['E','Exposure','Exposição completa + controle de hipotermia']
+    ]},
+    {kw:'FECHADO x PENETRANTE', name:'Mecanismos de trauma', rows:[
+      ['F','Fechado/contuso','Baço e fígado são os órgãos mais lesados'],
+      ['P','Penetrante (arma branca)','Lesão por trajeto; fígado e delgado frequentes'],
+      ['A','Arma de fogo','Alta energia, múltiplas lesões — laparotomia frequente'],
+      ['V','Víscera oca','Risco de peritonite tardia'],
+      ['R','Retroperitônio','Lesões de pâncreas/duodeno/rim podem ser ocultas']
+    ]}
+  ],
+  manobras: [
+    {title:'FAST (USG no trauma)',subtitle:'Pesquisa de líquido livre',
+     steps:['Avaliar 4 janelas: hepatorrenal (Morrison), esplenorrenal, pélvica e pericárdica','Pesquisar líquido livre (sangue)'],
+     normal:'Sem líquido livre',abnormal:'Líquido livre → hemoperitônio; FAST + em instável → laparotomia'},
+    {title:'Pesquisa de irritação peritoneal',subtitle:'Lesão de víscera',
+     steps:['Palpar o abdome em todos os quadrantes','Avaliar defesa, descompressão e rigidez'],
+     normal:'Abdome depressível, indolor',abnormal:'Peritonismo → lesão visceral/hemoperitônio — avaliação cirúrgica'},
+    {title:'Inspeção de marcas e estabilidade pélvica',subtitle:'Mecanismo e gravidade',
+     steps:['Pesquisar sinal do cinto de segurança, escoriações, evisceração','Avaliar estabilidade da pelve (uma única vez, com cautela)'],
+     normal:'Sem marcas, pelve estável',abnormal:'Sinal do cinto/equimose → alto risco de lesão de víscera oca/mesentério'}
+  ],
+  sinais: [
+    {name:'Sinal do cinto de segurança',eponym:'Trauma contuso',how:'Equimose linear transversal no abdome',means:'Alto risco de lesão de víscera oca, mesentério e coluna lombar'},
+    {name:'FAST positivo',eponym:'Hemoperitônio',how:'Líquido livre à USG nas janelas peritoneais',means:'Sangramento intra-abdominal — guia a laparotomia no instável'},
+    {name:'Sinal de Kehr',eponym:'Lesão esplênica',how:'Dor referida no ombro esquerdo (irritação diafragmática)',means:'Sugere ruptura/hematoma esplênico'},
+    {name:'Sinal de Grey-Turner/Cullen',eponym:'Hemorragia retroperitoneal',how:'Equimose em flancos/periumbilical (tardia)',means:'Sangramento retroperitoneal (pâncreas, grandes vasos, rim)'}
+  ],
+  ddx:[
+    ['Lesão de órgão sólido (baço/fígado)','Trauma contuso, FAST +, instabilidade, dor referida','Sem líquido livre; abdome inocente e estável'],
+    ['Lesão de víscera oca','Sinal do cinto, peritonite que evolui em horas, pneumoperitônio','FAST + por sangue de órgão sólido, sem ar livre'],
+    ['Hematoma retroperitoneal','Trauma de alta energia, instabilidade sem líquido intraperitoneal','Sangramento intraperitoneal evidente'],
+    ['Lesão diafragmática','Trauma penetrante toracoabdominal, herniação à imagem','Trauma isolado de andar inferior'],
+    ['Trauma de parede sem lesão visceral','Dor localizada na parede, exames normais','Peritonismo, FAST +, instabilidade'],
+    ['Lesão pélvica/urológica','Fratura de pelve, hematúria, instabilidade','Trauma abdominal alto isolado']
+  ],
+  escalas:[
+    {title:'Decisão pelo estado hemodinâmico',headers:['Cenário','Conduta'],
+     rows:[['Instável + FAST +','Laparotomia de urgência'],['Instável + FAST -','Buscar outra fonte de choque'],['Estável + suspeita','TC de abdome com contraste'],['Penetrante com evisceração/peritonite/instabilidade','Laparotomia']],
+     note:'A estabilidade hemodinâmica é o principal determinante da conduta'},
+    {title:'Indicações de laparotomia',headers:['Indicação','—'],
+     rows:[['Instabilidade com FAST/LPD positivo','Hemoperitônio'],['Peritonite','Lesão visceral'],['Pneumoperitônio','Perfuração de víscera oca'],['Evisceração / empalamento','Lesão penetrante'],['Sangramento por SNG/reto significativo','Lesão de TGI']],
+     note:'Pacientes estáveis selecionados podem ser manejados de forma não operatória com TC e observação'}
+  ],
+  conduta:{
+    exames:['FAST à beira do leito','Hemograma, tipagem e prova cruzada, lactato/gasometria','Coagulograma, função renal, amilase/lipase','Radiografias conforme ATLS (tórax, pelve)','TC de abdome e pelve com contraste no paciente ESTÁVEL'],
+    drugs:['Reposição volêmica + hemoderivados (protocolo de transfusão maciça se necessário)','Ácido tranexâmico precoce no trauma grave','Analgesia','Antibiótico e profilaxia antitetânica em trauma penetrante'],
+    steps:['1. Atendimento ATLS (ABCDE) com controle de hemorragia','2. FAST precoce no instável','3. Instável + FAST + → laparotomia de urgência','4. Estável → TC de abdome e considerar manejo não operatório','5. Peritonite, pneumoperitônio, evisceração ou sangramento maciço → cirurgia']
+  }
+},
 'colecistite-colelitiase': {
   mnemonics: [
     {kw:'5 F', name:'Fatores de risco para colelitíase', rows:[
