@@ -17,6 +17,161 @@
 
 var GUIDE_ES = {
 
+'artralgia': {
+  mnemonics:[
+    { name:'Mnemónico GASA — principales causas de monoartritis aguda', rows:[
+      ['Gota / pseudogota (cristales)','Inicio súbito, dolor intenso, frecuentemente en 1ª MTF (podagra) o rodilla — confirmar con artrocentesis y búsqueda de cristales'],
+      ['Artritis Séptica','Fiebre + monoartritis aguda + derrame importante — emergencia, requiere artrocentesis y antibioticoterapia inmediatas'],
+      ['Sinovitis por trauma/hemartrosis','Antecedente de trauma, uso de anticoagulantes — evaluar lesión estructural/sangrado intraarticular'],
+      ['Artritis reactiva/espondiloartritis (presentación monoarticular)','Infección previa (gastrointestinal/urinaria/ITS), asociada a entesitis, uveítis o lesiones cutáneas']
+    ]},
+    { name:'Mnemónico SOAP-BRAIN — causas de poliartritis (adaptado)', rows:[
+      ['LES (Lupus Eritematoso Sistémico)','Poliartritis simétrica no erosiva, rash malar, fotosensibilidad, predominio en mujeres jóvenes'],
+      ['Osteoartritis','Patrón mecánico, manos (IFD/IFP), rodillas y caderas, ancianos, rigidez matinal corta (<30min)'],
+      ['Artritis Reumatoide','Poliartritis simétrica de pequeñas articulaciones (manos/muñecas), rigidez matinal >1h, FR/anti-CCP positivos'],
+      ['Psoriásica (Artritis)','Asociada a psoriasis cutánea/ungueal, dactilitis ("dedo en salchicha"), entesitis, patrón asimétrico'],
+      ['Bacteriana/viral (artritis infecciosas y reactivas)','Cuadro agudo, fiebre, relación temporal con infección previa'],
+      ['Reumática (Fiebre Reumática)','Poliartritis migratoria tras faringitis estreptocócica, principalmente en niños/jóvenes'],
+      ['Artritis gotosa/cristales (poliarticular crónica)','Tofos, antecedente de hiperuricemia, crisis recurrentes'],
+      ['Inflamatoria — espondiloartritis (axial/periférica)','Dolor inflamatorio, rigidez matinal prolongada, sacroileítis, uveítis, psoriasis, enfermedad inflamatoria intestinal asociada'],
+      ['Neoplásica (síndrome paraneoplásica)','Poliartritis de inicio reciente en ancianos, pérdida de peso, síntomas sistémicos — investigar neoplasia oculta']
+    ]}
+  ],
+  manobras:[
+    { title:'Signo del peloteo rotuliano (choque rotuliano)', subtitle:'Evaluación de derrame articular en la rodilla',
+      steps:['Con el paciente en decúbito dorsal y rodilla extendida, comprima el receso suprarrotuliano con una mano para desplazar el líquido','Con los dedos de la otra mano, presione la rótula contra el fémur de forma rápida y firme'],
+      normal:'Rótula en contacto directo con el fémur, sin sensación de "hundirse y volver"', abnormal:'Sensación de que la rótula "flota" y choca contra el fémur (peloteo positivo) → indica derrame articular significativo en la rodilla' },
+    { title:'Evaluación de la amplitud de movimiento (ADM) articular', subtitle:'Identificación de limitación funcional y dolor al movimiento',
+      steps:['Solicite movimientos activos (el propio paciente los realiza) y luego pasivos (el examinador los moviliza) de cada articulación sospechosa','Compare la amplitud y la presencia de dolor entre ambos lados','Observe crepitaciones, bloqueos o inestabilidad durante el movimiento'],
+      normal:'ADM completa, simétrica, sin dolor ni crepitación', abnormal:'Limitación de la ADM, dolor al movimiento pasivo y activo, crepitación o bloqueo articular → sugiere proceso inflamatorio, degenerativo o mecánico intraarticular' },
+    { title:'Palpación de entesitis y puntos dolorosos periarticulares', subtitle:'Evaluación de inserciones tendinosas/ligamentarias (entesitis)',
+      steps:['Palpe los puntos de inserción tendinosa más comúnmente afectados (tendón de Aquiles, fascia plantar, epicóndilos, trocánter mayor)','Evalúe dolor a la palpación localizada y edema asociado'],
+      normal:'Sin dolor a la palpación de las entesis', abnormal:'Dolor localizado a la palpación de entesis (entesitis) → hallazgo sugestivo de espondiloartritis (psoriásica, axial, reactiva)' },
+    { title:'Inspección y palpación articular general', subtitle:'Evaluación de signos inflamatorios y deformidades',
+      steps:['Inspeccione simetría, edema, deformidades, eritema y atrofia muscular adyacente','Palpe la articulación evaluando calor local, derrame, engrosamiento sinovial y dolor a la compresión'],
+      normal:'Articulaciones sin edema, calor, eritema ni deformidad; temperatura local similar a la piel adyacente', abnormal:'Calor, edema, eritema y dolor a la palpación (sinovitis activa) o deformidades estructurales (sugieren enfermedad crónica/erosiva)' }
+  ],
+  sinais:[
+    { name:'Tofos gotosos', eponym:'Depósitos de cristales de urato', how:'Nódulos endurecidos, generalmente en hélix de la oreja, codos, manos y alrededor de articulaciones, que pueden drenar material blanquecino/pastoso', means:'Indican gota tofácea crónica — depósito de cristales de urato monosódico en tejidos blandos, asociado a hiperuricemia de larga data' },
+    { name:'Nódulos reumatoides', eponym:'Hallazgo extraarticular de la Artritis Reumatoide', how:'Nódulos subcutáneos firmes e indoloros, comúnmente en superficies extensoras (codos, antebrazos)', means:'Marcador de enfermedad más grave/erosiva y de peor pronóstico en la artritis reumatoide, generalmente asociados a FR positivo' },
+    { name:'Dactilitis ("dedo en salchicha")', eponym:'Hallazgo característico de la artritis psoriásica', how:'Edema difuso de todo el dedo (no solo de las articulaciones), confiriendo aspecto de "salchicha"', means:'Resulta de la inflamación simultánea de articulaciones y tendones (tenosinovitis) — fuertemente sugestivo de espondiloartritis, especialmente psoriásica' },
+    { name:'Deformidades articulares características (manos)', eponym:'Estigmas de enfermedad articular crónica', how:'Desviación cubital de los dedos y deformidades en "cuello de cisne"/"boutonnière" (AR); nódulos de Heberden (IFD) y Bouchard (IFP) en la osteoartritis', means:'Indican enfermedad articular crónica/establecida — el patrón de deformidad ayuda a diferenciar artritis reumatoide de osteoartritis' }
+  ],
+  ddx:[
+    ['Gota (artritis por cristales de urato)','Monoartritis aguda de inicio súbito y dolor intenso, frecuentemente en 1ª MTF (podagra), hiperuricemia, tofos en casos crónicos, buena respuesta a antiinflamatorios','Patrón poliarticular simétrico crónico desde el inicio, ausencia de cristales en la artrocentesis'],
+    ['Artritis Reumatoide','Poliartritis simétrica de pequeñas articulaciones (manos y muñecas), rigidez matinal prolongada (>1h), FR/anti-CCP positivos, nódulos reumatoides, evolución crónica y erosiva','Patrón monoarticular agudo y febril, o patrón asimétrico con entesitis/dactilitis (más sugestivo de espondiloartritis)'],
+    ['Artritis Séptica','Monoartritis aguda, fiebre, malestar importante, derrame articular voluminoso y muy doloroso, factor de riesgo para bacteriemia (uso de drogas IV, inmunosupresión, prótesis articular) — emergencia médica','Cuadro crónico y afebril, múltiples articulaciones afectadas de forma simétrica e indolente'],
+    ['Osteoartritis (artrosis)','Dolor de patrón mecánico (empeora con el uso, mejora con el reposo), rigidez matinal corta (<30min), afecta articulaciones de carga (rodillas, caderas) y manos (IFD/IFP), edad avanzada, crepitación a la movilización','Dolor de patrón inflamatorio con rigidez matinal prolongada, signos inflamatorios importantes (calor, eritema, edema significativo)'],
+    ['Espondiloartritis (psoriásica, axial, reactiva, enteropática)','Dolor inflamatorio, rigidez matinal prolongada, entesitis, dactilitis, sacroileítis, uveítis, psoriasis o enfermedad inflamatoria intestinal asociadas, generalmente en adultos jóvenes, HLA-B27 frecuentemente positivo','Patrón puramente mecánico, simetría de pequeñas articulaciones sin entesitis, ausencia de manifestaciones extraarticulares']
+  ],
+  escalas:[
+    { title:'Diferenciación inicial — patrón inflamatorio x mecánico', headers:['Característica','Patrón inflamatorio','Patrón mecánico'],
+      rows:[['Rigidez matinal','Prolongada (>1 hora)','Corta (<30 minutos)'],['Relación con uso/reposo','Mejora con el movimiento, empeora en reposo/de noche','Empeora con el uso/esfuerzo, mejora con el reposo'],['Signos inflamatorios locales','Calor, rubor, edema, derrame prominentes','Discretos o ausentes, predominio de crepitación'],['Síntomas sistémicos','Frecuentes (fiebre, fatiga, pérdida de peso, rash)','Generalmente ausentes']],
+      note:'Esta diferenciación inicial orienta la priorización diagnóstica — el patrón inflamatorio dirige la investigación hacia enfermedades autoinmunes/infecciosas/microcristalinas, mientras que el patrón mecánico sugiere causas degenerativas/estructurales' }
+  ],
+  conduta:{
+    exames:['Artrocentesis (punción articular) — mandatoria en toda monoartritis aguda febril/con derrame para análisis del líquido sinovial (celularidad, cristales, Gram y cultivo) — excluye artritis séptica y confirma gota/pseudogota','Hemograma completo, VSG y PCR — evaluar actividad inflamatoria/infecciosa sistémica','Ácido úrico sérico — ayuda en la sospecha de gota (recordando que puede estar normal durante la crisis aguda)','Factor reumatoide (FR) y anti-CCP — investigación de artritis reumatoide','FAN y otros autoanticuerpos — según sospecha de enfermedad autoinmune sistémica (lupus y correlacionados)','Radiografía de las articulaciones afectadas — evaluar erosiones, reducción del espacio articular, calcificaciones (condrocalcinosis) y alteraciones estructurales crónicas'],
+    drugs:['Antiinflamatorios no esteroidales (AINEs) — primera línea sintomática en crisis agudas (gota, patrón mecánico), respetando contraindicaciones','Colchicina o corticoide (oral/intraarticular) — alternativas en el manejo de la crisis aguda de gota','Analgésicos simples (paracetamol/dipirona) para control sintomático general del dolor','Artritis séptica sospechada/confirmada → antibioticoterapia empírica de amplio espectro IV tras tomar el cultivo, con evaluación para drenaje articular — no retrasar el inicio','Enfermedad autoinmune confirmada (AR, lupus, espondiloartritis) → derivación a reumatología para terapia modificadora del curso de la enfermedad (DMARDs, biológicos)'],
+    steps:['1. Caracterizar el patrón (mono/oligo/poliarticular, simetría, ritmo inflamatorio x mecánico) y signos de alarma (fiebre, derrame importante, signos sistémicos)','2. Monoartritis aguda febril → considerar artritis séptica como emergencia: artrocentesis inmediata, hemocultivos e inicio precoz de antibioticoterapia según evaluación especializada','3. Sospecha de gota/pseudogota → artrocentesis con búsqueda de cristales (patrón oro) siempre que sea posible, además de ácido úrico sérico','4. Patrón poliarticular simétrico crónico con rigidez matinal prolongada → solicitar FR, anti-CCP, FAN, pruebas inflamatorias y radiografías, con derivación a reumatología','5. Patrón mecánico en paciente anciano, sin signos inflamatorios importantes → investigación radiográfica de osteoartritis y manejo conservador (analgesia, fisioterapia, control de peso)','6. Presencia de manifestaciones extraarticulares (rash, uveítis, lesiones orales/genitales, psoriasis, síntomas sistémicos) → ampliar la investigación hacia enfermedad autoinmune/espondiloartritis sistémica']
+  }
+},
+'ictericia': {
+  mnemonics:[
+    { name:'Clasificación topográfica de la ictericia', rows:[
+      ['Aumento de bilirrubina indirecta por hemólisis o eritropoyesis ineficaz','Anemia, esplenomegalia, orina oscura pero heces normales, sin prurito, hemólisis (reticulocitosis, LDH↑, haptoglobina↓)','Prehepática (hemolítica)'],
+      ['Lesión de los hepatocitos que afecta la captación/conjugación/excreción de la bilirrubina','Transaminasas muy elevadas, malestar, anorexia, hepatomegalia dolorosa, antecedente de hepatitis/etilismo/hepatotóxicos','Hepática (hepatocelular)'],
+      ['Obstrucción del flujo biliar (cálculo, neoplasia, estenosis)','Coluria + acolia fecal + prurito intenso, dolor en HCD, FA y GGT muy elevadas, posible signo de Courvoisier','Posthepática (colestásica/obstructiva)']
+    ]}
+  ],
+  manobras:[
+    { title:'Signo de Murphy', subtitle:'Evaluación de colecistitis aguda',
+      steps:['Coloque los dedos bajo el reborde costal derecho, en la línea hemiclavicular','Pida al paciente inspirar profundamente','Observe si hay interrupción súbita de la inspiración por dolor (Murphy positivo)'],
+      normal:'El paciente completa la inspiración sin dolor', abnormal:'Interrupción de la inspiración por dolor a la palpación del punto cístico (Murphy+) → sugiere colecistitis aguda' },
+    { title:'Palpación hepática y esplénica', subtitle:'Evaluación de hepatomegalia/esplenomegalia',
+      steps:['Palpe el reborde hepático desde la fosa ilíaca derecha, subiendo durante la espiración','Evalúe consistencia, superficie, borde y dolor a la palpación del hígado','Palpe el hipocondrio izquierdo en busca de bazo palpable (esplenomegalia)'],
+      normal:'Hígado no palpable o borde liso, indoloro, hasta 1-2cm del reborde costal; bazo no palpable', abnormal:'Hepatomegalia de borde romo/irregular (sugiere hepatopatía crónica/neoplasia) o esplenomegalia (sugiere causa hemolítica/hipertensión portal)' },
+    { title:'Búsqueda del signo de Courvoisier', subtitle:'Vesícula biliar palpable e indolora asociada a ictericia',
+      steps:['Palpe el hipocondrio derecho en busca de masa redondeada compatible con vesícula biliar distendida','Evalúe si hay dolor asociado a la palpación'],
+      normal:'Vesícula no palpable', abnormal:'Vesícula biliar palpable e indolora en paciente ictérico (Courvoisier+) → sugiere obstrucción biliar maligna (ej.: neoplasia de cabeza de páncreas), ya que los cálculos suelen causar vesícula fibrótica no distensible' },
+    { title:'Búsqueda de ascitis — onda ascítica y matidez desplazable', subtitle:'Evaluación de líquido libre en la cavidad abdominal',
+      steps:['Onda ascítica: percuta un flanco mientras un asistente comprime la línea media y palpe la transmisión de la onda en el flanco opuesto','Matidez desplazable: percuta del centro (timpánico) hacia los flancos (mate) y repita tras cambiar de decúbito, observando el desplazamiento de la matidez'],
+      normal:'Sin transmisión de onda líquida; sin desplazamiento de la matidez con el cambio de posición', abnormal:'Onda líquida transmitida (onda ascítica+) o matidez que se desplaza con la posición (matidez desplazable+) → sugiere ascitis, común en hepatopatía crónica avanzada' }
+  ],
+  sinais:[
+    { name:'Ictericia escleral', eponym:'Signo precoz de hiperbilirrubinemia', how:'Coloración amarillenta de la esclera, generalmente perceptible con bilirrubina total >2-3mg/dL', means:'Indica hiperbilirrubinemia — frecuentemente el primer signo clínico visible de ictericia, antes de la piel' },
+    { name:'Arañas vasculares (spiders/telangiectasias)', eponym:'Estigma de hepatopatía crónica', how:'Lesiones vasculares puntiformes con ramificaciones radiales, que palidecen a la compresión central, generalmente en tórax y cara', means:'Sugieren hepatopatía crónica e hiperestrogenismo (metabolismo hepático alterado de los estrógenos)' },
+    { name:'Hepatomegalia', eponym:'Hallazgo de examen físico hepatobiliar', how:'Hígado palpable más allá del reborde costal derecho, con evaluación de borde, superficie y consistencia', means:'Puede indicar congestión (insuficiencia cardíaca), infiltración (esteatosis, neoplasia) o proceso inflamatorio/infeccioso hepático' },
+    { name:'Signo de Courvoisier', eponym:'Ludwig Georg Courvoisier', how:'Vesícula biliar palpable e indolora en paciente ictérico', means:'Sugiere obstrucción biliar de origen neoplásico (ej.: cáncer de cabeza de páncreas o vía biliar) — "una vesícula de Courvoisier rara vez es causada por un cálculo"' }
+  ],
+  ddx:[
+    ['Ictericia hemolítica (prehepática)','Predominio de bilirrubina indirecta, anemia, esplenomegalia, orina oscura pero heces de color normal, ausencia de prurito, reticulocitosis y LDH elevado','Predominio de bilirrubina directa, transaminasas o enzimas canaliculares muy elevadas, acolia fecal'],
+    ['Ictericia hepatocelular (hepatitis/cirrosis)','Transaminasas (TGO/TGP) marcadamente elevadas, malestar, anorexia, hepatomegalia dolorosa, antecedente de etilismo/hepatotóxicos/hepatitis viral, signos de hepatopatía crónica (arañas vasculares, ascitis)','Predominio de FA/GGT con transaminasas poco alteradas, prurito intenso y acolia, sugiriendo causa colestásica'],
+    ['Ictericia colestásica/obstructiva (coledocolitiasis, neoplasia de vía biliar/páncreas)','Coluria + acolia fecal + prurito importante, dolor en HCD o epigastrio, fosfatasa alcalina y GGT muy elevadas, posible signo de Courvoisier (obstrucción neoplásica) o fiebre/escalofríos (colangitis)','Patrón predominante de elevación de transaminasas sin colestasis de laboratorio, ausencia de dilatación de vías biliares en la imagen']
+  ],
+  escalas:[
+    { title:'Patrón bioquímico orientador según el tipo de ictericia', headers:['Tipo','Patrón de laboratorio predominante'],
+      rows:[['Prehepática (hemolítica)','Bilirrubina indirecta ↑↑, transaminasas normales, FA/GGT normales, reticulocitos y LDH elevados, haptoglobina baja'],['Hepatocelular','Transaminasas (TGO/TGP) muy elevadas, bilirrubina directa e indirecta elevadas, FA/GGT discretamente elevadas'],['Colestásica/obstructiva','Fosfatasa alcalina y GGT muy elevadas, bilirrubina directa predominante, transaminasas discretamente alteradas, USG con posible dilatación de vías biliares']],
+      note:'La combinación de historia clínica, examen físico y el patrón bioquímico (transaminasas x enzimas canaliculares x fracciones de bilirrubina) orienta la investigación de imagen dirigida' }
+  ],
+  conduta:{
+    exames:['Bilirrubinas totales y fracciones (directa/indirecta) — define el predominio y orienta la investigación','Transaminasas (TGO/TGP), fosfatasa alcalina (FA) y gamma-GT — diferencian el patrón hepatocelular del colestásico','Hemograma completo, reticulocitos, LDH y haptoglobina — si sospecha de causa hemolítica','Serologías virales (hepatitis A, B, C) según factores de riesgo y cuadro clínico','Ultrasonografía abdominal — examen inicial de elección para evaluar vías biliares, vesícula, hígado y páncreas, e identificar dilatación de vía biliar (sugestiva de obstrucción)','Tomografía/colangiorresonancia y endoscopia (CPRE) según hallazgos — para casos con sospecha de obstrucción biliar no aclarada por la USG'],
+    drugs:['Tratamiento dirigido a la causa de base — no hay tratamiento sintomático específico para la ictericia en sí','Suspender inmediatamente medicamentos/sustancias potencialmente hepatotóxicas identificadas en la anamnesis','Colestiramina o antihistamínicos pueden considerarse para alivio sintomático del prurito colestásico, según evaluación especializada','Colangitis aguda (fiebre + ictericia + dolor en HCD — tríada de Charcot) → antibioticoterapia de amplio espectro y evaluación para drenaje biliar de urgencia'],
+    steps:['1. Caracterizar el patrón temporal, presencia de coluria/acolia/prurito y signos de alarma (fiebre, dolor importante, pérdida de peso, masa palpable)','2. Examen físico dirigido — buscar hepatomegalia, esplenomegalia, signo de Murphy, signo de Courvoisier y ascitis','3. Solicitar bilirrubinas con fracciones, transaminasas, FA/GGT y hemograma para clasificar el patrón (prehepático, hepatocelular o colestásico)','4. Ultrasonografía abdominal para evaluar dilatación de vías biliares, lesiones hepáticas/pancreáticas y vesícula','5. Signos de colangitis (fiebre + ictericia + dolor) u obstrucción biliar identificada → derivación urgente para evaluación quirúrgica/endoscópica (CPRE)','6. Sospecha de hepatitis aguda/crónica o hepatopatía avanzada → derivación a hepatología/gastroenterología para investigación etiológica completa']
+  }
+},
+'convulsao-sincope': {
+  mnemonics:[
+    { name:'Diferenciación entre síncope y crisis convulsiva', rows:[
+      ['Síncope: mareo, oscurecimiento visual, sudoración, náusea (generalmente presente). Convulsión: aura específica (olfativa, visual, sensación epigástrica) o ausencia de aviso','','Pródromo'],
+      ['Síncope: típicamente en ortostatismo, calor, dolor, ayuno, esfuerzo (cardíaca). Convulsión: puede ocurrir en cualquier posición, incluso durante el sueño','','Postura/circunstancia'],
+      ['Síncope: puede haber breves sacudidas mioclónicas (síncope convulsivo). Convulsión: movimientos tónico-clónicos rítmicos y prolongados, más sugestivos de crisis epiléptica','','Movimientos'],
+      ['Más sugestiva de convulsión cuando es lateral; la mordedura en la punta de la lengua es inespecífica y puede ocurrir en síncope','','Mordedura de lengua'],
+      ['Puede ocurrir en ambas, pero es más característica y frecuente en las crisis convulsivas','','Relajación esfinteriana'],
+      ['Síncope: recuperación rápida y completa de la conciencia. Convulsión: el período posictal de confusión, somnolencia y desorientación prolongado es altamente sugestivo de crisis epiléptica','','Posevento']
+    ]},
+    { name:'Clasificación etiológica del síncope (cardíaco / reflejo / ortostático)', rows:[
+      ['Arritmias (bradi/taquiarritmias), estenosis aórtica, miocardiopatía hipertrófica, embolia pulmonar','Síncope durante esfuerzo físico, sin pródromo, con palpitaciones o dolor torácico previo, antecedente de cardiopatía/muerte súbita familiar — "el síncope de esfuerzo es cardíaco hasta demostrar lo contrario"','Cardíaca (la más peligrosa)'],
+      ['Estímulo vagal — dolor, emoción, calor, visión de sangre, micción, tos, defecación','Pródromo típico (sudoración, náusea, oscurecimiento visual), recuperación rápida, generalmente en jóvenes sin cardiopatía estructural','Refleja (neuromediada/vasovagal)'],
+      ['Hipovolemia, disautonomía, medicamentos antihipertensivos/diuréticos, reposo prolongado en cama','Ocurre al levantarse rápidamente, caída documentada de la PA en la maniobra ortostática, ancianos polimedicados','Ortostática']
+    ]}
+  ],
+  manobras:[
+    { title:'Medición de la presión arterial en ortostatismo (prueba ortostática)', subtitle:'Evaluación de hipotensión ortostática',
+      steps:['Mida la PA y FC con el paciente acostado, tras 5 minutos de reposo','Solicite que se levante y mida nuevamente la PA y FC tras 1 y 3 minutos de pie','Compare los valores y busque síntomas (mareo, oscurecimiento visual)'],
+      normal:'Caída de la PA sistólica <20mmHg y de la diastólica <10mmHg, sin síntomas', abnormal:'Caída de la PA sistólica ≥20mmHg o diastólica ≥10mmHg, con síntomas (prueba ortostática positiva) → sugiere síncope ortostático/disautonomía' },
+    { title:'Auscultación cardíaca dirigida', subtitle:'Triaje de causas cardíacas estructurales y arrítmicas de síncope',
+      steps:['Ausculte los focos cardíacos en busca de soplos (especialmente sistólico en foco aórtico)','Evalúe ritmo cardíaco, frecuencia y regularidad','Busque signos de insuficiencia cardíaca (ingurgitación yugular, crepitaciones, edema)'],
+      normal:'Ruidos normofonéticos, ritmo regular, sin soplos', abnormal:'Soplo sistólico en foco aórtico (sugiere estenosis aórtica), arritmia o signos de IC → eleva la sospecha de síncope cardíaco, indicando investigación cardiológica prioritaria' },
+    { title:'Examen neurológico posictal', subtitle:'Evaluación de déficits focales y nivel de conciencia tras el episodio',
+      steps:['Evalúe nivel de conciencia, orientación y tiempo de recuperación','Busque déficits motores o sensitivos focales (parálisis de Todd)','Evalúe la presencia de confusión mental prolongada característica del estado posictal'],
+      normal:'Recuperación rápida de la conciencia, sin déficit focal residual', abnormal:'Confusión prolongada, déficit focal (parálisis de Todd) → sugiere crisis epiléptica, pudiendo indicar lesión estructural subyacente' },
+    { title:'Inspección de la lengua', subtitle:'Búsqueda de mordedura lateral de la lengua',
+      steps:['Examine los bordes laterales de la lengua en busca de laceraciones o marcas de mordedura','Diferencie de la mordedura en la punta de la lengua (inespecífica)'],
+      normal:'Sin lesiones en la lengua', abnormal:'Mordedura lateral de la lengua → hallazgo con buena especificidad para crisis convulsiva tónico-clónica generalizada' }
+  ],
+  sinais:[
+    { name:'Síncope de esfuerzo', eponym:'Signo de alarma cardiológico', how:'Pérdida de conciencia que ocurre durante o inmediatamente después del esfuerzo físico', means:'Debe considerarse siempre de causa cardíaca (arritmia, estenosis aórtica, miocardiopatía hipertrófica) hasta investigación completa — alto riesgo de muerte súbita' },
+    { name:'Parálisis de Todd', eponym:'Robert Bentley Todd', how:'Déficit motor focal transitorio (paresia/plejía) que surge tras una crisis convulsiva y se resuelve en horas', means:'Confirma la naturaleza epiléptica del evento y puede enmascarar/mimetizar un ACV agudo en el período posictal' },
+    { name:'Pródromo vagal', eponym:'Típico del síncope vasovagal', how:'Sensación de calor, sudoración fría, náusea, oscurecimiento visual y acúfeno segundos antes de la pérdida de conciencia', means:'Sugiere fuertemente síncope reflejo (vasovagal), de buen pronóstico, en contraste con el síncope cardíaco que suele ser súbito y sin aviso' }
+  ],
+  ddx:[
+    ['Síncope vasovagal (reflejo)','Pródromo vagal típico, desencadenante identificable (dolor, calor, emoción, ortostatismo prolongado), recuperación rápida y completa, joven sin cardiopatía','Ausencia de pródromo, ocurrencia durante el esfuerzo, antecedente de cardiopatía estructural'],
+    ['Síncope cardíaco (arritmia/estructural)','Inicio súbito sin aviso, ocurrencia durante el esfuerzo físico o en decúbito, palpitaciones/dolor torácico previos, antecedente personal/familiar de cardiopatía o muerte súbita','Pródromo vagal claro, desencadenante situacional típico, examen cardiovascular normal'],
+    ['Crisis convulsiva (epilepsia)','Movimientos tónico-clónicos prolongados, mordedura lateral de la lengua, relajación esfinteriana, período posictal de confusión prolongada, puede ocurrir durante el sueño','Recuperación inmediata y completa de la conciencia, ausencia de período confusional, factor situacional típico de síncope'],
+    ['Ataque isquémico transitorio (AIT)/causa neurológica focal','Síntomas neurológicos focales asociados (disartria, hemiparesia, alteraciones visuales), sin pérdida completa de conciencia en la mayoría de los casos, factores de riesgo cardiovascular','Pérdida completa y transitoria de conciencia con recuperación espontánea, sin déficit focal persistente']
+  ],
+  escalas:[
+    { title:'Signos de alarma que sugieren causa cardíaca (investigación prioritaria)', headers:['Hallazgo','Relevancia'],
+      rows:[['Síncope durante esfuerzo físico','Sugiere obstrucción al flujo (estenosis aórtica, miocardiopatía hipertrófica) o arritmia inducida por esfuerzo'],['Síncope en decúbito/sin pródromo','Sugiere arritmia maligna — alto riesgo de muerte súbita'],['Palpitaciones o dolor torácico precediendo el evento','Sugiere causa arrítmica/isquémica'],['Antecedente familiar de muerte súbita o cardiopatía hereditaria','Eleva la sospecha de canalopatías/miocardiopatías genéticas'],['ECG anormal (bloqueos, intervalo QT alterado, preexcitación)','Indica necesidad de investigación cardiológica y monitorización inmediatas']],
+      note:'Cualquiera de estos hallazgos indica evaluación cardiológica urgente con monitorización — "el síncope de esfuerzo es cardíaco hasta demostrar lo contrario"' }
+  ],
+  conduta:{
+    exames:['Electrocardiograma (ECG) — examen obligatorio en toda pérdida de conciencia transitoria, en busca de arritmias, bloqueos, QT largo, signos de isquemia o preexcitación','Glucemia capilar inmediata — excluir hipoglucemia como causa del evento','Electrolitos (sodio, potasio, calcio) y hemograma — buscar trastornos metabólicos/anemia como factores contribuyentes','Prueba ortostática (PA acostado x de pie) — evaluar hipotensión ortostática','Electroencefalograma (EEG) — si sospecha de crisis convulsiva, idealmente tras evaluación neurológica especializada','Tomografía/resonancia de cráneo — si déficit neurológico focal, primera crisis convulsiva en el adulto, trauma craneal asociado o sospecha de lesión estructural','Ecocardiograma y/o Holter/monitorización prolongada — si sospecha de causa cardíaca estructural o arrítmica'],
+    drugs:['Tratamiento dirigido a la causa identificada — no hay medicación sintomática genérica para la pérdida de conciencia transitoria','Crisis convulsiva en actividad (estado epiléptico) → benzodiacepina IV (ej.: diazepam/lorazepam) según protocolo de emergencia','Hipoglucemia confirmada → corrección inmediata con glucosa','Síncope cardíaco por arritmia → derivación a cardiología para evaluación de marcapasos/DAI o terapia antiarrítmica según el caso'],
+    steps:['1. Caracterizar minuciosamente el episodio (testigos, pródromos, duración, movimientos, relajación esfinteriana, recuperación) para diferenciar síncope de crisis convulsiva','2. Realizar ECG y glucemia capilar en todos los casos — exámenes de bajo costo y alto rendimiento diagnóstico inicial','3. Buscar signos de alarma cardíaco (síncope de esfuerzo, sin pródromo, palpitaciones previas, antecedente familiar de muerte súbita) — si están presentes, derivar para evaluación cardiológica urgente con monitorización','4. Sospecha de crisis convulsiva (mordedura lateral de la lengua, posictal prolongado, primera crisis) → derivar a neurología para EEG y considerar neuroimagen','5. Evaluar factores situacionales y medicamentos en uso (la polifarmacia en ancianos es causa frecuente de síncope ortostático)','6. Orientar sobre medidas de seguridad (evitar conducir/actividades de riesgo) hasta el esclarecimiento diagnóstico completo']
+  }
+},
+
 'diarreia': {
   mnemonics:[
     { name:'Causas y mecanismos de la diarrea', rows:[
@@ -755,6 +910,7 @@ function applyGuideES(){
         var rp = mp.rows[j]; if(!rp || !re) return;
         if(re[0] != null) rp[3] = re[0];
         if(re[1] != null) rp[4] = re[1];
+        if(re[2] != null) rp[5] = re[2];
       });
     });
 

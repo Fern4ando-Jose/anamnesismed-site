@@ -64,7 +64,7 @@ function buildMnemonicsHTML(gc){
     html+='<div class="mnem-card"><div class="mnem-card-head"><span class="mnem-kw">'+m.kw+'</span><span class="mnem-name">'+bi(m.name,m.nameEs)+'</span></div>';
     m.rows.forEach(function(r){
       // r = [letra, termo, dica, termoEs?, dicaEs?]
-      html+='<div class="mnem-row"><span class="mnem-letter">'+r[0]+'</span><span><span class="mnem-term">'+bi(r[1],r[3])+'</span><span class="mnem-hint">'+bi(r[2],r[4])+'</span></span></div>';
+      html+='<div class="mnem-row"><span class="mnem-letter">'+bi(r[0],r[5])+'</span><span><span class="mnem-term">'+bi(r[1],r[3])+'</span><span class="mnem-hint">'+bi(r[2],r[4])+'</span></span></div>';
     });
     html+='</div>';
   });
