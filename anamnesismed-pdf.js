@@ -51,7 +51,7 @@ function exportPDF(){
   var mNome = document.getElementById('dp-nome').value || (lang==='pt'?'Não informado':'No informado');
   var mSexo = document.getElementById('dp-sexo').value || '—';
   var mIdade = document.getElementById('dp-idade').value || '—';
-  var mMC = document.getElementById('mc-a').value || '—';
+  var mMC = document.getElementById('mc-a').value || (currentMotivo ? (lang==='es'?(currentMotivo.nameEs||currentMotivo.name):currentMotivo.name) : '—');
   var mAEA = document.getElementById('aea-texto').value || '—';
   var mHipo = document.getElementById('sum-hipoteses').value || '—';
   var mPlano = document.getElementById('plan-trat').value || '—';
