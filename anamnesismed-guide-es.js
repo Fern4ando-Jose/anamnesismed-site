@@ -17,6 +17,231 @@
 
 var GUIDE_ES = {
 
+'oclusao-intestinal': {
+  mnemonics:[
+    { name:'Obstrucción intestinal', rows:[
+      ['Dolor','Cólico abdominal (alta) o continuo (estrangulamiento)'],
+      ['Vómitos','Precoces en la alta; tardíos y fecaloides en la baja'],
+      ['Distensión','Más marcada en la obstrucción baja'],
+      ['Parada','Parada de eliminación de heces y gases (obstipación)']
+    ]},
+    { name:'Causas más comunes en el adulto', rows:[
+      ['Adherencias','Bridas posoperatorias (causa más común de intestino delgado)'],
+      ['Bulto/hernia','Hernia encarcelada (2ª causa)'],
+      ['Cáncer','Neoplasia (causa más común en el colon)'],
+      ['Vólvulo','Sigmoide/ciego — torsión'],
+      ['Invaginación','Más común en niños']
+    ]}
+  ],
+  manobras:[
+    { title:'Auscultación abdominal', subtitle:'Patrón de los ruidos hidroaéreos',
+      steps:['Auscultar los 4 cuadrantes hasta 2 minutos','Caracterizar timbre y frecuencia'],
+      normal:'Ruidos normales (5-30/min)', abnormal:'Ruidos metálicos/aumentados (fase inicial) → silencio (fase tardía/isquemia)' },
+    { title:'Tacto rectal', subtitle:'Ampolla y fecaloma',
+      steps:['Inspección perianal y tacto rectal','Evaluar contenido de la ampolla y masas'],
+      normal:'Ampolla con heces, sin masa', abnormal:'Ampolla vacía (obstrucción) o masa/sangre → neoplasia, fecaloma' },
+    { title:'Búsqueda de signos de estrangulamiento', subtitle:'Sufrimiento de asa',
+      steps:['Evaluar dolor continuo intenso, fiebre, taquicardia','Buscar defensa/irritación peritoneal'],
+      normal:'Dolor cólico intermitente, sin peritonitis', abnormal:'Dolor continuo + fiebre + peritonismo + acidosis → estrangulamiento (emergencia quirúrgica)' }
+  ],
+  sinais:[
+    { name:'Distensión + timpanismo', eponym:'Obstrucción', how:'Abdomen distendido, timpánico a la percusión', means:'Acúmulo de gas/líquido proximal a la obstrucción' },
+    { name:'Vómito fecaloide', eponym:'Obstrucción baja/tardía', how:'Vómito de aspecto y olor fecal', means:'Obstrucción distal de larga evolución' },
+    { name:'Signos de estrangulamiento', eponym:'Isquemia de asa', how:'Dolor continuo + fiebre + taquicardia + peritonismo', means:'Sufrimiento vascular del asa — cirugía de urgencia' },
+    { name:'Signo del "grano de café"', eponym:'Vólvulo de sigmoide', how:'Imagen radiológica de asa distendida en U invertida', means:'Vólvulo de sigmoide — descompresión endoscópica/cirugía' }
+  ],
+  ddx:[
+    ['Obstrucción de delgado (adherencias)','Vómitos precoces, cólico, cirugía previa, distensión central','Sin cirugía previa; distensión periférica'],
+    ['Obstrucción de colon (neoplasia)','Distensión marcada, vómito tardío, cambio del hábito, anciano','Inicio agudo sin cambio del hábito'],
+    ['Hernia encarcelada','Abombamiento doloroso irreductible en la pared/región inguinal','Sin hernia palpable'],
+    ['Íleo paralítico','Distensión sin dolor cólico, ruidos ausentes, posop/trastorno electrolítico','Cólico y lucha peristáltica presentes'],
+    ['Vólvulo','Distensión súbita, "grano de café" en RX, anciano/encamado','Distribución difusa de asas'],
+    ['Pseudoobstrucción (Ogilvie)','Dilatación colónica sin obstrucción mecánica','Punto de transición mecánico identificable'],
+    ['Isquemia mesentérica','Dolor desproporcionado, acidosis, fibrilación auricular','Patrón obstructivo clásico sin acidosis precoz']
+  ],
+  escalas:[
+    { title:'Alta x Baja', headers:['Característica','Obstrucción alta (delgado)','Obstrucción baja (colon)'],
+      rows:[['Vómitos','Precoces, biliosos','Tardíos, fecaloides'],['Distensión','Discreta/central','Acentuada/periférica'],['Cólico','Frecuente, corto','Menos intenso'],['Deshidratación','Rápida','Más lenta']],
+      note:'La localización orienta la etiología más probable y la urgencia' },
+    { title:'Signos de gravedad (estrangulamiento)', headers:['Hallazgo','Significado'],
+      rows:[['Dolor continuo intenso','Sufrimiento de asa'],['Fiebre + taquicardia','Respuesta inflamatoria/sepsis'],['Defensa/irritación peritoneal','Peritonitis'],['Acidosis/lactato ↑','Isquemia intestinal']],
+      note:'Cualquier signo de estrangulamiento indica laparotomía de urgencia' }
+  ],
+  conduta:{
+    exames:['Hemograma, electrolitos, función renal, gasometría/lactato','Radiografía de abdomen (niveles hidroaéreos, distensión, neumoperitoneo)','TC de abdomen con contraste (punto y causa de la obstrucción, signos de isquemia)','Beta-hCG en mujeres en edad fértil'],
+    drugs:['Ayuno absoluto','Sonda nasogástrica para descompresión','Hidratación venosa + corrección de trastornos hidroelectrolíticos','Analgesia y antieméticos','ATB si estrangulamiento/perforación/cirugía'],
+    steps:['1. Ayuno + SNG + hidratación ("drip and suck")','2. Corregir trastornos hidroelectrolíticos','3. Definir mecánica x funcional y alta x baja por imagen','4. Sin estrangulamiento (bridas): tratamiento conservador y observación','5. Estrangulamiento, hernia encarcelada, neoplasia obstructiva o falla del conservador → cirugía']
+  }
+},
+'hernia-abdominal': {
+  mnemonics:[
+    { name:'Estados clínicos de la hernia', rows:[
+      ['Reductible','El contenido vuelve a la cavidad espontáneamente o con maniobra'],
+      ['Irreductible/Encarcelada','No reduce, sin isquemia — riesgo de obstrucción'],
+      ['Compromiso','Estrangulada — sufrimiento vascular, dolor intenso, signos inflamatorios'],
+      ['Emergencia','Estrangulamiento = urgencia quirúrgica']
+    ]},
+    { name:'Tipos por localización', rows:[
+      ['Inguinal indirecta','Más común; trayecto por el canal inguinal, lateral a los vasos epigástricos'],
+      ['Inguinal directa','Triángulo de Hesselbach, medial a los vasos epigástricos'],
+      ['Femoral','Bajo el ligamento inguinal; mayor riesgo de encarcelamiento (mujeres)'],
+      ['Umbilical','Anillo umbilical'],
+      ['Incisional','Cicatriz quirúrgica previa']
+    ]}
+  ],
+  manobras:[
+    { title:'Maniobra de reducción', subtitle:'Evaluar reductibilidad',
+      steps:['Paciente en decúbito dorsal, relajado','Presión suave y sostenida sobre el contenido herniario'],
+      normal:'El contenido reduce fácilmente (hernia reductible)', abnormal:'No reduce → encarcelada; dolor intenso/signos inflamatorios → estrangulada (NO insistir)' },
+    { title:'Prueba de Valsalva de pie', subtitle:'Detectar la hernia',
+      steps:['Examinar al paciente de pie','Pedir toser / hacer fuerza abdominal','Palpar el abombamiento y el anillo'],
+      normal:'Sin abombamiento a la maniobra', abnormal:'Abombamiento que protruye con la tos/esfuerzo → hernia' },
+    { title:'Diferenciar inguinal x femoral', subtitle:'Relación con el ligamento inguinal',
+      steps:['Localizar el tubérculo púbico y el ligamento inguinal','Determinar si la protrusión es por encima/medial (inguinal) o por debajo/lateral (femoral)'],
+      normal:'—', abnormal:'Por debajo y lateral al tubérculo púbico → femoral (alto riesgo de encarcelamiento)' }
+  ],
+  sinais:[
+    { name:'Hernia reductible', eponym:'Hernia no complicada', how:'Abombamiento que aumenta con el esfuerzo y reduce en decúbito', means:'Tratamiento electivo' },
+    { name:'Encarcelamiento', eponym:'Hernia complicada', how:'Abombamiento irreductible, doloroso, sin signos inflamatorios', means:'Riesgo de obstrucción — cirugía precoz' },
+    { name:'Estrangulamiento', eponym:'Emergencia', how:'Dolor intenso, piel eritematosa, vómitos, signos de obstrucción/isquemia', means:'Sufrimiento vascular — cirugía de urgencia' },
+    { name:'Signo de Howship-Romberg', eponym:'Hernia obturatriz', how:'Dolor en la cara medial del muslo por compresión del nervio obturador', means:'Hernia obturatriz (anciana, delgada) — alto índice de encarcelamiento' }
+  ],
+  ddx:[
+    ['Hernia inguinal','Abombamiento en la ingle que protruye con el esfuerzo, reductible','Masa fija, no reductible, sin relación con el esfuerzo'],
+    ['Hernia femoral','Abombamiento bajo el ligamento inguinal, mujer, encarcela fácil','Protrusión por encima del ligamento (inguinal)'],
+    ['Adenomegalia inguinal','Ganglio firme, no reduce, no cambia con Valsalva','Reduce en decúbito, protruye con la tos'],
+    ['Lipoma/tumor de pared','Masa subcutánea fija, sin anillo herniario','Anillo palpable, contenido reductible'],
+    ['Hidrocele/varicocele','Transiluminación positiva (hidrocele), "saco de gusanos" (varicocele)','Contenido intestinal reductible'],
+    ['Absceso/colección','Signos flogísticos, fluctuación, fiebre','Reductible, sin flogosis (si no está complicada)']
+  ],
+  escalas:[
+    { title:'Cuándo operar de urgencia', headers:['Situación','Conducta'],
+      rows:[['Reductible asintomática','Electiva (evaluar riesgo x beneficio)'],['Encarcelada reciente sin isquemia','Intentar reducción suave; cirugía precoz'],['Estrangulada','Cirugía de URGENCIA'],['Femoral (cualquiera)','Corrección recomendada por el alto riesgo de encarcelamiento']],
+      note:'Las hernias femorales y sintomáticas tienen indicación quirúrgica más firme' },
+    { title:'Signos de estrangulamiento', headers:['Hallazgo','Significado'],
+      rows:[['Dolor intenso y continuo en la hernia','Isquemia del contenido'],['Piel eritematosa/edematosa sobre el saco','Inflamación/necrosis'],['Vómitos + distensión','Obstrucción asociada'],['Fiebre/taquicardia/leucocitosis','Respuesta sistémica/sepsis']],
+      note:'NO intentar reducir una hernia estrangulada — riesgo de reducir un asa inviable' }
+  ],
+  conduta:{
+    exames:['El diagnóstico es clínico en la mayoría de los casos','USG de pared/región inguinal en duda diagnóstica','TC de abdomen si sospecha de complicación/obstrucción','Hemograma, electrolitos y lactato si sospecha de estrangulamiento'],
+    drugs:['Analgesia','Hidratación y SNG si obstrucción asociada','ATB si estrangulamiento/resección intestinal','No hay tratamiento medicamentoso curativo — la corrección es quirúrgica'],
+    steps:['1. Caracterizar localización y estado (reductible/encarcelada/estrangulada)','2. Hernia no complicada → corrección electiva (malla)','3. Encarcelada reciente sin isquemia → reducción suave + cirugía precoz','4. Estrangulada → cirugía de urgencia (NO reducir)','5. Evaluar la viabilidad del asa en el intraoperatorio']
+  }
+},
+'hemorragia-digestiva-alta': {
+  mnemonics:[
+    { name:'Causas de HDA', rows:[
+      ['Úlcera péptica','Causa más común (gástrica/duodenal) — no varicosa'],
+      ['Várices','Esofágicas/gástricas — hipertensión portal'],
+      ['Mallory-Weiss','Laceración tras vómitos repetidos'],
+      ['Esofagitis/gastritis','Erosiones, AINEs, alcohol'],
+      ['Neoplasia','Tumor gástrico/esofágico sangrante'],
+      ['Dieulafoy','Arteria submucosa anómala']
+    ]},
+    { name:'Abordaje inicial del sangrado', rows:[
+      ['Airway','Proteger la vía aérea (deterioro de conciencia/hematemesis masiva)'],
+      ['Breathing','Oxigenación'],
+      ['Circulation','2 accesos calibrosos, cristaloides, hemoderivados'],
+      ['Drugs','IBP EV; vasoactivo (terlipresina/octreotida) si sospecha varicosa'],
+      ['Endoscopia','Diagnóstica y terapéutica en las primeras 24h']
+    ]}
+  ],
+  manobras:[
+    { title:'Tacto rectal', subtitle:'Caracterizar el sangrado',
+      steps:['Realizar tacto rectal','Evaluar presencia de melena o sangre'],
+      normal:'Heces de color normal', abnormal:'Melena (heces negras, fétidas) → confirma HDA' },
+    { title:'Evaluación hemodinámica', subtitle:'Estimar la pérdida',
+      steps:['Medir PA y FC acostado y de pie (prueba ortostática)','Evaluar perfusión, nivel de conciencia, diuresis'],
+      normal:'Sin alteraciones posturales', abnormal:'Caída de PA / taquicardia postural → pérdida volémica significativa' },
+    { title:'Sondaje nasogástrico (selectivo)', subtitle:'Confirmar fuente alta',
+      steps:['Pasar SNG y aspirar contenido','Evaluar presencia de sangre/poso de café'],
+      normal:'Aspirado claro/bilioso', abnormal:'Sangre fresca/poso de café → confirma fuente alta (un aspirado limpio no la excluye)' }
+  ],
+  sinais:[
+    { name:'Hematemesis', eponym:'HDA', how:'Vómito de sangre fresca o en "poso de café"', means:'Sangrado por encima del ángulo de Treitz' },
+    { name:'Melena', eponym:'HDA', how:'Heces ennegrecidas, pastosas y fétidas', means:'Sangre digerida — generalmente fuente alta' },
+    { name:'Estigmas de hepatopatía', eponym:'HDA varicosa', how:'Ascitis, circulación colateral, arañas vasculares, eritema palmar', means:'Sugiere várices por hipertensión portal' }
+  ],
+  ddx:[
+    ['Úlcera péptica','Epigastralgia, uso de AINE, H. pylori, melena','Estigmas de hepatopatía, hematemesis voluminosa en chorro'],
+    ['Várices esofágicas','Hepatópata, hematemesis voluminosa, signos de HP','Dolor epigástrico previo, sin hepatopatía'],
+    ['Mallory-Weiss','Hematemesis tras vómitos repetidos/alcohol','Sangrado sin antecedente de vómitos previos'],
+    ['Gastritis erosiva','AINE, alcohol, estrés, sangrado en babeo','Sangrado arterial pulsátil voluminoso'],
+    ['Neoplasia gástrica','Pérdida de peso, saciedad precoz, anemia crónica','Cuadro agudo sin síntomas consumptivos'],
+    ['Lesión de Dieulafoy','Sangrado masivo recurrente sin úlcera evidente','Úlcera/várices identificadas en la EDA'],
+    ['HDA x HDB','Aspirado/SNG con sangre, melena, urea/creatinina ↑','Sangre fresca rectal (hematoquecia) con fuente baja']
+  ],
+  escalas:[
+    { title:'Escore de Glasgow-Blatchford (triaje)', headers:['Variable','Puntúa si'],
+      rows:[['Urea','Elevada'],['Hemoglobina','Baja'],['PA sistólica','<110'],['Otros','FC≥100, melena, síncope, hepatopatía, ICC']],
+      note:'Escore 0-1 → bajo riesgo, posible manejo ambulatorio; ≥7 → alto riesgo' },
+    { title:'Rockall (posendoscopia)', headers:['Componente','Evalúa'],
+      rows:[['Edad','Franja etaria'],['Shock','PA/FC'],['Comorbilidades','Cardiopatía, hepatopatía, neoplasia'],['Diagnóstico y estigmas','Hallazgos endoscópicos / Forrest']],
+      note:'Estima el riesgo de resangrado y mortalidad' }
+  ],
+  conduta:{
+    exames:['Hemograma seriado, tipificación y prueba cruzada','Coagulograma, urea/creatinina (urea ↑ en la HDA), electrolitos','Función hepática si sospecha varicosa','Endoscopia digestiva alta (diagnóstica + terapéutica) en hasta 24h'],
+    drugs:['Resucitación volémica + hemoderivados (objetivo Hb ~7, restrictivo)','IBP EV (omeprazol/pantoprazol) en bolo + infusión','HDA varicosa: terlipresina/octreotida + ATB profiláctico (ceftriaxona)','Suspender anticoagulantes/AINEs; corregir coagulopatía'],
+    steps:['1. Estabilizar: ABC, 2 accesos calibrosos, reposición volémica','2. Evaluar gravedad (Glasgow-Blatchford) y transfundir con objetivo restrictivo','3. IBP EV; si sospecha varicosa, vasoactivo + ATB','4. Endoscopia en hasta 24h (12h si varicosa/inestable)','5. Tratamiento endoscópico (clip, escleroterapia, ligadura); cirugía/radiología si refractario']
+  }
+},
+'hemorragia-digestiva-baixa': {
+  mnemonics:[
+    { name:'Causas de HDB', rows:[
+      ['Diverticular','Causa más común de HDB voluminosa en el adulto'],
+      ['Rectal/anorrectal','Hemorroides, fisura — sangre fresca recubriendo las heces'],
+      ['Angiodisplasia','Anciano, sangrado indoloro recurrente'],
+      ['Colitis','Isquémica, infecciosa, inflamatoria (EII)'],
+      ['Oncológica','Neoplasia colorrectal']
+    ]},
+    { name:'Diferenciar el origen', rows:[
+      ['Melena','Sugiere fuente alta (sangre digerida)'],
+      ['Hematoquecia','Sangre fresca/vinosa — generalmente fuente baja'],
+      ['Urea','Relación urea/creatinina elevada sugiere fuente alta'],
+      ['Inestabilidad','Una HDB voluminosa inestable puede ser una HDA masiva — excluir con EDA']
+    ]}
+  ],
+  manobras:[
+    { title:'Inspección anal y tacto rectal', subtitle:'Fuente anorrectal',
+      steps:['Inspeccionar la región perianal','Realizar tacto rectal y anoscopia si está disponible'],
+      normal:'Sin lesiones, ampolla con heces normales', abnormal:'Hemorroides/fisura/masa/sangre → orienta el origen' },
+    { title:'Caracterización del sangrado', subtitle:'Color y relación con las heces',
+      steps:['Preguntar color (fresco, vinoso, oscuro)','Relación con las heces (recubriendo, mezclado, en el papel)'],
+      normal:'—', abnormal:'Sangre fresca en el papel → anorrectal bajo; mezclada/vinosa → colon proximal' },
+    { title:'Evaluación hemodinámica', subtitle:'Estimar la pérdida',
+      steps:['PA, FC, signos de hipoperfusión','Prueba ortostática'],
+      normal:'Estable, sin alteración postural', abnormal:'Inestabilidad → resucitar y excluir HDA masiva' }
+  ],
+  sinais:[
+    { name:'Hematoquecia', eponym:'HDB', how:'Eliminación de sangre fresca/vinosa por el recto', means:'Sangrado generalmente por debajo del ángulo de Treitz' },
+    { name:'Sangrado diverticular', eponym:'HDB voluminosa', how:'Hematoquecia indolora, súbita, autolimitada en la mayoría', means:'Causa más común de HDB significativa' },
+    { name:'Angiodisplasia', eponym:'HDB del anciano', how:'Sangrado indoloro recurrente, asociado a estenosis aórtica (S. de Heyde)', means:'Lesiones vasculares del colon derecho' },
+    { name:'Sangre recubriendo las heces', eponym:'Enfermedad anorrectal', how:'Sangre fresca en el papel/sobre las heces', means:'Hemorroides o fisura anal' }
+  ],
+  ddx:[
+    ['Enfermedad diverticular','Hematoquecia voluminosa indolora, anciano','Dolor anal, sangre solo en el papel'],
+    ['Enfermedad anorrectal (hemorroides/fisura)','Sangre fresca en el papel, dolor anal (fisura)','Sangrado voluminoso mezclado con las heces'],
+    ['Angiodisplasia','Sangrado indoloro recurrente, anciano, anemia','Episodio único con dolor abdominal'],
+    ['Colitis isquémica','Dolor abdominal + sangrado, anciano vasculópata','Sangrado indoloro aislado'],
+    ['Enfermedad inflamatoria intestinal','Diarrea con sangre/moco, dolor, joven, síntomas crónicos','Sangrado agudo aislado sin diarrea'],
+    ['Neoplasia colorrectal','Cambio del hábito, anemia, pérdida de peso, sangre oculta','Sangrado agudo voluminoso sin síntomas consumptivos'],
+    ['HDA masiva simulando HDB','Inestable, urea ↑, aspirado/EDA con sangre','Fuente baja identificada, hemodinámica estable']
+  ],
+  escalas:[
+    { title:'Estratificación de riesgo', headers:['Hallazgo de alto riesgo','Implicación'],
+      rows:[['Inestabilidad hemodinámica','Resucitación + investigación urgente'],['Sangrado continuo/voluminoso','Colonoscopia urgente / angio-TC'],['Edad avanzada + comorbilidades','Mayor morbimortalidad'],['Uso de anticoagulante/antiagregante','Mayor gravedad y resangrado']],
+      note:'La mayoría de las HDB son autolimitadas, pero el alto riesgo exige investigación rápida' },
+    { title:'Secuencia diagnóstica', headers:['Escenario','Examen'],
+      rows:[['Estable','Colonoscopia electiva (preparación)'],['Sangrado activo voluminoso','Angio-TC / arteriografía'],['Sospecha de fuente alta','EDA'],['Negativo + recurrente','Cápsula endoscópica / gammagrafía']],
+      note:'La colonoscopia es el examen de elección en la mayoría de los casos estables' }
+  ],
+  conduta:{
+    exames:['Hemograma seriado, tipificación y prueba cruzada','Coagulograma, urea/creatinina, electrolitos','EDA si sospecha de fuente alta','Colonoscopia (diagnóstica y terapéutica)','Angio-TC/arteriografía si sangrado activo voluminoso'],
+    drugs:['Resucitación volémica + hemoderivados según necesidad','Corrección de coagulopatía; suspender/revertir anticoagulantes cuando sea posible','Tratamiento dirigido a la causa (endoscópico, embolización o quirúrgico)'],
+    steps:['1. Evaluar estabilidad y resucitar si es necesario','2. Excluir HDA masiva (tacto rectal, SNG/EDA si hay duda)','3. Estable → colonoscopia tras preparación','4. Sangrado activo voluminoso → angio-TC/arteriografía con embolización','5. Refractario/recurrente → cirugía; tratar la causa de base']
+  }
+},
+
 'apendicite': {
   mnemonics:[
     { name:'Características clínicas', rows:[
