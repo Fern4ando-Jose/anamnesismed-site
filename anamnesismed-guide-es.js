@@ -424,18 +424,58 @@ var GUIDE_ES = {
       ['Inestabilidad','FC↑, T>38,5°C, Leuco>18.000 → perforación'],
       ['Tacto rectal','Apendicitis pélvica — Douglas doloroso'],
       ['Exámenes','Leucocitosis + USG/TC']
+    ]},
+    { kw:'A. MAESTRO', name:'Escala de Alvarado (10 puntos)', rows:[
+      ['Anorexia','1 punto','A'],
+      ['Migración del dolor a FID','1 punto','M'],
+      ['Aumento de leucocitos (Leucocitosis)','2 puntos','A'],
+      ['Entumecimiento / dolor a la descompresión','1 punto','E'],
+      ['Signo de rebote (Blumberg)','1 punto','S'],
+      ['Temperatura elevada (Fiebre)','1 punto','T'],
+      ['Rigidez / dolor exquisito en FID','2 puntos','R'],
+      ['Orientación a la izquierda (Desviación)','1 punto','O']
     ]}
   ],
   manobras:[
-    { title:'Signo de Blumberg', subtitle:'Irritación peritoneal',
-      steps:['Palpar FID lentamente','Comprimir profundo con 3 dedos','Retirar la mano de forma súbita'],
-      normal:'Sin dolor a la descompresión', abnormal:'Dolor agudo al soltar (Blumberg +) → peritonitis local' },
-    { title:'Signo de Rovsing', subtitle:'Foco en FID',
-      steps:['Comprimir firmemente el CII/FII','Mantener 10 segundos'],
-      normal:'Sin dolor en FID', abnormal:'Dolor en FID al comprimir FII (Rovsing +)' },
-    { title:'Punto de McBurney', subtitle:'Apendicitis típica',
-      steps:['1/3 externo línea ombligo-EIAS derecha','Presión puntual con el pulgar'],
-      normal:'Sin sensibilidad especial', abnormal:'Dolor máximo → apendicitis típica' }
+    { title:'Signo de Blumberg', subtitle:'Irritación peritoneal localizada en la FID',
+      steps:['Decúbito dorsal; localizar el punto de McBurney (1/3 externo de la línea ombligo–EIAS derecha)','Compresión profunda, lenta y continua, mantenida unos segundos','Retirar la mano de la pared abdominal de forma súbita y brusca'],
+      normal:'Sin dolor a la descompresión', abnormal:'Dolor agudo e intenso en el momento exacto de la descompresión — más doloroso que la compresión (Blumberg +)' },
+    { title:'Signo de Rovsing', subtitle:'Desplazamiento retrógrado de gases hacia el ciego inflamado',
+      steps:['Decúbito dorsal','Compresiones profundas (o deslizamiento palmar firme) ascendentes a lo largo del colon izquierdo','Iniciar en la FII hacia el colon descendente'],
+      normal:'Sin dolor referido en FID', abnormal:'Dolor referido en la FID durante la manipulación del lado izquierdo del abdomen (Rovsing +)' },
+    { title:'Signo del Psoas', subtitle:'Apendicitis retrocecal (fricción del psoas mayor)',
+      steps:['Decúbito lateral izquierdo; estabilizar la pelvis con una mano','Con la otra mano, hiperextensión pasiva forzada del muslo derecho extendido (traccionar el miembro hacia atrás)','Alternativa: en decúbito dorsal, elevar la pierna derecha extendida contra la resistencia de la mano del examinador'],
+      normal:'Sin dolor a la hiperextensión/elevación', abnormal:'Aparición o agravamiento sustancial del dolor en la FID (Psoas +)' },
+    { title:'Signo del Obturador', subtitle:'Apendicitis pélvica (fricción del obturador interno)',
+      steps:['Decúbito dorsal','Flexionar pasivamente el muslo y la rodilla derechos a 90°','Sujetar el tobillo y la rodilla y realizar rotación interna pasiva de la cadera (pie hacia afuera, rodilla hacia adentro)'],
+      normal:'Sin dolor a la rotación interna', abnormal:'Dolor hipogástrico o profundo en la FID (Obturador +)' },
+    { title:'Signo de Dunphy', subtitle:'Irritación peritoneal por variación brusca de la presión intraabdominal',
+      steps:['Decúbito dorsal','Solicitar un esfuerzo de tos firme una o dos veces'],
+      normal:'Tos sin dolor localizado', abnormal:'Incremento agudo o localización precisa del dolor en la FID al toser (Dunphy +)' },
+    { title:'Signo de Lapinsky', subtitle:'Apendicitis retrocecal — compresión directa bajo actividad muscular',
+      steps:['Decúbito dorsal','Mantener compresión moderada con la mano extendida sobre la FID','Simultáneamente, pedir elevar la pierna derecha con la rodilla totalmente extendida'],
+      normal:'Sin dolor a la elevación activa', abnormal:'Reproducción o fuerte intensificación del dolor en la FID durante la elevación activa del miembro (Lapinsky +)' },
+    { title:'Signo de Lenander', subtitle:'Disociación térmica por proceso inflamatorio intraabdominal/pélvico activo',
+      steps:['Medir concomitantemente la temperatura axilar y la temperatura rectal','Utilizar termómetros clínicos calibrados'],
+      normal:'Diferencia axilo-rectal ≤1 °C', abnormal:'Disociación >1 °C entre la temperatura rectal (más elevada) y la axilar (Lenander +)' },
+    { title:'Signo de Aaron', subtitle:'Reflejo doloroso a distancia (ciego/apéndice distendidos)',
+      steps:['Aplicar y sostener presión continua y profunda con la punta de los dedos sobre el punto de McBurney'],
+      normal:'Sin dolor referido a distancia', abnormal:'Dolor, opresión o ardor referido en el epigastrio o la región periumbilical (Aaron +)' },
+    { title:'Signo de Ten Horn', subtitle:'Apendicitis en el sexo masculino (tracción peritoneal vía cordón espermático)',
+      steps:['Decúbito dorsal','Sujetar delicadamente el testículo derecho entre los dedos','Ejercer tracción suave, continua y firme en dirección caudal'],
+      normal:'Sin dolor a la tracción testicular', abnormal:'Dolor agudo e inmediato en la FID durante el estiramiento testicular (Ten Horn +)' },
+    { title:'Signo de Markle (prueba del talón)', subtitle:'Triaje de irritación peritoneal por ondas de choque',
+      steps:['De pie: elevarse sobre las puntas de los pies con las rodillas extendidas y dejar caer el cuerpo abruptamente sobre los talones','Encamado: mantener la pierna derecha extendida y aplicar percusión concusiva firme con el puño en la planta del talón derecho'],
+      normal:'Sin dolor al impacto', abnormal:'Aparición de dolor agudo localizado en la FID al impacto (Markle +)' },
+    { title:'Signo de Guéneau de Mussy', subtitle:'Irritación peritoneal generalizada (sospecha de perforación con peritonitis difusa)',
+      steps:['Decúbito dorsal','Compresión profunda seguida de descompresión súbita en cualquier cuadrante FUERA de la FID (o difusamente por toda la pared)'],
+      normal:'Descompresión indolora fuera de la FID', abnormal:'Dolor intenso y generalizado a la descompresión súbita — afectación de todo el peritoneo parietal (Guéneau de Mussy +)' },
+    { title:'Signo de Chandelier (grito de Laffont)', subtitle:'Foco inflamatorio pélvico (DDx o apendicitis pélvica)',
+      steps:['Paciente en posición ginecológica','Tacto vaginal bimanual hasta el fondo de saco posterior y lateral','Movilización lateral y cervical abrupta del cuello uterino'],
+      normal:'Movilización del cuello indolora', abnormal:'Dolor pélvico extremo con reacción abrupta de la paciente (Chandelier +) — estiramiento de los tejidos inflamados adyacentes' },
+    { title:'Signo de Kocher', subtitle:'Patrón cronológico de evolución (dolor visceral → somático)',
+      steps:['Maniobra de anamnesis dirigida','Interrogar el lugar exacto del inicio de los síntomas y el trayecto del dolor en las últimas horas'],
+      normal:'Dolor sin migración característica', abnormal:'Dolor que se inició en epigastrio/periumbilical y, tras 4–6 h, migró y se fijó en la FID (Kocher +)' }
   ],
   sinais:[
     { name:'Punto de McBurney', eponym:'Apendicitis típica', how:'Dolor máximo en el 1/3 externo de la línea ombligo-EIAS derecha', means:'Apendicitis con localización típica' },
@@ -1624,6 +1664,7 @@ function applyGuideES(){
     if(es.mnemonics && pt.mnemonics) es.mnemonics.forEach(function(me, i){
       var mp = pt.mnemonics[i]; if(!mp || !me) return;
       if(me.name) mp.nameEs = me.name;
+      if(me.kw) mp.kwEs = me.kw;
       if(me.rows && mp.rows) me.rows.forEach(function(re, j){
         var rp = mp.rows[j]; if(!rp || !re) return;
         if(re[0] != null) rp[3] = re[0];
