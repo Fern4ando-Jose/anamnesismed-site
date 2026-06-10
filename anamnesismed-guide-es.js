@@ -17,6 +17,192 @@
 
 var GUIDE_ES = {
 
+'diarreia': {
+  mnemonics:[
+    { name:'Causas y mecanismos de la diarrea', rows:[
+      ['Malabsortiva','Enfermedad celíaca, insuficiencia pancreática, sobrecrecimiento bacteriano'],
+      ['Infecciosa aguda','Viral (rotavirus, norovirus), bacteriana (Salmonella, Shigella, E. coli), parasitaria'],
+      ['Alimentaria/intolerancias','Intolerancia a la lactosa, ingesta de laxantes/edulcorantes (osmótica)'],
+      ['Respuesta inflamatoria (EII)','Enfermedad de Crohn, colitis ulcerosa — sangre, moco, dolor abdominal'],
+      ['Reducción de absorción (secretora)','Toxinas bacterianas, tumores neuroendocrinos — diarrea acuosa voluminosa, persiste en ayunas'],
+      ['Endocrina/medicamentosa','Hipertiroidismo, diabetes (neuropatía autonómica), antibióticos, laxantes'],
+      ['Intestino irritable (funcional)','Dolor abdominal asociado, alternancia con estreñimiento, sin signos de alarma'],
+      ['SIDA/inmunosupresión','Infecciones oportunistas en inmunocomprometidos']
+    ]}
+  ],
+  manobras:[
+    { title:'Evaluación de signos de deshidratación', subtitle:'Gravedad de la diarrea aguda',
+      steps:['Evaluar turgencia cutánea y mucosas','Medir PA y FC, buscar hipotensión postural','Evaluar diuresis y nivel de conciencia'],
+      normal:'Mucosas húmedas, turgencia normal, signos vitales estables', abnormal:'Signos de deshidratación moderada a grave → necesidad de reposición volémica EV' },
+    { title:'Tacto rectal', subtitle:'Evaluación de sangrado y masas (cuando esté indicado)',
+      steps:['Explicar el procedimiento y obtener consentimiento','Inspeccionar la región perianal','Realizar tacto digital evaluando tono, presencia de masas y sangre en el guante'],
+      normal:'Sin masas, sangre ni heces endurecidas', abnormal:'Sangre fresca/oculta, masa palpable, impactación fecal → investigar causa orgánica' },
+    { title:'Examen abdominal', subtitle:'Identificar dolor localizado, distensión o masas',
+      steps:['Inspección, auscultación, percusión y palpación de los cuadrantes','Buscar dolor a la palpación, distensión y masas'],
+      normal:'Abdomen blando, indoloro, sin masas', abnormal:'Dolor localizado, masas palpables o distensión → investigar causa orgánica/inflamatoria' }
+  ],
+  sinais:[
+    { name:'Sangre en las heces (hematoquecia/melena)', eponym:'Diarrea inflamatoria/invasiva', how:'Presencia visible de sangre o moco en las heces', means:'Sugiere EII, infección invasiva (Shigella, E. coli enterohemorrágica) o neoplasia — investigar con urgencia' },
+    { name:'Fiebre alta asociada', eponym:'Diarrea infecciosa invasiva', how:'Temperatura >38,5°C acompañando el cuadro diarreico', means:'Sugiere etiología bacteriana invasiva — considerar coprocultivo y posible antibioticoterapia' },
+    { name:'Signos sistémicos de toxemia', eponym:'Cuadro grave/complicado', how:'Taquicardia, hipotensión, alteración del estado mental, oliguria', means:'Señala deshidratación grave o sepsis de foco entérico — necesidad de internación y soporte intensivo' }
+  ],
+  ddx:[
+    ['Diarrea infecciosa aguda','Inicio súbito, <2 semanas, posible fiebre, contactos/viajes recientes, autolimitada','Curso crónico (>4 semanas), pérdida de peso progresiva'],
+    ['Enfermedad inflamatoria intestinal (EII)','Diarrea crónica con sangre/moco, dolor abdominal, pérdida de peso, manifestaciones extraintestinales','Episodio agudo autolimitado sin recurrencia'],
+    ['Síndrome de intestino irritable','Dolor abdominal asociado al cambio del hábito intestinal, alivio con la defecación, sin signos de alarma, exámenes normales','Presencia de sangre, fiebre, pérdida de peso o alteraciones de laboratorio (signos de alarma)'],
+    ['Diarrea malabsortiva (celíaca, insuficiencia pancreática)','Esteatorrea, pérdida de peso, deficiencias nutricionales, distensión abdominal posprandial','Heces de aspecto normal, sin signos de malabsorción'],
+    ['Diarrea osmótica (intolerancias/laxantes)','Relación temporal con alimentos/medicamentos, mejora con el ayuno','Diarrea que persiste incluso en ayunas (sugiere secretora)']
+  ],
+  escalas:[
+    { title:'Escala de Bristol (forma de las heces)', headers:['Tipo','Descripción'],
+      rows:[['Tipo 1-2','Heces endurecidas/en trozos — estreñimiento'],['Tipo 3-4','Heces normales/bien formadas'],['Tipo 5','Heces pastosas con bordes definidos — tendencia a diarrea'],['Tipo 6-7','Heces pastosas/líquidas sin forma — diarrea']],
+      note:'Útil para estandarizar la descripción del hábito intestinal y seguir la evolución' }
+  ],
+  conduta:{
+    exames:['Hemograma, electrolitos y función renal (evaluar repercusión sistémica)','Coprocultivo y parasitológico de heces (diarrea persistente, sangre, fiebre alta, inmunosuprimidos)','Búsqueda de toxina de Clostridioides difficile (uso reciente de antibióticos)','Calprotectina fecal/marcadores inflamatorios (sospecha de EII)','Colonoscopia/endoscopia según sospecha de causa orgánica crónica'],
+    drugs:['Hidratación oral (sales de rehidratación) o EV según gravedad','Antitérmicos/analgésicos sintomáticos (Dipirona/Paracetamol)','Loperamida con cautela (evitar si fiebre alta, sangre en las heces o sospecha de cuadro invasivo)','Antibioticoterapia dirigida solo en casos seleccionados: disentería, inmunosuprimidos, fiebre alta persistente, viaje a área de riesgo con cuadro grave (ej.: Azitromicina o Ciprofloxacino según sospecha)'],
+    steps:['1. Caracterizar la diarrea (aguda x crónica, acuosa x con sangre/moco)','2. Evaluar gravedad de la deshidratación y signos de alarma','3. Hidratación adecuada (oral o EV)','4. Solicitar exámenes según signos de alarma o cronicidad','5. Reservar la antibioticoterapia para casos seleccionados (no usar empíricamente en la mayoría de las diarreas agudas)','6. Investigación adicional (endoscopia/colonoscopia) si cuadro crónico o signos de EII']
+  }
+},
+'palpitacoes': {
+  mnemonics:[
+    { name:'Causas de palpitaciones', rows:[
+      ['Pánico/ansiedad','Sensación de "corazón acelerado" asociada a síntomas de ansiedad, sudoración, disnea'],
+      ['Uso de estimulantes','Cafeína, alcohol, tabaco, drogas ilícitas, descongestionantes'],
+      ['Labilidad hormonal (tiroides)','Hipertiroidismo — taquicardia, pérdida de peso, temblor, intolerancia al calor'],
+      ['Sangre (anemia)','Palidez, fatiga, disnea de esfuerzo, taquicardia compensatoria'],
+      ['Arritmias','Fibrilación auricular, taquicardia supraventricular, extrasístoles, flutter auricular'],
+      ['Repercusión estructural cardíaca','Valvulopatías, miocardiopatías, insuficiencia cardíaca']
+    ]}
+  ],
+  manobras:[
+    { title:'Palpación del pulso radial/carotídeo', subtitle:'Identificar irregularidad del ritmo',
+      steps:['Palpar el pulso radial durante al menos 30-60 segundos','Evaluar frecuencia, ritmo (regular x irregular) y amplitud'],
+      normal:'Pulso regular, frecuencia 60-100lpm', abnormal:'Pulso irregularmente irregular → sugiere fibrilación auricular; pulso rápido y regular → taquicardia supraventricular' },
+    { title:'Maniobra de Valsalva', subtitle:'Maniobra vagal diagnóstica/terapéutica',
+      steps:['Pida al paciente inspirar profundamente','Solicite que haga fuerza espiratoria contra la glotis cerrada por 10-15 segundos (como al defecar)','Monitorice FC y ritmo durante y después de la maniobra'],
+      normal:'Variación discreta y transitoria de la FC', abnormal:'Reversión de taquicardia supraventricular o caída abrupta de la FC → respuesta vagal (ayuda al diagnóstico y tratamiento de la TSV)' },
+    { title:'Auscultación cardíaca completa', subtitle:'Identificar arritmias y soplos',
+      steps:['Auscultar en los 4 focos clásicos (aórtico, pulmonar, tricuspídeo, mitral)','Evaluar ritmo, frecuencia, presencia de soplos, R3/R4'],
+      normal:'Ruidos rítmicos, normofonéticos, sin soplos', abnormal:'Ritmo irregular, soplos o ruidos accesorios → investigar arritmia o cardiopatía estructural' }
+  ],
+  sinais:[
+    { name:'Síncope asociado', eponym:'Arritmia grave', how:'Pérdida transitoria de conciencia relacionada al episodio de palpitación', means:'Signo de alarma — sugiere arritmia con repercusión hemodinámica significativa, requiere evaluación urgente' },
+    { name:'Dolor torácico concomitante', eponym:'Síndrome coronaria asociada', how:'Dolor o molestia torácica durante el episodio de palpitación', means:'Puede indicar isquemia miocárdica desencadenada por la arritmia — investigación cardiológica urgente' },
+    { name:'Disnea asociada', eponym:'Repercusión hemodinámica', how:'Falta de aire durante o después del episodio de palpitación', means:'Sugiere repercusión hemodinámica de la arritmia o descompensación cardíaca subyacente' }
+  ],
+  ddx:[
+    ['Arritmia cardíaca (FA, TSV, extrasístoles)','Pulso irregular o taquicardia documentada, ECG alterado, episodios súbitos y recurrentes','Pulso regular, ECG normal, síntomas claramente situacionales (estrés, cafeína)'],
+    ['Ansiedad/trastorno de pánico','Episodios asociados a estrés, sudoración, sensación de muerte inminente, hiperventilación, ECG normal durante la crisis','Documentación de arritmia en monitor/ECG durante el episodio'],
+    ['Tirotoxicosis','Pérdida de peso, temblor, intolerancia al calor, bocio, TSH suprimida','TSH normal, ausencia de signos hiperadrenérgicos'],
+    ['Anemia','Palidez, fatiga, disnea de esfuerzo, hemoglobina baja','Hemoglobina normal']
+  ],
+  escalas:[
+    { title:'Clasificación EHRA de síntomas en FA', headers:['Clase','Descripción'],
+      rows:[['EHRA 1','Sin síntomas'],['EHRA 2a','Síntomas leves, no afectan las actividades diarias'],['EHRA 2b','Síntomas moderados, molestan pero no limitan'],['EHRA 3','Síntomas graves, afectan las actividades diarias'],['EHRA 4','Síntomas incapacitantes, interrumpen las actividades diarias']],
+      note:'Ayuda a graduar el impacto sintomático de la fibrilación auricular y orientar la urgencia de la investigación/tratamiento' }
+  ],
+  conduta:{
+    exames:['ECG de 12 derivaciones (preferentemente durante el episodio)','Holter de 24h o monitor de eventos (si episodios intermitentes)','Hemograma (anemia), TSH (tirotoxicosis)','Electrolitos (potasio, magnesio, calcio)','Ecocardiograma si sospecha de cardiopatía estructural'],
+    drugs:['Maniobras vagales (Valsalva, masaje del seno carotídeo por especialista) para TSV','Betabloqueantes (ej.: Propranolol, Metoprolol) según evaluación cardiológica','Anticoagulación según escore de riesgo (CHA₂DS₂-VASc) en fibrilación auricular','Tratamiento de la causa de base (reposición de hierro en la anemia, tratamiento del hipertiroidismo)'],
+    steps:['1. Caracterizar el episodio (inicio, duración, ritmo, síntomas asociados)','2. ECG inmediato — idealmente durante el episodio','3. Buscar signos de alarma (síncope, dolor torácico, disnea) → evaluación cardiológica urgente si están presentes','4. Maniobras vagales para sospecha de TSV sintomática estable','5. Investigación de laboratorio dirigida (hemograma, TSH, electrolitos)','6. Derivar a cardiología para monitorización prolongada y definición terapéutica según hallazgos']
+  }
+},
+'sintomas-urinarios': {
+  mnemonics:[
+    { name:'Causas de disuria/síntomas urinarios', rows:[
+      ['Uretritis/ITS','Secreción uretral, relación sexual de riesgo, disuria, Chlamydia/Gonococo'],
+      ['Renal/litiasis','Cólico nefrítico, dolor lumbar irradiado a la ingle, hematuria'],
+      ['Infección baja (cistitis)','Disuria, polaquiuria, urgencia miccional, dolor suprapúbico, sin fiebre alta'],
+      ['Nefritis/pielonefritis (ITU alta)','Fiebre alta, escalofríos, dolor lumbar, Giordano positivo, compromiso sistémico'],
+      ['Adenoma/prostatitis','Hombres — chorro urinario débil, dolor perineal, retención, tacto rectal alterado']
+    ]}
+  ],
+  manobras:[
+    { title:'Signo de Giordano (puñopercusión lumbar)', subtitle:'Sospecha de pielonefritis',
+      steps:['Colocar al paciente sentado o de pie','Percutir suavemente la región lumbar (ángulo costovertebral) con el borde de la mano cerrada','Comparar ambos lados'],
+      normal:'Sin dolor a la percusión', abnormal:'Dolor importante a la percusión lumbar (Giordano+) → sugiere pielonefritis o litiasis renal' },
+    { title:'Examen de genitales externos', subtitle:'Investigación de uretritis/ITS',
+      steps:['Inspeccionar meato uretral, presencia de secreción, lesiones o hiperemia','Palpar testículos y epidídimo en hombres; evaluar región vulvovaginal en mujeres'],
+      normal:'Sin secreción, lesiones ni dolor a la palpación', abnormal:'Secreción uretral, lesiones ulceradas o dolor testicular → investigar ITS/epididimitis' },
+    { title:'Tacto rectal (evaluación prostática)', subtitle:'Sospecha de prostatitis/hiperplasia prostática',
+      steps:['Explicar el procedimiento y colocar al paciente adecuadamente','Realizar tacto rectal evaluando tamaño, consistencia, simetría y dolor de la próstata'],
+      normal:'Próstata de tamaño normal, lisa, indolora, sin nódulos', abnormal:'Próstata aumentada, dolorosa y blanda (prostatitis aguda) o endurecida/nodular (sospecha neoplásica)' }
+  ],
+  sinais:[
+    { name:'Fiebre alta + dolor lumbar', eponym:'Pielonefritis aguda', how:'Fiebre >38,5°C asociada a dolor lumbar unilateral y Giordano positivo', means:'Sugiere infección del tracto urinario alto — necesidad de tratamiento sistémico y posible internación' },
+    { name:'Hematuria macroscópica', eponym:'Signo de alarma urológico', how:'Orina con coloración rojiza/parduzca visible a simple vista', means:'Puede indicar litiasis, infección complicada, neoplasia urotelial o glomerulopatía — investigación obligatoria' },
+    { name:'Retención urinaria aguda', eponym:'Emergencia urológica', how:'Incapacidad súbita de orinar con vejiga distendida y dolor suprapúbico', means:'Requiere alivio inmediato (sondaje vesical) e investigación de la causa (HPB, prostatitis, obstrucción)' }
+  ],
+  ddx:[
+    ['Cistitis (ITU baja)','Disuria, polaquiuria, urgencia, dolor suprapúbico, sin fiebre ni dolor lumbar','Fiebre alta, dolor lumbar, compromiso del estado general'],
+    ['Pielonefritis (ITU alta)','Fiebre alta, escalofríos, dolor lumbar, Giordano+, náuseas/vómitos, compromiso sistémico','Síntomas restringidos al tracto urinario bajo, sin fiebre'],
+    ['Uretritis/ITS','Secreción uretral, relación sexual de riesgo, pareja sintomática, disuria predominante al inicio de la micción','Ausencia de exposición sexual de riesgo, sin secreción'],
+    ['Litiasis urinaria','Dolor lumbar tipo cólico irradiando a la ingle, hematuria, agitación, náuseas','Dolor continuo, ausencia de hematuria, imagen sin cálculo'],
+    ['Prostatitis','Hombre, dolor perineal/suprapúbico, síntomas miccionales, próstata dolorosa al tacto, posible fiebre','Mujer, o tacto rectal normal']
+  ],
+  escalas:[
+    { title:'Criterios para diferenciar ITU baja x alta', headers:['Hallazgo','ITU baja (cistitis)','ITU alta (pielonefritis)'],
+      rows:[['Fiebre','Ausente/baja','Alta (>38,5°C)'],['Dolor lumbar/Giordano','Ausente','Presente'],['Estado general','Preservado','Comprometido (escalofríos, náuseas)'],['Conducta inicial','Tratamiento ambulatorio vía oral','Considerar internación/ATB parenteral según gravedad']],
+      note:'Diferenciación fundamental para definir la vía de administración del antibiótico y la necesidad de internación' }
+  ],
+  conduta:{
+    exames:['Orina rutina (sedimento)','Urocultivo con antibiograma','Hemograma + PCR (sospecha de pielonefritis)','Función renal (urea/creatinina)','USG de vías urinarias (litiasis, complicaciones)','Búsqueda de ITS (Chlamydia/Gonococo) si sospecha de uretritis'],
+    drugs:['Cistitis no complicada: Nitrofurantoína 100mg c/12h por 5 días o Fosfomicina dosis única, o Sulfametoxazol-trimetoprima según sensibilidad local','Pielonefritis: Ciprofloxacino o Ceftriaxona según gravedad — considerar internación y ATB EV en casos graves','Uretritis/ITS: Ceftriaxona + Azitromicina (cobertura para gonococo y clamidia)','Analgesia/antiespasmódicos para cólico renal (ej.: Dipirona + Butilescopolamina), AINEs si no hay contraindicación'],
+    steps:['1. Caracterizar los síntomas (disuria aislada x fiebre/dolor lumbar x secreción)','2. Examen físico dirigido (Giordano, genitales, tacto rectal si está indicado)','3. Solicitar sedimento + urocultivo antes de iniciar el antibiótico cuando sea posible','4. Diferenciar ITU baja (tratamiento ambulatorio) de ITU alta (considerar internación)','5. Tratar empíricamente según la presentación y ajustar por el antibiograma','6. Investigar causas estructurales (litiasis, HPB) si cuadros recurrentes o complicados']
+  }
+},
+'lombalgia': {
+  mnemonics:[
+    { name:'Signos de alarma (red flags) en la lumbalgia', rows:[
+      ['Trauma significativo','Caída de altura, accidente automovilístico — riesgo de fractura'],
+      ['Urinario/intestinal (disfunción esfinteriana)','Retención urinaria, incontinencia fecal — sospecha de síndrome de cauda equina'],
+      ['Neurológico (déficit progresivo)','Debilidad muscular progresiva, alteración sensitiva en silla de montar, pérdida de reflejos'],
+      ['Anestesia en silla de montar','Hipoestesia perineal/perianal — emergencia neuroquirúrgica (cauda equina)'],
+      ['Fiebre/infección','Fiebre, uso de drogas IV, inmunosupresión — sospecha de espondilodiscitis/absceso'],
+      ['Edad (extremos)','<18 o >50 años con lumbalgia nueva — mayor riesgo de causa estructural/neoplásica'],
+      ['Sin mejoría con el reposo (dolor nocturno)','Dolor que empeora de noche o no alivia en reposo — sugiere causa neoplásica/inflamatoria'],
+      ['Historia de cáncer/pérdida de peso','Antecedente oncológico, adelgazamiento inexplicado — sospecha de metástasis ósea']
+    ]}
+  ],
+  manobras:[
+    { title:'Maniobra de Lasègue (elevación de la pierna extendida)', subtitle:'Evaluación de radiculopatía lumbar (L4-S1)',
+      steps:['Paciente en decúbito dorsal, relajado','Eleve la pierna extendida lentamente, manteniendo la rodilla en extensión','Observe el ángulo en que aparece dolor irradiado al miembro inferior'],
+      normal:'Elevación hasta 70-90° sin dolor irradiado (solo molestia posterior en el muslo)', abnormal:'Dolor radicular reproducido entre 30-70° de elevación (Lasègue+) → sugiere hernia discal/radiculopatía (generalmente L5-S1)' },
+    { title:'Prueba de Patrick/FABERE', subtitle:'Evaluación de articulación sacroilíaca y cadera',
+      steps:['Paciente en decúbito dorsal','Coloque el tobillo sobre la rodilla contralateral (posición de "4")','Aplique presión suave sobre la rodilla flexionada hacia la camilla'],
+      normal:'Sin dolor — buena amplitud de movimiento', abnormal:'Dolor en la región sacroilíaca o en la cadera (Patrick+) → sugiere disfunción sacroilíaca o patología de cadera' },
+    { title:'Palpación de puntos dolorosos paravertebrales', subtitle:'Evaluación de dolor mecánico/miofascial',
+      steps:['Palpar la musculatura paravertebral lumbar y las apófisis espinosas','Evaluar contractura muscular, puntos gatillo y dolor a la palpación'],
+      normal:'Musculatura sin espasmo, sin dolor a la palpación', abnormal:'Espasmo muscular, dolor localizado a la palpación → sugiere lumbalgia mecánica/miofascial' },
+    { title:'Evaluación neurológica de miembros inferiores', subtitle:'Búsqueda de déficit radicular',
+      steps:['Probar fuerza muscular segmentaria (dorsiflexión del hallux/pie - L5, flexión plantar - S1)','Evaluar sensibilidad en dermatomas correspondientes','Buscar reflejos rotuliano (L4) y aquíleo (S1)'],
+      normal:'Fuerza, sensibilidad y reflejos preservados y simétricos', abnormal:'Déficit motor, hipoestesia o reflejo abolido → sugiere radiculopatía compresiva — investigar con imagen' }
+  ],
+  sinais:[
+    { name:'Síndrome de cauda equina', eponym:'Emergencia neuroquirúrgica', how:'Retención urinaria, incontinencia fecal, anestesia en silla de montar, debilidad bilateral de miembros inferiores', means:'Compresión de las raíces de la cauda equina — requiere descompresión quirúrgica de urgencia para evitar secuelas permanentes' },
+    { name:'Dolor nocturno que no mejora con el reposo', eponym:'Signo de alarma de causa neoplásica/inflamatoria', how:'Dolor que despierta al paciente de noche y no alivia con reposo o cambio de posición', means:'Sugiere proceso neoplásico (metástasis ósea), infeccioso (espondilodiscitis) o inflamatorio (espondiloartritis) — investigar con imagen' },
+    { name:'Signo de Lasègue contralateral (cruzado)', eponym:'Hernia discal extruida', how:'Dolor irradiado al miembro evaluado al elevar el miembro contralateral', means:'Alta especificidad para hernia discal voluminosa que comprime la raíz nerviosa' }
+  ],
+  ddx:[
+    ['Lumbalgia mecánica/inespecífica','Dolor relacionado con esfuerzo/postura, mejora con el reposo, sin irradiación ni déficit neurológico, examen neurológico normal','Dolor nocturno persistente, déficit neurológico, signos sistémicos'],
+    ['Radiculopatía (hernia discal)','Dolor irradiado al miembro inferior en trayecto radicular, Lasègue+, déficit motor/sensitivo correspondiente al dermatoma','Dolor estrictamente lumbar sin irradiación, Lasègue negativo'],
+    ['Causa sistémica/inflamatoria (espondiloartritis, espondilodiscitis)','Dolor inflamatorio (empeora en reposo/noche, mejora con el movimiento), rigidez matinal prolongada, fiebre, edad joven, marcadores inflamatorios elevados','Dolor de patrón mecánico, sin rigidez matinal ni signos sistémicos'],
+    ['Causa neoplásica (metástasis ósea, mieloma)','Dolor progresivo, nocturno, refractario a la analgesia, pérdida de peso, historia oncológica, edad avanzada','Dolor de inicio reciente relacionado con esfuerzo, sin síntomas sistémicos'],
+    ['Dolor visceral referido (aneurisma aórtico, enfermedad renal, pancreatitis)','Dolor lumbar asociado a síntomas viscerales (masa pulsátil, hematuria, síntomas digestivos), sin relación postural','Dolor reproducido a la palpación/movilización de la columna, sin síntomas viscerales asociados']
+  ],
+  escalas:[
+    { title:'Signos de alarma (red flags) — triaje inicial', headers:['Categoría','Hallazgos de alerta'],
+      rows:[['Síndrome de cauda equina','Retención urinaria, incontinencia fecal, anestesia en silla de montar, debilidad bilateral'],['Infección','Fiebre, uso de drogas IV, inmunosupresión, cirugía reciente de columna'],['Neoplasia','Historia de cáncer, pérdida de peso inexplicada, dolor nocturno progresivo, edad >50 años'],['Fractura','Trauma significativo, uso crónico de corticoide, osteoporosis, edad avanzada']],
+      note:'La presencia de cualquier red flag indica necesidad de investigación con imagen y/o derivación urgente — no tratar solo como lumbalgia mecánica' }
+  ],
+  conduta:{
+    exames:['Generalmente prescindible en las primeras 4-6 semanas si no hay red flags (lumbalgia aguda inespecífica)','Radiografía de columna lumbar (sospecha de fractura/espondilolistesis)','RM de columna lumbar — examen de elección si red flags, déficit neurológico progresivo o dolor persistente >6 semanas','Hemograma, VSG/PCR (sospecha de infección/neoplasia/causa inflamatoria)','PSA y electroforesis de proteínas según sospecha oncológica específica'],
+    drugs:['Analgésicos simples: Paracetamol o Dipirona','AINEs (ej.: Ibuprofeno, Naproxeno) si no hay contraindicación','Relajantes musculares por corto período en casos de espasmo importante (ej.: Ciclobenzaprina)','Considerar derivación a fisioterapia precoz','Cauda equina/déficit neurológico progresivo → derivación neuroquirúrgica de urgencia'],
+    steps:['1. Triaje activo de red flags (TUNAFISH) en la anamnesis y el examen físico','2. Ausencia de red flags → tratamiento sintomático, mantenerse activo, reevaluación en 4-6 semanas sin necesidad de imagen precoz','3. Presencia de red flags → solicitar imágenes dirigidas (RM preferentemente)','4. Signos de síndrome de cauda equina → derivación neuroquirúrgica de emergencia inmediata','5. Radiculopatía sin signos de alarma → tratamiento conservador inicial (analgesia, fisioterapia, actividad gradual)','6. Refractariedad al tratamiento conservador (6-12 semanas) → reevaluación especializada y consideración de tratamiento intervencionista/quirúrgico']
+  }
+},
+
 'tosse': {
   mnemonics:[
     { name:'Causas de tos crónica (>8 semanas)', rows:[
