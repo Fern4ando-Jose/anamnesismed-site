@@ -2064,8 +2064,9 @@ function renderAEAGuide2(mObj){
 
 function ynBtnSel(el,groupId,val){
   var parent = el.closest('.yn-btns');
+  var was = el.classList.contains(val);
   parent.querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('sim','nao')});
-  el.classList.add(val);
+  if(!was) el.classList.add(val);   // toggle: clicar de novo desmarca
 }
 
 // ── RAS ───────────────────────────────────────────────
@@ -2119,8 +2120,9 @@ function togglePanel(id){
 function selectRadio(el, groupId){
   var parent = document.getElementById(groupId);
   if(!parent) return;
+  var was = el.classList.contains('sel');
   parent.querySelectorAll('.f-radio').forEach(function(r){r.classList.remove('sel','sel-danger')});
-  el.classList.add('sel');
+  if(!was) el.classList.add('sel');   // clicar de novo no mesmo desmarca (toggle)
   updateProgress();
 }
 
@@ -2135,8 +2137,9 @@ function selectMultiChip(el, groupId){
 
 function selectEva(el, groupId){
   var parent = document.getElementById(groupId);
+  var was = el.classList.contains('sel');
   parent.querySelectorAll('.f-eva-btn').forEach(function(b){b.classList.remove('sel')});
-  el.classList.add('sel');
+  if(!was) el.classList.add('sel');   // toggle
 }
 
 function toggleCheck(el){
@@ -2146,16 +2149,21 @@ function toggleCheck(el){
 
 function ectoSel(el, groupId){
   var parent = document.getElementById(groupId);
+  var was = el.classList.contains('sel');
   parent.querySelectorAll('.ecto-opt').forEach(function(o){o.classList.remove('sel')});
-  el.classList.add('sel');
+  if(!was) el.classList.add('sel');   // toggle
 }
 
 function ynSelect(btn, groupId, val){
   var extraEl = document.getElementById(groupId+'-extra');
+  var was = btn.classList.contains('yn-on');
   var allBtns = btn.closest('.yn-row').querySelectorAll('.yn-btn');
-  allBtns.forEach(function(b){b.classList.remove('sim','nao','ex')});
-  btn.classList.add(val==='ex'?'nao':val);
-  if(extraEl) extraEl.style.display = val==='sim'?'block':'none';
+  allBtns.forEach(function(b){b.classList.remove('sim','nao','ex','yn-on')});
+  if(!was){
+    btn.classList.add(val==='ex'?'nao':val);
+    btn.classList.add('yn-on');
+    if(extraEl) extraEl.style.display = val==='sim'?'block':'none';
+  } else if(extraEl){ extraEl.style.display='none'; }   // toggle: desmarca
 }
 
 function toggleAPGO(){
