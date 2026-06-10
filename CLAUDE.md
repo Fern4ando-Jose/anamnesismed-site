@@ -44,34 +44,16 @@ O projeto segue separação estrita de responsabilidades:
 
 | Arquivo | O que contém | Quando editar |
 |---|---|---|
-| `anamnesismed-motivos.js` | Dados clínicos: `MOTIVOS`, `RAS_SYSTEMS`, `GUIDE_CONTENT` | Novo motivo, nova pergunta AEA, mnemônico, DDx |
+| `src/motivos/<id>.js` | **FONTE CANÔNICA de cada motivo**: metadados, `aeaGuide`, `guidePt`, `guideEs` (ou `guideFrom` para herdar o guia de outro motivo) | Novo motivo, nova pergunta AEA, mnemônico, DDx, tradução ES de um motivo |
+| `src/especialidades/<esp>.js` | Ordem das categorias + lista de **ids** de motivos (referência, não duplica) | Adicionar/reordenar motivos numa especialidade |
+| `src/ras.js` | `RAS_SYSTEMS` (Revisão por Aparelhos e Sistemas) | Mudar perguntas da RAS |
+| `anamnesismed-motivos.js` / `anamnesismed-guide-es.js` | ⚙️ **GERADOS** por `scripts/build.js` — NÃO editar à mão | (nunca; rode o build) |
 | `anamnesismed-narrativa.js` | Geradores de texto da HC (`gerarNarrativaAEA_*`) | Melhorar narrativa, adicionar gerador específico por motivo |
 | `anamnesismed-pdf.js` | Função `exportPDF` — layout e montagem do PDF | Mudar layout do PDF, adicionar seção ao documento |
 | `anamnesismed-guide.js` | Builders HTML do painel guia (`buildAEAGuideHTML`, `buildMnemonicsHTML`, etc.) | Mudar visual do painel AEA ou das mnemônicas |
 | `supabase-integration.js` | Auth, perfil, salvamento no Supabase | Persistência, autenticação, trial |
 | `anamnesismed-app.html` | Markup HTML + CSS + lógica de UI (navegação, formulário, snapshots) | Telas, botões, CSS, fluxo de navegação |
 
-**Nunca** inserir dados clínicos, geradores de narrativa, código do PDF ou builders de guia dentro de `anamnesismed-app.html`.
+**Fonte modular + build:** os dados clínicos vivem em `src/` (1 arquivo por motivo, 1 por especialidade). Após editar `src/`, rode **`node scripts/build.js`** para regenerar `anamnesismed-motivos.js` e `anamnesismed-guide-es.js`. Um motivo compartilhado (ex.: `febre`) é definido **uma única vez** em `src/motivos/febre.js`; outros (ex.: `semio-febre`) herdam o guia via `guideFrom:'febre'`. O `verify.sh` confere que produção == `build(src/)`.
 
-## 8. Rodar `bash scripts/verify.sh` antes de cada commit
-
-Após qualquer edição, executar o script de verificação de integridade antes de commitar:
-
-```
-bash scripts/verify.sh
-```
-
-O script verifica: contagem de linhas, fechamento correto de HTML, presença de funções-chave, integridade do motivos.js e do vercel.json. **Não commitar se houver erros.**
-
-Se um arquivo estiver truncado (erro de linha ou função ausente), restaurar com:
-```
-git checkout HEAD -- <arquivo>
-```
-
-## 9. Arquivos modificados pelo filesystem Linux podem ser truncados
-
-O mount Windows↔Linux pode truncar arquivos grandes ao gravá-los via bash. Para gravar arquivos grandes (>500 linhas), usar sempre `cat > arquivo << 'EOF' ... EOF` ou `cp /tmp/arquivo_preparado destino` em vez de ferramentas que fazem write incremental. Verificar com `wc -l` e `tail -3` imediatamente após gravar.
-
-## Contexto do produto
-
-Meta: 100 mil usuários até o fim de 2026 — tratar tudo como produto profissional, sem "detalhes menores".
+**Nunca** editar `anamnesismed-motivos.js`/`anamnesismed-guide-es.js` à mão, nem inserir dados clínicos, geradores de narrativa, código do PDF ou builders de guia dentro de `anam
