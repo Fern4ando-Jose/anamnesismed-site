@@ -47,14 +47,24 @@ function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
 }
 
 // ── GUIDE CONTENT BUILDERS ────────────────────────────
+// Helper bilíngue: emite os dois idiomas em spans .pt/.es (o CSS [data-lang]
+// faz a troca instantânea, igual ao resto do site). Fallback: se faltar ES,
+// usa o PT (sem regressão enquanto o conteúdo não é traduzido).
+function bi(pt, es){
+  pt = (pt==null) ? '' : pt;
+  var e = (es==null || es==='') ? pt : es;
+  return '<span class="pt">'+pt+'</span><span class="es">'+e+'</span>';
+}
+
 function buildMnemonicsHTML(gc){
   if(!gc||!gc.mnemonics||!gc.mnemonics.length)
     return '<div class="ibox ibox-primary"><strong>Mnemônicas</strong><span class="pt">Nenhuma mnemônica cadastrada para este motivo ainda.</span><span class="es">Ninguna mnemotécnica registrada aún.</span></div>';
   var html='';
   gc.mnemonics.forEach(function(m){
-    html+='<div class="mnem-card"><div class="mnem-card-head"><span class="mnem-kw">'+m.kw+'</span><span class="mnem-name">'+m.name+'</span></div>';
+    html+='<div class="mnem-card"><div class="mnem-card-head"><span class="mnem-kw">'+m.kw+'</span><span class="mnem-name">'+bi(m.name,m.nameEs)+'</span></div>';
     m.rows.forEach(function(r){
-      html+='<div class="mnem-row"><span class="mnem-letter">'+r[0]+'</span><span><span class="mnem-term">'+r[1]+'</span><span class="mnem-hint">'+r[2]+'</span></span></div>';
+      // r = [letra, termo, dica, termoEs?, dicaEs?]
+      html+='<div class="mnem-row"><span class="mnem-letter">'+r[0]+'</span><span><span class="mnem-term">'+bi(r[1],r[3])+'</span><span class="mnem-hint">'+bi(r[2],r[4])+'</span></span></div>';
     });
     html+='</div>';
   });
@@ -69,13 +79,13 @@ function buildManobrasHTML(gc){
     html+='<div class="acc" id="acc-m-'+i+'">';
     html+='<div class="acc-head" onclick="this.closest(\'.acc\').classList.toggle(\'open\')">';
     html+='<span class="acc-num">'+(i+1)+'</span>';
-    html+='<div><div class="acc-title">'+m.title+'</div><div class="acc-subtitle">'+m.subtitle+'</div></div>';
+    html+='<div><div class="acc-title">'+bi(m.title,m.titleEs)+'</div><div class="acc-subtitle">'+bi(m.subtitle,m.subtitleEs)+'</div></div>';
     html+='<span class="acc-toggle">+</span></div>';
     html+='<div class="acc-body"><ul class="acc-steps">';
-    m.steps.forEach(function(s,si){html+='<li class="acc-step"><span class="acc-step-n">'+(si+1)+'.</span><span>'+s+'</span></li>';});
+    m.steps.forEach(function(s,si){var sEs=(m.stepsEs&&m.stepsEs[si]);html+='<li class="acc-step"><span class="acc-step-n">'+(si+1)+'.</span><span>'+bi(s,sEs)+'</span></li>';});
     html+='</ul><div class="acc-findings">';
-    html+='<div class="acc-finding normal"><span class="acc-finding-lbl pt">Normal / Negativo</span><span class="acc-finding-lbl es">Normal / Negativo</span>'+m.normal+'</div>';
-    html+='<div class="acc-finding abnormal"><span class="acc-finding-lbl pt">Alterado / Positivo</span><span class="acc-finding-lbl es">Alterado / Positivo</span>'+m.abnormal+'</div>';
+    html+='<div class="acc-finding normal"><span class="acc-finding-lbl pt">Normal / Negativo</span><span class="acc-finding-lbl es">Normal / Negativo</span>'+bi(m.normal,m.normalEs)+'</div>';
+    html+='<div class="acc-finding abnormal"><span class="acc-finding-lbl pt">Alterado / Positivo</span><span class="acc-finding-lbl es">Alterado / Positivo</span>'+bi(m.abnormal,m.abnormalEs)+'</div>';
     html+='</div></div></div>';
   });
   return html;
@@ -86,10 +96,10 @@ function buildSinaisHTML(gc){
     return '<div class="ibox ibox-secondary"><strong>Sinais Clássicos</strong><span class="pt">Nenhum sinal cadastrado para este motivo ainda.</span></div>';
   var html='<div class="sign-grid">';
   gc.sinais.forEach(function(s){
-    html+='<div class="sign-card"><div class="sign-name">'+s.name+'</div>';
-    html+='<span class="sign-eponym">'+s.eponym+'</span>';
-    html+='<div class="sign-how">'+s.how+'</div>';
-    html+='<span class="sign-means">'+s.means+'</span></div>';
+    html+='<div class="sign-card"><div class="sign-name">'+bi(s.name,s.nameEs)+'</div>';
+    html+='<span class="sign-eponym">'+bi(s.eponym,s.eponymEs)+'</span>';
+    html+='<div class="sign-how">'+bi(s.how,s.howEs)+'</div>';
+    html+='<span class="sign-means">'+bi(s.means,s.meansEs)+'</span></div>';
   });
   return html+'</div>';
 }
@@ -99,7 +109,8 @@ function buildDDxHTML(gc){
     return '<div class="ibox ibox-primary"><strong pt>Diagnóstico Diferencial</strong><span class="pt">Nenhum DDx cadastrado para este motivo.</span></div>';
   var html='<table class="ddx-table"><thead><tr><th pt>Diagnóstico</th><th es>Diagnóstico</th><th pt>A favor</th><th es>A favor</th><th pt>Contra</th><th es>En contra</th></tr></thead><tbody>';
   gc.ddx.forEach(function(d){
-    html+='<tr><td>'+d[0]+'</td><td><span class="ddx-inc">✓</span> '+d[1]+'</td><td><span class="ddx-exc">✗</span> '+d[2]+'</td></tr>';
+    // d = [diag, aFavor, contra, diagEs?, aFavorEs?, contraEs?]
+    html+='<tr><td>'+bi(d[0],d[3])+'</td><td><span class="ddx-inc">✓</span> '+bi(d[1],d[4])+'</td><td><span class="ddx-exc">✗</span> '+bi(d[2],d[5])+'</td></tr>';
   });
   return html+'</tbody></table>';
 }
@@ -109,13 +120,13 @@ function buildEscalasHTML(gc){
     return '<div class="ibox ibox-secondary"><strong>Escalas</strong><span class="pt">Nenhuma escala cadastrada para este motivo ainda.</span></div>';
   var html='';
   gc.escalas.forEach(function(e){
-    html+='<div class="score-title">'+e.title+'</div>';
+    html+='<div class="score-title">'+bi(e.title,e.titleEs)+'</div>';
     html+='<table class="score-table"><thead><tr>';
-    e.headers.forEach(function(h){html+='<th>'+h+'</th>';});
+    e.headers.forEach(function(h,hi){var hEs=(e.headersEs&&e.headersEs[hi]);html+='<th>'+bi(h,hEs)+'</th>';});
     html+='</tr></thead><tbody>';
-    e.rows.forEach(function(r){html+='<tr>';r.forEach(function(c){html+='<td>'+c+'</td>';});html+='</tr>';});
+    e.rows.forEach(function(r,ri){html+='<tr>';r.forEach(function(c,ci){var cEs=(e.rowsEs&&e.rowsEs[ri]&&e.rowsEs[ri][ci]);html+='<td>'+bi(c,cEs)+'</td>';});html+='</tr>';});
     html+='</tbody></table>';
-    if(e.note)html+='<div class="score-note"><strong pt>Interpretação</strong><strong es>Interpretación</strong>'+e.note+'</div>';
+    if(e.note)html+='<div class="score-note"><strong pt>Interpretação</strong><strong es>Interpretación</strong>'+bi(e.note,e.noteEs)+'</div>';
   });
   return html;
 }
@@ -127,18 +138,18 @@ function buildCondutaHTML(gc){
   if(c.steps&&c.steps.length){
     html+='<div class="score-title pt">Passos da abordagem</div><div class="score-title es">Pasos del abordaje</div>';
     html+='<div style="background:rgba(14,116,144,.05);border:1px solid rgba(14,116,144,.18);border-radius:10px;padding:14px;margin-bottom:12px">';
-    c.steps.forEach(function(s){html+='<div style="font-size:13px;padding:5px 0;border-bottom:1px solid var(--line);color:var(--ink)">'+s+'</div>';});
+    c.steps.forEach(function(s,si){var sEs=(c.stepsEs&&c.stepsEs[si]);html+='<div style="font-size:13px;padding:5px 0;border-bottom:1px solid var(--line);color:var(--ink)">'+bi(s,sEs)+'</div>';});
     html+='</div>';
   }
   if(c.exames&&c.exames.length){
     html+='<div class="score-title pt">Exames a solicitar</div><div class="score-title es">Exámenes a solicitar</div>';
     html+='<div class="f-checks f-checks-3" style="margin-bottom:12px">';
-    c.exames.forEach(function(ex){html+='<div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span style="font-size:11px">'+ex+'</span></div>';});
+    c.exames.forEach(function(ex,xi){var exEs=(c.examesEs&&c.examesEs[xi]);html+='<div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span style="font-size:11px">'+bi(ex,exEs)+'</span></div>';});
     html+='</div>';
   }
   if(c.drugs&&c.drugs.length){
     html+='<div class="score-title pt">Tratamento / Medicação</div><div class="score-title es">Tratamiento / Medicación</div>';
-    c.drugs.forEach(function(d){html+='<div class="ibox ibox-secondary" style="margin-bottom:6px;padding:8px 12px;font-size:12px">'+d+'</div>';});
+    c.drugs.forEach(function(d,di){var dEs=(c.drugsEs&&c.drugsEs[di]);html+='<div class="ibox ibox-secondary" style="margin-bottom:6px;padding:8px 12px;font-size:12px">'+bi(d,dEs)+'</div>';});
   }
   return html;
 }
