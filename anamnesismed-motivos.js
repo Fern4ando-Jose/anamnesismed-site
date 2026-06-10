@@ -877,6 +877,175 @@ const RAS_SYSTEMS = [
 // ── GUIDE CONTENT DATA ────────────────────────────────
 
 const GUIDE_CONTENT = {
+'semio-dor': {
+  mnemonics: [
+    {kw:'ALICIA', name:'Caracterização semiológica da dor', rows:[
+      ['A','Aparición / Início','Quando e como começou: súbito (vascular/perfuração) ou gradual (inflamatório)'],
+      ['L','Localización','Onde dói — apontar com um dedo (somática) ou difusa/mal definida (visceral)'],
+      ['I','Irradiación','Para onde a dor se propaga (ex.: ombro na irritação diafragmática, dorso na pancreatite)'],
+      ['C','Carácter','Tipo: em cólica, queimação, pontada, peso, lancinante'],
+      ['I','Intensidad','EVA 0-10 e repercussão nas atividades/sono'],
+      ['A','Atenuantes/Agravantes','O que melhora ou piora: posição, alimentação, repouso, medicação']
+    ]},
+    {kw:'OPQRST', name:'Roteiro anglo-saxão da dor', rows:[
+      ['O','Onset','Início e circunstância'],
+      ['P','Provocação/Paliação','Fatores que pioram ou aliviam'],
+      ['Q','Quality','Qualidade/caráter da dor'],
+      ['R','Region/Radiation','Localização e irradiação'],
+      ['S','Severity','Intensidade (EVA)'],
+      ['T','Timing','Duração, frequência, evolução temporal']
+    ]},
+    {kw:'VISCERAL x SOMÁTICA', name:'Tipos de dor', rows:[
+      ['V','Visceral','Mal localizada, surda, em cólica, acompanha náusea/sudorese — víscera oca/parenquimatosa'],
+      ['S','Somática','Bem localizada, aguda, piora ao movimento/palpação — peritônio parietal, pele, músculo'],
+      ['R','Referida','Sentida em local distante da origem (ombro/escápula) por convergência medular'],
+      ['N','Neuropática','Queimação, choque, formigamento, no trajeto de um nervo']
+    ]}
+  ],
+  manobras: [
+    {title:'Avaliação da intensidade (EVA)',subtitle:'Escala visual analógica',
+     steps:['Apresentar régua 0 (sem dor) a 10 (pior dor imaginável)','Pedir ao paciente que indique o número','Reavaliar após analgesia para medir resposta'],
+     normal:'0 = ausência de dor',abnormal:'≥7 = dor intensa, exige analgesia e investigação prioritária'},
+    {title:'Palpação dirigida',subtitle:'Localização e reprodutibilidade',
+     steps:['Iniciar longe do ponto de maior dor','Palpação superficial e depois profunda','Observar fácies de dor e defesa muscular'],
+     normal:'Dor não reproduzível à palpação',abnormal:'Dor reproduzível/defesa → origem na parede ou peritônio'},
+    {title:'Manobra de Valsalva / movimento',subtitle:'Diferenciar dor parietal x visceral',
+     steps:['Pedir para contrair a parede (levantar a cabeça) ou tossir','Observar se a dor muda de intensidade'],
+     normal:'Dor visceral profunda não se altera',abnormal:'Dor que piora à contração da parede → origem musculoesquelética/parietal (sinal de Carnett +)'}
+  ],
+  sinais: [
+    {name:'Sinal de Carnett',eponym:'Dor de parede abdominal',how:'Dor à palpação persiste ou piora quando o paciente tensiona a parede (eleva a cabeça)',means:'Origem na parede abdominal (não intra-abdominal) — evita laparotomia desnecessária'},
+    {name:'Dor referida ao ombro (Kehr)',eponym:'Irritação diafragmática',how:'Dor no ombro esquerdo por sangue/irritação subfrênica',means:'Ruptura esplênica, gravidez ectópica rota, irritação peritoneal'},
+    {name:'Hiperalgesia/alodínia',eponym:'Dor neuropática',how:'Dor desproporcional ao estímulo no trajeto de um nervo',means:'Componente neuropático — orienta terapia específica (gabapentinoides)'}
+  ],
+  ddx:[
+    ['Dor nociceptiva visceral','Mal localizada, cólica, náusea/sudorese associada','Bem localizada, piora ao movimento'],
+    ['Dor somática/parietal','Localizada, piora ao movimento e palpação, Carnett +','Difusa, profunda, sem relação com movimento'],
+    ['Dor neuropática','Queimação/choque, trajeto de nervo, alodínia','Caráter em peso/cólica, sem alteração sensitiva'],
+    ['Dor referida','Distante da origem, sem alteração local','Reproduzível pela palpação no local'],
+    ['Dor psicogênica/funcional','Crônica, exame normal, contexto emocional','Sinais objetivos, marcadores inflamatórios alterados']
+  ],
+  escalas:[
+    {title:'Escala Visual Analógica (EVA)',headers:['Faixa','Intensidade','Conduta'],
+     rows:[['0','Sem dor','Observação'],['1-3','Leve','Analgésico simples (paracetamol/dipirona)'],['4-6','Moderada','AINE / opioide fraco'],['7-10','Intensa','Opioide / analgesia multimodal + investigação prioritária']],
+     note:'Reavaliar a EVA após cada intervenção analgésica para titular o tratamento'},
+    {title:'Sinais de alarme da dor',headers:['Achado','Significado'],
+     rows:[['Início súbito e intenso ("pior dor da vida")','Evento vascular/perfuração — emergência'],['Dor + instabilidade hemodinâmica','Choque/hemorragia — avaliar imediatamente'],['Dor noturna que desperta + perda de peso','Suspeita de neoplasia'],['Defesa/rigidez involuntária','Peritonite — avaliação cirúrgica']],
+     note:'A presença de qualquer sinal de alarme exige investigação imediata'}
+  ],
+  conduta:{
+    exames:['Direcionar conforme a topografia e a hipótese (a dor é sintoma, não doença)','Hemograma, PCR e exames básicos quando há suspeita inflamatória/infecciosa','Imagem dirigida ao sítio (USG, radiografia, TC) conforme o caso','Reavaliação seriada do exame físico em dores agudas indiferenciadas'],
+    drugs:['Analgesia por degraus conforme a EVA (escada analgésica da OMS)','Paracetamol/dipirona na dor leve; AINE na dor inflamatória (cautela renal/gástrica)','Opioides na dor intensa, titulados','Dor neuropática: gabapentina/pregabalina, amitriptilina'],
+    steps:['1. Caracterizar a dor por roteiro estruturado (ALICIA/OPQRST)','2. Classificar o tipo (visceral, somática, neuropática, referida)','3. Pesquisar sinais de alarme','4. Tratar a dor enquanto se investiga a causa — analgesia não mascara abdome agudo','5. Reavaliar resposta e exame físico de forma seriada']
+  }
+},
+'semio-cianose': {
+  mnemonics: [
+    {kw:'CENTRAL x PERIFÉRICA', name:'Tipos de cianose', rows:[
+      ['C','Central','Língua e mucosas cianóticas, extremidades quentes — hipoxemia/shunt; SpO₂ baixa'],
+      ['P','Periférica','Extremidades frias e cianóticas, mucosas poupadas — baixo débito/vasoconstrição; SpO₂ normal'],
+      ['M','Mista','Combinação — ex.: insuficiência cardíaca congestiva'],
+      ['D','Diferencial','Cianose em MMII com MMSS poupados — shunt direita-esquerda pós-ductal (ex.: coarctação)']
+    ]},
+    {kw:'5 g/dL', name:'Limiar da cianose', rows:[
+      ['H','Hemoglobina reduzida','Cianose aparece com ≥5 g/dL de Hb desoxigenada no leito capilar'],
+      ['A','Anemia','Pode haver hipoxemia grave SEM cianose (pouca Hb para dessaturar)'],
+      ['P','Policitemia','Cianose surge mais facilmente, mesmo com saturação pouco reduzida']
+    ]}
+  ],
+  manobras: [
+    {title:'Inspeção de mucosas e língua',subtitle:'Diferenciar central x periférica',
+     steps:['Examinar língua, mucosa oral e conjuntivas sob boa iluminação','Comparar com leito ungueal e extremidades'],
+     normal:'Mucosas e língua róseas',abnormal:'Língua/mucosas azuladas → cianose central (hipoxemia/shunt)'},
+    {title:'Teste do aquecimento',subtitle:'Cianose periférica',
+     steps:['Aquecer a extremidade cianótica (massagem/calor)','Observar se a cor melhora'],
+     normal:'Sem cianose após aquecimento',abnormal:'Melhora com aquecimento → cianose periférica (vasoconstrição/baixo débito)'},
+    {title:'Oximetria + resposta ao O₂',subtitle:'Confirmar hipoxemia',
+     steps:['Medir SpO₂ em ar ambiente','Ofertar O₂ suplementar e remensurar'],
+     normal:'SpO₂ ≥95% e melhora com O₂',abnormal:'Não melhora com O₂ → suspeitar shunt direita-esquerda ou meta-hemoglobinemia'}
+  ],
+  sinais: [
+    {name:'Cianose diferencial',eponym:'Shunt pós-ductal',how:'MMII cianóticos e MMSS rosados (ou vice-versa)',means:'Cardiopatia congênita com shunt — avaliação cardiológica'},
+    {name:'Baqueteamento digital',eponym:'Hipoxemia crônica',how:'Hipocratismo digital — ângulo de Lovibond >180°',means:'Cardiopatia cianótica crônica, pneumopatia, supuração crônica'},
+    {name:'Cianose que não responde ao O₂',eponym:'Meta-hemoglobinemia',how:'SpO₂ "travada" ~85%, sangue cor de chocolate',means:'Meta-hemoglobinemia (dapsona, nitritos, anestésicos) — azul de metileno'}
+  ],
+  ddx:[
+    ['Hipoxemia pulmonar','Cianose central, SpO₂ baixa, melhora com O₂','Não melhora com O₂; extremidades frias isoladas'],
+    ['Shunt direita-esquerda','Central, baqueteamento, não melhora com O₂','Melhora plena com O₂'],
+    ['Baixo débito / vasoconstrição','Periférica, extremidades frias, mucosas poupadas','Língua cianótica, SpO₂ baixa'],
+    ['Meta-hemoglobinemia','SpO₂ ~85% fixa, sangue achocolatado, fármaco causal','Resposta normal ao O₂; gasometria com PaO₂ baixa'],
+    ['Fenômeno de Raynaud','Cianose episódica das extremidades ao frio, trifásica','Cianose central persistente']
+  ],
+  escalas:[
+    {title:'Central x Periférica',headers:['Característica','Central','Periférica'],
+     rows:[['Mucosas/língua','Cianóticas','Poupadas'],['Temperatura da extremidade','Quente','Fria'],['SpO₂','Reduzida','Normal'],['Melhora ao aquecer','Não','Sim']],
+     note:'A cianose central reflete dessaturação arterial; a periférica, aumento da extração tecidual'},
+    {title:'Sinais de alarme',headers:['Achado','Significado'],
+     rows:[['Cianose central de início súbito + dispneia','Emergência respiratória/cardíaca'],['Cianose que não melhora com O₂','Shunt ou meta-hemoglobinemia'],['Cianose + rebaixamento de consciência','Hipóxia grave — suporte imediato']],
+     note:'Cianose é sinal tardio de hipoxemia — não aguardar seu surgimento para tratar'}
+  ],
+  conduta:{
+    exames:['Oximetria de pulso e gasometria arterial (PaO₂, SatO₂, metaHb se co-oximetria)','Hemograma (anemia/policitemia)','Radiografia de tórax','ECG e ecocardiograma se suspeita cardíaca/shunt','Dosagem de meta-hemoglobina se SpO₂ fixa não responsiva'],
+    drugs:['Oxigenoterapia conforme a causa e a SpO₂','Tratamento dirigido à doença de base (pulmonar/cardíaca)','Azul de metileno na meta-hemoglobinemia sintomática','Aquecimento e otimização do débito na cianose periférica'],
+    steps:['1. Diferenciar cianose central de periférica pelo exame de mucosas/extremidades','2. Medir SpO₂ e gasometria','3. Ofertar O₂ e observar resposta','4. Investigar a causa (pulmonar, cardíaca, hematológica, vascular)','5. Lembrar que anemia mascara e policitemia exagera a cianose']
+  }
+},
+'semio-astenia': {
+  mnemonics: [
+    {kw:'VITAMINAS-D', name:'Causas de astenia/fadiga', rows:[
+      ['V','Vascular/Cardíaca','Insuficiência cardíaca, anemia, hipotensão'],
+      ['I','Infecciosa','Mononucleose, tuberculose, HIV, COVID, endocardite'],
+      ['T','Tóxico/Medicamentosa','Betabloqueadores, sedativos, álcool, quimioterapia'],
+      ['A','Autoimune/Inflamatória','Lúpus, artrite reumatoide, polimialgia'],
+      ['M','Metabólica/Endócrina','Hipotireoidismo, diabetes, Addison, distúrbios eletrolíticos'],
+      ['N','Neoplásica','Síndrome consumptiva, anemia paraneoplásica'],
+      ['D','Depressão/Psíquica','Depressão, ansiedade, distúrbio do sono']
+    ]},
+    {kw:'ORGÂNICA x FUNCIONAL', name:'Padrão temporal da fadiga', rows:[
+      ['O','Orgânica','Piora ao longo do dia, com o esforço; melhora com repouso; início recente e progressivo'],
+      ['F','Funcional/psicogênica','Presente já ao acordar, não melhora com repouso, crônica e flutuante'],
+      ['A','Alarme','Perda de peso, febre, sudorese noturna, linfadenomegalia → investigar causa orgânica grave']
+    ]}
+  ],
+  manobras: [
+    {title:'Diferenciar astenia de fraqueza muscular real',subtitle:'Semiologia neuromuscular',
+     steps:['Testar a força muscular segmentar (escala MRC 0-5)','Pedir tarefas funcionais: levantar da cadeira sem apoio, elevar os braços'],
+     normal:'Força preservada (5/5) — cansaço sem déficit = astenia',abnormal:'Força reduzida objetivamente → fraqueza neuromuscular (miopatia, neuropatia), não astenia'},
+    {title:'Pesquisa de palidez/anemia',subtitle:'Causa frequente de astenia',
+     steps:['Inspecionar conjuntivas, palmas e mucosas','Avaliar taquicardia e sopro sistólico funcional'],
+     normal:'Mucosas coradas',abnormal:'Palidez mucosa → anemia provável; solicitar hemograma'},
+    {title:'Avaliação da tireoide',subtitle:'Hipotireoidismo',
+     steps:['Palpar a glândula tireoide','Pesquisar pele seca, bradicardia, reflexo aquileu lentificado'],
+     normal:'Tireoide normal, sem sinais de hipofunção',abnormal:'Bócio/sinais de hipotireoidismo → dosar TSH'}
+  ],
+  sinais: [
+    {name:'Reflexo aquileu lentificado',eponym:'Hipotireoidismo',how:'Fase de relaxamento lenta do reflexo do tornozelo',means:'Sugere hipotireoidismo como causa da astenia'},
+    {name:'Palidez palmar',eponym:'Anemia',how:'Pregas palmares descoradas',means:'Anemia significativa — investigar causa'},
+    {name:'Hiperpigmentação cutânea',eponym:'Insuficiência adrenal (Addison)',how:'Escurecimento de pregas, cicatrizes e mucosas',means:'Doença de Addison — fadiga + hipotensão + avidez por sal'}
+  ],
+  ddx:[
+    ['Anemia','Palidez, dispneia aos esforços, taquicardia, Hb baixa','Hemograma normal'],
+    ['Hipotireoidismo','Intolerância ao frio, pele seca, ganho de peso, TSH ↑','TSH normal'],
+    ['Depressão','Anedonia, fadiga ao acordar, alteração do sono/apetite','Anedonia ausente, fadiga ao esforço'],
+    ['Apneia do sono','Sonolência diurna, ronco, fadiga matinal, obesidade','Sono reparador, sem ronco'],
+    ['Neoplasia/doença crônica','Perda de peso, febre, sudorese noturna, sinais de alarme','Exame e marcadores normais'],
+    ['Fadiga relacionada a fármacos','Início após novo medicamento (betabloq., sedativo)','Sem mudança medicamentosa recente'],
+    ['Síndrome da fadiga crônica','Fadiga >6 meses, pós-esforço, exames normais','Causa orgânica identificável']
+  ],
+  escalas:[
+    {title:'Orgânica x Funcional',headers:['Característica','Orgânica','Funcional/Psíquica'],
+     rows:[['Início','Recente, progressivo','Crônico, flutuante'],['Relação com esforço','Piora ao esforço','Já presente ao acordar'],['Repouso','Melhora','Não melhora'],['Sinais de alarme','Frequentes','Ausentes']],
+     note:'O padrão temporal ajuda a priorizar a investigação orgânica versus o suporte psicossocial'},
+    {title:'Sinais de alarme na astenia',headers:['Achado','Significado'],
+     rows:[['Perda de peso não intencional','Neoplasia, infecção crônica, hipertireoidismo'],['Febre/sudorese noturna','Infecção crônica, linfoma'],['Linfadenomegalia/visceromegalia','Doença hematológica/neoplásica'],['Fraqueza muscular objetiva','Doença neuromuscular — não é astenia']],
+     note:'Astenia com sinais de alarme exige investigação orgânica dirigida e precoce'}
+  ],
+  conduta:{
+    exames:['Hemograma completo (anemia)','TSH e T4 livre (tireoide)','Glicemia/HbA1c','Função renal e hepática, eletrólitos (Na, K, Ca)','Ferritina e perfil de ferro','Sorologias conforme suspeita (HIV, hepatites, mononucleose)','VHS/PCR; rastreio oncológico conforme idade e sinais de alarme'],
+    drugs:['Não há medicação sintomática genérica — tratar a causa de base','Repor ferro/vitaminas se carência documentada','Ajustar/retirar fármacos sedativos quando possível','Abordar higiene do sono e suporte para depressão/ansiedade'],
+    steps:['1. Diferenciar astenia (cansaço) de fraqueza muscular objetiva','2. Definir o padrão temporal (orgânico x funcional)','3. Pesquisar sinais de alarme','4. Solicitar rastreio laboratorial básico (hemograma, TSH, glicemia, função renal/hepática)','5. Tratar a causa identificada e reavaliar; considerar causas psíquicas quando a investigação orgânica é negativa']
+  }
+},
 'febre': {
   mnemonics: [
     {kw:'IIDET', name:'Semiologia da febre', rows:[
@@ -1789,3 +1958,4 @@ GUIDE_CONTENT['semio-disnea']    = GUIDE_CONTENT['dispneia'];
 GUIDE_CONTENT['semio-ictericia'] = GUIDE_CONTENT['ictericia'];
 GUIDE_CONTENT['semio-edema']     = GUIDE_CONTENT['edema'];
 GUIDE_CONTENT['semio-tosse']     = GUIDE_CONTENT['tosse'];
+GUIDE_CONTENT['semio-peso']      = GUIDE_CONTENT['perda-peso'];
