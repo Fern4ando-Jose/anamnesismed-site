@@ -133,185 +133,173 @@ function gerarNarrativaAEA_cefaleia(ans, lng){
 }
 
 // Motor narrativo cronológico universal — gera prosa clínica para QUALQUER motivo automaticamente
+// MOTOR ÚNICO DE NARRATIVA CLÍNICA DA AEA
 function gerarNarrativaAEA_generica(ans, lng, mObj){
   var pt = (lng !== 'es');
-  var respondidas = ans.filter(function(a){ return a.resp && a.resp !== '—'; });
-  if(!respondidas.length) return '';
+  var resp = ans.filter(function(a){ return a.resp && a.resp !== '—' && String(a.resp).trim()!==''; });
+  if(!resp.length) return '';
 
   var nomeMotivo = mObj ? (pt ? (mObj.name||'') : (mObj.nameEs||mObj.name||'')) : '';
+  nomeMotivo = nomeMotivo.replace(/\s*\/\s*Abd[oô]men Agudo/i,'').replace(/\s*\/\s*.*$/,'').trim();
 
-  var idadeEl = document.getElementById('dp-idade');
-  var sexoEl  = document.getElementById('dp-sexo');
-  var idadeVal = idadeEl ? (idadeEl.value||'').trim() : '';
-  var sexoRaw  = sexoEl  ? (sexoEl.value ||'')        : '';
-  var sexoTxt  = sexoRaw === 'M' ? 'sexo masculino'
-               : sexoRaw === 'F' ? (pt?'sexo feminino':'sexo femenino') : '';
+  var idEl=document.getElementById('dp-idade'), sxEl=document.getElementById('dp-sexo');
+  var idade = idEl ? (idEl.value||'').trim() : '';
+  var sexoRaw = sxEl ? (sxEl.value||'') : '';
+  var sexoTxt = sexoRaw==='M' ? (pt?'sexo masculino':'sexo masculino')
+              : sexoRaw==='F' ? (pt?'sexo feminino':'sexo femenino') : '';
 
-  // ── Detectores de pergunta por conteúdo ──────────────────────
-  // duração: "quantos dias", "cuántos días", "hace cuánto", "há quanto"
-  function isDuracaoQ(a){ return /quantos\s+dias|cuántos|h[aá]\s+quanto|hace\s+cuánto/i.test(a.qText||''); }
-  // tipo de início: qText é exatamente "Início" ou "Inicio"
-  function isOnsetQ(a){   return /^in[ií]cio$/i.test((a.qText||'').trim()); }
-  function isEvolucaoQ(a){ return /evolução.*quadro|evolución.*cuadro/i.test(a.qText||''); }
-  function isMotivoQ(a){   return /motivou buscar|motivó buscar/i.test(a.qText||''); }
-  function isAlarmQ(a){    return /alarme|alarma|red\s*flag/i.test(a.qText||''); }
+  // ── util ────────────────────────────────────────────────
+  function low(s){ return (s==null?'':String(s)).toLowerCase(); }
+  function cleanLbl(q){
+    var s=(q||'').replace(/\([^)]*\)/g,' ');   // remove (...)
+    s=s.replace(/[?¿].*$/,'');                    // corta na 1a interrogação (descarta orações extras)
+    s=s.replace(/\s*[—–-]\s+.*$/,'');           // remove " — explicação"
+    return s.replace(/\s+/g,' ').trim();
+  }
+  function cleanVal(v){ return (v||'').replace(/\s*\([^)]*\)\s*$/,'').trim(); }
+  function isPlaceholder(v){ return /^(descreva|relate|liste|ex:|nº|dum|medicamento,|°c$|0 a 10$|n[ºo]\/dia)/i.test(low(v).trim()); }
+  function join(arr, and){ arr=arr.filter(Boolean); if(!arr.length) return ''; if(arr.length===1) return arr[0]; var last=arr.pop(); return arr.join(', ')+and+last; }
+  function yes(v){ return /^(sim|sí|si)\b/i.test(low(v)); }
+  function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
 
-  // ── Separar respostas em buckets ──────────────────────────────
-  var duracaoAns=null, onsetAns=null, evolucaoAns=null, motivoAns=null, restAns=[];
-  respondidas.forEach(function(a){
-    if(!evolucaoAns && isEvolucaoQ(a))  { evolucaoAns=a; return; }
-    if(!motivoAns   && isMotivoQ(a))    { motivoAns=a;   return; }
-    if(!duracaoAns  && isDuracaoQ(a))   { duracaoAns=a;  return; }
-    if(!onsetAns    && isOnsetQ(a))     { onsetAns=a;    return; }
-    restAns.push(a);
-  });
+  // ── classificador de papel semântico ────────────────────
+  function role(a){
+    var q=low(a.qText);
+    if(/motivou buscar|motiv[óo] buscar|o que motivou|motiv(o|ó) (a|de) (consulta|busca)/.test(q)) return 'MOTIVO';
+    if(/alarme|alarma|red\s*flag/.test(q)) return 'ALARME';
+    if(/migrou|migraci[óo]n|migra[çc][ãa]o/.test(q)) return 'MIGR';
+    if(/evolu[çc]|progress|piorando.*est[áa]vel|padr[ãa]o de evolu/.test(q)) return 'EVOL';
+    if(a.type!=='yn' && /uso de medicament|medicamentos? (em uso|em uso|que|potencialmente)|quais medicament|qual medicament|medicament[oa]s? hepatot|medicamentos? constipant|medicament/.test(q)) return 'MED';
+    if(/antecedent|fatores de risco|hist[óo]ria de|epis[óo]dios? (semelhant|pr[ée]vi|anterior)|tabagismo|etilismo|cardiopatia ou pneumopatia|antecedente de hepatopatia|carga tab[áa]gica/.test(q)) return 'ANTEC';
+    if(/localiza/.test(q)) return 'LOC';
+    if(/irradia/.test(q)) return 'IRR';
+    if(/intensidade|\beva\b|escala m?mrc|grau de dispneia|escala (visual|de borg)/.test(q)) return 'INT';
+    if(/h[áa] quant|desde quando|tempo decorrido|h[áa] quanto tempo|tempo de evolu/.test(q)) return 'DURTOT';
+    if(/dura[çc][ãa]o|duraci[óo]n/.test(q)) return 'DUREP';
+    if(/^in[ií]cio|in[ií]cio e |in[ií]cio em rela|circunst[âa]ncia (em que )?ocorreu|mecanismo do trauma|in[ií]cio\?/.test(q)) return 'ONSET';
+    if(/frequ[êe]ncia|periodicidade|n[úu]mero de|quantos epis[óo]dios|momento do dia|momento de predom|padr[ãa]o.*febr|curva febril|ritmo da dor|nict[úu]ria|frequencia/.test(q)) return 'FREQ';
+    if(/rela[çc][ãa]o com|fatores que (pioram|melhoram)|fatores desencadeant|posi[çc][ãa]o que alivia|outros fatores|que (piora|alivia)|relaci[óo]n con/.test(q)) return 'FATOR';
+    if(/car[áa]ter|car[áa]cter|tipo\b|tipo\/car|tipo de sensa|como descreveria|conte[úu]do do v[óo]mito|caracter[íi]sticas? d|caracteriza[çc][ãa]o|apresenta[çc][ãa]o|aspecto/.test(q)) return 'CAR';
+    if(a.type==='yn') return 'ASSOC';
+    return 'DESC';
+  }
 
-  var descr=[], sim=[], nao=[], alarme_sim=false, alarme_nao=false;
-  restAns.forEach(function(a){
-    if(isAlarmQ(a)){
-      if(/^(Sim|Sí)/.test(a.resp)) alarme_sim=true; else alarme_nao=true;
-    } else if(a.type==='yn'){
-      if(/^(Sim|Sí)/.test(a.resp)) sim.push(a); else nao.push(a);
-    } else {
-      descr.push(a);
+  // ── distribui em baldes ─────────────────────────────────
+  var B={LOC:null,IRR:null,CAR:null,INT:null,DURTOT:null,DUREP:null,ONSET:null,FREQ:[],FATOR:[],MIGR:null,EVOL:null,MED:[],ANTEC:[],MOTIVO:null,DESC:[],assocSim:[],assocNao:[],alarmeSim:false,alarmeNao:false};
+  resp.forEach(function(a){
+    var r=role(a), v=cleanVal(a.resp);
+    if(isPlaceholder(v) && a.type==='input') return; // ignora placeholder vazando em input
+    // yn só pode ser MIGR/ALARME/ANTEC/MOTIVO; senão é sintoma (ASSOC) ou modulador (FATORYN)
+    if(a.type==='yn' && r!=='MIGR' && r!=='ALARME' && r!=='ANTEC' && r!=='MOTIVO'){
+      r = /^(alivia|piora|melhora|rela[çc][ãa]o com|relaci[óo]n con|alivio|empeora)/i.test(low(cleanLbl(a.qText))) ? 'FATORYN' : 'ASSOC';
+    }
+    switch(r){
+      case 'LOC': if(!B.LOC)B.LOC=v; break;
+      case 'IRR': if(!B.IRR)B.IRR=v; break;
+      case 'CAR': if(!B.CAR)B.CAR=v; else B.DESC.push({l:cleanLbl(a.qText),v:v}); break;
+      case 'INT': if(!B.INT)B.INT=v; break;
+      case 'DURTOT': if(!B.DURTOT)B.DURTOT=v; break;
+      case 'DUREP': if(!B.DUREP)B.DUREP=v; break;
+      case 'ONSET': if(!B.ONSET)B.ONSET=v; break;
+      case 'FREQ': B.FREQ.push(v); break;
+      case 'FATOR': B.FATOR.push(low(v)); break;
+      case 'MIGR': B.MIGR=v; break;
+      case 'EVOL': if(!B.EVOL)B.EVOL=v; break;
+      case 'MED': B.MED.push(v); break;
+      case 'ANTEC':
+        var albl=low(cleanLbl(a.qText)).replace(/^(antecedentes?|hist[óo]ria)\s+(de\s+|pessoa(l|is)\s+de\s+|familiar(es)?\s+de\s+)?/,'').trim();
+        if(a.type==='yn'){ if(yes(v)) B.ANTEC.push(albl); }
+        else B.ANTEC.push(albl+': '+v);
+        break;
+      case 'ALARME': if(yes(v)) B.alarmeSim=true; else B.alarmeNao=true; break;
+      case 'MOTIVO': if(!isPlaceholder(v)) B.MOTIVO=v; break;
+      case 'FATORYN':
+        var fl=low(cleanLbl(a.qText));
+        if(yes(v)) B.FATOR.push(fl);
+        else if(/^(rela[çc][ãa]o com|relaci[óo]n con)/.test(fl)) B.FATOR.push((pt?'sem ':'sin ')+fl.replace(/^rela[çc][ãa]o com\s*|^relaci[óo]n con\s*/,(pt?'relação com ':'relación con ')));
+        else B.FATOR.push((pt?'não ':'no ')+fl);
+        break;
+      case 'ASSOC':
+        var sl=low(cleanLbl(a.qText)).replace(/\s+associad[oa]s?\b/g,'').replace(/^h[áa]\s+/,'').trim();
+        if(yes(v)) B.assocSim.push(sl); else B.assocNao.push(sl);
+        break;
+      default: B.DESC.push({l:cleanLbl(a.qText),v:v});
     }
   });
 
-  function cleanQ(a){
-    return (a.qText||'').replace(/[?¿]/g,'').replace(/\s*\([^)]*\)/g,'').trim().toLowerCase();
+  var P=[];
+  // ── 1. ABERTURA: motivo + início ────────────────────────
+  var ab='Paciente';
+  if(idade && /^\d+$/.test(idade)){ ab+=' de '+idade+(pt?' anos':' años'); if(sexoTxt) ab+=', '+sexoTxt; }
+  else if(sexoTxt){ ab+=', '+sexoTxt; }
+  ab+=', ';
+  var mtxt=low(nomeMotivo);
+  ab+=(pt?'refere quadro de ':'refiere cuadro de ')+mtxt;
+  var durTxt='';
+  if(B.DURTOT){
+    var dur=low(B.DURTOT);
+    if(/^\d+$/.test(dur)) dur+=(pt?' dias':' días');
+    if(/\d|dias?|d[íi]as?|semana|m[êe]s|mes|hora|ano|a[ñn]o|h[áa]\s|hace/.test(dur)) durTxt=(pt?' iniciado há ':' iniciado hace ')+dur;
+    else durTxt=(pt?', de evolução ':', de evolución ')+dur;  // aguda/subaguda/crônica
   }
-  function shortLabel(a){
-    var q = cleanQ(a);
-    // Cortar na primeira barra ("/") para rótulos compostos
-    var slash = q.indexOf('/');
-    if(slash > 4 && slash < 30) q = q.substring(0, slash).trim();
-    return q.length > 40 ? q.substring(0,40) : q;
+  ab+=durTxt;
+  if(B.ONSET){
+    var on=low(B.ONSET).replace(/^in[íi]cio\s+(e\s+(t[ée]rmino|dura[çc][ãa]o|migra[çc][ãa]o)\s+)?/,'').trim();
+    if(on) ab+=(pt?', de início ':', de inicio ')+on;
   }
-  function joinList(arr, andWord){
-    var cp = arr.slice();
-    var last = cp.length > 1 ? cp.pop() : null;
-    return last ? cp.join(', ') + andWord + last : cp[0] || '';
-  }
-  // Adiciona unidade temporal quando o valor é um número puro
-  function addUnit(val){
-    return /^\d+$/.test(val.trim()) ? val.trim() + (pt?' dias':' días') : val;
+  ab+='.';
+  P.push(ab);
+
+  // ── 2. CARACTERIZAÇÃO ───────────────────────────────────
+  var c=[];
+  if(B.CAR) c.push((pt?'de caráter ':'de carácter ')+low(B.CAR));
+  if(B.LOC) c.push((pt?'localizado em ':'localizado en ')+low(B.LOC));
+  if(B.IRR){ var ir=low(B.IRR); c.push(/sem irradia|sin irradia/.test(ir)?(pt?'sem irradiação':'sin irradiación'):((pt?'com irradiação para ':'con irradiación hacia ')+ir.replace(/^para\s+/,''))); }
+  if(B.INT){ var iv=B.INT.trim(); c.push((pt?'intensidade ':'intensidad ')+(/^\d+$/.test(iv)?iv+'/10':low(iv))); }
+  if(B.DUREP) c.push((pt?'com duração de ':'con duración de ')+low(B.DUREP));
+  if(B.FREQ.length) c.push((pt?'de padrão ':'de patrón ')+join(B.FREQ.map(low),pt?' e ':' y '));
+  if(c.length) P.push((pt?'Caracteriza o quadro como ':'Caracteriza el cuadro como ')+join(c,pt?' e ':' y ')+'.');
+
+  // ── 3. MIGRAÇÃO ─────────────────────────────────────────
+  if(B.MIGR && !/^(n[ãa]o|no)\b/i.test(low(B.MIGR))){
+    var mg=B.MIGR.replace(/^(sim|sí|si)\s*[—–-]?\s*/i,'');
+    P.push((pt?'Refere início/migração da dor — ':'Refiere inicio/migración del dolor — ')+low(mg)+'.');
   }
 
-  var partes = [];
-
-  // ── Abertura cronológica ──────────────────────────────────────
-  var abertura = 'Paciente';
-  if(idadeVal && /^\d+$/.test(idadeVal)){
-    abertura += ' de ' + idadeVal + (pt?' anos':' años');
-    if(sexoTxt) abertura += ', ' + sexoTxt;
-    abertura += ', ';
-  } else { abertura += ' '; }
-
-  if(duracaoAns){
-    // "refere que há X dias iniciou com [motivo], de início súbito/gradual"
-    var dur = addUnit(duracaoAns.resp).toLowerCase();
-    abertura += (pt?'refere que há ':'refiere que hace ') + dur
-             + (pt?' iniciou com ':' inició con ') + nomeMotivo.toLowerCase();
-    if(onsetAns) abertura += (pt?', de início ':', de inicio ') + onsetAns.resp.toLowerCase();
-  } else if(onsetAns){
-    // sem duração mas tem tipo de início
-    abertura += (pt?'refere ':'refiere ') + nomeMotivo.toLowerCase()
-             + (pt?' de início ':' de inicio ') + onsetAns.resp.toLowerCase();
-  } else {
-    abertura += (pt?'refere ':'refiere ') + nomeMotivo.toLowerCase();
-  }
-  abertura += '.';
-  partes.push(abertura);
-
-  // ── Descritivos: tecer os caracterizadores clássicos do sintoma
-  // (localização, irradiação, caráter, intensidade, duração, frequência)
-  // em UMA frase de prosa clínica; os demais saem como frases rotuladas ───
-  var dLoc=null,dIrr=null,dCar=null,dInt=null,dDurEp=null,dFreq=null,outros=[];
-  descr.forEach(function(a){
-    var q = cleanQ(a);
-    if(!dLoc && /localiza/i.test(q)) dLoc=a;
-    else if(!dIrr && /irradia/i.test(q)) dIrr=a;
-    else if(!dCar && /tipo|car[aá]ter|car[aá]cter/i.test(q)) dCar=a;
-    else if(!dInt && /intensidade|intensidad|\beva\b/i.test(q)) dInt=a;
-    else if(!dDurEp && /dura[çc][ãa]o|duraci[óo]n/i.test(q)) dDurEp=a;
-    else if(!dFreq && /frequ[êe]ncia|frecuencia/i.test(q)) dFreq=a;
-    else outros.push(a);
-  });
-
-  var carac = [];
-  if(dLoc) carac.push((pt?'de localização ':'de localización ') + dLoc.resp.toLowerCase());
-  if(dCar) carac.push((pt?'de caráter ':'de carácter ') + dCar.resp.toLowerCase());
-  if(dIrr){
-    var irr = dIrr.resp.toLowerCase();
-    carac.push(/sem irradia|sin irradia/.test(irr)
-      ? (pt?'sem irradiação':'sin irradiación')
-      : (pt?'com irradiação para ':'con irradiación hacia ') + irr);
-  }
-  if(dInt){
-    var iv = dInt.resp.trim();
-    carac.push((pt?'intensidade ':'intensidad ') + (/^\d+$/.test(iv) ? iv + '/10' : iv.toLowerCase()));
-  }
-  if(dDurEp) carac.push((pt?'com duração de ':'con duración de ') + dDurEp.resp.toLowerCase());
-  if(dFreq)  carac.push((pt?'de frequência ':'de frecuencia ') + dFreq.resp.toLowerCase());
-  if(carac.length){
-    partes.push((pt?'Caracteriza o quadro como ':'Caracteriza el cuadro como ')
-              + joinList(carac, pt?' e ':' y ') + '.');
+  // ── 4. FATORES MODULADORES ──────────────────────────────
+  if(B.FATOR.length){
+    var fs=B.FATOR.filter(function(f){return !/sem rela|sin rela|nenhum|ningún/.test(f);});
+    if(fs.length) P.push((pt?'Quanto aos fatores moduladores, relata: ':'En cuanto a los factores moduladores, refiere: ')+join(fs,pt?' e ':' y ')+'.');
   }
 
-  outros.forEach(function(a){
-    var val = a.resp; if(!val || val==='—') return;
-    if(/medicament/i.test(a.qText||'')){
-      partes.push((pt?'Em uso de: ':'En uso de: ') + val + '.');
-      return;
-    }
-    var lbl = shortLabel(a);
-    lbl = lbl.charAt(0).toUpperCase() + lbl.slice(1);
-    if(a.type === 'multi'){
-      var items = val.split(',').map(function(s){ return s.trim().toLowerCase(); }).filter(Boolean);
-      if(items.length) partes.push(lbl + ': ' + joinList(items, pt?' e ':' y ') + '.');
-    } else {
-      partes.push(lbl + ': ' + val + '.');
-    }
-  });
+  // ── 5. EVOLUÇÃO ─────────────────────────────────────────
+  if(B.EVOL) P.push((pt?'O quadro evoluiu de forma ':'El cuadro evolucionó de forma ')+low(B.EVOL).replace(/\s*\(.*\)$/,'')+'.');
 
-  // ── Evolução ─────────────────────────────────────────────────
-  if(evolucaoAns){
-    partes.push((pt?'Evoluiu de forma ':'Evolucionó de forma ')
-              + evolucaoAns.resp.toLowerCase() + '.');
+  // ── 6. SINTOMAS ASSOCIADOS ──────────────────────────────
+  if(B.assocSim.length) P.push((pt?'Associa ':'Asocia ')+join(B.assocSim.slice(0,8),pt?' e ':' y ')+(B.assocSim.length>8?(pt?', entre outros':', entre otros'):'')+'.');
+
+  // ── 7. NEGATIVOS PERTINENTES ────────────────────────────
+  if(B.assocNao.length) P.push((pt?'Nega ':'Niega ')+join(B.assocNao.slice(0,8),pt?' e ':' y ')+(B.assocNao.length>8?(pt?', bem como os demais sintomas pesquisados':', así como los demás síntomas investigados'):'')+'.');
+
+  // ── 8. ANTECEDENTES / MEDICAÇÃO ─────────────────────────
+  if(B.ANTEC.length) P.push((pt?'Apresenta antecedentes de ':'Presenta antecedentes de ')+join(B.ANTEC.slice(0,6),pt?' e ':' y ')+'.');
+  if(B.MED.length){ var meds=B.MED.filter(function(m){return !isPlaceholder(m);}); if(meds.length) P.push((pt?'Em uso de ':'En uso de ')+join(meds,pt?' e ':' y ')+'.'); }
+
+  // ── 9. OUTROS DESCRITIVOS (limpos, sem fragmentos) ──────
+  if(B.DESC.length){
+    var ds=B.DESC.filter(function(d){return d.v && !isPlaceholder(d.v);})
+                 .map(function(d){return low(d.l)+': '+low(d.v);});
+    if(ds.length) P.push(cap((pt?'descreve ainda — ':'describe además — ')+ds.join('; '))+'.');
   }
 
-  // ── Sintomas associados (máx 5) ───────────────────────────────
-  if(sim.length){
-    var simLbls = sim.slice(0,5).map(cleanQ).filter(Boolean);
-    partes.push((pt?'Associa ':'Asocia ')
-              + joinList(simLbls, pt?' e ':' y ')
-              + (sim.length > 5 ? (pt?' (e outros).':' (y otros).') : '.'));
-  }
+  // ── 10. ALARME ──────────────────────────────────────────
+  if(B.alarmeSim) P.push(pt?'⚠ Sinais de alarme presentes — avaliação prioritária indicada.':'⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
+  else if(B.alarmeNao) P.push(pt?'Nega sinais de alarme.':'Niega signos de alarma.');
 
-  // ── Negativos pertinentes — sempre relatados (são clinicamente relevantes);
-  // lista até 6 e resume o restante. Alarme é frase própria, independente. ─────
-  if(nao.length){
-    var negLbls = nao.slice(0,6).map(cleanQ).filter(Boolean);
-    partes.push((pt?'Nega ':'Niega ')
-              + joinList(negLbls, pt?' e ':' y ')
-              + (nao.length > 6
-                  ? (pt?', bem como os demais sintomas pesquisados.':', así como los demás síntomas investigados.')
-                  : '.'));
-  }
-  if(alarme_sim){
-    partes.push(pt?'⚠ Sinais de alarme presentes — avaliação prioritária indicada.'
-                  :'⚠ Signos de alarma presentes — evaluación prioritaria indicada.');
-  } else if(alarme_nao){
-    partes.push(pt?'Nega sinais de alarme.':'Niega signos de alarma.');
-  }
+  // ── 11. FECHO: motivo/momento da busca ──────────────────
+  if(B.MOTIVO) P.push((pt?'Procurou atendimento por ':'Buscó atención por ')+low(B.MOTIVO).replace(/\.$/,'')+'.');
 
-  // ── Motivo de busca ───────────────────────────────────────────
-  if(motivoAns && motivoAns.resp && motivoAns.resp !== '—'){
-    partes.push((pt?'Buscou atendimento médico ':'Buscó atención médica ')
-              + motivoAns.resp.toLowerCase().replace(/\.$/, '') + '.');
-  }
-
-  return partes.join(' ');
+  return P.join(' ');
 }
 
 function gerarNarrativaAEA_tosse(ans, lng){
