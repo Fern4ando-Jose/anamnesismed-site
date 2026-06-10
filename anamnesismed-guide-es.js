@@ -17,6 +17,175 @@
 
 var GUIDE_ES = {
 
+'doenca-diverticular': {
+  mnemonics:[
+    { name:'Clasificación de la diverticulitis complicada', rows:[
+      ['Estadio I','Absceso pericólico/mesentérico localizado'],
+      ['Estadio II','Absceso pélvico/a distancia'],
+      ['Estadio III','Peritonitis purulenta generalizada'],
+      ['Estadio IV','Peritonitis fecal (perforación libre)']
+    ]},
+    { name:'Características de la diverticulitis', rows:[
+      ['Sigmoide','Localización más común (dolor en FII)'],
+      ['Fiebre','Signo inflamatorio frecuente'],
+      ['Leucocitosis','Respuesta inflamatoria'],
+      ['Alteración del hábito','Estreñimiento/diarrea, alteración del tránsito'],
+      ['Complicaciones','Absceso, fístula, obstrucción, perforación']
+    ]}
+  ],
+  manobras:[
+    { title:'Palpación de la fosa ilíaca izquierda', subtitle:'Diverticulitis de sigmoide',
+      steps:['Palpar la FII','Evaluar dolor, masa y defensa'],
+      normal:'Sin dolor ni masa', abnormal:'Dolor + masa/plastrón en FII → "apendicitis del lado izquierdo" (diverticulitis)' },
+    { title:'Búsqueda de irritación peritoneal', subtitle:'Complicación',
+      steps:['Evaluar descompresión dolorosa y defensa','Buscar rigidez de pared'],
+      normal:'Abdomen depresible, sin peritonismo', abnormal:'Peritonismo difuso → perforación/peritonitis (Hinchey III-IV)' },
+    { title:'Tacto rectal', subtitle:'Masa/colección pélvica',
+      steps:['Realizar tacto rectal','Evaluar dolor, abombamiento y sangre'],
+      normal:'Sin abombamiento doloroso', abnormal:'Abombamiento doloroso → absceso pélvico' }
+  ],
+  sinais:[
+    { name:'Dolor en FII + fiebre', eponym:'Diverticulitis aguda', how:'Dolor persistente en la fosa ilíaca izquierda con fiebre', means:'Presentación clásica de la diverticulitis de sigmoide' },
+    { name:'Plastrón/masa palpable', eponym:'Diverticulitis complicada', how:'Masa inflamatoria en FII', means:'Flemón/absceso pericólico' },
+    { name:'Neumaturia/fecaluria', eponym:'Fístula colovesical', how:'Eliminación de gas/heces por la orina', means:'Fístula entre el colon y la vejiga — complicación tardía' },
+    { name:'Peritonitis generalizada', eponym:'Perforación (Hinchey III-IV)', how:'Abdomen en tabla, sepsis', means:'Perforación libre — cirugía de urgencia' }
+  ],
+  ddx:[
+    ['Diverticulitis aguda','Dolor en FII, fiebre, leucocitosis, TC con engrosamiento + densificación','Dolor en FID, sin alteración diverticular'],
+    ['Apendicitis','Dolor migratorio a FID, Blumberg +','Dolor en FII en el anciano con divertículos'],
+    ['Cáncer colorrectal','Pérdida de peso, anemia, cambio del hábito, masa','Cuadro inflamatorio agudo febril'],
+    ['Colitis isquémica','Dolor + sangrado, anciano vasculópata','Fiebre y plastrón localizado'],
+    ['Cólico renal/ureteral izquierdo','Dolor lumbar irradiado a la ingle, hematuria','Fiebre, dolor a la palpación abdominal localizada'],
+    ['Enfermedad inflamatoria intestinal','Diarrea crónica con sangre, síntomas sistémicos','Episodio agudo aislado en FII'],
+    ['Patología anexial (mujer)','Dolor pélvico, alteración menstrual, masa anexial','Dolor cólico con divertículos en la TC']
+  ],
+  escalas:[
+    { title:'Hinchey modificado', headers:['Estadio','Hallazgo','Conducta habitual'],
+      rows:[['0/Ia','Diverticulitis no complicada','ATB ± manejo ambulatorio'],['Ib/II','Absceso','ATB + drenaje percutáneo si >4 cm'],['III','Peritonitis purulenta','Cirugía'],['IV','Peritonitis fecal','Cirugía de urgencia (Hartmann)']],
+      note:'La clasificación orienta directamente la conducta' },
+    { title:'No complicada x Complicada', headers:['Característica','No complicada','Complicada'],
+      rows:[['Absceso/fístula/perforación','Ausente','Presente'],['Peritonitis','Ausente','Puede haber'],['Tratamiento','ATB (a veces sin ATB en casos leves)','Drenaje/cirugía'],['Internación','Selectiva','Frecuente']],
+      note:'La TC de abdomen define la presencia de complicaciones' }
+  ],
+  conduta:{
+    exames:['Hemograma, PCR','Función renal, electrolitos','Orina (diferencial urológico) y beta-hCG en mujeres','TC de abdomen y pelvis con contraste (examen de elección)','Colonoscopia ELECTIVA tras 6 semanas (excluir neoplasia) — evitar en la fase aguda'],
+    drugs:['No complicada: dieta + analgesia; ATB selectivo (amoxicilina-clavulanato o ciprofloxacino + metronidazol)','Complicada: ATB EV de amplio espectro','Drenaje percutáneo de abscesos >4 cm','Analgesia (evitar opioides que reducen la motilidad, cuando sea posible)'],
+    steps:['1. Confirmar con TC y clasificar (Hinchey)','2. No complicada → manejo conservador (ambulatorio en casos leves seleccionados)','3. Absceso → ATB + drenaje percutáneo','4. Peritonitis (III-IV) → cirugía de urgencia','5. Colonoscopia electiva tras la resolución para excluir neoplasia']
+  }
+},
+'doencas-anorretais': {
+  mnemonics:[
+    { name:'Clasificación de las hemorroides internas', rows:[
+      ['Grado I','Sangran, no prolapsan'],
+      ['Grado II','Prolapsan con el esfuerzo, reducen espontáneamente'],
+      ['Grado III','Prolapsan y exigen reducción manual'],
+      ['Grado IV','Prolapso permanente, irreductible']
+    ]},
+    { name:'Diferenciar las causas', rows:[
+      ['Fisura','Dolor anal intenso "en cuchilla" al defecar + sangre fresca en el papel'],
+      ['Hemorroide','Sangrado indoloro fresco; dolor solo si está trombosada'],
+      ['Absceso','Dolor pulsátil continuo + fiebre + abombamiento perianal'],
+      ['Fístula','Drenaje purulento crónico por orificio perianal'],
+      ['Neoplasia','Sangrado + masa + cambio del hábito — siempre excluir']
+    ]}
+  ],
+  manobras:[
+    { title:'Inspección perianal', subtitle:'Evaluación inicial',
+      steps:['Posición de Sims o genupectoral','Inspeccionar separando las nalgas','Pedir esfuerzo defecatorio para evidenciar el prolapso'],
+      normal:'Piel perianal íntegra, sin lesiones', abnormal:'Plicoma, hemorroides externas, prolapso, orificio fistuloso, fisura en la línea media posterior' },
+    { title:'Tacto rectal', subtitle:'Masas y tono',
+      steps:['Tacto rectal cuidadoso (evitar si la fisura es muy dolorosa)','Evaluar tono, masas, dolor y sangre en el guante'],
+      normal:'Tono normal, sin masas, sin sangre', abnormal:'Masa endurecida → neoplasia; dolor intenso → fisura/absceso' },
+    { title:'Anoscopia', subtitle:'Visualización del canal anal',
+      steps:['Introducir el anoscopio lubricado','Inspeccionar paquetes hemorroidales y mucosa'],
+      normal:'Mucosa normal', abnormal:'Hemorroides internas, fisura, lesiones de la mucosa' }
+  ],
+  sinais:[
+    { name:'Sangrado indoloro fresco', eponym:'Hemorroides', how:'Sangre fresca recubriendo las heces/en el papel, indoloro', means:'Hemorroides internas (siempre excluir neoplasia)' },
+    { name:'Dolor anal "en cuchilla"', eponym:'Fisura anal', how:'Dolor intenso al defecar + sangrado fresco + espasmo esfinteriano', means:'Fisura anal (línea media posterior)' },
+    { name:'Tríada del absceso', eponym:'Absceso perianal', how:'Dolor continuo + abombamiento fluctuante + fiebre', means:'Absceso anorrectal — drenaje quirúrgico' },
+    { name:'Orificio con drenaje crónico', eponym:'Fístula perianal', how:'Salida de secreción purulenta por orificio cutáneo perianal', means:'Fístula (frecuentemente secuela de absceso previo)' }
+  ],
+  ddx:[
+    ['Hemorroides','Sangrado fresco indoloro, prolapso, dolor solo si trombosis','Dolor intenso al defecar (fisura)'],
+    ['Fisura anal','Dolor "en cuchilla" al defecar, sangre fresca, espasmo esfinteriano','Sangrado indoloro; masa endurecida'],
+    ['Absceso perianal','Dolor pulsátil continuo, fiebre, abombamiento fluctuante','Dolor solo a la defecación, sin fiebre'],
+    ['Fístula perianal','Drenaje purulento crónico por orificio perianal','Cuadro agudo único sin orificio'],
+    ['Cáncer anorrectal','Masa endurecida, cambio del hábito, pérdida de peso, sangrado persistente','Lesión benigna típica que regresa con el tratamiento'],
+    ['Plicoma/hemorroide externa','Piel redundante indolora, sin sangrado activo','Sangrado o dolor significativos'],
+    ['Prolapso rectal','Protrusión circunferencial de mucosa rectal','Prolapso solo de los paquetes hemorroidales']
+  ],
+  escalas:[
+    { title:'Conducta por grado (hemorroides internas)', headers:['Grado','Tratamiento'],
+      rows:[['I-II','Medidas higienodietéticas, fibras, baño de asiento; ligadura elástica'],['III','Ligadura elástica / hemorroidectomía según síntomas'],['IV','Hemorroidectomía quirúrgica'],['Trombosis','Analgesia; trombectomía si <72h y muy dolorosa']],
+      note:'La mayoría responde a medidas conservadoras y aumento de fibras' },
+    { title:'Signos de alarma anorrectal', headers:['Hallazgo','Significado'],
+      rows:[['Masa endurecida/irregular','Sospecha de neoplasia'],['Alteración persistente del hábito intestinal','Investigar colon'],['Pérdida de peso/anemia','Enfermedad orgánica/neoplásica'],['Sangrado que no cesa con el tratamiento','Colonoscopia obligatoria']],
+      note:'Nunca atribuir el sangrado a hemorroides sin excluir neoplasia en pacientes de riesgo' }
+  ],
+  conduta:{
+    exames:['Diagnóstico esencialmente clínico (inspección + tacto + anoscopia)','Colonoscopia si signos de alarma, edad >45-50 años o sangrado persistente','Hemograma si sangrado crónico (anemia)','RM de pelvis para mapeo de fístulas complejas'],
+    drugs:['Dieta rica en fibras + hidratación + baños de asiento tibios','Laxantes/formadores de bolo fecal','Analgésicos tópicos/sistémicos; pomadas (anestésico ± corticoide) por corto período','Fisura: pomada de nitrato/bloqueador de canal de calcio para relajar el esfínter'],
+    steps:['1. Caracterizar la queja (dolor x sangrado) y examinar (inspección, tacto, anoscopia)','2. Medidas higienodietéticas como base del tratamiento','3. Hemorroides: tratamiento por grado (ligadura/cirugía)','4. Absceso → drenaje quirúrgico; fístula → tratamiento quirúrgico','5. Excluir neoplasia con colonoscopia en los casos de riesgo/alarma']
+  }
+},
+'trauma-abdominal': {
+  mnemonics:[
+    { name:'Atención inicial al trauma (ATLS)', rows:[
+      ['Airway','Vía aérea + protección de la columna cervical'],
+      ['Breathing','Ventilación y oxigenación'],
+      ['Circulation','Control de la hemorragia + reposición; FAST'],
+      ['Disability','Evaluación neurológica (Glasgow, pupilas)'],
+      ['Exposure','Exposición completa + control de la hipotermia']
+    ]},
+    { name:'Mecanismos de trauma', rows:[
+      ['Cerrado/contuso','El bazo y el hígado son los órganos más lesionados'],
+      ['Penetrante (arma blanca)','Lesión por trayecto; hígado e intestino delgado frecuentes'],
+      ['Arma de fuego','Alta energía, múltiples lesiones — laparotomía frecuente'],
+      ['Víscera hueca','Riesgo de peritonitis tardía'],
+      ['Retroperitoneo','Lesiones de páncreas/duodeno/riñón pueden ser ocultas']
+    ]}
+  ],
+  manobras:[
+    { title:'FAST (USG en el trauma)', subtitle:'Búsqueda de líquido libre',
+      steps:['Evaluar 4 ventanas: hepatorrenal (Morrison), esplenorrenal, pélvica y pericárdica','Buscar líquido libre (sangre)'],
+      normal:'Sin líquido libre', abnormal:'Líquido libre → hemoperitoneo; FAST + en inestable → laparotomía' },
+    { title:'Búsqueda de irritación peritoneal', subtitle:'Lesión de víscera',
+      steps:['Palpar el abdomen en todos los cuadrantes','Evaluar defensa, descompresión y rigidez'],
+      normal:'Abdomen depresible, indoloro', abnormal:'Peritonismo → lesión visceral/hemoperitoneo — evaluación quirúrgica' },
+    { title:'Inspección de marcas y estabilidad pélvica', subtitle:'Mecanismo y gravedad',
+      steps:['Buscar signo del cinturón de seguridad, escoriaciones, evisceración','Evaluar estabilidad de la pelvis (una sola vez, con cautela)'],
+      normal:'Sin marcas, pelvis estable', abnormal:'Signo del cinturón/equimosis → alto riesgo de lesión de víscera hueca/mesenterio' }
+  ],
+  sinais:[
+    { name:'Signo del cinturón de seguridad', eponym:'Trauma contuso', how:'Equimosis lineal transversal en el abdomen', means:'Alto riesgo de lesión de víscera hueca, mesenterio y columna lumbar' },
+    { name:'FAST positivo', eponym:'Hemoperitoneo', how:'Líquido libre en la USG en las ventanas peritoneales', means:'Sangrado intraabdominal — guía la laparotomía en el inestable' },
+    { name:'Signo de Kehr', eponym:'Lesión esplénica', how:'Dolor referido en el hombro izquierdo (irritación diafragmática)', means:'Sugiere ruptura/hematoma esplénico' },
+    { name:'Signo de Grey-Turner/Cullen', eponym:'Hemorragia retroperitoneal', how:'Equimosis en flancos/periumbilical (tardía)', means:'Sangrado retroperitoneal (páncreas, grandes vasos, riñón)' }
+  ],
+  ddx:[
+    ['Lesión de órgano sólido (bazo/hígado)','Trauma contuso, FAST +, inestabilidad, dolor referido','Sin líquido libre; abdomen inocente y estable'],
+    ['Lesión de víscera hueca','Signo del cinturón, peritonitis que evoluciona en horas, neumoperitoneo','FAST + por sangre de órgano sólido, sin aire libre'],
+    ['Hematoma retroperitoneal','Trauma de alta energía, inestabilidad sin líquido intraperitoneal','Sangrado intraperitoneal evidente'],
+    ['Lesión diafragmática','Trauma penetrante toracoabdominal, herniación en la imagen','Trauma aislado de piso inferior'],
+    ['Trauma de pared sin lesión visceral','Dolor localizado en la pared, exámenes normales','Peritonismo, FAST +, inestabilidad'],
+    ['Lesión pélvica/urológica','Fractura de pelvis, hematuria, inestabilidad','Trauma abdominal alto aislado']
+  ],
+  escalas:[
+    { title:'Decisión por el estado hemodinámico', headers:['Escenario','Conducta'],
+      rows:[['Inestable + FAST +','Laparotomía de urgencia'],['Inestable + FAST -','Buscar otra fuente de shock'],['Estable + sospecha','TC de abdomen con contraste'],['Penetrante con evisceración/peritonitis/inestabilidad','Laparotomía']],
+      note:'La estabilidad hemodinámica es el principal determinante de la conducta' },
+    { title:'Indicaciones de laparotomía', headers:['Indicación','—'],
+      rows:[['Inestabilidad con FAST/LPD positivo','Hemoperitoneo'],['Peritonitis','Lesión visceral'],['Neumoperitoneo','Perforación de víscera hueca'],['Evisceración / empalamiento','Lesión penetrante'],['Sangrado por SNG/recto significativo','Lesión del TGI']],
+      note:'Pacientes estables seleccionados pueden manejarse de forma no operatoria con TC y observación' }
+  ],
+  conduta:{
+    exames:['FAST a pie de cama','Hemograma, tipificación y prueba cruzada, lactato/gasometría','Coagulograma, función renal, amilasa/lipasa','Radiografías según ATLS (tórax, pelvis)','TC de abdomen y pelvis con contraste en el paciente ESTABLE'],
+    drugs:['Reposición volémica + hemoderivados (protocolo de transfusión masiva si es necesario)','Ácido tranexámico precoz en el trauma grave','Analgesia','Antibiótico y profilaxis antitetánica en trauma penetrante'],
+    steps:['1. Atención ATLS (ABCDE) con control de la hemorragia','2. FAST precoz en el inestable','3. Inestable + FAST + → laparotomía de urgencia','4. Estable → TC de abdomen y considerar manejo no operatorio','5. Peritonitis, neumoperitoneo, evisceración o sangrado masivo → cirugía']
+  }
+},
+
 'oclusao-intestinal': {
   mnemonics:[
     { name:'Obstrucción intestinal', rows:[
