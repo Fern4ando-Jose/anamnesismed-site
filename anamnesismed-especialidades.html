@@ -562,7 +562,7 @@ function renderPanel(){
   let hcHtml="";
   currentEsp.cats.forEach(cat=>{
     const items=cat.items.map(m=>`
-      <a href="anamnesismed-hc.html?esp=${currentEsp.id}&motivo=${m.id}" class="motivo-card">
+      <a href="anamnesismed-app.html?esp=${currentEsp.id}&motivo=${m.id}" class="motivo-card">
         <div class="m-icon">${m.icon}</div>
         <div class="m-name">${mName(m)}</div>
         <span class="m-arrow">›</span>
