@@ -200,7 +200,7 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     return 'DESC';
   }
 
-  var B={LOC:null,IRR:null,CAR:null,INT:null,DURTOT:null,DUREP:null,ONSET:null,FREQ:[],FATOR:[],MIGR:null,EVOL:null,MED:[],ANTEC:[],MOTIVO:null,DESC:[],medidas:[],medidasNeg:false,assocSim:[],assocNao:[],alarmeSim:false,alarmeNao:false};
+  var B={LOC:null,IRR:null,CAR:null,INT:null,DURTOT:null,DUREP:null,ONSET:null,FREQ:[],FATOR:[],MIGR:null,EVOL:null,MED:[],ANTEC:[],fatRisco:[],MOTIVO:null,DESC:[],medidas:[],medidasNeg:false,assocSim:[],assocNao:[],alarmeSim:false,alarmeNao:false};
   resp.forEach(function(a){
     var r=role(a), v=cleanVal(a.resp);
     // Anti-vazamento de placeholder: descarta resposta de input que seja vazia,
@@ -237,9 +237,20 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
         else if(!isPlaceholder(v)) B.medidas.push(low(v));
         break;
       case 'ANTEC':
-        var albl=low(cleanLbl(a.qText)).replace(/^(antecedentes?|hist[óo]ria)\s+(de\s+|pessoa(l|is)\s+de\s+|familiar(es)?\s+de\s+)?/,'').trim();
+        var albl=low(cleanLbl(a.qText))
+          .replace(/^(antecedentes?|hist[óo]ria|antecedentes? patol[óo]gicos?)\b\s*[:—–-]?\s*/,'')                 // "Antecedentes" / "História" / "Antecedentes:" iniciais
+          .replace(/^(pessoa(l|is)|familiar(es)?)(\s+(e|ou)\s+(pessoa(l|is)|familiar(es)?))?\s+de\s+/,'')           // "pessoais ou familiares de"
+          .replace(/^de\s+/,'')
+          .trim();
         if(!albl) break;
-        if(a.type==='yn'){ if(yes(v)) B.ANTEC.push(albl); } else B.ANTEC.push(albl+': '+v);
+        if(/^fatores? de (risco|riesgo)/.test(albl)){                                                              // "fatores de risco" → frase própria
+          if(a.type!=='yn' || yes(v)){
+            var fr=albl.replace(/^fatores? de (risco|riesgo)\s*[:—–-]?\s*/,'').trim();
+            B.fatRisco.push(fr || albl);
+          }
+          break;
+        }
+        if(a.type==='yn'){ if(yes(v)) B.ANTEC.push(albl); } else B.ANTEC.push(albl+' ('+v+')');
         break;
       case 'ALARME': if(yes(v)) B.alarmeSim=true; else B.alarmeNao=true; break;
       case 'MOTIVO': if(!isPlaceholder(v)) B.MOTIVO=v; break;
@@ -347,7 +358,17 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   else if(B.medidasNeg) P.push(pt?'Nega uso de analgésicos ou outras medidas terapêuticas prévias.':'Niega uso de analgésicos u otras medidas terapéuticas previas.');
 
   // ── 7. ANTECEDENTES / MEDICAÇÃO DE USO ──
-  if(B.ANTEC.length) P.push((pt?'Apresenta antecedentes de ':'Presenta antecedentes de ')+join(B.ANTEC.slice(0,6),pt?' e ':' y ')+'.');
+  if(B.ANTEC.length){
+    // adjetivais ("cardíacos ou pulmonares", "respiratórios", "cirúrgicos…") não levam "de";
+    // nominais ("cirurgias abdominais", "doença hepática", "epilepsia…") levam "de".
+    var adjRe=/^(card[íi]ac|cardiovascular|pulmonar|cir[úu]rgic|quir[úu]rgic|respiratóri|respiratori|hep[áa]tic|renal|tireoidian|tiroide|neurol[óo]gic|hematol[óo]gic|metab[óo]lic|reumatol[óo]gic|al[ée]rgic|psiqui[áa]tric|relevante)/;
+    var aitems=B.ANTEC.slice(0,6).map(function(al){ return (adjRe.test(al) && !/,/.test(al)) ? al : 'de '+al; });
+    P.push((pt?'Apresenta antecedentes ':'Presenta antecedentes ')+join(aitems,pt?' e ':' y ')+'.');
+  }
+  if(B.fatRisco.length){
+    var frSingle = B.fatRisco.length===1 && !/,/.test(B.fatRisco[0]);   // adjetivo único → sem dois-pontos
+    P.push((pt?'Apresenta fatores de risco':'Presenta factores de riesgo')+(frSingle?' ':': ')+join(B.fatRisco.slice(0,6),'; ')+'.');
+  }
   if(B.MED.length) P.push((pt?'Em uso regular de ':'En uso regular de ')+join(B.MED,pt?' e ':' y ')+'.');
 
   // ── 8. OUTROS DESCRITIVOS (limpos) ──
