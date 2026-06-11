@@ -312,7 +312,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
   <div class="sidebar-foot">
     <div class="user-info">
-      <div class="user-av" id="user-av-sidebar">?</div>
+      <div class="user-av user-avatar" id="user-av-sidebar">?</div>
       <div>
         <div class="user-name" id="user-name-sidebar">—</div>
         <div class="user-plan" id="user-plan-sidebar">—</div>
@@ -333,7 +333,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         </svg>
       </button>
       <a href="anamnesismed-dashboard.html" class="topbar-back">
-        <span class="pt">← Dashboard</span><span class="es">← Dashboard</span>
+        <span class="pt">← Início</span><span class="es">← Inicio</span>
       </a>
       <span class="topbar-sep" id="topbar-sep" style="display:none">›</span>
       <span class="topbar-title pt" id="topbar-title-pt" style="display:none"></span>
@@ -467,6 +467,22 @@ const ESPECIALIDADES = [
         {id:"trauma-abdominal", namePt:"Trauma Abdominal", nameEs:"Trauma Abdominal", icon:"🚨"}
       ]}
     ]
+  },
+  {
+    id:"respiratorio", icon:"🫁",
+    namePt:"Respiratório", nameEs:"Respiratorio",
+    cats:[
+      { catPt:"Sintomas Respiratórios", catEs:"Síntomas Respiratorios", items:[
+        {id:"semio-tosse",   namePt:"Tosse",         nameEs:"Tos",           icon:"😮‍💨"},
+        {id:"expectoracao",  namePt:"Expectoração",  nameEs:"Expectoración", icon:"🫧"},
+        {id:"hemoptise",     namePt:"Hemoptise",     nameEs:"Hemoptisis",    icon:"🩸"},
+        {id:"semio-disnea",  namePt:"Dispneia",      nameEs:"Disnea",        icon:"🫁"}
+      ]},
+      { catPt:"Dispneia e Dor Torácica", catEs:"Disnea y Dolor Torácico", items:[
+        {id:"dispneia",     namePt:"Dispneia",      nameEs:"Disnea",          icon:"🫁"},
+        {id:"dor-toracica", namePt:"Dor Torácica",  nameEs:"Dolor Torácico",  icon:"❤️"}
+      ]}
+    ]
   }
 ];
 
@@ -539,7 +555,7 @@ function renderPanel(){
   ttEs.style.display=""; ttEs.textContent=currentEsp.nameEs||currentEsp.namePt;
 
   const tabHc  = currentLang==="es"?"Nueva HC":"Nova HC";
-  const tabMat = currentLang==="es"?"Material de estudio":"Material de estudo";
+  const tabMat = currentLang==="es"?"Referencia Clínica":"Referência Clínica";
   const subPt  = `${totalM(currentEsp)} motivos disponíveis`;
   const subEs  = `${totalM(currentEsp)} motivos disponibles`;
 
@@ -571,8 +587,8 @@ function renderPanel(){
     <div class="tab-pane${currentTab==="material"?" active":""}" id="tab-material">
       <div class="material-placeholder">
         <div class="mp-icon">📚</div>
-        <div class="mp-title pt">Material de estudo</div>
-        <div class="mp-title es">Material de estudio</div>
+        <div class="mp-title pt">Referência Clínica</div>
+        <div class="mp-title es">Referencia Clínica</div>
         <div class="mp-sub pt">Resumos, guias clínicos e casos práticos de ${espName(currentEsp)} em breve.</div>
         <div class="mp-sub es">Resúmenes, guías clínicas y casos prácticos de ${espName(currentEsp)} pronto.</div>
         <span class="mp-badge pt">Em breve</span>

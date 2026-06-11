@@ -198,7 +198,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .f-check:hover{border-color:var(--line-md)}
 .f-check.on{background:#e0f2f1;border-color:rgba(13,148,136,.3)}
 .f-check.on .f-checkbox{background:var(--primary);border-color:var(--primary);color:#fff}
-.f-checkbox{width:15px;height:15px;border:2px solid var(--line-md);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;transition:all .15s;margin-top:1px}
+.f-checkbox{width:15px;height:15px;border:2px solid var(--line-md);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;transition:all .15s;margin-top:1px;color:transparent}
 
 /* EVA scale */
 .f-eva{display:flex;gap:2px;padding:2px 0}
@@ -223,11 +223,11 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .yn-extra{margin-top:5px}
 
 /* Motivo clinical guide content */
-.mnem-card{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);margin-bottom:10px;overflow:hidden}
-.mnem-card-head{padding:10px 14px 6px;display:flex;align-items:flex-end;gap:10px;border-bottom:1px solid var(--line);background:var(--cream)}
+.mnem-card{background:var(--bg-card);border-radius:12px;border:1.5px solid var(--line);margin-bottom:18px;overflow:hidden;box-shadow:0 2px 10px rgba(13,45,61,.05)}
+.mnem-card-head{padding:12px 16px 8px;display:flex;align-items:flex-end;gap:10px;border-bottom:2px solid var(--primary);background:var(--cream)}
 .mnem-kw{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--primary);letter-spacing:-1.5px;line-height:1}
 .mnem-name{font-size:10px;color:var(--muted);padding-bottom:2px}
-.mnem-row{display:flex;gap:10px;padding:7px 14px;border-bottom:1px solid var(--line);align-items:flex-start}
+.mnem-row{display:flex;gap:12px;padding:9px 16px;border-bottom:1px solid var(--line);align-items:flex-start}
 .mnem-row:last-child{border-bottom:none}
 .mnem-letter{font-size:12px;font-weight:700;color:var(--primary);min-width:14px;line-height:1.6;flex-shrink:0}
 .mnem-term{font-size:12px;font-weight:700;display:block;line-height:1.4}
@@ -376,8 +376,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .fab-label{
   background:rgba(13,45,61,.85);color:#fff;
   font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
-  white-space:nowrap;pointer-events:none
+  white-space:nowrap;pointer-events:none;
+  opacity:0;transform:translateX(10px);transition:opacity .15s,transform .15s
 }
+.fab-item:hover .fab-label{opacity:1;transform:none}
 .fab-item{display:flex;align-items:center;gap:8px}
 
 /* ── MOBILE RESPONSIVENESS ── */
@@ -672,7 +674,11 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <div class="f-row">
                 <label class="f-label pt">Data de nascimento</label>
                 <label class="f-label es">Fecha de nacimiento</label>
-                <input class="f-input" type="date" id="dp-nasc">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:6px">
+                  <select class="f-input" id="dp-nasc-d" aria-label="Dia"></select>
+                  <select class="f-input" id="dp-nasc-m" aria-label="Mes"></select>
+                  <select class="f-input" id="dp-nasc-y" aria-label="Ano"></select>
+                </div>
               </div>
               <div class="f-row">
                 <label class="f-label pt">Nacionalidade</label>
@@ -783,7 +789,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <div class="f-radio" onclick="selectRadio(this,'dp-fe')" data-v="relativa">
                 <span class="pt">~ Relativa fé</span><span class="es">~ Fe relativa</span>
               </div>
-              <div class="f-radio sel-danger" onclick="selectRadio(this,'dp-fe')" data-v="nao" style="background:transparent;border-color:var(--line-md);color:var(--ink)">
+              <div class="f-radio" onclick="selectRadio(this,'dp-fe')" data-v="nao">
                 <span class="pt">✗ Não merece fé</span><span class="es">✗ No merecen fe</span>
               </div>
             </div>
@@ -2064,8 +2070,9 @@ function renderAEAGuide2(mObj){
 
 function ynBtnSel(el,groupId,val){
   var parent = el.closest('.yn-btns');
+  var was = el.classList.contains(val);
   parent.querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('sim','nao')});
-  el.classList.add(val);
+  if(!was) el.classList.add(val);   // toggle: clicar de novo desmarca
 }
 
 // ── RAS ───────────────────────────────────────────────
@@ -2119,8 +2126,9 @@ function togglePanel(id){
 function selectRadio(el, groupId){
   var parent = document.getElementById(groupId);
   if(!parent) return;
+  var was = el.classList.contains('sel');
   parent.querySelectorAll('.f-radio').forEach(function(r){r.classList.remove('sel','sel-danger')});
-  el.classList.add('sel');
+  if(!was) el.classList.add('sel');   // clicar de novo no mesmo desmarca (toggle)
   updateProgress();
 }
 
@@ -2135,8 +2143,9 @@ function selectMultiChip(el, groupId){
 
 function selectEva(el, groupId){
   var parent = document.getElementById(groupId);
+  var was = el.classList.contains('sel');
   parent.querySelectorAll('.f-eva-btn').forEach(function(b){b.classList.remove('sel')});
-  el.classList.add('sel');
+  if(!was) el.classList.add('sel');   // toggle
 }
 
 function toggleCheck(el){
@@ -2146,16 +2155,21 @@ function toggleCheck(el){
 
 function ectoSel(el, groupId){
   var parent = document.getElementById(groupId);
+  var was = el.classList.contains('sel');
   parent.querySelectorAll('.ecto-opt').forEach(function(o){o.classList.remove('sel')});
-  el.classList.add('sel');
+  if(!was) el.classList.add('sel');   // toggle
 }
 
 function ynSelect(btn, groupId, val){
   var extraEl = document.getElementById(groupId+'-extra');
+  var was = btn.classList.contains('yn-on');
   var allBtns = btn.closest('.yn-row').querySelectorAll('.yn-btn');
-  allBtns.forEach(function(b){b.classList.remove('sim','nao','ex')});
-  btn.classList.add(val==='ex'?'nao':val);
-  if(extraEl) extraEl.style.display = val==='sim'?'block':'none';
+  allBtns.forEach(function(b){b.classList.remove('sim','nao','ex','yn-on')});
+  if(!was){
+    btn.classList.add(val==='ex'?'nao':val);
+    btn.classList.add('yn-on');
+    if(extraEl) extraEl.style.display = val==='sim'?'block':'none';
+  } else if(extraEl){ extraEl.style.display='none'; }   // toggle: desmarca
 }
 
 function toggleAPGO(){
@@ -2174,6 +2188,27 @@ function updateProgress(){
 }
 
 // ── IMC AUTO ──────────────────────────────────────────
+
+// ── DATE PICKER AMIGÁVEL (Dia/Mês/Ano) — substitui o calendário nativo na data de nascimento ──
+function initBirthDate(){
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var d=document.getElementById('dp-nasc-d'), m=document.getElementById('dp-nasc-m'), y=document.getElementById('dp-nasc-y');
+  if(!d||!m||!y) return;
+  var phD=lang==='es'?'Día':'Dia', phM=lang==='es'?'Mes':'Mês', phY=lang==='es'?'Año':'Ano';
+  var mesesPt=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var mesesEs=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var meses=lang==='es'?mesesEs:mesesPt;
+  function fill(sel, ph, items){
+    var keep=sel.value;
+    sel.innerHTML='<option value="">'+ph+'</option>'+items.map(function(it){return '<option value="'+it.v+'">'+it.t+'</option>';}).join('');
+    if(keep) sel.value=keep;
+  }
+  var dias=[]; for(var i=1;i<=31;i++) dias.push({v:String(i).padStart(2,'0'),t:String(i)});
+  var mm=[]; for(var j=1;j<=12;j++) mm.push({v:String(j).padStart(2,'0'),t:j+' — '+meses[j-1]});
+  var anos=[]; var ya=new Date().getFullYear(); for(var k=ya;k>=ya-120;k--) anos.push({v:String(k),t:String(k)});
+  fill(d,phD,dias); fill(m,phM,mm); fill(y,phY,anos);
+}
+
 function calcIMC(){
   var p = parseFloat(document.getElementById('sv-peso').value);
   var h = parseFloat(document.getElementById('sv-altura').value)/100;
@@ -2330,6 +2365,7 @@ function showToast(lang,msg){
 // ── INIT ──────────────────────────────────────────────
 (function(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
+  try{initBirthDate();}catch(e){}
   updateSpecCounts();
   showSpec(currentSpec); // usa hash da URL se presente (#semiologia, #clinica, #cirurgia)
   // Marca a HC como "com alterações não salvas" a partir de qualquer interação no formulário

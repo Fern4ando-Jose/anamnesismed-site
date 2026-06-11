@@ -57,12 +57,25 @@ LINES=$(wc -l < "$MOTIVOS")
 grep -q "^const MOTIVOS" "$MOTIVOS" && check "const MOTIVOS presente" "ok" || check "const MOTIVOS" "AUSENTE"
 grep -q "^const RAS_SYSTEMS" "$MOTIVOS" && check "const RAS_SYSTEMS presente" "ok" || check "const RAS_SYSTEMS" "AUSENTE"
 grep -q "^const GUIDE_CONTENT" "$MOTIVOS" && check "const GUIDE_CONTENT presente" "ok" || check "const GUIDE_CONTENT" "AUSENTE"
-grep -q "clinica:" "$MOTIVOS" && check "Especialidade clinica presente" "ok" || check "Especialidade clinica" "AUSENTE"
-grep -q "cirurgia:" "$MOTIVOS" && check "Especialidade cirurgia presente" "ok" || check "Especialidade cirurgia" "AUSENTE"
-grep -q "semiologia:" "$MOTIVOS" && check "Especialidade semiologia presente" "ok" || check "Especialidade semiologia" "AUSENTE"
-grep -q "id:'tosse'" "$MOTIVOS" && check "Motivo tosse presente" "ok" || check "Motivo tosse" "AUSENTE"
-grep -q "id:'dor-toracica'" "$MOTIVOS" && check "Motivo dor-toracica presente" "ok" || check "Motivo dor-toracica" "AUSENTE"
-grep -q "}; // end GUIDE_CONTENT" "$MOTIVOS" && check "Fechamento GUIDE_CONTENT" "ok" || check "Fechamento GUIDE_CONTENT" "AUSENTE — arquivo provavelmente truncado"
+grep -q '"clinica"' "$MOTIVOS" && check "Especialidade clinica presente" "ok" || check "Especialidade clinica" "AUSENTE"
+grep -q '"cirurgia"' "$MOTIVOS" && check "Especialidade cirurgia presente" "ok" || check "Especialidade cirurgia" "AUSENTE"
+grep -q '"semiologia"' "$MOTIVOS" && check "Especialidade semiologia presente" "ok" || check "Especialidade semiologia" "AUSENTE"
+grep -q '"id": "tosse"' "$MOTIVOS" && check "Motivo tosse presente" "ok" || check "Motivo tosse" "AUSENTE"
+grep -q '"id": "dor-toracica"' "$MOTIVOS" && check "Motivo dor-toracica presente" "ok" || check "Motivo dor-toracica" "AUSENTE"
+grep -q 'GUIDE_CONTENT\["semio-tosse"\]' "$MOTIVOS" && check "Fechamento/aliases GUIDE_CONTENT" "ok" || check "Fechamento GUIDE_CONTENT" "AUSENTE — arquivo provavelmente truncado"
+# Sincronia src/ <-> produção: produção deve ser exatamente o build da fonte modular
+if [ -d "$(dirname "$0")/../src" ]; then
+  SYNC=$(node -e '
+    const fs=require("fs"); const R=process.cwd();
+    const {assemble}=require(R+"/scripts/build.js");
+    const {motivosSrc,esSrc}=assemble();
+    const a=fs.readFileSync(R+"/anamnesismed-motivos.js","utf8")===motivosSrc;
+    const b=fs.readFileSync(R+"/anamnesismed-guide-es.js","utf8")===esSrc;
+    process.stdout.write(a&&b?"OK":"DESSINCRONIZADO");
+  ' 2>/dev/null)
+  [ "$SYNC" = "OK" ] && check "Producao == build(src/)" "ok" || check "Producao != build(src/) — rode: node scripts/build.js" "ERRO"
+fi
+
 
 # -- anamnesismed-guide.js
 GUIDE="$ROOT/anamnesismed-guide.js"

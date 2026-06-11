@@ -51,7 +51,7 @@ function exportPDF(){
   var mNome = document.getElementById('dp-nome').value || (lang==='pt'?'Não informado':'No informado');
   var mSexo = document.getElementById('dp-sexo').value || '—';
   var mIdade = document.getElementById('dp-idade').value || '—';
-  var mMC = document.getElementById('mc-a').value || '—';
+  var mMC = document.getElementById('mc-a').value || (currentMotivo ? (lang==='es'?(currentMotivo.nameEs||currentMotivo.name):currentMotivo.name) : '—');
   var mAEA = document.getElementById('aea-texto').value || '—';
   var mHipo = document.getElementById('sum-hipoteses').value || '—';
   var mPlano = document.getElementById('plan-trat').value || '—';
@@ -168,16 +168,10 @@ function exportPDF(){
         if(narrativa) t += (t ? '\n\n' : '') + narrativa;
       }
       if(currentMotivo2 && currentMotivo2.aeaGuide && currentMotivo2.aeaGuide.length){
-        var nm2 = lang==='es'?(currentMotivo2.nameEs||currentMotivo2.name):currentMotivo2.name;
-        var narrativa2 = gerarNarrativaAEA(currentMotivo2, lang, 'aea-g2-');
-        if(narrativa2){
-          // Texto corrido: remove 'Paciente refere' do início da 2ª narrativa e conecta
-          var stripped2 = narrativa2.replace(/^(Paciente\s+refere?\s+|El\s+paciente\s+refiere?\s+)/i,'');
-          stripped2 = stripped2.charAt(0).toLowerCase() + stripped2.slice(1);
-          var conect = lang==='pt' ? ' Associado ao quadro, ' : ' Asociado al cuadro, ';
-          if(t && t!=='—') t += conect + stripped2;
-          else t = narrativa2; // fallback: 2º motivo sozinho
-        }
+        // 2º motivo em modo "continuação": o motor já abre com "Adicionalmente/Asimismo,
+        // refere quadro de..." sem repetir os dados do paciente.
+        var narrativa2 = gerarNarrativaAEA(currentMotivo2, lang, 'aea-g2-', {continuation:true});
+        if(narrativa2) t += (t ? ' ' : '') + narrativa2;
       }
       return t;
     }},
@@ -258,7 +252,11 @@ function exportPDF(){
   sections.forEach(function(s){
     var tit = lang==='pt'?s.n+'. '+s.tPt:s.n+'. '+s.tEs;
     w.document.write('<h2>'+tit+'</h2>');
-    var txt = s.txt();
+    // Blindagem: uma seção que falhe (ex.: erro no gerador de narrativa) NÃO pode
+    // apagar as demais seções do PDF. Captura o erro e segue.
+    var txt;
+    try { txt = s.txt(); } catch(e){ console.warn('Erro na seção '+s.n+':', e); txt = '—'; }
+    txt = (txt==null) ? '' : String(txt);
     txt.split('\n').forEach(function(line){if(line.trim())w.document.write('<p>'+line+'</p>');});
   });
 

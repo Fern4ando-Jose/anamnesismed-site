@@ -44,13 +44,16 @@ FUNCIONALIDADES:
 ✅ Design system "Saúde Confiável" aplicado em 3 páginas
 
 Erros:
-1- msg trial aparecendo em novos usuarios antes dos 30 dias
-2 - não está aparecendo a mensagem de assinar o termo para novos usuarios
-3 -não está salvando novas Hcs
-4- quando clicar no nome em (Fernando José trial) deve levar a pagina de configuração
-5- dentro da pagina de configuração deve constar a data de inscrição e quantos dias ainda tem de trial
+3 - o botão de pesquisas de motivo de consulta esta sobrepondo a linha, dificultando a busca
 6- falta a descrição dos motivos de tos, quando dizer que sim deve abrir os itens (quantidade, color, olor...)
 7 - Mnemonicas etcs, está tudo corrido na mesma pagina, sendo nada ditatico, devemos corrigir isso
+8 -Alguns campos já estão saindo como marcados ex: APP os campos de Enfermedades de la infancia, já estão um um sinal de marcação em Antecedentes familiares relevantes, tbm ocorre o mesmo, revise onde mais possa estar assim e corrija;
+9 -criar um motor também o um texto corrido em ectoscopia
+10- o campo de dados pessoais está mal configurado, aparece um espaço muito grande em por ex: nome... depois em sexo, deve diminuir esse espaço para  melhor leitura
+11- esta demorando carregar alguns itens do site, por ex: HCs recientes, o nome, esses campos demoram um pouco a aparecer? qual poderia ser o problema?
+
+Guia para examen físico, palpacion, percusion, escutacion en cada motivo... 
+Diagnostico discutido com iA nativa
 
 obs> continuar com o google está ok, deve entrar na conta salva, porem a opção de criar nova conta deve abrir para um novo registro
 
