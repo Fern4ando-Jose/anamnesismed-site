@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — Explorar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;
+  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
+  --secondary:#0d9488;--accent:#f59e0b;
+  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --sidebar-w:240px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--bg-card);border-bottom:1px solid var(--line);
+  padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;gap:12px
+}
+.topbar-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
+.hamburger:hover{background:var(--bg)}
+.topbar-back{
+  display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--muted);
+  text-decoration:none;padding:5px 8px;border-radius:6px;transition:background .15s,color .15s;white-space:nowrap;flex-shrink:0
+}
+.topbar-back:hover{background:var(--bg);color:var(--ink)}
+.topbar-sep{color:var(--line-md);font-size:16px;flex-shrink:0}
+.topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lang-toggle{display:flex;background:rgba(13,45,61,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+/* ── PANEL ── */
+.panel{flex:1;padding:28px 32px 64px;overflow-y:auto;max-width:1100px;width:100%}
+.hub-head{margin-bottom:22px}
+.hub-title{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.hub-sub{font-size:14px;color:var(--muted)}
+
+/* ── BUSCA ── */
+.search-wrap{position:relative;margin-bottom:22px;max-width:560px}
+.search-box{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:14px;padding:13px 16px;transition:border-color .18s,box-shadow .18s}
+.search-box:focus-within{border-color:rgba(14,116,144,.5);box-shadow:0 4px 18px rgba(13,45,61,.08)}
+.search-box svg{flex-shrink:0;color:var(--muted)}
+.search-input{flex:1;border:none;outline:none;background:none;font-family:var(--sans);font-size:15px;color:var(--ink)}
+.search-input::placeholder{color:var(--muted)}
+.search-results{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;
+  background:var(--bg-card);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 10px 30px rgba(13,45,61,.14);overflow:hidden;display:none;max-height:340px;overflow-y:auto
+}
+.search-results.open{display:block}
+.sr-item{display:flex;align-items:center;gap:11px;padding:11px 14px;cursor:pointer;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line);transition:background .12s}
+.sr-item:last-child{border-bottom:none}
+.sr-item:hover,.sr-item.active{background:rgba(14,116,144,.07)}
+.sr-icon{font-size:18px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--bg);flex-shrink:0}
+.sr-name{font-size:14px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-spec{font-size:11px;color:var(--muted);font-weight:600;flex-shrink:0}
+.sr-empty{padding:16px;text-align:center;font-size:13px;color:var(--muted)}
+
+/* ── CTA NOVA HC ── */
+.new-hc-cta{
+  display:flex;align-items:center;gap:14px;width:100%;text-decoration:none;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;
+  border:none;border-radius:14px;padding:16px 20px;margin-bottom:30px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(14,116,144,.25);transition:transform .15s,box-shadow .15s;max-width:560px
+}
+.new-hc-cta:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(14,116,144,.32)}
+.nhc-icon{width:44px;height:44px;border-radius:11px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.nhc-text{flex:1;text-align:left}
+.nhc-title{font-size:15px;font-weight:700}
+.nhc-sub{font-size:12.5px;opacity:.9;margin-top:1px}
+.nhc-arrow{font-size:22px;opacity:.9}
+
+/* ── SECTION LABEL ── */
+.sec-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ── MOSAICO DE ESPECIALIDADES ── */
+.mosaic{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:34px}
+.esp-tile{
+  position:relative;display:flex;flex-direction:column;gap:10px;
+  background:var(--bg-card);border:1px solid var(--line);border-radius:16px;
+  padding:18px;text-decoration:none;color:var(--ink);overflow:hidden;
+  transition:transform .16s,box-shadow .16s,border-color .16s
+}
+.esp-tile::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.esp-tile:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(13,45,61,.12);border-color:transparent}
+.esp-tile-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:27px;background:var(--cbg)}
+.esp-tile-name{font-size:16px;font-weight:700;line-height:1.25}
+.esp-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
+.esp-tile-foot{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.esp-tile-count{font-size:12px;font-weight:700;color:var(--c);background:var(--cbg);padding:3px 11px;border-radius:20px}
+.esp-tile-go{font-size:18px;color:var(--c)}
+
+/* ── CARDS DE FERRAMENTAS ── */
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.tool-tile{
+  position:relative;display:flex;flex-direction:column;gap:10px;
+  background:var(--bg-card);border:1px dashed var(--line-md);border-radius:16px;
+  padding:18px;color:var(--ink);overflow:hidden;opacity:.92
+}
+.tool-tile-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:27px;background:var(--cbg)}
+.tool-tile-name{font-size:16px;font-weight:700}
+.tool-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
+.soon-badge{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--c);background:var(--cbg);padding:4px 11px;border-radius:20px}
+
+/* ── MOBILE NAV ── */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--line);z-index:200;padding-bottom:env(safe-area-inset-bottom)}
+.mn-row{display:flex;align-items:stretch}
+.mn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px;font-size:10px;font-weight:600;color:var(--muted);text-decoration:none;background:none;border:none;cursor:pointer;transition:color .15s}
+.mn-item.active,.mn-item:active{color:var(--primary)}
+.mn-icon{font-size:20px}
+
+/* ── RESPONSIVO ── */
+@media(max-width:768px){
+  .main{margin-left:0}
+  .mobile-nav{display:block}
+  .panel{padding:16px 14px 90px}
+  .topbar{padding:0 14px;height:52px}
+  .hamburger{display:flex}
+  .topbar-back span{display:none}
+  .topbar-back::before{content:'←'}
+  .hub-title{font-size:21px}
+  .mosaic,.tools-grid{grid-template-columns:1fr}
+}
+@media(min-width:769px) and (max-width:1100px){
+  .panel{padding:22px 22px 48px}
+}
+</style>
+<link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<div id="sidebar-root"></div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/>
+        </svg>
+      </button>
+      <a href="anamnesismed-dashboard.html" class="topbar-back">
+        <span class="pt">← Início</span><span class="es">← Inicio</span>
+      </a>
+      <span class="topbar-sep">›</span>
+      <span class="topbar-title pt">Explorar</span>
+      <span class="topbar-title es">Explorar</span>
+    </div>
+    <div class="topbar-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PANEL -->
+  <div class="panel">
+
+    <div class="hub-head">
+      <div class="hub-title pt">Explorar</div>
+      <div class="hub-title es">Explorar</div>
+      <div class="hub-sub pt">Escolha uma especialidade, busque um motivo ou comece uma HC do zero</div>
+      <div class="hub-sub es">Elige una especialidad, busca un motivo o comienza una HC desde cero</div>
+    </div>
+
+    <!-- BUSCA DE MOTIVOS -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" id="motivo-search" type="text" autocomplete="off"
+          placeholder="Buscar motivo de consulta..."
+          data-ph-pt="Buscar motivo de consulta..."
+          data-ph-es="Buscar motivo de consulta...">
+      </div>
+      <div class="search-results" id="search-results"></div>
+    </div>
+
+    <!-- ATALHO NOVA HC EM BRANCO -->
+    <a href="anamnesismed-app.html?novo=1" class="new-hc-cta">
+      <div class="nhc-icon">📝</div>
+      <div class="nhc-text">
+        <div class="nhc-title pt">Nova HC em branco</div>
+        <div class="nhc-title es">Nueva HC en blanco</div>
+        <div class="nhc-sub pt">Abrir o formulário direto, sem escolher motivo</div>
+        <div class="nhc-sub es">Abrir el formulario directo, sin elegir motivo</div>
+      </div>
+      <div class="nhc-arrow">→</div>
+    </a>
+
+    <!-- ESPECIALIDADES (MOSAICO COLORIDO) -->
+    <div class="sec-label pt">Especialidades</div>
+    <div class="sec-label es">Especialidades</div>
+    <div class="mosaic" id="mosaic"><!-- preenchido por JS --></div>
+
+    <!-- FERRAMENTAS / MAIS -->
+    <div class="sec-label pt">Mais recursos</div>
+    <div class="sec-label es">Más recursos</div>
+    <div class="tools-grid">
+      <div class="tool-tile" style="--c:#8b5cf6;--cbg:rgba(139,92,246,.12)">
+        <div class="tool-tile-icon">📚</div>
+        <div class="tool-tile-name pt">Referências Clínicas</div>
+        <div class="tool-tile-name es">Referencias Clínicas</div>
+        <div class="tool-tile-desc pt">Resumos, guias clínicos e casos práticos por especialidade.</div>
+        <div class="tool-tile-desc es">Resúmenes, guías clínicas y casos prácticos por especialidad.</div>
+        <span class="soon-badge pt">Em breve</span>
+        <span class="soon-badge es">Próximamente</span>
+      </div>
+      <div class="tool-tile" style="--c:#10b981;--cbg:rgba(16,185,129,.12)">
+        <div class="tool-tile-icon">✨</div>
+        <div class="tool-tile-name pt">Assistente com IA</div>
+        <div class="tool-tile-name es">Asistente con IA</div>
+        <div class="tool-tile-desc pt">Apoio inteligente na anamnese e no raciocínio clínico.</div>
+        <div class="tool-tile-desc es">Apoyo inteligente en la anamnesis y el razonamiento clínico.</div>
+        <span class="soon-badge pt">Em breve</span>
+        <span class="soon-badge es">Próximamente</span>
+      </div>
+    </div>
+
+  </div><!-- /panel -->
+</div><!-- /main -->
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+  <div class="mn-row">
+    <a href="anamnesismed-dashboard.html" class="mn-item">
+      <span class="mn-icon">🏠</span>
+      <span class="pt">Início</span><span class="es">Inicio</span>
+    </a>
+    <a href="anamnesismed-explorar.html" class="mn-item active">
+      <span class="mn-icon">🧭</span>
+      <span class="pt">Explorar</span><span class="es">Explorar</span>
+    </a>
+    <a href="anamnesismed-mnemonicas.html" class="mn-item">
+      <span class="mn-icon">🧠</span>
+      <span class="pt">Mnemônicas</span><span class="es">Mnemot.</span>
+    </a>
+    <a href="anamnesismed-config.html" class="mn-item">
+      <span class="mn-icon">⚙️</span>
+      <span class="pt">Config.</span><span class="es">Config.</span>
+    </a>
+  </div>
+</nav>
+
+<script src="anamnesismed-motivos.js"></script>
+<script>
+// ── DADOS DAS ESPECIALIDADES (cards do mosaico) ───────────────────────────────
+var ESPECIALIDADES = [
+  { id:"semiologia",  icon:"📖", namePt:"Semiologia Básica", nameEs:"Semiología Básica",
+    descPt:"Sinais e sintomas fundamentais", descEs:"Signos y síntomas fundamentales",
+    c:"#3b82f6", cbg:"rgba(59,130,246,.12)" },
+  { id:"respiratorio", icon:"🫁", namePt:"Respiratório", nameEs:"Respiratorio",
+    descPt:"Tosse, dispneia, hemoptise e mais", descEs:"Tos, disnea, hemoptisis y más",
+    c:"#06b6d4", cbg:"rgba(6,182,212,.12)" },
+  { id:"clinica",     icon:"🏥", namePt:"Clínica Médica", nameEs:"Clínica Médica",
+    descPt:"Motivos clínicos mais frequentes", descEs:"Motivos clínicos más frecuentes",
+    c:"#ef4444", cbg:"rgba(239,68,68,.12)" },
+  { id:"cirurgia",    icon:"🔪", namePt:"Cirurgia Geral", nameEs:"Cirugía General",
+    descPt:"Abdome agudo, hérnias e trauma", descEs:"Abdomen agudo, hernias y trauma",
+    c:"#f59e0b", cbg:"rgba(245,158,11,.12)" }
+];
+// Motivos do Respiratório (não há chave própria em MOTIVOS — espelha especialidades.html)
+var RESP_IDS = ["semio-tosse","expectoracao","hemoptise","dispneia","dor-toracica"];
+
+var currentLang = "es";
+
+// ── CONTAGEM DINÂMICA DE MOTIVOS POR ESPECIALIDADE ────────────────────────────
+function countMotivos(espId){
+  if(espId === "respiratorio") return RESP_IDS.length;
+  try{
+    var data = (typeof MOTIVOS !== "undefined" && MOTIVOS[espId]) ? MOTIVOS[espId] : [];
+    return data.reduce(function(s,cat){ return s + ((cat.items||[]).length); }, 0);
+  }catch(e){ return 0; }
+}
+
+// ── ÍNDICE DE BUSCA (achatamento de MOTIVOS) ──────────────────────────────────
+var SPEC_LABEL = { semiologia:{pt:"Semiologia",es:"Semiología"}, clinica:{pt:"Clínica",es:"Clínica"}, cirurgia:{pt:"Cirurgia",es:"Cirugía"} };
+function buildSearchIndex(){
+  var idx = [];
+  if(typeof MOTIVOS === "undefined") return idx;
+  Object.keys(MOTIVOS).forEach(function(spec){
+    (MOTIVOS[spec]||[]).forEach(function(cat){
+      (cat.items||[]).forEach(function(m){
+        idx.push({ id:m.id, spec:spec, icon:m.icon||"🩺", name:m.name||m.id, nameEs:m.nameEs||m.name||m.id });
+      });
+    });
+  });
+  return idx;
+}
+var SEARCH_INDEX = [];
+
+// ── RENDER MOSAICO ────────────────────────────────────────────────────────────
+function espName(e){ return currentLang==="es" ? e.nameEs : e.namePt; }
+function espDesc(e){ return currentLang==="es" ? e.descEs : e.descPt; }
+function renderMosaic(){
+  var html = ESPECIALIDADES.map(function(e){
+    var count = countMotivos(e.id);
+    var motTxt = currentLang==="es" ? (count+" motivos") : (count+" motivos");
+    return '<a href="anamnesismed-especialidades.html?esp='+e.id+'" class="esp-tile" style="--c:'+e.c+';--cbg:'+e.cbg+'">'
+      + '<div class="esp-tile-icon">'+e.icon+'</div>'
+      + '<div class="esp-tile-name">'+espName(e)+'</div>'
+      + '<div class="esp-tile-desc">'+espDesc(e)+'</div>'
+      + '<div class="esp-tile-foot"><span class="esp-tile-count">'+motTxt+'</span><span class="esp-tile-go">›</span></div>'
+      + '</a>';
+  }).join("");
+  document.getElementById("mosaic").innerHTML = html;
+}
+
+// ── BUSCA ─────────────────────────────────────────────────────────────────────
+function srName(m){ return currentLang==="es" ? m.nameEs : m.name; }
+function runSearch(q){
+  var box = document.getElementById("search-results");
+  var term = (q||"").toLowerCase().trim();
+  if(!term){ box.classList.remove("open"); box.innerHTML=""; return; }
+  var matches = SEARCH_INDEX.filter(function(m){
+    return srName(m).toLowerCase().indexOf(term) !== -1
+        || (m.name||"").toLowerCase().indexOf(term) !== -1
+        || (m.nameEs||"").toLowerCase().indexOf(term) !== -1;
+  }).slice(0,8);
+  if(!matches.length){
+    box.innerHTML = '<div class="sr-empty pt">Nenhum motivo encontrado</div><div class="sr-empty es">Ningún motivo encontrado</div>';
+    box.classList.add("open"); return;
+  }
+  box.innerHTML = matches.map(function(m){
+    var lbl = SPEC_LABEL[m.spec] ? (currentLang==="es"?SPEC_LABEL[m.spec].es:SPEC_LABEL[m.spec].pt) : m.spec;
+    return '<a class="sr-item" href="anamnesismed-app.html?esp='+m.spec+'&motivo='+m.id+'">'
+      + '<span class="sr-icon">'+m.icon+'</span>'
+      + '<span class="sr-name">'+srName(m)+'</span>'
+      + '<span class="sr-spec">'+lbl+'</span>'
+      + '</a>';
+  }).join("");
+  box.classList.add("open");
+}
+
+// ── LANG ──────────────────────────────────────────────────────────────────────
+function setLang(lang){
+  currentLang = lang;
+  document.documentElement.setAttribute("data-lang",lang);
+  document.getElementById("btn-es").classList.toggle("active",lang==="es");
+  document.getElementById("btn-pt").classList.toggle("active",lang==="pt");
+  renderMosaic();
+  var si = document.getElementById("motivo-search");
+  if(si) runSearch(si.value);
+  try{ localStorage.setItem("am-lang",lang); }catch(e){}
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", function(){
+  try{ var s=localStorage.getItem("am-lang"); if(s==="pt"||s==="es") currentLang=s; }catch(e){}
+  document.documentElement.setAttribute("data-lang",currentLang);
+  document.getElementById("btn-es").classList.toggle("active",currentLang==="es");
+  document.getElementById("btn-pt").classList.toggle("active",currentLang==="pt");
+
+  SEARCH_INDEX = buildSearchIndex();
+  renderMosaic();
+
+  var si = document.getElementById("motivo-search");
+  si.addEventListener("input", function(){ runSearch(si.value); });
+  si.addEventListener("focus", function(){ if(si.value) runSearch(si.value); });
+  // Fechar dropdown ao clicar fora
+  document.addEventListener("click", function(e){
+    if(!e.target.closest(".search-wrap")) document.getElementById("search-results").classList.remove("open");
+  });
+});
+</script>
+<script src="supabase-integration.js" defer></script>
+<script src="sidebar.js"></script>
+</body>
+</html>
