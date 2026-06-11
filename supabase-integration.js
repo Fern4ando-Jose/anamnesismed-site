@@ -586,9 +586,11 @@ async function uiUpdateUserInfo() {
   let nomeBase = profile.nome || profile.email?.split('@')[0] || 'Usuário';
   nomeBase = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
 
-  // Prefixo Dr. para médicos
-  const ehMedico = profile.tipo_usuario === 'medico';
-  const nome = ehMedico ? 'Dr. ' + nomeBase : nomeBase;
+  // Prefixo Dr. antes do nome
+  const nome = 'Dr. ' + nomeBase;
+
+  // Cache local p/ exibição instantânea do nome (elimina o "delay" ao recarregar)
+  try { localStorage.setItem('am-uname', nome); } catch(e) {}
 
   // Atualiza em todos os elementos que mostram o nome
   document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = nome);
