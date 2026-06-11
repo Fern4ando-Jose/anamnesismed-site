@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+
+/* ════════════════════════════════════════════════════════════
+   AnamnesísMed · Tema "Pulso" — tokens globais
+   Importado por sidebar.css → aplica-se a todas as páginas do app.
+   (Direção: instrumento clínico — tinta + teal + coral, mono p/ dados.)
+   ════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#EAF0F2;            /* névoa clínica (fundo de página) */
+  --bg-card:#FFFFFF;
+  --ink:#0A1A24;           /* tinta profunda (texto / superfícies escuras) */
+  --primary:#0FA3B1;       /* teal evoluído */
+  --primary-dark:#0B7C88;
+  --secondary:#0D9488;
+  --accent:#FF5C49;        /* coral arterial (pulso / alerta) — uso contido */
+  --pulse:#FF5C49;
+  --signal:#15B27A;        /* verde-sinal (normal / positivo) */
+  --muted:#5A7079;
+  --line:rgba(10,26,36,0.09);
+  --line-md:rgba(10,26,36,0.16);
+  --serif:'Space Grotesk',system-ui,sans-serif;   /* slot "display" das páginas */
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
+}
+
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+/* Títulos no display */
+h1,h2,h3,h4{font-family:var(--serif);letter-spacing:-.3px}
+
+/* Dados clínicos e contadores no monoespaçado (vernáculo do prontuário/monitor) */
+.nav-count,.esp-nav-count,.spec-tab-count,.esp-tile-count,
+.sr-spec,.am-mono,[data-mono]{
+  font-family:var(--mono);
+  font-feature-settings:"tnum" 1;
+}
