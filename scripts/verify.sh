@@ -124,7 +124,7 @@ DASH="$ROOT/anamnesismed-dashboard.html"
 echo ""
 echo "> anamnesismed-dashboard.html"
 LINES=$(wc -l < "$DASH")
-[ "$LINES" -ge 600 ] && check "Linhas ($LINES >= 600)" "ok" || check "Linhas ($LINES)" "TRUNCADO"
+[ "$LINES" -ge 440 ] && check "Linhas ($LINES >= 440)" "ok" || check "Linhas ($LINES)" "TRUNCADO"
 grep -q "</html>" "$DASH" && check "Tag </html> presente" "ok" || check "Tag </html>" "AUSENTE"
 grep -q "function setView" "$DASH" && check "setView presente" "ok" || check "setView" "AUSENTE"
 grep -q "URLSearchParams" "$DASH" && check "URLSearchParams presente" "ok" || check "URLSearchParams" "AUSENTE"

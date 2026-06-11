@@ -22,65 +22,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 [data-lang="pt"] .es{display:none!important}
 
 /* ── SIDEBAR ── */
-.sidebar{
-  width:var(--sidebar-w);min-height:100vh;
-  background:#fff;border-right:1px solid rgba(13,45,61,0.09);
-  display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;
-  z-index:100;transition:transform .3s
-}
-.sidebar-head{
-  padding:24px 20px 20px;
-  border-bottom:1px solid rgba(13,45,61,0.07)
-}
-.sidebar-logo{
-  font-family:var(--sans);font-size:18px;font-weight:700;
-  color:var(--ink);text-decoration:none;display:block;margin-bottom:4px
-}
-.sidebar-logo span{color:var(--primary)}
-.sidebar-role{font-size:11px;color:var(--muted);letter-spacing:.3px}
-.sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;min-height:0}
-.nav-section-label{
-  font-size:9px;font-weight:700;letter-spacing:1.5px;
-  text-transform:uppercase;color:rgba(13,45,61,.35);
-  padding:12px 8px 6px;margin-top:8px
-}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 10px;border-radius:8px;
-  font-size:13px;font-weight:600;color:var(--muted);
-  text-decoration:none;cursor:pointer;border:none;background:transparent;
-  transition:all .2s;width:100%;text-align:left
-}
-.nav-item:hover{background:rgba(13,45,61,.05);color:var(--ink)}
-.nav-item.active{background:rgba(14,116,144,.1);color:var(--primary)}
-.nav-dot{width:6px;height:6px;border-radius:50%;background:rgba(13,45,61,.15);flex-shrink:0;transition:background .2s}
-.nav-item.active .nav-dot{background:var(--primary)}
-.nav-count{margin-left:auto;font-size:10px;font-weight:600;color:var(--muted);background:rgba(13,45,61,.06);padding:2px 7px;border-radius:10px;min-width:20px;text-align:center}
-.nav-badge{margin-left:auto;font-size:10px;font-weight:700;background:var(--primary);color:#fff;padding:2px 7px;border-radius:10px}
-.nav-icon{font-size:16px;flex-shrink:0}
-/* especialidades dentro da sidebar */
-.esp-nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:8px 10px;border-radius:8px;
-  font-size:13px;font-weight:600;color:var(--muted);
-  cursor:pointer;border:none;background:transparent;
-  transition:all .2s;width:100%;text-align:left
-}
-.esp-nav-item:hover{background:rgba(13,45,61,.05);color:var(--ink)}
-.esp-nav-item.active{background:rgba(14,116,144,.1);color:var(--primary)}
-.esp-nav-count{margin-left:auto;font-size:10px;font-weight:600;color:var(--muted);background:rgba(13,45,61,.06);padding:2px 7px;border-radius:10px}
-.esp-nav-item.active .esp-nav-count{color:var(--primary);background:rgba(14,116,144,.12)}
-.nav-item-logout{color:#dc2626!important}
-.nav-item-logout:hover{background:rgba(220,38,38,.07)!important;color:#b91c1c!important}
-.sidebar-foot{padding:16px 12px 20px;border-top:1px solid rgba(13,45,61,0.07)}
-.user-info{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;transition:background .2s}
-.user-info:hover{background:rgba(13,45,61,.05)}
-.user-av{width:34px;height:34px;border-radius:50%;background:rgba(14,116,144,.12);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--primary);flex-shrink:0}
-.user-name{font-size:13px;font-weight:600;color:var(--ink)}
-.user-plan{font-size:11px;color:var(--muted)}
-#sidebar-close-btn{display:none}
-
 /* ── MAIN ── */
 .main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
 
@@ -242,14 +183,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .esp-drawer-btn .edb-count{margin-left:auto;font-size:12px;color:var(--muted);font-weight:400}
 
 /* ── SIDEBAR BACKDROP ── */
-.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(13,45,61,.5);z-index:99}
-.sidebar-backdrop.open{display:block}
 
 /* ── RESPONSIVO ── */
 @media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(13,45,61,.3)}
-  #sidebar-close-btn{display:flex!important}
   .main{margin-left:0}
   .mobile-nav{display:block}
   .panel{padding:16px 14px 90px}
@@ -270,75 +206,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .motivos-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 }
 </style>
+  <link rel="stylesheet" href="sidebar.css">
 </head>
 <body>
 
 <!-- SIDEBAR BACKDROP (mobile) -->
-<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 
 <!-- ── SIDEBAR PRINCIPAL ── -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-head" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-    <div>
-      <a href="anamnesismed-landing.html" class="sidebar-logo">Anamnesis<span>Med</span></a>
-      <div class="sidebar-role pt" id="sb-plan-pt">Plano Gratuito</div>
-      <div class="sidebar-role es" id="sb-plan-es">Plan Gratuito</div>
-    </div>
-    <button id="sidebar-close-btn" onclick="closeSidebar()" aria-label="Fechar menu"
-      style="display:none;align-items:center;justify-content:center;background:rgba(13,45,61,.07);border:none;border-radius:8px;width:32px;height:32px;color:var(--ink);font-size:16px;cursor:pointer;flex-shrink:0">&#x2715;</button>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-section-label pt">Principal</div>
-    <div class="nav-section-label es">Principal</div>
-    <a href="anamnesismed-dashboard.html" class="nav-item" id="nav-inicio">
-      <span class="nav-dot"></span>
-      <span class="pt">In&#xED;cio</span><span class="es">Inicio</span>
-    </a>
-    <a href="anamnesismed-app.html" class="nav-item" id="nav-nova-hc">
-      <span class="nav-dot"></span>
-      <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
-      <span class="nav-badge">+</span>
-    </a>
-    <a href="anamnesismed-dashboard.html?view=hcs" class="nav-item" id="nav-hcs">
-      <span class="nav-dot"></span>
-      <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
-    </a>
-
-    <div class="nav-section-label pt">Especialidades</div>
-    <div class="nav-section-label es">Especialidades</div>
-    <div id="esp-nav-list"><!-- preenchido por JS --></div>
-
-    <div class="nav-section-label pt" style="margin-top:16px">Ferramentas</div>
-    <div class="nav-section-label es" style="margin-top:16px">Herramientas</div>
-    <a href="anamnesismed-mnemonicas.html" class="nav-item" id="nav-mnemonicas">
-      <span class="nav-dot"></span>
-      <span class="pt">Mnem&#xF4;nicas</span><span class="es">Mnemot&#xE9;cnicas</span>
-    </a>
-    <a href="anamnesismed-config.html" class="nav-item" id="nav-config">
-      <span class="nav-dot"></span>
-      <span class="pt">Configura&#xE7;&#xF5;es</span><span class="es">Configuraci&#xF3;n</span>
-    </a>
-    <a href="anamnesismed-landing.html#pricing" class="nav-item" style="color:var(--accent)" id="nav-upgrade">
-      <span class="nav-dot"></span>
-      <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>
-    </a>
-    <button class="nav-item nav-item-logout" onclick="if(window.encerrarSessao)encerrarSessao()">
-      <span class="nav-dot"></span>
-      <span class="pt">Encerrar sess&#xE3;o</span><span class="es">Cerrar sesi&#xF3;n</span>
-    </button>
-  </nav>
-
-  <div class="sidebar-foot">
-    <div class="user-info">
-      <div class="user-av user-avatar" id="user-av-sidebar">?</div>
-      <div>
-        <div class="user-name" id="user-name-sidebar">&#x2014;</div>
-        <div class="user-plan" id="user-plan-sidebar">&#x2014;</div>
-      </div>
-    </div>
-  </div>
-</aside>
+<div id="sidebar-root"></div>
 
 <!-- ── MAIN ── -->
 <div class="main">
@@ -643,8 +518,6 @@ function setLang(lang){
 }
 
 // ── SIDEBAR / DRAWER ──────────────────────────────────────────────────────────
-function openSidebar(){document.getElementById("sidebar").classList.add("open");document.getElementById("sidebar-backdrop").classList.add("open");}
-function closeSidebar(){document.getElementById("sidebar").classList.remove("open");document.getElementById("sidebar-backdrop").classList.remove("open");}
 function openEspDrawer(){document.getElementById("esp-drawer").classList.add("open");document.getElementById("esp-drawer-backdrop").classList.add("open");}
 function closeEspDrawer(){document.getElementById("esp-drawer").classList.remove("open");document.getElementById("esp-drawer-backdrop").classList.remove("open");}
 
@@ -667,5 +540,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 </script>
 <script src="supabase-integration.js" defer></script>
+<script src="sidebar.js"></script>
 </body>
 </html>
