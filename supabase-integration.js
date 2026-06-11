@@ -621,8 +621,8 @@ async function uiUpdateUserInfo() {
       el.textContent = 'Pro';
     } else if (access.type === 'trial') {
       el.textContent = lang === 'es'
-        ? `Trial — ${access.daysLeft} días`
-        : `Trial — ${access.daysLeft} dias`;
+        ? `Prueba — ${access.daysLeft} días`
+        : `Teste — ${access.daysLeft} dias`;
     }
   });
 
@@ -1124,7 +1124,7 @@ function showSaveFeedback() {
         } else {
           const trialEnd = profile.trial_end ? new Date(profile.trial_end) : null;
           const daysLeft = trialEnd ? Math.max(0, Math.ceil((trialEnd - new Date()) / (1000*60*60*24))) : 0;
-          planoEl.textContent = lang === 'pt' ? `Trial — ${daysLeft} dias restantes` : `Prueba — ${daysLeft} días restantes`;
+          planoEl.textContent = lang === 'pt' ? `Teste — ${daysLeft} dias restantes` : `Prueba — ${daysLeft} días restantes`;
         }
       }
     }
