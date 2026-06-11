@@ -24,44 +24,37 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* ── MAIN ── */
 .main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
 
-/* ── TOPBAR ── */
+/* ── TOPBAR (estilo dashboard) ── */
 .topbar{
   background:var(--bg-card);border-bottom:1px solid var(--line);
-  padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;min-height:60px;display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:50;gap:12px
 }
-.topbar-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.topbar-left{display:flex;align-items:center;gap:10px;min-width:0}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
 .hamburger:hover{background:var(--bg)}
-.topbar-back{
-  display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--muted);
-  text-decoration:none;padding:5px 8px;border-radius:6px;transition:background .15s,color .15s;white-space:nowrap;flex-shrink:0
-}
-.topbar-back:hover{background:var(--bg);color:var(--ink)}
-.topbar-sep{color:var(--line-md);font-size:16px;flex-shrink:0}
-.topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink);line-height:1.2}
+.topbar-subtitle{font-size:13px;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
 .lang-toggle{display:flex;background:rgba(13,45,61,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
 .lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 
-/* ── PANEL ── */
-.panel{flex:1;padding:28px 32px 64px;overflow-y:auto;max-width:1100px;width:100%}
-.hub-head{margin-bottom:22px}
-.hub-title{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--ink);margin-bottom:4px}
-.hub-sub{font-size:14px;color:var(--muted)}
-
-/* ── BUSCA ── */
-.search-wrap{position:relative;margin-bottom:22px;max-width:560px}
-.search-box{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:14px;padding:13px 16px;transition:border-color .18s,box-shadow .18s}
-.search-box:focus-within{border-color:rgba(14,116,144,.5);box-shadow:0 4px 18px rgba(13,45,61,.08)}
-.search-box svg{flex-shrink:0;color:var(--muted)}
-.search-input{flex:1;border:none;outline:none;background:none;font-family:var(--sans);font-size:15px;color:var(--ink)}
+/* ── BUSCA (no topbar) ── */
+.search-wrap{position:relative}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted)}
+.search-input{
+  padding:8px 12px 8px 34px;font-size:13px;
+  background:var(--bg);border:1px solid var(--line);
+  border-radius:8px;color:var(--ink);outline:none;
+  width:240px;transition:all .2s;font-family:var(--sans)
+}
+.search-input:focus{border-color:rgba(14,116,144,.5);box-shadow:0 0 0 3px rgba(14,116,144,.10);width:280px}
 .search-input::placeholder{color:var(--muted)}
 .search-results{
-  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;
+  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:120;min-width:300px;
   background:var(--bg-card);border:1px solid var(--line);border-radius:12px;
-  box-shadow:0 10px 30px rgba(13,45,61,.14);overflow:hidden;display:none;max-height:340px;overflow-y:auto
+  box-shadow:0 10px 30px rgba(13,45,61,.16);overflow:hidden;display:none;max-height:360px;overflow-y:auto
 }
 .search-results.open{display:block}
 .sr-item{display:flex;align-items:center;gap:11px;padding:11px 14px;cursor:pointer;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line);transition:background .12s}
@@ -72,19 +65,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .sr-spec{font-size:11px;color:var(--muted);font-weight:600;flex-shrink:0}
 .sr-empty{padding:16px;text-align:center;font-size:13px;color:var(--muted)}
 
-/* ── CTA NOVA HC ── */
-.new-hc-cta{
-  display:flex;align-items:center;gap:14px;width:100%;text-decoration:none;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;
-  border:none;border-radius:14px;padding:16px 20px;margin-bottom:30px;cursor:pointer;
-  box-shadow:0 6px 20px rgba(14,116,144,.25);transition:transform .15s,box-shadow .15s;max-width:560px
+/* ── BOTÃO NOVA HC ── */
+.btn-new{
+  padding:8px 18px;font-size:13px;font-weight:700;color:#fff;background:var(--primary);
+  border:none;border-radius:8px;cursor:pointer;text-decoration:none;
+  display:flex;align-items:center;gap:7px;transition:all .2s;white-space:nowrap
 }
-.new-hc-cta:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(14,116,144,.32)}
-.nhc-icon{width:44px;height:44px;border-radius:11px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-.nhc-text{flex:1;text-align:left}
-.nhc-title{font-size:15px;font-weight:700}
-.nhc-sub{font-size:12.5px;opacity:.9;margin-top:1px}
-.nhc-arrow{font-size:22px;opacity:.9}
+.btn-new:hover{background:var(--primary-dark);transform:translateY(-1px)}
+
+/* ── PANEL ── */
+.panel{flex:1;padding:28px 32px 64px;overflow-y:auto;max-width:1100px;width:100%}
+.hub-head{margin-bottom:24px}
+.hub-title{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.hub-sub{font-size:14px;color:var(--muted)}
 
 /* ── SECTION LABEL ── */
 .sec-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:0 0 14px;display:flex;align-items:center;gap:8px}
@@ -131,11 +124,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .main{margin-left:0}
   .mobile-nav{display:block}
   .panel{padding:16px 14px 90px}
-  .topbar{padding:0 14px;height:52px}
+  .topbar{padding:0 14px;gap:8px}
   .hamburger{display:flex}
-  .topbar-back span{display:none}
-  .topbar-back::before{content:'←'}
-  .hub-title{font-size:21px}
+  .topbar-title{font-size:15px}
+  .topbar-subtitle{display:none}
+  .search-input{width:130px}
+  .search-input:focus{width:150px}
+  .btn-new span.pt,.btn-new span.es{display:none}
+  .hub-title{font-size:20px}
   .mosaic,.tools-grid{grid-template-columns:1fr}
 }
 @media(min-width:769px) and (max-width:1100px){
@@ -152,26 +148,36 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 <!-- ── MAIN ── -->
 <div class="main">
 
-  <!-- TOPBAR -->
+  <!-- TOPBAR (estilo dashboard) -->
   <header class="topbar">
     <div class="topbar-left">
-      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+      <button class="hamburger" id="menu-btn" onclick="openSidebar()" aria-label="Menu">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/>
         </svg>
       </button>
-      <a href="anamnesismed-dashboard.html" class="topbar-back">
-        <span class="pt">← Início</span><span class="es">← Inicio</span>
-      </a>
-      <span class="topbar-sep">›</span>
-      <span class="topbar-title pt">Explorar</span>
-      <span class="topbar-title es">Explorar</span>
+      <div>
+        <div class="topbar-title pt" id="page-title">Ol&#xE1; &#x1F44B;</div>
+        <div class="topbar-title es" id="page-title-es">Hola &#x1F44B;</div>
+        <div class="topbar-subtitle pt" id="page-sub">&#x2014;</div>
+        <div class="topbar-subtitle es" id="page-sub-es">&#x2014;</div>
+      </div>
     </div>
     <div class="topbar-right">
       <div class="lang-toggle">
         <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
         <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
       </div>
+      <div class="search-wrap">
+        <span class="search-icon">&#x1F50D;</span>
+        <input type="text" class="search-input" id="motivo-search" autocomplete="off"
+          placeholder="Buscar motivo..." data-ph-pt="Buscar motivo..." data-ph-es="Buscar motivo...">
+        <div class="search-results" id="search-results"></div>
+      </div>
+      <a href="anamnesismed-app.html?novo=1" class="btn-new">
+        <span>+</span>
+        <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
+      </a>
     </div>
   </header>
 
@@ -179,35 +185,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <div class="panel">
 
     <div class="hub-head">
-      <div class="hub-title pt">Explorar</div>
-      <div class="hub-title es">Explorar</div>
-      <div class="hub-sub pt">Escolha uma especialidade, busque um motivo ou comece uma HC do zero</div>
-      <div class="hub-sub es">Elige una especialidad, busca un motivo o comienza una HC desde cero</div>
+      <div class="hub-title pt">Especialidades</div>
+      <div class="hub-title es">Especialidades</div>
+      <div class="hub-sub pt">Escolha uma especialidade ou busque um motivo de consulta</div>
+      <div class="hub-sub es">Elige una especialidad o busca un motivo de consulta</div>
     </div>
-
-    <!-- BUSCA DE MOTIVOS -->
-    <div class="search-wrap">
-      <div class="search-box">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="search-input" id="motivo-search" type="text" autocomplete="off"
-          placeholder="Buscar motivo de consulta..."
-          data-ph-pt="Buscar motivo de consulta..."
-          data-ph-es="Buscar motivo de consulta...">
-      </div>
-      <div class="search-results" id="search-results"></div>
-    </div>
-
-    <!-- ATALHO NOVA HC EM BRANCO -->
-    <a href="anamnesismed-app.html?novo=1" class="new-hc-cta">
-      <div class="nhc-icon">📝</div>
-      <div class="nhc-text">
-        <div class="nhc-title pt">Nova HC em branco</div>
-        <div class="nhc-title es">Nueva HC en blanco</div>
-        <div class="nhc-sub pt">Abrir o formulário direto, sem escolher motivo</div>
-        <div class="nhc-sub es">Abrir el formulario directo, sin elegir motivo</div>
-      </div>
-      <div class="nhc-arrow">→</div>
-    </a>
 
     <!-- ESPECIALIDADES (MOSAICO COLORIDO) -->
     <div class="sec-label pt">Especialidades</div>
@@ -316,7 +298,7 @@ function espDesc(e){ return currentLang==="es" ? e.descEs : e.descPt; }
 function renderMosaic(){
   var html = ESPECIALIDADES.map(function(e){
     var count = countMotivos(e.id);
-    var motTxt = currentLang==="es" ? (count+" motivos") : (count+" motivos");
+    var motTxt = count + " motivos";
     return '<a href="anamnesismed-especialidades.html?esp='+e.id+'" class="esp-tile" style="--c:'+e.c+';--cbg:'+e.cbg+'">'
       + '<div class="esp-tile-icon">'+e.icon+'</div>'
       + '<div class="esp-tile-name">'+espName(e)+'</div>'
@@ -365,6 +347,18 @@ function setLang(lang){
   try{ localStorage.setItem("am-lang",lang); }catch(e){}
 }
 
+// ── DATA NO TOPBAR (igual ao dashboard) ───────────────────────────────────────
+function setTopbarDate(){
+  var now=new Date();
+  var days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var daysEs=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var monthsEs=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var d=now.getDate();
+  var pt=document.getElementById('page-sub'); if(pt) pt.textContent=days[now.getDay()]+', '+d+' de '+months[now.getMonth()]+' de '+now.getFullYear();
+  var es=document.getElementById('page-sub-es'); if(es) es.textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function(){
   try{ var s=localStorage.getItem("am-lang"); if(s==="pt"||s==="es") currentLang=s; }catch(e){}
@@ -372,6 +366,7 @@ document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("btn-es").classList.toggle("active",currentLang==="es");
   document.getElementById("btn-pt").classList.toggle("active",currentLang==="pt");
 
+  setTopbarDate();
   SEARCH_INDEX = buildSearchIndex();
   renderMosaic();
 
