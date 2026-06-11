@@ -1599,8 +1599,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 // ── LANG ──────────────────────────────────────────────
 function setLang(l){
   document.documentElement.setAttribute('data-lang',l);
-  document.getElementById('slang-es').classList.toggle('active',l==='es');
-  document.getElementById('slang-pt').classList.toggle('active',l==='pt');
+  var _slEs = document.getElementById('slang-es'); if(_slEs) _slEs.classList.toggle('active',l==='es');
+  var _slPt = document.getElementById('slang-pt'); if(_slPt) _slPt.classList.toggle('active',l==='pt');
   document.querySelectorAll('[data-ph-pt]').forEach(function(el){
     var ph = (l==='es') ? (el.getAttribute('data-ph-es')||el.getAttribute('data-ph-pt')) : el.getAttribute('data-ph-pt');
     el.setAttribute('placeholder', ph);
