@@ -660,11 +660,11 @@ function updateTrialUI(access) {
 /**
  * Preenche lista de HCs recentes no dashboard
  */
-async function uiLoadRecentHCs(limit, preHcs) {
+async function uiLoadRecentHCs(limit) {
   const container = document.querySelector('.hc-list');
   if (!container) return;
 
-  const hcs = preHcs ? preHcs.slice(0, limit || 5) : await hcListAll(limit || 5);
+  const hcs = await hcListAll(limit || 5);
 
   if (hcs.length === 0) {
     container.innerHTML = `
@@ -718,8 +718,8 @@ async function uiLoadRecentHCs(limit, preHcs) {
  * (HCs criadas, PDFs exportados, Motivos consultados) com dados reais do usuário.
  * Para um usuário novo, tudo começa zerado — nada de números fixos de exemplo.
  */
-async function uiLoadStats(preHcs, prePdf) {
-  const hcs = preHcs || await hcListAll(100);
+async function uiLoadStats() {
+  const hcs = await hcListAll(100);
   const lang = document.documentElement.dataset.lang || 'es';
 
   // HCs criadas
@@ -748,7 +748,7 @@ async function uiLoadStats(preHcs, prePdf) {
   }
 
   // PDFs exportados — rastreados localmente por usuário via pdfExportRecord()
-  const pdfExports = prePdf || (window.pdfExportList ? await window.pdfExportList() : []);
+  const pdfExports = window.pdfExportList ? await window.pdfExportList() : [];
   const pdfsValueEl = document.getElementById('stat-pdfs-value');
   if (pdfsValueEl) pdfsValueEl.textContent = String(pdfExports.length);
   const pdfsDeltaPt = document.getElementById('stat-pdfs-delta-pt');
@@ -807,12 +807,12 @@ function activityFormatTime(iso) {
  * Carrega a "Atividade recente" do dashboard a partir de dados reais
  * (HCs criadas/editadas + PDFs exportados) — substitui a lista estática de exemplo.
  */
-async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
+async function uiLoadRecentActivity(limit = 6) {
   const list = document.querySelector('.activity-list');
   if (!list) return;
 
-  const hcs = preHcs ? preHcs.slice(0, 20) : await hcListAll(20);
-  const pdfExports = prePdf || (window.pdfExportList ? await window.pdfExportList() : []);
+  const hcs = await hcListAll(20);
+  const pdfExports = window.pdfExportList ? await window.pdfExportList() : [];
 
   const eventos = [];
   hcs.forEach(hc => {
@@ -1058,16 +1058,11 @@ function showSaveFeedback() {
     // Trava de onboarding — termos de uso + médico ou estudante (1ª vez)
     await onboardingCheckAndShow(await profileGet());
 
-    // Atualizar UI — busca HCs e PDFs UMA vez e em paralelo, reaproveitando nas 3
-    // funções (antes: 3 buscas sequenciais de historias + 2 de PDFs => dashboard lento).
-    uiUpdateUserInfo();   // nome aparece assim que a sessão resolve (não bloqueia a lista)
-    const [hcsAll, pdfAll] = await Promise.all([
-      hcListAll(100),
-      window.pdfExportList ? window.pdfExportList() : Promise.resolve([])
-    ]);
-    uiLoadRecentHCs(5, hcsAll);
-    uiLoadStats(hcsAll, pdfAll);
-    uiLoadRecentActivity(6, hcsAll, pdfAll);
+    // Atualizar UI
+    await uiUpdateUserInfo();
+    await uiLoadRecentHCs();
+    await uiLoadStats();
+    await uiLoadRecentActivity();
 
     // Deep-link: retorno do Stripe Checkout (?payment=success) — mostra confirmação,
     // re-checa o plano (o webhook pode ter atualizado o acesso) e limpa a URL

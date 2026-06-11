@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnamnesísMed — Nova HC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;--bg-sidebar:#0d2d3d;
+  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
+  --secondary:#0d9488;--accent:#f59e0b;
+  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --sidebar-w:240px;
+  --esp-bar-w:220px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+/* ── NAV SIDEBAR (igual dashboard) ── */
+.sidebar{
+  width:var(--sidebar-w);min-height:100vh;
+  background:var(--bg-sidebar);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:100;transition:transform .3s
+}
+.sidebar-head{
+  padding:24px 20px 20px;
+  border-bottom:1px solid rgba(255,255,255,.07)
+}
+.sidebar-logo{
+  font-family:var(--serif);font-size:18px;font-weight:700;
+  color:#fff;text-decoration:none;display:block;margin-bottom:4px
+}
+.sidebar-logo span{color:#5dd0e8}
+.sidebar-role{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.3px}
+.sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;min-height:0}
+.nav-section-label{
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:rgba(255,255,255,.28);
+  padding:12px 8px 6px;margin-top:8px
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.55);
+  text-decoration:none;cursor:pointer;border:none;background:transparent;
+  transition:all .2s;width:100%;text-align:left
+}
+.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
+.nav-item.active{background:rgba(14,116,144,.25);color:#fff}
+.nav-icon{font-size:16px;flex-shrink:0}
+.sidebar-foot{padding:16px 12px 20px;border-top:1px solid rgba(255,255,255,.07)}
+.user-info{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;transition:background .2s}
+.user-info:hover{background:rgba(255,255,255,.06)}
+.user-av{width:34px;height:34px;border-radius:50%;background:rgba(14,116,144,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.user-name{font-size:13px;font-weight:600;color:#fff}
+.user-plan{font-size:11px;color:rgba(255,255,255,.4)}
+#sidebar-close-btn{display:none}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--bg-card);
+  border-bottom:1px solid var(--line);
+  padding:0 24px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;gap:12px
+}
+.topbar-left{display:flex;align-items:center;gap:10px;min-width:0}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink)}
+.hamburger:hover{background:var(--bg)}
+.topbar-back{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:600;color:var(--muted);
+  text-decoration:none;padding:5px 8px;border-radius:6px;
+  transition:background .15s,color .15s
+}
+.topbar-back:hover{background:var(--bg);color:var(--ink)}
+.topbar-sep{color:var(--line-md);font-size:16px}
+.topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lang-toggle{display:flex;background:rgba(13,45,61,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+/* ── BODY LAYOUT: esp-bar + conteúdo ── */
+.body-wrap{display:flex;flex:1;min-height:0;overflow:hidden}
+
+/* ── ESP BAR (especialidades) ── */
+.esp-bar{
+  width:var(--esp-bar-w);flex-shrink:0;
+  background:var(--bg-card);
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  position:sticky;top:60px;
+  height:calc(100vh - 60px)
+}
+.esp-bar-head{
+  padding:20px 16px 12px;
+  border-bottom:1px solid var(--line)
+}
+.esp-bar-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+.esp-list{padding:10px 8px;display:flex;flex-direction:column;gap:2px}
+.esp-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 10px;border-radius:8px;
+  font-size:13px;font-weight:600;color:var(--muted);
+  cursor:pointer;border:none;background:transparent;
+  transition:all .18s;text-align:left;width:100%;
+  border-left:3px solid transparent
+}
+.esp-btn:hover{background:var(--bg);color:var(--ink)}
+.esp-btn.active{background:rgba(14,116,144,.08);color:var(--primary);border-left-color:var(--primary)}
+.esp-btn .esp-icon{font-size:18px;flex-shrink:0}
+.esp-btn .esp-info{display:flex;flex-direction:column;gap:1px}
+.esp-btn .esp-name{font-size:13px;font-weight:600;line-height:1.2}
+.esp-btn .esp-count{font-size:11px;color:var(--muted);font-weight:400}
+.esp-btn.active .esp-count{color:rgba(14,116,144,.7)}
+.esp-soon{
+  padding:8px 10px;margin:4px 8px;
+  border-radius:8px;border:1px dashed var(--line-md);
+  font-size:12px;color:var(--muted);text-align:center;
+  opacity:.6
+}
+
+/* ── PANEL (conteúdo da especialidade) ── */
+.panel{flex:1;overflow-y:auto;padding:24px 28px 40px}
+
+.panel-head{margin-bottom:20px}
+.panel-esp-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.panel-esp-sub{font-size:14px;color:var(--muted)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:24px}
+.tab-btn{
+  padding:10px 18px;font-size:13px;font-weight:600;
+  color:var(--muted);border:none;background:transparent;
+  cursor:pointer;border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all .2s
+}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ── MOTIVOS GRID ── */
+.cat-block{margin-bottom:24px}
+.cat-label{
+  font-size:10px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--line)
+}
+.motivos-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:10px
+}
+.motivo-card{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;
+  background:var(--bg-card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  text-decoration:none;color:var(--ink);
+  cursor:pointer;transition:all .18s
+}
+.motivo-card:hover{
+  border-color:rgba(14,116,144,.3);
+  box-shadow:0 4px 12px rgba(13,45,61,.07);
+  transform:translateY(-1px)
+}
+.motivo-card:active{transform:translateY(0)}
+.m-icon{font-size:22px;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--bg)}
+.m-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.m-name{font-size:13px;font-weight:600;color:var(--ink);line-height:1.3}
+.m-arrow{margin-left:auto;flex-shrink:0;color:var(--muted);font-size:16px}
+
+/* ── MATERIAL ESTUDO ── */
+.material-placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 20px;text-align:center;gap:12px
+}
+.material-placeholder .mp-icon{font-size:40px}
+.material-placeholder .mp-title{font-size:16px;font-weight:700;color:var(--ink)}
+.material-placeholder .mp-sub{font-size:14px;color:var(--muted);max-width:300px;line-height:1.5}
+.mp-badge{
+  display:inline-block;padding:4px 12px;
+  background:rgba(14,116,144,.1);color:var(--primary);
+  border-radius:20px;font-size:12px;font-weight:700;
+  margin-top:4px
+}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;
+  padding:80px 20px;text-align:center;gap:10px
+}
+.empty-state .es-icon{font-size:48px}
+.empty-state .es-title{font-size:16px;font-weight:700;color:var(--ink)}
+.empty-state .es-sub{font-size:14px;color:var(--muted);max-width:280px;line-height:1.5}
+
+/* ── MOBILE NAV BOTTOM ── */
+.mobile-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg-card);
+  border-top:1px solid var(--line);
+  z-index:200;
+  padding:0 4px;
+  padding-bottom:env(safe-area-inset-bottom)
+}
+.mn-row{display:flex;align-items:stretch}
+.mn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;padding:10px 4px;
+  font-size:10px;font-weight:600;color:var(--muted);
+  text-decoration:none;background:none;border:none;cursor:pointer;
+  transition:color .15s
+}
+.mn-item.active{color:var(--primary)}
+.mn-icon{font-size:20px}
+
+/* ── ESP DRAWER (mobile) ── */
+.esp-drawer-backdrop{
+  display:none;position:fixed;inset:0;
+  background:rgba(13,45,61,.5);z-index:150
+}
+.esp-drawer-backdrop.open{display:block}
+.esp-drawer{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg-card);
+  border-radius:16px 16px 0 0;
+  z-index:160;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.32,.72,0,1);
+  max-height:70vh;overflow:hidden;display:flex;flex-direction:column
+}
+.esp-drawer.open{transform:translateY(0)}
+.esp-drawer-head{
+  padding:16px 20px 12px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0
+}
+.esp-drawer-title{font-size:15px;font-weight:700;color:var(--ink)}
+.esp-drawer-close{
+  background:var(--bg);border:none;border-radius:50%;
+  width:30px;height:30px;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:var(--muted)
+}
+.esp-drawer-list{overflow-y:auto;padding:10px 12px 20px;display:flex;flex-direction:column;gap:4px}
+.esp-drawer-btn{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 12px;border-radius:10px;
+  font-size:14px;font-weight:600;color:var(--muted);
+  border:none;background:transparent;cursor:pointer;
+  transition:all .18s;text-align:left;width:100%
+}
+.esp-drawer-btn:hover,.esp-drawer-btn:active{background:var(--bg);color:var(--ink)}
+.esp-drawer-btn.active{background:rgba(14,116,144,.1);color:var(--primary)}
+.esp-drawer-btn .edb-icon{font-size:22px}
+
+/* ── SIDEBAR BACKDROP ── */
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(13,45,61,.5);z-index:99}
+.sidebar-backdrop.open{display:block}
+
+/* ── RESPONSIVO ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(13,45,61,.3)}
+  #sidebar-close-btn{display:flex!important}
+  .main{margin-left:0}
+  .mobile-nav{display:block}
+  .esp-bar{display:none}
+  .panel{padding:16px 14px 90px}
+  .topbar{padding:0 14px;height:52px}
+  .motivos-grid{grid-template-columns:1fr}
+  .hamburger{display:flex}
+}
+@media(max-width:480px){
+  .panel{padding:14px 12px 90px}
+  .topbar-title{font-size:14px}
+}
+@media(min-width:769px) and (max-width:1024px){
+  :root{--esp-bar-w:180px}
+  .panel{padding:20px 20px 40px}
+  .motivos-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR BACKDROP (mobile) -->
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
+<!-- NAV SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-head" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+    <div>
+      <a href="anamnesismed-landing.html" class="sidebar-logo">Anamnesis<span>Med</span></a>
+      <div class="sidebar-role pt" id="sb-plan-pt">Plano Gratuito</div>
+      <div class="sidebar-role es" id="sb-plan-es">Plan Gratuito</div>
+    </div>
+    <button id="sidebar-close-btn" onclick="closeSidebar()" aria-label="Fechar menu"
+      style="display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.08);border:none;border-radius:8px;width:32px;height:32px;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0">✕</button>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label pt">Principal</div>
+    <div class="nav-section-label es">Principal</div>
+    <a href="anamnesismed-dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span class="pt">Dashboard</span><span class="es">Dashboard</span>
+    </a>
+    <a href="anamnesismed-especialidades.html" class="nav-item active">
+      <span class="nav-icon">📋</span>
+      <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
+    </a>
+    <div class="nav-section-label pt">Especialidades</div>
+    <div class="nav-section-label es">Especialidades</div>
+    <a href="anamnesismed-especialidades.html?esp=semiologia" class="nav-item" id="snav-semiologia">
+      <span class="nav-icon">📖</span>
+      <span class="pt">Semiologia</span><span class="es">Semiología</span>
+    </a>
+    <a href="anamnesismed-especialidades.html?esp=clinica" class="nav-item" id="snav-clinica">
+      <span class="nav-icon">🏥</span>
+      <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
+    </a>
+    <a href="anamnesismed-especialidades.html?esp=cirurgia" class="nav-item" id="snav-cirurgia">
+      <span class="nav-icon">🔪</span>
+      <span class="pt">Cirurgia</span><span class="es">Cirugía</span>
+    </a>
+    <div class="nav-section-label pt">Ferramentas</div>
+    <div class="nav-section-label es">Herramientas</div>
+    <a href="anamnesismed-mnemonicas.html" class="nav-item">
+      <span class="nav-icon">🧠</span>
+      <span class="pt">Mnemônicas</span><span class="es">Mnemotécnicas</span>
+    </a>
+    <a href="anamnesismed-config.html" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span class="pt">Configurações</span><span class="es">Configuración</span>
+    </a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="user-info" id="user-info-btn">
+      <div class="user-av" id="user-av-sidebar">?</div>
+      <div>
+        <div class="user-name" id="user-name-sidebar">—</div>
+        <div class="user-plan" id="user-plan-sidebar">—</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/>
+        </svg>
+      </button>
+      <a href="anamnesismed-dashboard.html" class="topbar-back">
+        ← <span class="pt">Dashboard</span><span class="es">Dashboard</span>
+      </a>
+      <span class="topbar-sep">›</span>
+      <span class="topbar-title pt" id="topbar-title-pt">Nova HC</span>
+      <span class="topbar-title es" id="topbar-title-es">Nueva HC</span>
+    </div>
+    <div class="topbar-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="body-wrap">
+
+    <!-- ESP BAR (desktop) -->
+    <div class="esp-bar" id="esp-bar">
+      <div class="esp-bar-head">
+        <div class="esp-bar-label pt">Especialidades</div>
+        <div class="esp-bar-label es">Especialidades</div>
+      </div>
+      <div class="esp-list" id="esp-list-desktop">
+        <!-- preenchido por JS -->
+      </div>
+      <div class="esp-soon">
+        <div>🔜</div>
+        <div class="pt" style="margin-top:4px;font-size:11px">Pediatria, Ginecologia, Ortopedia…</div>
+        <div class="es" style="margin-top:4px;font-size:11px">Pediatría, Ginecología, Ortopedia…</div>
+      </div>
+    </div>
+
+    <!-- PAINEL -->
+    <div class="panel" id="panel">
+      <!-- preenchido por JS -->
+    </div>
+
+  </div><!-- /body-wrap -->
+</div><!-- /main -->
+
+<!-- MOBILE NAV BOTTOM -->
+<nav class="mobile-nav">
+  <div class="mn-row">
+    <a href="anamnesismed-dashboard.html" class="mn-item">
+      <span class="mn-icon">🏠</span>
+      <span class="pt">Início</span><span class="es">Inicio</span>
+    </a>
+    <button class="mn-item active" onclick="openEspDrawer()">
+      <span class="mn-icon">📋</span>
+      <span class="pt">Especialidades</span><span class="es">Especialidades</span>
+    </button>
+    <a href="anamnesismed-mnemonicas.html" class="mn-item">
+      <span class="mn-icon">🧠</span>
+      <span class="pt">Mnemônicas</span><span class="es">Mnemot.</span>
+    </a>
+    <a href="anamnesismed-config.html" class="mn-item">
+      <span class="mn-icon">⚙️</span>
+      <span class="pt">Config.</span><span class="es">Config.</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ESP DRAWER (mobile) -->
+<div class="esp-drawer-backdrop" id="esp-drawer-backdrop" onclick="closeEspDrawer()"></div>
+<div class="esp-drawer" id="esp-drawer">
+  <div class="esp-drawer-head">
+    <span class="esp-drawer-title pt">Especialidades</span>
+    <span class="esp-drawer-title es">Especialidades</span>
+    <button class="esp-drawer-close" onclick="closeEspDrawer()">✕</button>
+  </div>
+  <div class="esp-drawer-list" id="esp-drawer-list">
+    <!-- preenchido por JS -->
+  </div>
+</div>
+
+<script>
+// ── DADOS DAS ESPECIALIDADES ─────────────────────────────────────────────────
+const ESPECIALIDADES = [
+  {
+    id: "semiologia",
+    icon: "📖",
+    namePt: "Semiologia",
+    nameEs: "Semiología",
+    cats: [
+      { catPt: "Dor e Dispneia", catEs: "Dolor y Disnea",
+        items: [
+          { id:"semio-dor",    namePt:"Dor",       nameEs:"Dolor",      icon:"🔴" },
+          { id:"semio-disnea", namePt:"Dispneia",  nameEs:"Disnea",     icon:"🫁" },
+          { id:"semio-tosse",  namePt:"Tosse",     nameEs:"Tos",        icon:"😤" }
+        ]
+      },
+      { catPt: "Sinais Clínicos", catEs: "Signos Clínicos",
+        items: [
+          { id:"semio-cianose",   namePt:"Cianose",    nameEs:"Cianosis",   icon:"🔵" },
+          { id:"semio-edema",     namePt:"Edema",      nameEs:"Edema",      icon:"💧" },
+          { id:"semio-ictericia", namePt:"Icterícia",  nameEs:"Ictericia",  icon:"🟡" }
+        ]
+      },
+      { catPt: "Sintomas Constitucionais", catEs: "Síntomas Constitucionales",
+        items: [
+          { id:"semio-febre",   namePt:"Febre",           nameEs:"Fiebre",         icon:"🌡️" },
+          { id:"semio-astenia", namePt:"Astenia/Fadiga",  nameEs:"Astenia/Fatiga", icon:"😴" },
+          { id:"semio-peso",    namePt:"Alteração de peso", nameEs:"Cambio de peso", icon:"⚖️" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "clinica",
+    icon: "🏥",
+    namePt: "Clínica Médica",
+    nameEs: "Clínica Médica",
+    cats: [
+      { catPt: "Cardiorrespiratório", catEs: "Cardiorrespiratorio",
+        items: [
+          { id:"dor-toracica", namePt:"Dor Torácica",   nameEs:"Dolor Torácico", icon:"❤️" },
+          { id:"dispneia",     namePt:"Dispneia",       nameEs:"Disnea",         icon:"🫁" },
+          { id:"palpitacoes",  namePt:"Palpitações",    nameEs:"Palpitaciones",  icon:"💓" }
+        ]
+      },
+      { catPt: "Neurológico", catEs: "Neurológico",
+        items: [
+          { id:"cefaleia",          namePt:"Cefaleia",           nameEs:"Cefalea",            icon:"🧠" },
+          { id:"convulsao-sincope", namePt:"Convulsão/Síncope",  nameEs:"Convulsión/Síncope", icon:"⚡" },
+          { id:"tontura-vertigem",  namePt:"Tontura/Vertigem",   nameEs:"Mareo/Vértigo",      icon:"🌀" }
+        ]
+      },
+      { catPt: "Infeccioso / Geral", catEs: "Infeccioso / General",
+        items: [
+          { id:"febre",      namePt:"Febre",        nameEs:"Fiebre",      icon:"🌡️" },
+          { id:"perda-peso", namePt:"Perda de Peso",nameEs:"Pérdida de peso", icon:"⚖️" }
+        ]
+      },
+      { catPt: "Gastrointestinal", catEs: "Gastrointestinal",
+        items: [
+          { id:"dor-abdominal",    namePt:"Dor Abdominal",    nameEs:"Dolor Abdominal", icon:"🫃" },
+          { id:"ictericia",        namePt:"Icterícia",        nameEs:"Ictericia",       icon:"🟡" },
+          { id:"nauseas-vomitos",  namePt:"Náuseas/Vômitos",  nameEs:"Náuseas/Vómitos", icon:"🤢" },
+          { id:"diarreia",         namePt:"Diarreia",         nameEs:"Diarrea",         icon:"💧" }
+        ]
+      },
+      { catPt: "Outros", catEs: "Otros",
+        items: [
+          { id:"edema",             namePt:"Edema",          nameEs:"Edema",        icon:"💧" },
+          { id:"tosse",             namePt:"Tosse",          nameEs:"Tos",          icon:"😤" },
+          { id:"sintomas-urinarios",namePt:"Sint. Urinários",nameEs:"Sint. Urinarios",icon:"🫧" },
+          { id:"lombalgia",         namePt:"Lombalgia",      nameEs:"Lumbalgia",    icon:"🦴" },
+          { id:"artralgia",         namePt:"Artralgia",      nameEs:"Artralgia",    icon:"🦵" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "cirurgia",
+    icon: "🔪",
+    namePt: "Cirurgia Geral",
+    nameEs: "Cirugía General",
+    cats: [
+      { catPt: "Abdome Agudo", catEs: "Abdomen Agudo",
+        items: [
+          { id:"apendicite",          namePt:"Apendicite",          nameEs:"Apendicitis",          icon:"🔴" },
+          { id:"colecistite-colelitiase", namePt:"Colecistite/Colelitíase", nameEs:"Colecistitis/Colelitiasis", icon:"🟠" },
+          { id:"pancreatite-aguda",   namePt:"Pancreatite Aguda",   nameEs:"Pancreatitis Aguda",   icon:"🟡" },
+          { id:"oclusao-intestinal",  namePt:"Oclusão Intestinal",  nameEs:"Oclusión Intestinal",  icon:"🟤" }
+        ]
+      },
+      { catPt: "Hérnias", catEs: "Hernias",
+        items: [
+          { id:"hernia-abdominal", namePt:"Hérnia Abdominal", nameEs:"Hernia Abdominal", icon:"🫁" }
+        ]
+      },
+      { catPt: "Hemorragia Digestiva", catEs: "Hemorragia Digestiva",
+        items: [
+          { id:"hemorragia-digestiva-alta",  namePt:"Hemorragia Digestiva Alta",  nameEs:"Hemorragia Digestiva Alta",  icon:"🩸" },
+          { id:"hemorragia-digestiva-baixa", namePt:"Hemorragia Digestiva Baixa", nameEs:"Hemorragia Digestiva Baja",  icon:"🩸" }
+        ]
+      },
+      { catPt: "Doenças Colorretais", catEs: "Enfermedades Colorrectales",
+        items: [
+          { id:"doenca-diverticular",  namePt:"Doença Diverticular",  nameEs:"Enfermedad Diverticular",  icon:"🫃" },
+          { id:"doencas-anorretais",   namePt:"Doenças Anorretais",   nameEs:"Enfermedades Anorrectales",icon:"🔴" }
+        ]
+      },
+      { catPt: "Trauma", catEs: "Trauma",
+        items: [
+          { id:"trauma-abdominal", namePt:"Trauma Abdominal", nameEs:"Trauma Abdominal", icon:"🚨" }
+        ]
+      }
+    ]
+  }
+];
+
+// ── ESTADO ───────────────────────────────────────────────────────────────────
+let currentEsp = null;
+let currentTab = "hc";
+let currentLang = "es";
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+function name(obj) {
+  return currentLang === "es" ? (obj.nameEs || obj.namePt) : obj.namePt;
+}
+function catName(cat) {
+  return currentLang === "es" ? (cat.catEs || cat.catPt) : cat.catPt;
+}
+function totalMotivos(esp) {
+  return esp.cats.reduce((s,c) => s + c.items.length, 0);
+}
+
+// ── RENDER ESP BAR ────────────────────────────────────────────────────────────
+function renderEspBar() {
+  const listD = document.getElementById("esp-list-desktop");
+  const listM = document.getElementById("esp-drawer-list");
+
+  listD.innerHTML = "";
+  listM.innerHTML = "";
+
+  ESPECIALIDADES.forEach(esp => {
+    const active = currentEsp && currentEsp.id === esp.id;
+    const count = totalMotivos(esp);
+    const labelCount = currentLang === "es"
+      ? `${count} motivos`
+      : `${count} motivos`;
+
+    // Desktop
+    const btnD = document.createElement("button");
+    btnD.className = "esp-btn" + (active ? " active" : "");
+    btnD.innerHTML = `
+      <span class="esp-icon">${esp.icon}</span>
+      <span class="esp-info">
+        <span class="esp-name">${name(esp)}</span>
+        <span class="esp-count">${labelCount}</span>
+      </span>`;
+    btnD.onclick = () => selectEsp(esp.id);
+    listD.appendChild(btnD);
+
+    // Mobile drawer
+    const btnM = document.createElement("button");
+    btnM.className = "esp-drawer-btn" + (active ? " active" : "");
+    btnM.innerHTML = `<span class="edb-icon">${esp.icon}</span> ${name(esp)} <small style="margin-left:auto;color:var(--muted);font-weight:400">${count}</small>`;
+    btnM.onclick = () => { selectEsp(esp.id); closeEspDrawer(); };
+    listM.appendChild(btnM);
+  });
+}
+
+// ── RENDER PANEL ──────────────────────────────────────────────────────────────
+function renderPanel() {
+  const panel = document.getElementById("panel");
+
+  if (!currentEsp) {
+    panel.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">📋</div>
+        <div class="es-title pt">Escolha uma especialidade</div>
+        <div class="es-title es">Elige una especialidad</div>
+        <div class="es-sub pt">Selecione uma especialidade na barra lateral para começar uma nova HC.</div>
+        <div class="es-sub es">Selecciona una especialidad en la barra lateral para comenzar una nueva HC.</div>
+      </div>`;
+    return;
+  }
+
+  // Topbar title
+  document.getElementById("topbar-title-pt").textContent = currentEsp.namePt;
+  document.getElementById("topbar-title-es").textContent = currentEsp.nameEs || currentEsp.namePt;
+
+  // Nav sidebar highlight
+  document.querySelectorAll("[id^='snav-']").forEach(el => el.classList.remove("active"));
+  const snav = document.getElementById("snav-" + currentEsp.id);
+  if (snav) snav.classList.add("active");
+
+  const tabHcLabel = currentLang === "es" ? "Nueva HC" : "Nova HC";
+  const tabMatLabel = currentLang === "es" ? "Material de estudio" : "Material de estudo";
+
+  let hcContent = "";
+  currentEsp.cats.forEach(cat => {
+    const items = cat.items.map(m => `
+      <a href="anamnesismed-hc.html?esp=${currentEsp.id}&motivo=${m.id}" class="motivo-card">
+        <div class="m-icon">${m.icon}</div>
+        <div class="m-info">
+          <div class="m-name">${name(m)}</div>
+        </div>
+        <span class="m-arrow">›</span>
+      </a>`).join("");
+    hcContent += `
+      <div class="cat-block">
+        <div class="cat-label">${catName(cat)}</div>
+        <div class="motivos-grid">${items}</div>
+      </div>`;
+  });
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <div class="panel-esp-title">${currentEsp.icon} ${name(currentEsp)}</div>
+      <div class="panel-esp-sub pt">${totalMotivos(currentEsp)} motivos disponíveis</div>
+      <div class="panel-esp-sub es">${totalMotivos(currentEsp)} motivos disponibles</div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn${currentTab==="hc"?" active":""}" onclick="setTab('hc')">${tabHcLabel}</button>
+      <button class="tab-btn${currentTab==="material"?" active":""}" onclick="setTab('material')">${tabMatLabel}</button>
+    </div>
+    <div class="tab-content${currentTab==="hc"?" active":""}" id="tab-hc">
+      ${hcContent}
+    </div>
+    <div class="tab-content${currentTab==="material"?" active":""}" id="tab-material">
+      <div class="material-placeholder">
+        <div class="mp-icon">📚</div>
+        <div class="mp-title pt">Material de estudo</div>
+        <div class="mp-title es">Material de estudio</div>
+        <div class="mp-sub pt">Resumos, guias clínicos e casos práticos sobre ${name(currentEsp)} estarão disponíveis em breve.</div>
+        <div class="mp-sub es">Resúmenes, guías clínicas y casos prácticos sobre ${name(currentEsp)} estarán disponibles pronto.</div>
+        <span class="mp-badge pt">Em breve</span>
+        <span class="mp-badge es">Próximamente</span>
+      </div>
+    </div>`;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function selectEsp(espId) {
+  currentEsp = ESPECIALIDADES.find(e => e.id === espId) || null;
+  currentTab = "hc";
+  // Atualizar URL sem recarregar
+  const url = new URL(window.location);
+  if (espId) url.searchParams.set("esp", espId);
+  else url.searchParams.delete("esp");
+  history.replaceState(null, "", url);
+  renderEspBar();
+  renderPanel();
+}
+
+function setTab(tab) {
+  currentTab = tab;
+  renderPanel();
+}
+
+// ── LANG ──────────────────────────────────────────────────────────────────────
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.setAttribute("data-lang", lang);
+  document.getElementById("btn-es").classList.toggle("active", lang === "es");
+  document.getElementById("btn-pt").classList.toggle("active", lang === "pt");
+  renderEspBar();
+  renderPanel();
+  try { localStorage.setItem("am-lang", lang); } catch(e){}
+}
+
+// ── SIDEBAR (nav principal mobile) ────────────────────────────────────────────
+function openSidebar() {
+  document.getElementById("sidebar").classList.add("open");
+  document.getElementById("sidebar-backdrop").classList.add("open");
+}
+function closeSidebar() {
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebar-backdrop").classList.remove("open");
+}
+
+// ── ESP DRAWER (mobile) ───────────────────────────────────────────────────────
+function openEspDrawer() {
+  document.getElementById("esp-drawer").classList.add("open");
+  document.getElementById("esp-drawer-backdrop").classList.add("open");
+}
+function closeEspDrawer() {
+  document.getElementById("esp-drawer").classList.remove("open");
+  document.getElementById("esp-drawer-backdrop").classList.remove("open");
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  // Lang salvo
+  try {
+    const saved = localStorage.getItem("am-lang");
+    if (saved === "pt" || saved === "es") { currentLang = saved; }
+  } catch(e){}
+  document.documentElement.setAttribute("data-lang", currentLang);
+  document.getElementById("btn-es").classList.toggle("active", currentLang === "es");
+  document.getElementById("btn-pt").classList.toggle("active", currentLang === "pt");
+
+  // Esp por URL
+  const params = new URLSearchParams(window.location.search);
+  const espParam = params.get("esp");
+  if (espParam) {
+    currentEsp = ESPECIALIDADES.find(e => e.id === espParam) || null;
+  } else {
+    // Mobile: sem seleção padrão; Desktop: seleciona a primeira
+    if (window.innerWidth >= 769) {
+      currentEsp = ESPECIALIDADES[0];
+    }
+  }
+
+  renderEspBar();
+  renderPanel();
+
+  // Supabase user info (se disponível)
+  if (typeof supabase !== "undefined") {
+    try {
+      if (typeof uiUpdateUserInfo === "function") uiUpdateUserInfo();
+      if (typeof guardCheckAccess === "function") guardCheckAccess();
+    } catch(e){}
+  }
+});
+</script>
+
+<!-- Supabase integration (opcional, não bloqueia) -->
+<script src="supabase-integration.js" defer></script>
+</body>
+</html>
