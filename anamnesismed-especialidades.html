@@ -536,8 +536,9 @@ document.addEventListener("DOMContentLoaded",()=>{
   renderDrawer();
   renderPanel();
 
-  if(typeof uiUpdateUserInfo==="function") try{uiUpdateUserInfo();}catch(e){}
-  if(typeof guardCheckAccess==="function") try{guardCheckAccess();}catch(e){}
+  // Auth + nome/plano do usuário no sidebar são tratados pelo dispatcher
+  // de supabase-integration.js (PAGE === 'especialidades'), que só popula o
+  // nome DEPOIS que a sessão resolve. Não chamar aqui para evitar nome vazio.
 });
 </script>
 <script src="supabase-integration.js" defer></script>

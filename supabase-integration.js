@@ -24,6 +24,7 @@ const PAGE = (() => {
   if (p.includes('auth'))      return 'auth';
   if (p.includes('config'))    return 'config';
   if (p.includes('dashboard')) return 'dashboard';
+  if (p.includes('especialidades') || p.includes('explorar')) return 'especialidades';
   if (p.includes('app'))       return 'app';
   return 'unknown';
 })();
@@ -1199,6 +1200,18 @@ function showSaveFeedback() {
         });
       }
     };
+  }
+
+  if (PAGE === 'especialidades') {
+    const ok = await guardRequireAuth();
+    if (!ok) return;
+
+    // Nome/plano do usuário no sidebar (mesma sequência do dashboard/app:
+    // só popula DEPOIS que a sessão resolve — senão o nome fica vazio)
+    await uiUpdateUserInfo();
+
+    const logoutBtn = document.querySelector('[data-action="logout"]');
+    if (logoutBtn) logoutBtn.addEventListener('click', authLogout);
   }
 
   if (PAGE === 'landing') {
