@@ -25,50 +25,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14p
 [data-lang="pt"] .es{display:none!important}
 
 /* ── SIDEBAR ── */
-.sidebar{
-  width:var(--sidebar-w);background:var(--ink);
-  display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;z-index:200;
-  transition:transform .3s var(--ease)
-}
-.sidebar::before{
-  content:'';position:absolute;top:-60px;left:-60px;
-  width:280px;height:280px;
-  background:radial-gradient(circle,rgba(14,116,144,.22) 0%,transparent 65%);
-  pointer-events:none
-}
-.sb-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
-.sb-logo-text{font-family:var(--serif);font-size:17px;font-weight:700;color:#fff;letter-spacing:-.3px;text-decoration:none;display:block}
-.sb-logo-text span{color:#5dd0e8}
-.sb-logo-sub{font-size:9px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:2px;display:block}
-.sb-search{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0}
-.sb-search-inner{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:7px 11px}
-.sb-search-inner input{background:transparent;border:none;outline:none;font-size:12px;font-family:var(--sans);color:#fff;width:100%}
-.sb-search-inner input::placeholder{color:rgba(255,255,255,.25)}
-.sb-nav{flex:1;overflow-y:auto;padding:8px 0 16px;scrollbar-width:none}
-.sb-nav::-webkit-scrollbar{display:none}
-.sb-cat{font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.2);padding:12px 16px 5px}
-.sb-item{
-  display:flex;align-items:center;gap:9px;padding:8px 16px;
-  font-size:12px;font-weight:600;color:rgba(255,255,255,.45);
-  cursor:pointer;transition:all .15s;text-decoration:none;
-  border-left:2px solid transparent
-}
-.sb-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.04)}
-.sb-item.active{color:#fff;background:rgba(14,116,144,.18);border-left-color:var(--primary)}
-.sb-item-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center}
-.sb-item-badge{margin-left:auto;font-size:8px;font-weight:700;font-family:var(--mono);padding:1px 5px;border-radius:6px;background:rgba(14,116,144,.25);color:#5dd0e8}
-.sb-item-badge.new{background:rgba(13,148,136,.25);color:#5dd0e8}
-.sb-bottom{padding:12px 12px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
-.sb-lang{display:flex;background:rgba(255,255,255,.05);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);margin-bottom:10px}
-.sb-lang-btn{flex:1;padding:5px;font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:1px;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.3);transition:all .2s;text-align:center}
-.sb-lang-btn.active{background:var(--primary);color:#fff;border-radius:12px}
-.sb-user{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:background .2s;text-decoration:none}
-.sb-user:hover{background:rgba(255,255,255,.08)}
-.sb-avatar{width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0}
-.sb-uname{font-size:11px;font-weight:700;color:#fff}
-.sb-uplan{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.3);margin-top:1px}
-
 /* ── MAIN ── */
 .main{margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
 .topbar{
@@ -433,74 +389,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .hc-panel.open .hc-panel-body{max-height:none!important}
 }
 </style>
+  <link rel="stylesheet" href="sidebar.css">
 </head>
 <body>
 <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sb-logo">
-    <a href="anamnesismed-dashboard.html" class="sb-logo-text">Anamnesis<span>Med</span></a>
-    <span class="sb-logo-sub pt">História Clínica Completa</span>
-    <span class="sb-logo-sub es">Historia Clínica Completa</span>
-  </div>
-  <div class="sb-search">
-    <div class="sb-search-inner">
-      <span style="font-size:12px;opacity:.4">🔍</span>
-      <input id="sb-search-input" type="text" oninput="filterMotivos(this.value)"
-        placeholder="Buscar motivo..." data-ph-pt="Buscar motivo..." data-ph-es="Buscar motivo..." autocomplete="off">
-    </div>
-  </div>
-  <nav class="sb-nav" id="sb-nav">
-    <div class="sb-cat pt">Especialidades</div>
-    <div class="sb-cat es">Especialidades</div>
-    <div class="sb-item" onclick="showSpec('semiologia');setSBActive(this)">
-      <span class="sb-item-icon">📖</span>
-      <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
-    </div>
-    <div class="sb-item active" onclick="showSpec('clinica');setSBActive(this)">
-      <span class="sb-item-icon">🩺</span>
-      <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
-    </div>
-    <div class="sb-item" onclick="showSpec('cirurgia');setSBActive(this)">
-      <span class="sb-item-icon">🔪</span>
-      <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
-    </div>
-    <div class="sb-item" style="opacity:.4;pointer-events:none">
-      <span class="sb-item-icon">🦴</span>
-      <span class="pt">Traumatologia</span><span class="es">Traumatología</span>
-    </div>
-    <div class="sb-cat pt" style="margin-top:8px">HCs recentes</div>
-    <div class="sb-cat es" style="margin-top:8px">HCs recientes</div>
-    <div class="sb-item" onclick="goToDashboard()">
-      <span class="sb-item-icon">📋</span>
-      <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
-    </div>
-    <div class="sb-item" onclick="newHC()">
-      <span class="sb-item-icon">➕</span>
-      <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
-    </div>
-  </nav>
-  <div class="sb-bottom">
-    <div class="sb-lang">
-      <button class="sb-lang-btn active" id="slang-es" onclick="setLang('es')">ES</button>
-      <button class="sb-lang-btn" id="slang-pt" onclick="setLang('pt')">PT</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:6px">
-      <a href="anamnesismed-config.html" class="sb-user" style="flex:1;min-width:0">
-        <div class="sb-avatar">—</div>
-        <div>
-          <div class="sb-uname">—</div>
-          <div class="sb-uplan pt">Carregando...</div>
-          <div class="sb-uplan es">Cargando...</div>
-        </div>
-      </a>
-      <button onclick="encerrarSessao()" title="Sair" aria-label="Sair" style="flex:none;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;border-radius:10px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);cursor:pointer;transition:background .15s,color .15s" onmouseover="this.style.background='rgba(255,255,255,.14)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.color='rgba(255,255,255,.55)'">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      </button>
-    </div>
-  </div>
-</aside>
+<div id="sidebar-root"></div>
 
 <!-- MAIN -->
 <div class="main">
@@ -1718,8 +1613,6 @@ function setLang(l){
 }
 
 // ── SIDEBAR ───────────────────────────────────────────
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sb-overlay').classList.toggle('open')}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open')}
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
 function goToDashboard(view){ if(!confirmDiscardHC()) return; window.location.href='anamnesismed-dashboard.html'+(view?'?view='+view:'');}
 function encerrarSessao(){ if(!confirmDiscardHC()) return; if(window.authLogout) window.authLogout(); else window.location.href = 'anamnesismed-auth.html'; }
@@ -2446,5 +2339,6 @@ function showToast(lang,msg){
   }
 })();
 </script>
+<script src="sidebar.js"></script>
 </body>
 </html>

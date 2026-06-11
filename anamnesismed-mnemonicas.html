@@ -2,22 +2,25 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mnemônicas & Manobras — AnamnesisMed</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
 :root{
+  --sidebar-w:240px;
   --bg:#f0f4f8; --bg-card:#fff; --cream:#e4eaef;
   --ink:#0d2d3d; --primary:#0e7490; --primary-dark:#0c5f72;
   --secondary:#0d9488; --danger:#c2410c;
   --muted:#4b6070; --line:rgba(13,45,61,.10); --line-md:rgba(13,45,61,.18);
   --serif:'Libre Baskerville',Georgia,serif;
-  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --sans:'Source Sans 3',system-ui,sans-serif,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   --mono:'SF Mono',Consolas,monospace;
 }
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px}
-.wrap{max-width:920px;margin:0 auto;padding:18px 16px 60px}
+.wrap{max-width:920px;margin:0 auto 0 var(--sidebar-w);padding:18px 24px 60px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;flex-wrap:wrap}
 .topbar-back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;cursor:pointer;padding:7px 13px;border-radius:6px;border:1.5px solid var(--line-md);background:var(--bg-card)}
 .topbar-back:hover{color:var(--primary);border-color:var(--primary)}
@@ -70,9 +73,12 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 .lang-es .pt{display:none}
 .lang-es .es{display:inline}
 @media(max-width:600px){.acc-findings{grid-template-columns:1fr}.mnem-kw{font-size:20px}}
+@media(max-width:768px){.wrap{margin-left:0;padding:16px 14px 80px}}
 </style>
+<link rel="stylesheet" href="sidebar.css">
 </head>
 <body>
+<div id="sidebar-root"></div>
 <div class="wrap">
   <div class="topbar">
     <a class="topbar-back" href="anamnesismed-dashboard.html">← <span class="pt">Voltar ao início</span><span class="es">Volver al inicio</span></a>
@@ -430,5 +436,6 @@ function renderAll(){
 buildFilters();
 renderAll();
 </script>
+<script src="sidebar.js"></script>
 </body>
 </html>
