@@ -2287,6 +2287,27 @@ function showToast(lang,msg){
       window.__deepLinkHcId = deepHcId; // usado pelo bloco de integração Supabase abaixo, que carrega depois
     }
   }catch(e){ console.warn('deep-link de HC erro:', e); }
+
+  // Deep-link: botão "Nova HC" (sidebar/dashboard → ?novo=1) abre o formulário em branco direto
+  try{
+    var novoParams = new URLSearchParams(window.location.search);
+    if(novoParams.get('novo')){
+      newHC();
+    }
+  }catch(e){ console.warn('deep-link Nova HC erro:', e); }
+
+  // Deep-link: card de motivo vindo das especialidades (?esp=<esp>&motivo=<motivoId>) abre a HC daquele motivo
+  try{
+    var espParams = new URLSearchParams(window.location.search);
+    var deepEsp = espParams.get('esp');
+    var deepMotivo = espParams.get('motivo');
+    if(deepMotivo){
+      if(deepEsp && (deepEsp==='semiologia' || deepEsp==='clinica' || deepEsp==='cirurgia')){
+        currentSpec = deepEsp;
+      }
+      openHC(deepMotivo);
+    }
+  }catch(e){ console.warn('deep-link de motivo erro:', e); }
 })();
 </script>
 <script src="anamnesismed-narrativa.js"></script>
