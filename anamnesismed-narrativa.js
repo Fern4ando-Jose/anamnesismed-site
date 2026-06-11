@@ -173,7 +173,7 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     return s.replace(/\s+/g,' ').trim();
   }
   function cleanVal(v){ return (v||'').replace(/\s*\([^)]*\)\s*$/,'').trim(); }
-  function isPlaceholder(v){ return /^(descreva|relate|liste|ex:|nº|dum|medicamento,|°c$|0 a 10$|n[ºo]\/dia|quanto|qual$)/i.test(low(v).trim()); }
+  function isPlaceholder(v){ return /^(descreva|describa|relate|liste|ex\.?:|ej\.?:|n[ºo]\/dia|nº|dum\b|fum\b|medicamento,|°c$|0 a 10$|quanto|cu[áa]nt|anos?-ma|a[ñn]os?-paq|%|qual$)/i.test(low(v).trim()); }
   function join(arr, and){ arr=arr.filter(Boolean); if(!arr.length) return ''; if(arr.length===1) return arr[0]; var cp=arr.slice(); var last=cp.pop(); return cp.join(', ')+and+last; }
   function yes(v){ return /^(sim|sí|si)\b/i.test(low(v)); }
   function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
@@ -203,7 +203,12 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   var B={LOC:null,IRR:null,CAR:null,INT:null,DURTOT:null,DUREP:null,ONSET:null,FREQ:[],FATOR:[],MIGR:null,EVOL:null,MED:[],ANTEC:[],MOTIVO:null,DESC:[],medidas:[],medidasNeg:false,assocSim:[],assocNao:[],alarmeSim:false,alarmeNao:false};
   resp.forEach(function(a){
     var r=role(a), v=cleanVal(a.resp);
-    if(isPlaceholder(v) && a.type==='input') return;
+    // Anti-vazamento de placeholder: descarta resposta de input que seja vazia,
+    // o próprio texto-dica do campo (ph), ou um padrão de placeholder conhecido.
+    if(a.type==='input'){
+      var aph=cleanVal(a.ph||'');
+      if(!v || isPlaceholder(v) || (aph && low(v)===low(aph))) return;
+    }
     if(a.type==='yn' && r!=='MIGR' && r!=='ALARME' && r!=='ANTEC' && r!=='MOTIVO' && r!=='MEDIDAS'){
       r = /^(alivia|piora|melhora|rela[çc][ãa]o com|relaci[óo]n con|empeora|alivio)/i.test(low(cleanLbl(a.qText))) ? 'FATORYN' : 'ASSOC';
     }
@@ -536,7 +541,7 @@ function gerarNarrativaAEA(mObj, lng, idPfx, opts){
     else if(q.type==='multi') resp = selMulti(id);
     else if(q.type==='yn') resp = ynAns(id);
     else if(q.type==='input') resp = fieldVal(id) || '—';
-    ansArr.push({qText:(lng==='es'?(q.qEs||q.q):q.q), type:q.type, resp:resp});
+    ansArr.push({qText:(lng==='es'?(q.qEs||q.q):q.q), type:q.type, resp:resp, ph:(lng==='es'?(q.ph2||q.ph||''):(q.ph||''))});
   });
   var hasAny = ansArr.some(function(a){ return a.resp && a.resp!=='—'; });
   if(!hasAny) return null;
