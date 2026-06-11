@@ -154,7 +154,17 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   function gE(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
   var idade=gE('dp-idade'), sexoRaw=gE('dp-sexo'), tempoN=gE('mc-tempo-n'), tempoU=gE('mc-tempo-u');
 
-  function low(s){ return (s==null?'':String(s)).toLowerCase(); }
+  // Minúsculas preservando acrônimos médicos (FID, HCD, ACO, MSE, AINEs, IECA, EVA, DPOC…):
+  // tokens em MAIÚSCULAS de 2+ letras (com 's' final opcional) voltam à forma original após o lowercase.
+  function low(s){
+    s = (s==null?'':String(s));
+    var acr = s.match(/\b[A-ZÀ-ÖØ-Þ]{2,}s?\b/g);
+    var out = s.toLowerCase();
+    if(acr){ acr.forEach(function(a){
+      out = out.replace(new RegExp('\\b'+a.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g'), a);
+    }); }
+    return out;
+  }
   function cleanLbl(q){
     var s=(q||'').replace(/\([^)]*\)/g,' ');
     s=s.replace(/^[¿¡\s]+/,'');            // remove ¿/¡ iniciais (espanhol)
