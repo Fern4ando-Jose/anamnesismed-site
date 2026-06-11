@@ -390,6 +390,7 @@ function totalM(e){ return e.cats.reduce((s,c)=>s+c.items.length,0); }
 // ── RENDER SIDEBAR ESP NAV ────────────────────────────────────────────────────
 function renderSidebarEsp(){
   const list = document.getElementById("esp-nav-list");
+  if(!list) return;
   list.innerHTML = ESPECIALIDADES.map(esp => {
     const active = currentEsp && currentEsp.id === esp.id;
     return `<button class="esp-nav-item${active?" active":""}" onclick="selectEsp('${esp.id}');closeSidebar()">
