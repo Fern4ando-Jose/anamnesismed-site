@@ -9,7 +9,7 @@
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f0f4f8;--bg-card:#ffffff;--bg-sidebar:#0d2d3d;
+  --bg:#f0f4f8;--bg-card:#ffffff;--bg-sidebar:#ffffff;
   --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
   --secondary:#0d9488;--accent:#f59e0b;
   --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
@@ -24,37 +24,38 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* SIDEBAR */
 .sidebar{
   width:var(--sidebar-w);min-height:100vh;
-  background:var(--bg-sidebar);
+  background:#fff;
+  border-right:1px solid rgba(13,45,61,0.09);
   display:flex;flex-direction:column;
   position:fixed;top:0;left:0;bottom:0;
   z-index:100;transition:transform .3s
 }
 .sidebar-head{
   padding:24px 20px 20px;
-  border-bottom:1px solid rgba(255,255,255,.07)
+  border-bottom:1px solid rgba(13,45,61,0.07)
 }
 .sidebar-logo{
   font-family:var(--serif);font-size:18px;font-weight:700;
-  color:#fff;text-decoration:none;display:block;margin-bottom:4px
+  color:var(--ink);text-decoration:none;display:block;margin-bottom:4px
 }
-.sidebar-logo span{color:#5dd0e8}
-.sidebar-role{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.3px}
+.sidebar-logo span{color:var(--primary)}
+.sidebar-role{font-size:11px;color:var(--muted);letter-spacing:.3px}
 
 .sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;min-height:0}
 .nav-section-label{
   font-size:9px;font-weight:700;letter-spacing:1.5px;
-  text-transform:uppercase;color:rgba(255,255,255,.28);
+  text-transform:uppercase;color:rgba(13,45,61,.35);
   padding:12px 8px 6px;margin-top:8px
 }
 .nav-item{
   display:flex;align-items:center;gap:10px;
   padding:9px 10px;border-radius:8px;
-  font-size:13px;font-weight:600;color:rgba(255,255,255,.55);
+  font-size:13px;font-weight:600;color:var(--muted);
   text-decoration:none;cursor:pointer;border:none;background:transparent;
   transition:all .2s;width:100%;text-align:left
 }
-.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
-.nav-item.active{background:rgba(14,116,144,.25);color:#fff}
+.nav-item:hover{background:rgba(13,45,61,.05);color:var(--ink)}
+.nav-item.active{background:rgba(14,116,144,.1);color:var(--primary)}
 .nav-item.active .nav-dot{background:var(--primary)}
 .nav-icon{font-size:16px;flex-shrink:0}
 .nav-badge{
@@ -62,26 +63,28 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   background:var(--primary);color:#fff;
   padding:2px 7px;border-radius:10px
 }
+.nav-item-logout{color:#dc2626!important}
+.nav-item-logout:hover{background:rgba(220,38,38,.07)!important;color:#b91c1c!important}
 
 .sidebar-foot{
   padding:16px 12px 20px;
-  border-top:1px solid rgba(255,255,255,.07)
+  border-top:1px solid rgba(13,45,61,0.07)
 }
 .user-info{
   display:flex;align-items:center;gap:10px;
   padding:10px;border-radius:8px;cursor:pointer;
   transition:background .2s
 }
-.user-info:hover{background:rgba(255,255,255,.06)}
+.user-info:hover{background:rgba(13,45,61,.05)}
 .user-av{
   width:34px;height:34px;border-radius:50%;
-  background:rgba(14,116,144,.4);
+  background:rgba(14,116,144,.12);
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;color:#fff;flex-shrink:0
+  font-size:13px;font-weight:700;color:var(--primary);flex-shrink:0
 }
-.user-name{font-size:13px;font-weight:600;color:#fff}
-.user-plan{font-size:11px;color:rgba(255,255,255,.4)}
-.user-caret{margin-left:auto;font-size:11px;color:rgba(255,255,255,.3)}
+.user-name{font-size:13px;font-weight:600;color:var(--ink)}
+.user-plan{font-size:11px;color:var(--muted)}
+.user-caret{margin-left:auto;font-size:11px;color:var(--muted)}
 
 /* MAIN */
 .main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
@@ -259,7 +262,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .sidebar-backdrop.open{display:block}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(13,45,61,.3)}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(13,45,61,.12)}
   #sidebar-close-btn{display:block}
   .main{margin-left:0}
   .mobile-nav{display:block}
@@ -301,69 +304,73 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <div class="sidebar-role es">Plan Gratuito</div>
     </div>
     <button id="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Fechar menu"
-      style="display:none;background:rgba(255,255,255,.08);border:none;border-radius:8px;width:32px;height:32px;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0">✕</button>
+      style="display:none;background:rgba(13,45,61,.07);border:none;border-radius:8px;width:32px;height:32px;color:var(--ink);font-size:16px;cursor:pointer;flex-shrink:0">&#x2715;</button>
   </div>
 
   <nav class="sidebar-nav">
     <div class="nav-section-label pt">Principal</div>
     <div class="nav-section-label es">Principal</div>
     <button class="nav-item active" onclick="setView('dashboard')" id="nav-dashboard">
-      <span class="nav-icon">🏠</span>
-      <span class="pt">Início</span><span class="es">Inicio</span>
+      <span class="nav-icon">&#x1F3E0;</span>
+      <span class="pt">In&#xED;cio</span><span class="es">Inicio</span>
     </button>
     <a href="anamnesismed-especialidades.html" class="nav-item">
-      <span class="nav-icon">🩺</span>
+      <span class="nav-icon">&#x1FA7A;</span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
       <span class="nav-badge">+</span>
     </a>
     <button class="nav-item" onclick="setView('hcs')" id="nav-hcs">
-      <span class="nav-icon">📋</span>
+      <span class="nav-icon">&#x1F4CB;</span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
-      <span class="nav-badge hcs-badge">—</span>
+      <span class="nav-badge hcs-badge">&#x2014;</span>
     </button>
 
     <div class="nav-section-label pt">Especialidades</div>
     <div class="nav-section-label es">Especialidades</div>
     <a href="anamnesismed-especialidades.html?esp=semiologia" class="nav-item">
-      <span class="nav-icon">📖</span>
-      <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
+      <span class="nav-icon">&#x1F4D6;</span>
+      <span class="pt">Semiologia B&#xE1;sica</span><span class="es">Semiolog&#xED;a B&#xE1;sica</span>
     </a>
     <a href="anamnesismed-especialidades.html?esp=clinica" class="nav-item">
-      <span class="nav-icon">🏥</span>
-      <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
+      <span class="nav-icon">&#x1F3E5;</span>
+      <span class="pt">Cl&#xED;nica M&#xE9;dica</span><span class="es">Cl&#xED;nica M&#xE9;dica</span>
     </a>
     <a href="anamnesismed-especialidades.html?esp=cirurgia" class="nav-item">
-      <span class="nav-icon">🔪</span>
-      <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
+      <span class="nav-icon">&#x1F52A;</span>
+      <span class="pt">Cirurgia Geral</span><span class="es">Cirug&#xED;a General</span>
+    </a>
+    <a href="anamnesismed-especialidades.html?esp=respiratorio" class="nav-item">
+      <span class="nav-icon">&#x1FAC1;</span>
+      <span class="pt">Respirat&#xF3;rio</span><span class="es">Respiratorio</span>
     </a>
 
     <div class="nav-section-label pt">Conta</div>
     <div class="nav-section-label es">Cuenta</div>
     <a href="anamnesismed-config.html" class="nav-item">
-      <span class="nav-icon">⚙️</span>
-      <span class="pt">Configurações</span><span class="es">Configuración</span>
+      <span class="nav-icon">&#x2699;&#xFE0F;</span>
+      <span class="pt">Configura&#xE7;&#xF5;es</span><span class="es">Configuraci&#xF3;n</span>
     </a>
-    <a href="anamnesismed-landing.html#pricing" class="nav-item" style="color:rgba(245,158,11,.85)">
-      <span class="nav-icon">✦</span>
+    <a href="anamnesismed-landing.html#pricing" class="nav-item" style="color:var(--accent)">
+      <span class="nav-icon">&#x2726;</span>
       <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>
     </a>
-    <button class="nav-item" onclick="encerrarSessao()" style="color:rgba(255,255,255,.4)">
+    <button class="nav-item nav-item-logout" onclick="encerrarSessao()">
       <span class="nav-icon" style="display:inline-flex;align-items:center;justify-content:center">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </span>
-      <span class="pt">Encerrar sessão</span><span class="es">Cerrar sesión</span>
+      <span class="pt">Encerrar sess&#xE3;o</span><span class="es">Cerrar sesi&#xF3;n</span>
     </button>
   </nav>
 
   <div class="sidebar-foot">
     <a href="anamnesismed-config.html" class="user-info" style="text-decoration:none">
-      <div class="user-av">FJ</div>
+      <div class="user-av user-avatar">FJ</div>
       <div>
-        <div class="user-name" id="sidebar-user-name" data-user-name>—</div>
-        <div class="user-plan pt">Plano Gratuito · <span id="hcs-count-pt">—</span>/5 HCs</div>
-        <div class="user-plan es">Plan Gratuito · <span id="hcs-count-es">—</span>/5 HCs</div>
+        <div class="user-name" id="sidebar-user-name" data-user-name>&#x2014;</div>
+        <div class="user-plan pt">Plano Gratuito &#xB7; <span id="hcs-count-pt">&#x2014;</span>/5 HCs</div>
+        <div class="user-plan es">Plan Gratuito &#xB7; <span id="hcs-count-es">&#x2014;</span>/5 HCs</div>
       </div>
-      <span class="user-caret">⋮</span>
+      <span class="user-caret">&#x22EE;</span>
     </a>
   </div>
 </aside>
@@ -374,10 +381,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-left">
-      <button style="display:none;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink)" id="menu-btn" onclick="toggleSidebar()">☰</button>
+      <button style="display:none;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink)" id="menu-btn" onclick="toggleSidebar()">&#x2630;</button>
       <div>
-        <div class="topbar-title pt" id="page-title">Olá 👋</div>
-        <div class="topbar-title es" id="page-title-es">Hola 👋</div>
+        <div class="topbar-title pt" id="page-title">Ol&#xE1; &#x1F44B;</div>
+        <div class="topbar-title es" id="page-title-es">Hola &#x1F44B;</div>
         <div class="topbar-subtitle pt" id="page-sub">Sexta-feira, 5 de junho de 2025</div>
         <div class="topbar-subtitle es" id="page-sub-es">Viernes, 5 de junio de 2025</div>
       </div>
@@ -388,7 +395,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
       </div>
       <div class="search-wrap">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon">&#x1F50D;</span>
         <input type="search" class="search-input" placeholder="Buscar HCs..." id="search">
       </div>
       <a href="anamnesismed-especialidades.html" class="btn-new">
@@ -407,9 +414,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="stat-card-top">
           <span class="stat-label pt">HCs criadas</span>
           <span class="stat-label es">HCs creadas</span>
-          <span class="stat-icon">📋</span>
+          <span class="stat-icon">&#x1F4CB;</span>
         </div>
-        <div class="stat-value" id="stat-hcs-value">—</div>
+        <div class="stat-value" id="stat-hcs-value">&#x2014;</div>
         <div class="stat-delta pt" id="stat-hcs-delta-pt"></div>
         <div class="stat-delta es" id="stat-hcs-delta-es"></div>
       </div>
@@ -417,9 +424,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="stat-card-top">
           <span class="stat-label pt">PDFs exportados</span>
           <span class="stat-label es">PDFs exportados</span>
-          <span class="stat-icon">📄</span>
+          <span class="stat-icon">&#x1F4C4;</span>
         </div>
-        <div class="stat-value" id="stat-pdfs-value">—</div>
+        <div class="stat-value" id="stat-pdfs-value">&#x2014;</div>
         <div class="stat-delta pt" id="stat-pdfs-delta-pt"></div>
         <div class="stat-delta es" id="stat-pdfs-delta-es"></div>
       </div>
@@ -427,9 +434,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="stat-card-top">
           <span class="stat-label pt">Motivos consultados</span>
           <span class="stat-label es">Motivos consultados</span>
-          <span class="stat-icon">🩺</span>
+          <span class="stat-icon">&#x1FA7A;</span>
         </div>
-        <div class="stat-value" id="stat-motivos-value">—</div>
+        <div class="stat-value" id="stat-motivos-value">&#x2014;</div>
         <div class="stat-delta pt" id="stat-motivos-delta-pt"></div>
         <div class="stat-delta es" id="stat-motivos-delta-es"></div>
       </div>
@@ -437,12 +444,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="stat-card-top">
           <span class="stat-label pt">Plano</span>
           <span class="stat-label es">Plan</span>
-          <span class="stat-icon">✦</span>
+          <span class="stat-icon">&#x2726;</span>
         </div>
-        <div class="stat-value" style="font-size:20px;margin-top:2px">Grátis</div>
+        <div class="stat-value" style="font-size:20px;margin-top:2px">Gr&#xE1;tis</div>
         <div class="stat-delta" style="color:var(--accent)">
-          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="pt">Upgrade →</a>
-          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="es">Upgrade →</a>
+          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="pt">Upgrade &#x2192;</a>
+          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="es">Upgrade &#x2192;</a>
         </div>
       </div>
     </div>
@@ -451,48 +458,48 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     <div class="section-head" id="recent-hcs-head">
       <h2 class="section-title-sm pt" id="recent-hcs-title-pt">HCs recentes</h2>
       <h2 class="section-title-sm es" id="recent-hcs-title-es">HCs recientes</h2>
-      <a href="javascript:void(0)" onclick="setView('hcs')" class="view-all pt">Ver todas →</a>
-      <a href="javascript:void(0)" onclick="setView('hcs')" class="view-all es">Ver todas →</a>
+      <a href="javascript:void(0)" onclick="setView('hcs')" class="view-all pt">Ver todas &#x2192;</a>
+      <a href="javascript:void(0)" onclick="setView('hcs')" class="view-all es">Ver todas &#x2192;</a>
     </div>
     <div class="hc-list" id="hc-list"></div>
 
     <!-- QUICK ACCESS -->
     <div class="section-head" id="quick-access-head">
-      <h2 class="section-title-sm pt">Acesso rápido</h2>
-      <h2 class="section-title-sm es">Acceso rápido</h2>
+      <h2 class="section-title-sm pt">Acesso r&#xE1;pido</h2>
+      <h2 class="section-title-sm es">Acceso r&#xE1;pido</h2>
     </div>
     <div class="quick-grid" id="quick-grid">
       <a href="anamnesismed-especialidades.html?esp=semiologia" class="quick-card">
-        <div class="quick-icon">📖</div>
-        <div class="quick-title pt">Semiologia Básica</div>
-        <div class="quick-title es">Semiología Básica</div>
-        <p class="quick-desc pt">8 síndromes semiológicas com guia de anamnese estruturado</p>
-        <p class="quick-desc es">8 síndromes semiológicas con guía de anamnesis estructurada</p>
-        <div class="quick-count pt">8 motivos disponíveis</div>
+        <div class="quick-icon">&#x1F4D6;</div>
+        <div class="quick-title pt">Semiologia B&#xE1;sica</div>
+        <div class="quick-title es">Semiolog&#xED;a B&#xE1;sica</div>
+        <p class="quick-desc pt">8 s&#xED;ndromes semiol&#xF3;gicas com guia de anamnese estruturado</p>
+        <p class="quick-desc es">8 s&#xED;ndromes semiol&#xF3;gicas con gu&#xED;a de anamnesis estructurada</p>
+        <div class="quick-count pt">8 motivos dispon&#xED;veis</div>
         <div class="quick-count es">8 motivos disponibles</div>
       </a>
       <a href="anamnesismed-especialidades.html?esp=clinica" class="quick-card">
-        <div class="quick-icon">🏥</div>
-        <div class="quick-title pt">Clínica Médica</div>
+        <div class="quick-icon">&#x1F3E5;</div>
+        <div class="quick-title pt">Cl&#xED;nica M&#xE9;dica</div>
         <div class="quick-title es">Medicina Interna</div>
         <p class="quick-desc pt">17 motivos de consulta com HC estruturada completa</p>
         <p class="quick-desc es">17 motivos de consulta con HC estructurada completa</p>
-        <div class="quick-count pt">17 motivos disponíveis</div>
+        <div class="quick-count pt">17 motivos dispon&#xED;veis</div>
         <div class="quick-count es">17 motivos disponibles</div>
       </a>
       <a href="anamnesismed-especialidades.html?esp=cirurgia" class="quick-card">
-        <div class="quick-icon">🔪</div>
+        <div class="quick-icon">&#x1F52A;</div>
         <div class="quick-title pt">Cirurgia Geral</div>
-        <div class="quick-title es">Cirugía General</div>
-        <p class="quick-desc pt">10 motivos cirúrgicos com anamnese estruturada</p>
-        <p class="quick-desc es">10 motivos quirúrgicos con anamnesis estructurada</p>
-        <div class="quick-count pt">10 motivos disponíveis</div>
+        <div class="quick-title es">Cirug&#xED;a General</div>
+        <p class="quick-desc pt">10 motivos cir&#xFA;rgicos com anamnese estruturada</p>
+        <p class="quick-desc es">10 motivos quir&#xFA;rgicos con anamnesis estructurada</p>
+        <div class="quick-count pt">10 motivos dispon&#xED;veis</div>
         <div class="quick-count es">10 motivos disponibles</div>
       </a>
       <a href="anamnesismed-mnemonicas.html" class="quick-card">
-        <div class="quick-icon">🧠</div>
-        <div class="quick-title pt">Mnemônicas</div>
-        <div class="quick-title es">Mnemotécnicas</div>
+        <div class="quick-icon">&#x1F9E0;</div>
+        <div class="quick-title pt">Mnem&#xF4;nicas</div>
+        <div class="quick-title es">Mnemot&#xE9;cnicas</div>
         <p class="quick-desc pt">LITIDIFIS, IDET, ROTA, FOCOS e todas as principais</p>
         <p class="quick-desc es">LITIDIFIS, IDET, ROTA, FOCOS y todas las principales</p>
         <div class="quick-count pt">Todas as especialidades</div>
@@ -525,11 +532,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <div class="upgrade-label es">Plan Pro</div>
           <h3 class="upgrade-title pt">Acesso <em>ilimitado</em> a todos os motivos</h3>
           <h3 class="upgrade-title es">Acceso <em>ilimitado</em> a todos los motivos</h3>
-          <p class="upgrade-desc pt">25 motivos de Clínica Médica · 26 de Cirurgia Geral · HCs ilimitadas na nuvem · Export PDF completo</p>
-          <p class="upgrade-desc es">25 motivos de Medicina Interna · 26 de Cirugía General · HCs ilimitadas en la nube · Export PDF completo</p>
-          <div class="upgrade-price">$0,99 <span class="pt">/mês</span><span class="es">/mes</span></div>
-          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade pt">Fazer upgrade agora →</a>
-          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade es">Hacer upgrade ahora →</a>
+          <p class="upgrade-desc pt">25 motivos de Cl&#xED;nica M&#xE9;dica &#xB7; 26 de Cirurgia Geral &#xB7; HCs ilimitadas na nuvem &#xB7; Export PDF completo</p>
+          <p class="upgrade-desc es">25 motivos de Medicina Interna &#xB7; 26 de Cirug&#xED;a General &#xB7; HCs ilimitadas en la nube &#xB7; Export PDF completo</p>
+          <div class="upgrade-price">$0,99 <span class="pt">/m&#xEA;s</span><span class="es">/mes</span></div>
+          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade pt">Fazer upgrade agora &#x2192;</a>
+          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade es">Hacer upgrade ahora &#x2192;</a>
         </div>
       </div>
     </div>
@@ -541,19 +548,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 <nav class="mobile-nav">
   <div class="mobile-nav-items">
     <button class="mn-item active" id="mn-inicio" onclick="setView('dashboard')">
-      <span class="mn-icon">🏠</span>
-      <span class="pt">Início</span><span class="es">Inicio</span>
+      <span class="mn-icon">&#x1F3E0;</span>
+      <span class="pt">In&#xED;cio</span><span class="es">Inicio</span>
     </button>
     <a href="anamnesismed-especialidades.html" class="mn-item" style="text-decoration:none;color:var(--muted)">
-      <span class="mn-icon">🩺</span>
+      <span class="mn-icon">&#x1FA7A;</span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
     </a>
     <button class="mn-item" id="mn-hcs" onclick="setView('hcs')">
-      <span class="mn-icon">📋</span>
+      <span class="mn-icon">&#x1F4CB;</span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
     </button>
     <button class="mn-item" onclick="window.location.href='anamnesismed-config.html'">
-      <span class="mn-icon">⚙️</span>
+      <span class="mn-icon">&#x2699;&#xFE0F;</span>
       <span class="pt">Conta</span><span class="es">Cuenta</span>
     </button>
   </div>
@@ -578,8 +585,6 @@ var currentDashView = 'dashboard';
 function setView(v){
   currentDashView = v;
   var isHcs = (v === 'hcs');
-
-  // Estado ativo na sidebar e mobile nav
   var navDash = document.getElementById('nav-dashboard');
   var navHcs = document.getElementById('nav-hcs');
   if(navDash) navDash.classList.toggle('active', !isHcs);
@@ -588,16 +593,12 @@ function setView(v){
   var mnHcs = document.getElementById('mn-hcs');
   if(mnInicio) mnInicio.classList.toggle('active', !isHcs);
   if(mnHcs) mnHcs.classList.toggle('active', isHcs);
-
-  // Mostra/oculta blocos do dashboard
   var statsRow = document.getElementById('stats-row');
   var quickHead = document.getElementById('quick-access-head');
   var quickGrid = document.getElementById('quick-grid');
   if(statsRow) statsRow.style.display = isHcs ? 'none' : '';
   if(quickHead) quickHead.style.display = isHcs ? 'none' : '';
   if(quickGrid) quickGrid.style.display = isHcs ? 'none' : '';
-
-  // Título da seção e link "Ver todas"
   var titlePt = document.getElementById('recent-hcs-title-pt');
   var titleEs = document.getElementById('recent-hcs-title-es');
   if(titlePt) titlePt.textContent = isHcs ? 'Minhas HCs' : 'HCs recentes';
@@ -606,20 +607,15 @@ function setView(v){
   if(head){
     head.querySelectorAll('.view-all').forEach(function(a){ a.style.display = isHcs ? 'none' : ''; });
   }
-  // Carrega a lista — todas as HCs na visão "Minhas HCs", só as recentes no dashboard
   if(window.uiLoadRecentHCs) window.uiLoadRecentHCs(isHcs ? 100 : 5);
-
   if(isHcs) window.scrollTo({top:0, behavior:'smooth'});
 }
 (function(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
-  // Ler parâmetro view da URL (ex: ?view=hcs ao vir do app)
   try{var vp=new URLSearchParams(window.location.search).get('view');if(vp)setView(vp);}catch(e){}
-  // Show menu button on mobile
   if(window.innerWidth<=768){
     document.getElementById('menu-btn').style.display='block';
   }
-  // Update date
   var now=new Date();
   var days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   var months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
