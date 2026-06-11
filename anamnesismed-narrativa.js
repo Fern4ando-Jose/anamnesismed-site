@@ -139,6 +139,11 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   opts = opts || {};
   var cont = !!opts.continuation;
   var pt = (lng !== 'es');
+  // Gênero do substantivo-guia: "dor" é feminino em PT (→ localizada/irradiada);
+  // "dolor" (ES) e "quadro/cuadro" são masculinos (→ localizado/irradiado).
+  var isPain = !!(mObj && mObj.isPain);
+  var fem = pt && isPain;
+  function gA(base){ return base + (fem ? 'a' : 'o'); } // gA('localizad') → localizada/localizado
   var resp = ans.filter(function(a){ return a.resp && a.resp !== '—' && String(a.resp).trim()!==''; });
   if(!resp.length) return '';
 
@@ -268,7 +273,7 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
       locTxt+=(pt?', com migração da dor — ':', con migración del dolor — ')+mg;
     }
   } else if(B.LOC){
-    locTxt+=(pt?', localizado em ':', localizado en ')+low(B.LOC);
+    locTxt+=(pt?', '+gA('localizad')+' em ':', localizado en ')+low(B.LOC);
   }
   if(B.ONSET){
     var on=low(B.ONSET).replace(/^in[íi]cio\s+(e\s+(t[ée]rmino|dura[çc][ãa]o|migra[çc][ãa]o)\s+)?/,'').trim();
@@ -280,7 +285,7 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   // ── 2. CARACTERIZAÇÃO + EVOLUÇÃO ──
   var c=[];
   if(B.CAR) c.push((pt?'de caráter ':'de carácter ')+low(B.CAR));
-  if(B.IRR){ var ir=low(B.IRR); if(!/sem irradia|sin irradia/.test(ir)) c.push((pt?'irradiado para ':'irradiado hacia ')+ir.replace(/^(para|hacia)\s+/,'')); }
+  if(B.IRR){ var ir=low(B.IRR); if(!/sem irradia|sin irradia/.test(ir)) c.push((pt?gA('irradiad')+' para ':'irradiado hacia ')+ir.replace(/^(para|hacia)\s+/,'')); }
   if(B.INT){ var iv=B.INT.trim(); c.push((pt?'de intensidade ':'de intensidad ')+(/^\d+$/.test(iv)?iv+(pt?'/10 na EVA':'/10 en EVA'):low(iv))); }
   if(B.DUREP) c.push((pt?'com duração de cada episódio de ':'con duración de cada episodio de ')+low(B.DUREP));
   if(B.FREQ.length) c.push((pt?'de padrão ':'de patrón ')+join(B.FREQ.map(low),pt?' e ':' y '));
@@ -292,7 +297,6 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     if(/crise|crisis/.test(e)) return pt?'curso em crises':'curso en crisis';
     return e;
   }
-  var isPain = !!(mObj && mObj.isPain);
   var leadN = isPain ? (pt?'dor ':'dolor ') : (pt?'quadro ':'cuadro ');
   var caracSent='';
   if(c.length) caracSent=(pt?'Refere ':'Refiere ')+leadN+c.join(', ');
