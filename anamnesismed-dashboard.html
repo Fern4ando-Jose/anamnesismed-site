@@ -3,244 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AnamnesísMed — Dashboard</title>
+<title>AnamnesísMed — Inicio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f0f4f8;--bg-card:#ffffff;--bg-sidebar:#ffffff;
-  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
-  --secondary:#0d9488;--accent:#f59e0b;
-  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
+  --bg:#EAF0F2;--bg-card:#FFFFFF;--ink:#0A1A24;
+  --primary:#0FA3B1;--primary-dark:#0B7C88;--secondary:#0d9488;
+  --accent:#FF5C49;--pulse:#FF5C49;--signal:#15B27A;
+  --muted:#5A7079;--line:rgba(10,26,36,.09);--line-md:rgba(10,26,36,.16);
+  --serif:'Space Grotesk',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
   --sidebar-w:240px
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex;-webkit-font-smoothing:antialiased}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
-/* SIDEBAR */
-/* MAIN */
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
 
 /* TOPBAR */
-.topbar{
-  background:var(--bg-card);
-  border-bottom:1px solid var(--line);
-  padding:0 32px;height:60px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:50
-}
-.topbar-left{display:flex;align-items:center;gap:12px}
-.topbar-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink)}
-.topbar-subtitle{font-size:13px;color:var(--muted)}
-.topbar-right{display:flex;align-items:center;gap:12px}
-
-.lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
-.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.topbar{background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
+.topbar-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
+.topbar-subtitle{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2px}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lang-toggle{display:flex;background:rgba(10,26,36,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line);font-family:var(--mono);font-weight:600}
+.lang-btn{padding:5px 11px;font-size:11px;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:.2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
-
 .search-wrap{position:relative}
-.search-input{
-  padding:8px 12px 8px 34px;font-size:13px;
-  background:var(--bg);border:1px solid var(--line);
-  border-radius:8px;color:var(--ink);outline:none;
-  width:220px;transition:all .2s;font-family:var(--sans)
-}
-.search-input:focus{border-color:var(--primary);width:260px;box-shadow:0 0 0 3px rgba(14,116,144,.1)}
-.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted)}
-
-.btn-new{
-  padding:8px 18px;font-size:13px;font-weight:700;
-  color:#fff;background:var(--primary);border:none;
-  border-radius:8px;cursor:pointer;
-  display:flex;align-items:center;gap:7px;
-  transition:all .2s
-}
+.search-input{padding:9px 12px 9px 34px;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);outline:none;width:200px;transition:.2s;font-family:var(--sans)}
+.search-input:focus{border-color:var(--primary);width:240px;box-shadow:0 0 0 3px rgba(15,163,177,.12)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted)}
+.btn-new{padding:9px 17px;font-family:var(--serif);font-size:14px;font-weight:600;color:#fff;background:var(--primary);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.18s;text-decoration:none;box-shadow:0 6px 16px rgba(15,163,177,.26)}
 .btn-new:hover{background:var(--primary-dark);transform:translateY(-1px)}
 
-/* CONTENT */
-.content{padding:28px 32px;flex:1}
+.content{padding:24px 28px 48px;flex:1;max-width:1120px;width:100%}
 
-/* STATS CARDS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
-.stat-card{
-  background:var(--bg-card);border:1px solid var(--line);
-  border-radius:12px;padding:18px 20px;
-  display:flex;flex-direction:column;gap:6px
-}
+/* HERO + ECG */
+.hero{position:relative;background:var(--ink);border-radius:22px;padding:28px 30px;color:#fff;overflow:hidden;margin-bottom:22px}
+.hero-ekg{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+.hero-ekg polyline{fill:none;stroke:var(--pulse);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1500;stroke-dashoffset:1500;animation:ekg 2.4s ease forwards}
+@keyframes ekg{to{stroke-dashoffset:0}}
+.hero-eye{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--primary);text-transform:uppercase;position:relative}
+.hero-greet{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.6px;margin:8px 0 6px;position:relative;color:#fff}
+.hero-sub{color:#9fc0c6;font-size:14px;position:relative;max-width:460px;line-height:1.5}
+.hero-cta{display:inline-flex;align-items:center;gap:7px;margin-top:18px;position:relative;background:var(--primary);color:#fff;font-family:var(--serif);font-weight:600;font-size:14px;padding:11px 18px;border-radius:11px;text-decoration:none;transition:.18s}
+.hero-cta:hover{background:var(--primary-dark);transform:translateY(-1px)}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
+.stat-card{background:var(--bg-card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:7px}
 .stat-card-top{display:flex;align-items:center;justify-content:space-between}
-.stat-label{font-size:12px;font-weight:600;color:var(--muted)}
-.stat-icon{font-size:20px}
-.stat-value{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--ink);line-height:1}
+.stat-label{font-size:12px;font-weight:500;color:var(--muted)}
+.stat-icon{width:30px;height:30px;border-radius:9px;background:rgba(15,163,177,.1);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:15px}
+.stat-value{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink);line-height:1}
 .stat-delta{font-size:12px;color:var(--secondary)}
 
 /* SECTION HEADERS */
-.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.section-title-sm{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink)}
-.view-all{font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;cursor:pointer}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title-sm{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
+.view-all{font-size:13px;font-weight:500;color:var(--primary);text-decoration:none;cursor:pointer}
 .view-all:hover{text-decoration:underline}
 
 /* HC LIST */
-.hc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-.hc-card{
-  background:var(--bg-card);border:1px solid var(--line);
-  border-radius:12px;padding:16px 20px;
-  display:flex;align-items:center;gap:16px;
-  cursor:pointer;text-decoration:none;color:inherit;
-  transition:all .2s
-}
-.hc-card:hover{border-color:rgba(14,116,144,.3);box-shadow:0 4px 16px rgba(13,45,61,0.06);transform:translateX(2px)}
-.hc-color{width:4px;height:48px;border-radius:4px;flex-shrink:0}
+.hc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:30px}
+.hc-card{background:var(--bg-card);border:1px solid var(--line);border-radius:14px;padding:15px 18px;display:flex;align-items:center;gap:15px;cursor:pointer;text-decoration:none;color:inherit;transition:.18s}
+.hc-card:hover{border-color:rgba(15,163,177,.3);box-shadow:0 8px 22px rgba(10,26,36,.07);transform:translateX(2px)}
+.hc-color{width:4px;height:46px;border-radius:4px;flex-shrink:0;background:var(--primary)}
 .hc-info{flex:1;min-width:0}
-.hc-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hc-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.hc-name{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-meta{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:9px}
 .hc-dot{width:3px;height:3px;border-radius:50%;background:var(--line-md)}
-.hc-status{
-  font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;
-  flex-shrink:0
-}
-.hc-status.complete{background:rgba(13,148,136,.12);color:#0d9488}
-.hc-status.draft{background:rgba(245,158,11,.12);color:#d97706}
+.hc-status{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
+.hc-status.complete{background:rgba(21,178,122,.13);color:#0e8a5e}
+.hc-status.draft{background:rgba(255,92,73,.13);color:#c23a26}
 .hc-actions{display:flex;gap:6px;flex-shrink:0}
-.hc-btn{
-  width:30px;height:30px;border-radius:7px;border:1px solid var(--line);
-  background:transparent;cursor:pointer;font-size:14px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s;color:var(--muted)
-}
+.hc-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:transparent;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.18s;color:var(--muted)}
 .hc-btn:hover{background:var(--bg);border-color:var(--line-md);color:var(--ink)}
 
-/* QUICK ACCESS */
-.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
-.quick-card{
-  background:var(--bg-card);border:1px solid var(--line);
-  border-radius:12px;padding:20px;
-  cursor:pointer;text-decoration:none;color:inherit;
-  transition:all .2s;display:flex;flex-direction:column;gap:10px
-}
-.quick-card:hover{border-color:rgba(14,116,144,.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,45,61,0.07)}
-.quick-icon{font-size:28px}
-.quick-title{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink)}
-.quick-desc{font-size:12px;color:var(--muted);line-height:1.55}
-.quick-count{font-size:11px;font-weight:700;color:var(--primary);margin-top:auto}
+/* QUICK ACCESS (mosaico) */
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:30px}
+.quick-card{position:relative;background:var(--bg-card);border:1px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;text-decoration:none;color:inherit;transition:.18s;display:flex;flex-direction:column;gap:9px;overflow:hidden}
+.quick-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,var(--primary))}
+.quick-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(10,26,36,.1)}
+.quick-icon{width:42px;height:42px;border-radius:12px;background:var(--cb,rgba(15,163,177,.12));color:var(--c,var(--primary));display:flex;align-items:center;justify-content:center;font-size:20px}
+.quick-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink)}
+.quick-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1}
+.quick-count{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--c,var(--primary));margin-top:auto}
 
 /* BOTTOM GRID */
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.panel{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:20px}
-
-/* RECENT ACTIVITY */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:var(--bg-card);border:1px solid var(--line);border-radius:16px;padding:20px}
 .activity-list{display:flex;flex-direction:column;gap:12px}
-.act-item{display:flex;align-items:flex-start;gap:12px}
-.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.act-dot.created{background:var(--primary)}
-.act-dot.edited{background:var(--accent)}
-.act-dot.exported{background:var(--secondary)}
+.act-item{display:flex;align-items:flex-start;gap:11px}
+.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--primary)}
+.act-dot.created{background:var(--primary)}.act-dot.edited{background:var(--accent)}.act-dot.exported{background:var(--signal)}
 .act-text{font-size:13px;color:var(--muted);line-height:1.5}
-.act-text strong{color:var(--ink)}
-.act-time{font-size:11px;color:rgba(75,96,112,.5)}
+.act-text strong{color:var(--ink);font-weight:600}
+.act-time{font-family:var(--mono);font-size:10px;color:rgba(90,112,121,.6)}
 
-/* UPGRADE PANEL */
-.upgrade-panel{
-  background:linear-gradient(135deg,var(--ink) 0%,#0c4a6e 100%);
-  border:1px solid rgba(14,116,144,.3);
-  border-radius:12px;padding:24px;
-  position:relative;overflow:hidden
-}
-.upgrade-panel::before{
-  content:'';position:absolute;
-  top:-30px;right:-30px;width:120px;height:120px;
-  border-radius:50%;background:rgba(14,116,144,.2)
-}
-.upgrade-panel::after{
-  content:'';position:absolute;
-  bottom:-20px;left:30px;width:80px;height:80px;
-  border-radius:50%;background:rgba(13,148,136,.15)
-}
+/* UPGRADE */
+.upgrade-panel{background:var(--ink);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+.upgrade-panel .ekg{position:absolute;inset:auto 0 0 0;width:100%;height:60px;opacity:.4}
+.upgrade-panel .ekg polyline{fill:none;stroke:var(--pulse);stroke-width:2;stroke-linecap:round}
 .upgrade-content{position:relative;z-index:1}
-.upgrade-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px}
-.upgrade-title{font-family:var(--serif);font-size:18px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3}
-.upgrade-title em{font-style:italic;color:#5dd0e8}
-.upgrade-desc{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.6}
-.upgrade-price{font-family:var(--serif);font-size:26px;font-weight:700;color:#fff;margin-bottom:16px}
+.upgrade-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+.upgrade-title{font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.3}
+.upgrade-title em{font-style:normal;color:#5dd8e6}
+.upgrade-desc{font-size:13px;color:rgba(255,255,255,.62);margin-bottom:18px;line-height:1.6}
+.upgrade-price{font-family:var(--mono);font-size:26px;font-weight:600;color:#fff;margin-bottom:16px}
 .upgrade-price span{font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.5);font-weight:400}
-.btn-upgrade{
-  display:block;text-align:center;
-  padding:11px;font-size:14px;font-weight:700;
-  color:var(--ink);background:#fff;border:none;
-  border-radius:8px;cursor:pointer;
-  text-decoration:none;transition:all .2s;font-family:var(--sans)
-}
-.btn-upgrade:hover{background:#f0f4f8;transform:translateY(-1px)}
+.btn-upgrade{display:block;text-align:center;padding:11px;font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);background:#fff;border:none;border-radius:10px;cursor:pointer;text-decoration:none;transition:.18s}
+.btn-upgrade:hover{background:#e9f6f8;transform:translateY(-1px)}
 
 /* MOBILE NAV */
-.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg-card);border-top:1px solid var(--line);padding:8px 0 env(safe-area-inset-bottom)}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--ink);border-top:1px solid rgba(255,255,255,.07);padding:8px 0 env(safe-area-inset-bottom)}
 .mobile-nav-items{display:flex;justify-content:space-around}
-.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 12px;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;transition:color .2s}
+.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;font-size:10px;font-weight:500;color:#8fa9af;cursor:pointer;border:none;background:none;transition:color .2s;text-decoration:none}
 .mn-item.active{color:var(--primary)}
 .mn-icon{font-size:20px}
 
-/* EMPTY STATE */
-.empty-state{text-align:center;padding:40px 20px}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px}
-.empty-desc{font-size:14px;color:var(--muted);margin-bottom:20px}
-
 /* RESPONSIVE */
-@media(max-width:1100px){
-  .stats-row{grid-template-columns:repeat(2,1fr)}
-  .quick-grid{grid-template-columns:repeat(2,1fr)}
-  .bottom-grid{grid-template-columns:1fr}
-}
+@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr)}.bottom-grid{grid-template-columns:1fr}}
 @media(max-width:768px){
-  .main{margin-left:0}
-  .mobile-nav{display:block}
-  .content{padding:16px 14px 90px}
-  .topbar{padding:0 14px;height:52px}
-  .topbar-title{font-size:15px}
-  .search-wrap{display:none}
-  .btn-new{padding:7px 14px;font-size:12px}
-  .stats-row{grid-template-columns:1fr 1fr;gap:10px}
-  .stat-value{font-size:22px}
-  .quick-grid{grid-template-columns:1fr 1fr;gap:10px}
-  .bottom-grid{grid-template-columns:1fr}
-  .hc-card{padding:12px 14px}
-  .hc-name{font-size:13px}
-  .plan-price{font-size:32px}
+  .main{margin-left:0}.mobile-nav{display:block}
+  .content{padding:16px 14px 90px}.topbar{padding:0 14px;height:56px}
+  .hero{padding:22px 18px}.hero-greet{font-size:24px}
+  .search-wrap{display:none}.btn-new{padding:8px 13px;font-size:13px}
+  .stats-row{grid-template-columns:1fr 1fr;gap:10px}.stat-value{font-size:22px}
+  .quick-grid{grid-template-columns:1fr}
 }
 @media(max-width:480px){
-  .stats-row{grid-template-columns:1fr 1fr}
-  .quick-grid{grid-template-columns:1fr}
   .topbar .btn-new span.pt,.topbar .btn-new span.es{display:none}
-  .hc-actions{display:none}
-  .upgrade-panel{padding:18px}
-  .upgrade-title{font-size:16px}
-}
-@media(max-width:360px){
-  .stats-row{grid-template-columns:1fr}
+  .hc-actions{display:none}.stats-row{grid-template-columns:1fr 1fr}
 }
 </style>
-  <link rel="stylesheet" href="sidebar.css">
+<link rel="stylesheet" href="sidebar.css">
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div id="sidebar-root"></div>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-left">
       <button style="display:none;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink)" id="menu-btn" onclick="toggleSidebar()">&#x2630;</button>
       <div>
-        <div class="topbar-title pt" id="page-title">Ol&#xE1; &#x1F44B;</div>
-        <div class="topbar-title es" id="page-title-es">Hola &#x1F44B;</div>
-        <div class="topbar-subtitle pt" id="page-sub">Sexta-feira, 5 de junho de 2025</div>
-        <div class="topbar-subtitle es" id="page-sub-es">Viernes, 5 de junio de 2025</div>
+        <div class="topbar-title">Inicio</div>
+        <div class="topbar-subtitle pt" id="page-sub">&#x2014;</div>
+        <div class="topbar-subtitle es" id="page-sub-es">&#x2014;</div>
       </div>
     </div>
     <div class="topbar-right">
@@ -252,55 +169,46 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <span class="search-icon">&#x1F50D;</span>
         <input type="search" class="search-input" placeholder="Buscar HCs..." id="search">
       </div>
-      <a href="anamnesismed-app.html?novo=1" class="btn-new">
-        <span>+</span>
-        <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
-      </a>
+      <a href="anamnesismed-app.html?novo=1" class="btn-new"><span>+</span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
     </div>
   </header>
 
-  <!-- CONTENT -->
   <div class="content">
+
+    <!-- HERO -->
+    <section class="hero" id="dash-hero">
+      <svg class="hero-ekg" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+        <polyline points="0,120 180,120 220,120 245,60 270,165 300,120 480,120 520,120 545,40 575,180 605,120 1000,120"/>
+      </svg>
+      <div class="hero-eye pt">Seu consult&#xF3;rio</div>
+      <div class="hero-eye es">Tu consultorio</div>
+      <h1 class="hero-greet pt" id="page-title">Ol&#xE1; &#x1F44B;</h1>
+      <h1 class="hero-greet es" id="page-title-es">Hola &#x1F44B;</h1>
+      <p class="hero-sub pt">Cada hist&#xF3;ria cl&#xED;nica completa, guiada passo a passo. Comece uma nova ou continue de onde parou.</p>
+      <p class="hero-sub es">Cada historia cl&#xED;nica completa, guiada paso a paso. Empez&#xE1; una nueva o segu&#xED; donde la dejaste.</p>
+      <a href="anamnesismed-app.html?novo=1" class="hero-cta"><span>+</span><span class="pt">Nova HC em branco</span><span class="es">Nueva HC en blanco</span></a>
+    </section>
 
     <!-- STATS -->
     <div class="stats-row" id="stats-row">
       <div class="stat-card">
-        <div class="stat-card-top">
-          <span class="stat-label pt">HCs criadas</span>
-          <span class="stat-label es">HCs creadas</span>
-          <span class="stat-icon">&#x1F4CB;</span>
-        </div>
+        <div class="stat-card-top"><span class="stat-label pt">HCs criadas</span><span class="stat-label es">HCs creadas</span><span class="stat-icon">&#9636;</span></div>
         <div class="stat-value" id="stat-hcs-value">&#x2014;</div>
-        <div class="stat-delta pt" id="stat-hcs-delta-pt"></div>
-        <div class="stat-delta es" id="stat-hcs-delta-es"></div>
+        <div class="stat-delta pt" id="stat-hcs-delta-pt"></div><div class="stat-delta es" id="stat-hcs-delta-es"></div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-top">
-          <span class="stat-label pt">PDFs exportados</span>
-          <span class="stat-label es">PDFs exportados</span>
-          <span class="stat-icon">&#x1F4C4;</span>
-        </div>
+        <div class="stat-card-top"><span class="stat-label pt">PDFs exportados</span><span class="stat-label es">PDFs exportados</span><span class="stat-icon">&#8623;</span></div>
         <div class="stat-value" id="stat-pdfs-value">&#x2014;</div>
-        <div class="stat-delta pt" id="stat-pdfs-delta-pt"></div>
-        <div class="stat-delta es" id="stat-pdfs-delta-es"></div>
+        <div class="stat-delta pt" id="stat-pdfs-delta-pt"></div><div class="stat-delta es" id="stat-pdfs-delta-es"></div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-top">
-          <span class="stat-label pt">Motivos consultados</span>
-          <span class="stat-label es">Motivos consultados</span>
-          <span class="stat-icon">&#x1FA7A;</span>
-        </div>
+        <div class="stat-card-top"><span class="stat-label pt">Motivos consultados</span><span class="stat-label es">Motivos consultados</span><span class="stat-icon">&#9678;</span></div>
         <div class="stat-value" id="stat-motivos-value">&#x2014;</div>
-        <div class="stat-delta pt" id="stat-motivos-delta-pt"></div>
-        <div class="stat-delta es" id="stat-motivos-delta-es"></div>
+        <div class="stat-delta pt" id="stat-motivos-delta-pt"></div><div class="stat-delta es" id="stat-motivos-delta-es"></div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-top">
-          <span class="stat-label pt">Plano</span>
-          <span class="stat-label es">Plan</span>
-          <span class="stat-icon">&#x2726;</span>
-        </div>
-        <div class="stat-value" style="font-size:20px;margin-top:2px">Gr&#xE1;tis</div>
+        <div class="stat-card-top"><span class="stat-label pt">Plano</span><span class="stat-label es">Plan</span><span class="stat-icon" style="background:rgba(255,92,73,.12);color:var(--accent)">&#10022;</span></div>
+        <div class="stat-value" style="font-family:var(--serif);font-size:20px;margin-top:3px">Gr&#xE1;tis</div>
         <div class="stat-delta" style="color:var(--accent)">
           <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="pt">Upgrade &#x2192;</a>
           <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="es">Upgrade &#x2192;</a>
@@ -323,74 +231,59 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <h2 class="section-title-sm es">Acceso r&#xE1;pido</h2>
     </div>
     <div class="quick-grid" id="quick-grid">
-      <a href="anamnesismed-especialidades.html?esp=semiologia" class="quick-card">
-        <div class="quick-icon">&#x1F4D6;</div>
-        <div class="quick-title pt">Semiologia B&#xE1;sica</div>
-        <div class="quick-title es">Semiolog&#xED;a B&#xE1;sica</div>
-        <p class="quick-desc pt">8 s&#xED;ndromes semiol&#xF3;gicas com guia de anamnese estruturado</p>
-        <p class="quick-desc es">8 s&#xED;ndromes semiol&#xF3;gicas con gu&#xED;a de anamnesis estructurada</p>
-        <div class="quick-count pt">8 motivos dispon&#xED;veis</div>
-        <div class="quick-count es">8 motivos disponibles</div>
+      <a href="anamnesismed-especialidades.html?esp=semiologia" class="quick-card" style="--c:#3b82f6;--cb:rgba(59,130,246,.12)">
+        <div class="quick-icon">&#9636;</div>
+        <div class="quick-title pt">Semiologia B&#xE1;sica</div><div class="quick-title es">Semiolog&#xED;a B&#xE1;sica</div>
+        <p class="quick-desc pt">Sinais e sintomas fundamentais com anamnese guiada</p>
+        <p class="quick-desc es">Signos y s&#xED;ntomas fundamentales con anamnesis guiada</p>
+        <div class="quick-count pt">9 motivos</div><div class="quick-count es">9 motivos</div>
       </a>
-      <a href="anamnesismed-especialidades.html?esp=clinica" class="quick-card">
-        <div class="quick-icon">&#x1F3E5;</div>
-        <div class="quick-title pt">Cl&#xED;nica M&#xE9;dica</div>
-        <div class="quick-title es">Medicina Interna</div>
-        <p class="quick-desc pt">17 motivos de consulta com HC estruturada completa</p>
-        <p class="quick-desc es">17 motivos de consulta con HC estructurada completa</p>
-        <div class="quick-count pt">17 motivos dispon&#xED;veis</div>
-        <div class="quick-count es">17 motivos disponibles</div>
+      <a href="anamnesismed-especialidades.html?esp=clinica" class="quick-card" style="--c:#FF5C49;--cb:rgba(255,92,73,.12)">
+        <div class="quick-icon">&#10010;</div>
+        <div class="quick-title pt">Cl&#xED;nica M&#xE9;dica</div><div class="quick-title es">Cl&#xED;nica M&#xE9;dica</div>
+        <p class="quick-desc pt">Os motivos de consulta mais frequentes</p>
+        <p class="quick-desc es">Los motivos de consulta m&#xE1;s frecuentes</p>
+        <div class="quick-count pt">17 motivos</div><div class="quick-count es">17 motivos</div>
       </a>
-      <a href="anamnesismed-especialidades.html?esp=cirurgia" class="quick-card">
-        <div class="quick-icon">&#x1F52A;</div>
-        <div class="quick-title pt">Cirurgia Geral</div>
-        <div class="quick-title es">Cirug&#xED;a General</div>
-        <p class="quick-desc pt">10 motivos cir&#xFA;rgicos com anamnese estruturada</p>
-        <p class="quick-desc es">10 motivos quir&#xFA;rgicos con anamnesis estructurada</p>
-        <div class="quick-count pt">10 motivos dispon&#xED;veis</div>
-        <div class="quick-count es">10 motivos disponibles</div>
+      <a href="anamnesismed-especialidades.html?esp=cirurgia" class="quick-card" style="--c:#8b5cf6;--cb:rgba(139,92,246,.12)">
+        <div class="quick-icon">&#9670;</div>
+        <div class="quick-title pt">Cirurgia Geral</div><div class="quick-title es">Cirug&#xED;a General</div>
+        <p class="quick-desc pt">Abdome agudo, h&#xE9;rnias e trauma</p>
+        <p class="quick-desc es">Abdomen agudo, hernias y trauma</p>
+        <div class="quick-count pt">10 motivos</div><div class="quick-count es">10 motivos</div>
       </a>
-      <a href="anamnesismed-mnemonicas.html" class="quick-card">
-        <div class="quick-icon">&#x1F9E0;</div>
-        <div class="quick-title pt">Mnem&#xF4;nicas</div>
-        <div class="quick-title es">Mnemot&#xE9;cnicas</div>
-        <p class="quick-desc pt">LITIDIFIS, IDET, ROTA, FOCOS e todas as principais</p>
-        <p class="quick-desc es">LITIDIFIS, IDET, ROTA, FOCOS y todas las principales</p>
-        <div class="quick-count pt">Todas as especialidades</div>
-        <div class="quick-count es">Todas las especialidades</div>
+      <a href="anamnesismed-explorar.html" class="quick-card" style="--c:#0FA3B1;--cb:rgba(15,163,177,.12)">
+        <div class="quick-icon">&#9673;</div>
+        <div class="quick-title pt">Explorar tudo</div><div class="quick-title es">Explorar todo</div>
+        <p class="quick-desc pt">Todas as especialidades, busca e refer&#xEA;ncias</p>
+        <p class="quick-desc es">Todas las especialidades, b&#xFA;squeda y referencias</p>
+        <div class="quick-count pt">Ver tudo &#x2192;</div><div class="quick-count es">Ver todo &#x2192;</div>
       </a>
     </div>
 
     <!-- BOTTOM PANELS -->
     <div class="bottom-grid">
-      <!-- ACTIVITY -->
       <div class="panel">
         <div class="section-head" style="margin-bottom:16px">
           <h3 class="section-title-sm pt">Atividade recente</h3>
           <h3 class="section-title-sm es">Actividad reciente</h3>
         </div>
         <div class="activity-list">
-          <div class="act-item">
-            <div>
-              <div class="act-text pt">Carregando...</div>
-              <div class="act-text es">Cargando...</div>
-            </div>
-          </div>
+          <div class="act-item"><div><div class="act-text pt">Carregando&#x2026;</div><div class="act-text es">Cargando&#x2026;</div></div></div>
         </div>
       </div>
 
-      <!-- UPGRADE -->
       <div class="upgrade-panel">
+        <svg class="ekg" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,40 120,40 140,18 158,54 176,40 280,40 300,28 318,50 336,40 400,40"/></svg>
         <div class="upgrade-content">
-          <div class="upgrade-label pt">Plano Pro</div>
-          <div class="upgrade-label es">Plan Pro</div>
+          <div class="upgrade-label pt">Plano Pro</div><div class="upgrade-label es">Plan Pro</div>
           <h3 class="upgrade-title pt">Acesso <em>ilimitado</em> a todos os motivos</h3>
           <h3 class="upgrade-title es">Acceso <em>ilimitado</em> a todos los motivos</h3>
-          <p class="upgrade-desc pt">25 motivos de Cl&#xED;nica M&#xE9;dica &#xB7; 26 de Cirurgia Geral &#xB7; HCs ilimitadas na nuvem &#xB7; Export PDF completo</p>
-          <p class="upgrade-desc es">25 motivos de Medicina Interna &#xB7; 26 de Cirug&#xED;a General &#xB7; HCs ilimitadas en la nube &#xB7; Export PDF completo</p>
+          <p class="upgrade-desc pt">Todas as especialidades &#xB7; HCs ilimitadas na nuvem &#xB7; export PDF completo</p>
+          <p class="upgrade-desc es">Todas las especialidades &#xB7; HCs ilimitadas en la nube &#xB7; export PDF completo</p>
           <div class="upgrade-price">$0,99 <span class="pt">/m&#xEA;s</span><span class="es">/mes</span></div>
-          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade pt">Fazer upgrade agora &#x2192;</a>
-          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade es">Hacer upgrade ahora &#x2192;</a>
+          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade pt">Fazer upgrade &#x2192;</a>
+          <a href="anamnesismed-landing.html#pricing" class="btn-upgrade es">Hacer upgrade &#x2192;</a>
         </div>
       </div>
     </div>
@@ -398,25 +291,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   </div>
 </div>
 
-<!-- MOBILE NAV -->
 <nav class="mobile-nav">
   <div class="mobile-nav-items">
-    <button class="mn-item active" id="mn-inicio" onclick="setView('dashboard')">
-      <span class="mn-icon">&#x1F3E0;</span>
-      <span class="pt">In&#xED;cio</span><span class="es">Inicio</span>
-    </button>
-    <a href="anamnesismed-app.html?novo=1" class="mn-item" style="text-decoration:none;color:var(--muted)">
-      <span class="mn-icon">&#x1FA7A;</span>
-      <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
-    </a>
-    <button class="mn-item" id="mn-hcs" onclick="setView('hcs')">
-      <span class="mn-icon">&#x1F4CB;</span>
-      <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
-    </button>
-    <button class="mn-item" onclick="window.location.href='anamnesismed-config.html'">
-      <span class="mn-icon">&#x2699;&#xFE0F;</span>
-      <span class="pt">Conta</span><span class="es">Cuenta</span>
-    </button>
+    <button class="mn-item active" id="mn-inicio" onclick="setView('dashboard')"><span class="mn-icon">&#9678;</span><span class="pt">In&#xED;cio</span><span class="es">Inicio</span></button>
+    <a href="anamnesismed-app.html?novo=1" class="mn-item"><span class="mn-icon">&#10010;</span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
+    <button class="mn-item" id="mn-hcs" onclick="setView('hcs')"><span class="mn-icon">&#9776;</span><span class="pt">Minhas HCs</span><span class="es">Mis HCs</span></button>
+    <button class="mn-item" onclick="window.location.href='anamnesismed-config.html'"><span class="mn-icon">&#9881;</span><span class="pt">Conta</span><span class="es">Cuenta</span></button>
   </div>
 </nav>
 
@@ -443,9 +323,11 @@ function setView(v){
   var mnHcs = document.getElementById('mn-hcs');
   if(mnInicio) mnInicio.classList.toggle('active', !isHcs);
   if(mnHcs) mnHcs.classList.toggle('active', isHcs);
+  var hero = document.getElementById('dash-hero');
   var statsRow = document.getElementById('stats-row');
   var quickHead = document.getElementById('quick-access-head');
   var quickGrid = document.getElementById('quick-grid');
+  if(hero) hero.style.display = isHcs ? 'none' : '';
   if(statsRow) statsRow.style.display = isHcs ? 'none' : '';
   if(quickHead) quickHead.style.display = isHcs ? 'none' : '';
   if(quickGrid) quickGrid.style.display = isHcs ? 'none' : '';
@@ -454,23 +336,19 @@ function setView(v){
   if(titlePt) titlePt.textContent = isHcs ? 'Minhas HCs' : 'HCs recentes';
   if(titleEs) titleEs.textContent = isHcs ? 'Mis HCs' : 'HCs recientes';
   var head = document.getElementById('recent-hcs-head');
-  if(head){
-    head.querySelectorAll('.view-all').forEach(function(a){ a.style.display = isHcs ? 'none' : ''; });
-  }
+  if(head){ head.querySelectorAll('.view-all').forEach(function(a){ a.style.display = isHcs ? 'none' : ''; }); }
   if(window.uiLoadRecentHCs) window.uiLoadRecentHCs(isHcs ? 100 : 5);
   if(isHcs) window.scrollTo({top:0, behavior:'smooth'});
 }
 (function(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
   try{var vp=new URLSearchParams(window.location.search).get('view');if(vp)setView(vp);}catch(e){}
-  if(window.innerWidth<=768){
-    document.getElementById('menu-btn').style.display='block';
-  }
+  if(window.innerWidth<=768){ var mb=document.getElementById('menu-btn'); if(mb) mb.style.display='block'; }
   var now=new Date();
   var days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   var months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
   var daysEs=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  var monthsEs=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','outubro','noviembre','diciembre'];
+  var monthsEs=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   var d=now.getDate();
   document.getElementById('page-sub').textContent=days[now.getDay()]+', '+d+' de '+months[now.getMonth()]+' de '+now.getFullYear();
   document.getElementById('page-sub-es').textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
