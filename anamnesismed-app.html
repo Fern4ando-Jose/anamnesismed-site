@@ -1872,7 +1872,8 @@ function showSpec(spec){
   renderMotivoGrid(spec);
   // Garante que o index é mostrado e sidebar fechado (mobile)
   showScreen('index');
-  closeSidebar();
+  // closeSidebar vive em sidebar.js, que carrega DEPOIS deste INIT — guardar
+  if(typeof closeSidebar === 'function') closeSidebar();
 }
 
 function renderMotivoGrid(spec){
