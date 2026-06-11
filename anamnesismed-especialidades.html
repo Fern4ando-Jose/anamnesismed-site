@@ -377,6 +377,13 @@ const ESPECIALIDADES = [
   }
 ];
 
+// ── REFERÊNCIA CLÍNICA (material de estudo por especialidade) ─────────────────
+const REFERENCIAS = {
+  respiratorio: [
+    { icon:"🫁", namePt:"Exame Físico", nameEs:"Examen Físico", url:"anamnesismed-ref-respiratorio-exfisico.html" }
+  ]
+};
+
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 let currentEsp = null;
 let currentTab = "hc";
@@ -465,6 +472,29 @@ function renderPanel(){
     </div>`;
   });
 
+  // Aba Referência Clínica: cards se houver material; senão placeholder "Em breve"
+  const _refs = (typeof REFERENCIAS!=='undefined' && REFERENCIAS[currentEsp.id]) ? REFERENCIAS[currentEsp.id] : [];
+  let matHtml;
+  if(_refs.length){
+    const refCards = _refs.map(r=>`
+      <a href="${r.url}" class="motivo-card">
+        <div class="m-icon">${r.icon}</div>
+        <div class="m-name">${currentLang==='es'?r.nameEs:r.namePt}</div>
+        <span class="m-arrow">›</span>
+      </a>`).join("");
+    matHtml = `<div class="cat-block"><div class="cat-label">${currentLang==='es'?'Material de estudio':'Material de estudo'}</div><div class="motivos-grid">${refCards}</div></div>`;
+  } else {
+    matHtml = `<div class="material-placeholder">
+        <div class="mp-icon">📚</div>
+        <div class="mp-title pt">Referência Clínica</div>
+        <div class="mp-title es">Referencia Clínica</div>
+        <div class="mp-sub pt">Resumos, guias clínicos e casos práticos de ${espName(currentEsp)} em breve.</div>
+        <div class="mp-sub es">Resúmenes, guías clínicas y casos prácticos de ${espName(currentEsp)} pronto.</div>
+        <span class="mp-badge pt">Em breve</span>
+        <span class="mp-badge es">Próximamente</span>
+      </div>`;
+  }
+
   panel.innerHTML=`
     <div class="panel-head">
       <div class="panel-esp-title">${currentEsp.icon} ${espName(currentEsp)}</div>
@@ -476,17 +506,7 @@ function renderPanel(){
       <button class="tab-btn${currentTab==="material"?" active":""}" onclick="setTab('material')">${tabMat}</button>
     </div>
     <div class="tab-pane${currentTab==="hc"?" active":""}" id="tab-hc">${hcHtml}</div>
-    <div class="tab-pane${currentTab==="material"?" active":""}" id="tab-material">
-      <div class="material-placeholder">
-        <div class="mp-icon">📚</div>
-        <div class="mp-title pt">Referência Clínica</div>
-        <div class="mp-title es">Referencia Clínica</div>
-        <div class="mp-sub pt">Resumos, guias clínicos e casos práticos de ${espName(currentEsp)} em breve.</div>
-        <div class="mp-sub es">Resúmenes, guías clínicas y casos prácticos de ${espName(currentEsp)} pronto.</div>
-        <span class="mp-badge pt">Em breve</span>
-        <span class="mp-badge es">Próximamente</span>
-      </div>
-    </div>`;
+    <div class="tab-pane${currentTab==="material"?" active":""}" id="tab-material">${matHtml}</div>`;
 }
 
 // ── ACTIONS ───────────────────────────────────────────────────────────────────

@@ -24,7 +24,7 @@ const PAGE = (() => {
   if (p.includes('auth'))      return 'auth';
   if (p.includes('config'))    return 'config';
   if (p.includes('dashboard')) return 'dashboard';
-  if (p.includes('especialidades') || p.includes('explorar')) return 'especialidades';
+  if (p.includes('especialidades') || p.includes('explorar') || p.includes('-ref-')) return 'especialidades';
   if (p.includes('app'))       return 'app';
   return 'unknown';
 })();
