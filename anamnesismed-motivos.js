@@ -3095,57 +3095,78 @@ const MOTIVOS = {
           ]
         },
         {
-          "id": "semio-disnea",
+          "id": "dispneia",
           "name": "Dispneia",
           "nameEs": "Disnea",
           "icon": "🫁",
           "color": "mc-primary",
           "aeaGuide": [
             {
-              "q": "Início?",
-              "qEs": "¿Inicio?",
+              "q": "Início",
+              "qEs": "Inicio",
               "type": "radio",
               "opts": [
-                "Súbito (minutos)",
-                "Progressivo (horas/dias)",
-                "Crônico (semanas/meses)"
-              ],
-              "optsEs": [
-                "Súbito (minutos)",
-                "Progresivo (horas/días)",
-                "Crónico (semanas/meses)"
+                "Brusco/Súbito (minutos)",
+                "Agudo (horas a dias)",
+                "Progressivo/crônico (semanas a meses)",
+                "Crônico com piora aguda"
               ]
             },
             {
-              "q": "Grau de dispneia (MRC)?",
-              "qEs": "¿Grado de disnea (MRC)?",
+              "q": "Intensidade (escala mMRC)",
+              "qEs": "Intensidad (escala mMRC)",
               "type": "radio",
               "opts": [
-                "Grau 1 — só esforço intenso",
-                "Grau 2 — sobe escadas/ladeiras",
-                "Grau 3 — caminhada plana em ritmo normal",
-                "Grau 4 — repouso ou mínimo esforço"
-              ],
-              "optsEs": [
-                "Grado 1 — solo esfuerzo intenso",
-                "Grado 2 — sube escaleras/cuestas",
-                "Grado 3 — caminata plana a ritmo normal",
-                "Grado 4 — reposo o mínimo esfuerzo"
+                "Grau 0 — só com exercício intenso",
+                "Grau 1 — ao apressar o passo/subir ladeira",
+                "Grau 2 — anda mais devagar que pessoas da idade",
+                "Grau 3 — para para respirar após ~100m",
+                "Grau 4 — ao vestir-se / não sai de casa"
               ]
             },
             {
-              "q": "Ortopneia (dispneia ao deitar)?",
-              "qEs": "¿Ortopnea (disnea al acostarse)?",
+              "q": "Relação com esforço físico",
+              "qEs": "Relación con el esfuerzo físico",
+              "type": "radio",
+              "opts": [
+                "Aos grandes esforços",
+                "Aos médios esforços",
+                "Aos pequenos esforços",
+                "Em repouso"
+              ]
+            },
+            {
+              "q": "Relação com decúbito",
+              "qEs": "Relación con decúbito",
+              "type": "radio",
+              "opts": [
+                "Ortopneia (piora deitado)",
+                "Platipneia (melhora deitado)",
+                "Sem relação"
+              ]
+            },
+            {
+              "q": "Ortopneia — quantos travesseiros usa para dormir?",
+              "qEs": "Ortopnea — ¿cuántas almohadas usa para dormir?",
+              "type": "input",
+              "ph": "Número de travesseiros",
+              "ph2": "Número de almohadas"
+            },
+            {
+              "q": "Dispneia paroxística noturna (acorda sufocado)?",
+              "qEs": "¿Disnea paroxística nocturna (se despierta sofocado)?",
               "type": "yn"
             },
             {
-              "q": "Dispneia paroxística noturna (acorda com falta de ar)?",
-              "qEs": "¿Disnea paroxística nocturna (se despierta con falta de aire)?",
-              "type": "yn"
+              "q": "Fatores desencadeantes (esforço, frio, alérgenos, posição, estresse, infecções)?",
+              "qEs": "¿Factores desencadenantes (esfuerzo, frío, alérgenos, posición, estrés, infecciones)?",
+              "type": "input",
+              "ph": "Descreva os fatores desencadeantes",
+              "ph2": "Describa los factores desencadenantes"
             },
             {
-              "q": "Sibilos ou chiado no peito?",
-              "qEs": "¿Sibilancias o pito en el pecho?",
+              "q": "Chiado no peito / Sibilância?",
+              "qEs": "¿Silbido en el pecho?",
               "type": "yn"
             },
             {
@@ -3197,26 +3218,55 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Febre associada?",
-              "qEs": "¿Fiebre asociada?",
-              "type": "yn"
-            },
-            {
               "q": "Dor torácica associada?",
               "qEs": "¿Dolor torácico asociado?",
               "type": "yn"
             },
             {
-              "q": "Edema de membros inferiores?",
-              "qEs": "¿Edema de miembros inferiores?",
+              "q": "Edema de membros inferiores associado?",
+              "qEs": "¿Edema de miembros inferiores asociado?",
               "type": "yn"
             },
             {
-              "q": "Tabagismo ou exposição ocupacional (poeiras, gases)?",
-              "qEs": "¿Tabaquismo o exposición ocupacional (polvos, gases)?",
+              "q": "Palpitações associadas?",
+              "qEs": "¿Palpitaciones asociadas?",
+              "type": "yn"
+            },
+            {
+              "q": "Febre associada?",
+              "qEs": "¿Fiebre asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Antecedentes cardíacos (ICC, valvopatia, IAM) ou pulmonares (asma, DPOC, fibrose)?",
+              "qEs": "¿Antecedentes cardíacos (ICC, valvulopatía, IAM) o pulmonares (asma, EPOC, fibrosis)?",
+              "type": "yn"
+            },
+            {
+              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
+              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
               "type": "input",
-              "ph": "Anos / maços-ano / tipo de exposição",
-              "ph2": "Años / paquetes-año / tipo de exposición"
+              "ph": "Anos-maço",
+              "ph2": "Años-paquete"
+            },
+            {
+              "q": "Exposições ocupacionais ou alérgenos (poeiras, fumaças, animais, mofo)?",
+              "qEs": "¿Exposiciones ocupacionales o alérgenos (polvos, humos, animales, moho)?",
+              "type": "yn"
+            },
+            {
+              "q": "Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?",
+              "qEs": "¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?",
+              "type": "input",
+              "ph": "Descreva episódios anteriores e tratamento",
+              "ph2": "Describa episodios anteriores y tratamiento"
+            },
+            {
+              "q": "Uso de medicamentos (broncodilatadores, diuréticos, anti-hipertensivos, IECA)?",
+              "qEs": "¿Uso de medicamentos (broncodilatadores, diuréticos, antihipertensivos, IECA)?",
+              "type": "input",
+              "ph": "Liste os medicamentos em uso",
+              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -3249,7 +3299,7 @@ const MOTIVOS = {
           ]
         },
         {
-          "id": "semio-tosse",
+          "id": "tosse",
           "name": "Tosse",
           "nameEs": "Tos",
           "icon": "😮‍💨",
@@ -3630,67 +3680,161 @@ const MOTIVOS = {
           ]
         },
         {
-          "id": "semio-edema",
+          "id": "edema",
           "name": "Edema",
           "nameEs": "Edema",
-          "icon": "🦵",
+          "icon": "💧",
           "color": "mc-secondary",
           "aeaGuide": [
             {
-              "q": "Localização?",
-              "qEs": "¿Localización?",
+              "q": "Início",
+              "qEs": "Inicio",
               "type": "radio",
               "opts": [
-                "MMII bilateral",
-                "MMII unilateral",
-                "Facial/periorbital",
-                "Generalizado (anasarca)",
-                "Ascite isolada"
-              ],
-              "optsEs": [
-                "MMII bilateral",
-                "MMII unilateral",
-                "Facial/periorbitario",
-                "Generalizado (anasarca)",
-                "Ascitis aislada"
+                "Agudo/súbito (horas a dias)",
+                "Subagudo (dias a semanas)",
+                "Crônico/insidioso (semanas a meses)"
               ]
             },
             {
-              "q": "Cacifo (pitting — deixa impressão digital)?",
-              "qEs": "¿Fóvea (pitting — deja marca digital)?",
+              "q": "Localização",
+              "qEs": "Localización",
+              "type": "radio",
+              "opts": [
+                "Membros inferiores (bilateral)",
+                "Membro inferior (unilateral)",
+                "Membros superiores",
+                "Facial/periorbital",
+                "Generalizado/anasarca",
+                "Escroto/genital",
+                "Abdominal (ascite)"
+              ]
+            },
+            {
+              "q": "Simetria",
+              "qEs": "Simetría",
+              "type": "radio",
+              "opts": [
+                "Simétrico/bilateral",
+                "Assimétrico/unilateral"
+              ]
+            },
+            {
+              "q": "Progressão",
+              "qEs": "Progresión",
+              "type": "radio",
+              "opts": [
+                "Ascendente (pés → pernas → coxas)",
+                "Estável, sem progressão",
+                "Migratório/intermitente"
+              ]
+            },
+            {
+              "q": "Momento do dia / variação",
+              "qEs": "Momento del día / variación",
+              "type": "radio",
+              "opts": [
+                "Vespertino (piora no fim do dia, melhora pela manhã)",
+                "Matutino/periorbital ao acordar",
+                "Constante, sem variação diurna"
+              ]
+            },
+            {
+              "q": "Cacifo (sinal de godet positivo)?",
+              "qEs": "¿Signo de fóvea/godet positivo?",
               "type": "yn"
             },
             {
-              "q": "Piora com ortostase e melhora com elevação dos MMII?",
-              "qEs": "¿Empeora con ortostatismo y mejora con elevación de MMII?",
+              "q": "Dor, calor ou rubor local associado?",
+              "qEs": "¿Dolor, calor o rubor local asociado?",
               "type": "yn"
             },
             {
-              "q": "Dispneia ou ortopneia associada (insuficiência cardíaca)?",
-              "qEs": "¿Disnea u ortopnea asociada (insuficiencia cardíaca)?",
-              "type": "yn"
-            },
-            {
-              "q": "Oligúria ou alteração da cor da urina (nefrótico/nefrítico)?",
-              "qEs": "¿Oliguria o alteración del color de la orina (nefrótico/nefrítico)?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos (BCC, corticoides, AINEs, hormônios)?",
-              "qEs": "¿Uso de medicamentos (BCC, corticoides, AINEs, hormonas)?",
+              "q": "Fatores que pioram (ortostatismo prolongado, calor, sal na dieta, viagens longas)",
+              "qEs": "Factores que empeoran (bipedestación prolongada, calor, sal en la dieta, viajes largos)",
               "type": "input",
-              "ph": "Liste os medicamentos",
-              "ph2": "Liste los medicamentos"
+              "ph": "Descreva os fatores desencadeantes/agravantes",
+              "ph2": "Describa los factores desencadenantes/agravantes"
             },
             {
-              "q": "Dor, hiperemia ou calor local (trombose venosa profunda)?",
-              "qEs": "¿Dolor, hiperemia o calor local (trombosis venosa profunda)?",
+              "q": "Fatores que melhoram (repouso, elevação dos membros, restrição de sal, diuréticos)",
+              "qEs": "Factores que mejoran (reposo, elevación de miembros, restricción de sal, diuréticos)",
+              "type": "input",
+              "ph": "Descreva os fatores de melhora",
+              "ph2": "Describa los factores de mejora"
+            },
+            {
+              "q": "Dispneia associada (aos esforços, ortopneia, DPN)?",
+              "qEs": "¿Disnea asociada (de esfuerzo, ortopnea, DPN)?",
               "type": "yn"
             },
             {
-              "q": "Febre ou ferida local (erisipela / linfedema infeccioso)?",
-              "qEs": "¿Fiebre o herida local (erisipela / linfedema infeccioso)?",
+              "q": "Palpitações ou dor torácica associadas?",
+              "qEs": "¿Palpitaciones o dolor torácico asociados?",
               "type": "yn"
+            },
+            {
+              "q": "Oligúria, colúria, espuma na urina (proteinúria)?",
+              "qEs": "¿Oliguria, coluria, espuma en la orina (proteinuria)?",
+              "type": "yn"
+            },
+            {
+              "q": "Aumento do volume abdominal / distensão?",
+              "qEs": "¿Aumento del volumen abdominal / distensión?",
+              "type": "yn"
+            },
+            {
+              "q": "Icterícia ou outros sinais de hepatopatia?",
+              "qEs": "¿Ictericia u otros signos de hepatopatía?",
+              "type": "yn"
+            },
+            {
+              "q": "Ganho de peso recente? Quanto e em quanto tempo?",
+              "qEs": "¿Aumento de peso reciente? ¿Cuánto y en cuánto tiempo?",
+              "type": "input",
+              "ph": "kg / período",
+              "ph2": "kg / período"
+            },
+            {
+              "q": "Dispneia para deitar (ortopneia) — quantos travesseiros usa para dormir?",
+              "qEs": "¿Disnea al acostarse (ortopnea) — cuántas almohadas usa para dormir?",
+              "type": "input",
+              "ph": "Número de travesseiros",
+              "ph2": "Número de almohadas"
+            },
+            {
+              "q": "Imobilização prolongada, viagem longa recente ou cirurgia recente (risco de TVP)?",
+              "qEs": "¿Inmovilización prolongada, viaje largo reciente o cirugía reciente (riesgo de TVP)?",
+              "type": "yn"
+            },
+            {
+              "q": "Antecedentes de doença cardíaca, renal, hepática ou tireoidiana?",
+              "qEs": "¿Antecedentes de enfermedad cardíaca, renal, hepática o tiroidea?",
+              "type": "yn"
+            },
+            {
+              "q": "Uso de medicamentos (anti-hipertensivos/BCC, AINEs, corticoides, hormônios, hipoglicemiantes)?",
+              "qEs": "¿Uso de medicamentos (antihipertensivos/BCC, AINEs, corticoides, hormonas, hipoglucemiantes)?",
+              "type": "input",
+              "ph": "Liste os medicamentos em uso",
+              "ph2": "Liste los medicamentos en uso"
+            },
+            {
+              "q": "Possibilidade de gravidez / atraso menstrual (em mulheres)?",
+              "qEs": "¿Posibilidad de embarazo / atraso menstrual (en mujeres)?",
+              "type": "yn"
+            },
+            {
+              "q": "Dieta rica em sal ou baixa ingestão proteica?",
+              "qEs": "¿Dieta rica en sal o baja ingesta proteica?",
+              "type": "yn"
+            },
+            {
+              "q": "Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?",
+              "qEs": "¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?",
+              "type": "input",
+              "ph": "Descreva episódios anteriores e tratamento",
+              "ph2": "Describa episodios anteriores y tratamiento"
             },
             {
               "q": "Evolução do quadro",
@@ -3726,62 +3870,117 @@ const MOTIVOS = {
           ]
         },
         {
-          "id": "semio-ictericia",
+          "id": "ictericia",
           "name": "Icterícia",
           "nameEs": "Ictericia",
           "icon": "🟡",
-          "color": "mc-accent",
+          "color": "mc-secondary",
           "aeaGuide": [
             {
-              "q": "Colúria (urina escura, cor de chá ou Coca-Cola)?",
-              "qEs": "¿Coluria (orina oscura, color té o Coca-Cola)?",
-              "type": "yn"
+              "q": "Início",
+              "qEs": "Inicio",
+              "type": "radio",
+              "opts": [
+                "Súbito (dias)",
+                "Insidioso/gradual (semanas a meses)"
+              ]
             },
             {
-              "q": "Acolia ou hipocolia (fezes claras/esbranquiçadas)?",
-              "qEs": "¿Acolia o hipocolia (heces claras/blanquecinas)?",
-              "type": "yn"
-            },
-            {
-              "q": "Prurido (coceira)?",
-              "qEs": "¿Prurito (picazón)?",
-              "type": "yn"
-            },
-            {
-              "q": "Dor em hipocôndrio direito?",
-              "qEs": "¿Dolor en hipocondrio derecho?",
-              "type": "yn"
-            },
-            {
-              "q": "Febre associada?",
-              "qEs": "¿Fiebre asociada?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de álcool? Quantidade e frequência?",
-              "qEs": "¿Consumo de alcohol? ¿Cantidad y frecuencia?",
+              "q": "Há quanto tempo notou a coloração amarelada da pele/olhos?",
+              "qEs": "¿Hace cuánto notó la coloración amarillenta de la piel/ojos?",
               "type": "input",
-              "ph": "Ex: dose diária, fins de semana, quantidade",
-              "ph2": "Ej: dosis diaria, fines de semana, cantidad"
+              "ph": "Tempo de evolução",
+              "ph2": "Tiempo de evolución"
             },
             {
-              "q": "Medicamentos hepatotóxicos (paracetamol, antibióticos, fitoterápicos)?",
-              "qEs": "¿Medicamentos hepatotóxicos (paracetamol, antibióticos, fitoterapéuticos)?",
+              "q": "Quem notou primeiro — o próprio paciente, familiares ou profissional de saúde?",
+              "qEs": "¿Quién lo notó primero — el propio paciente, familiares o profesional de salud?",
               "type": "input",
-              "ph": "Liste os medicamentos e doses",
-              "ph2": "Liste los medicamentos y dosis"
+              "ph": "Descreva como foi percebido",
+              "ph2": "Describa cómo fue percibido"
             },
             {
-              "q": "Contato com água contaminada, viagens ou contato com hepatite?",
-              "qEs": "¿Contacto con agua contaminada, viajes recientes o contacto con hepatitis?",
+              "q": "Urina escurecida (colúria — cor de \"Coca-Cola\" ou chá forte)?",
+              "qEs": "¿Orina oscura (coluria — color \"Coca-Cola\" o té fuerte)?",
               "type": "yn"
             },
             {
-              "q": "Antecedente de hepatopatia, colelitíase ou cirurgia biliar?",
-              "qEs": "¿Antecedente de hepatopatía, colelitiasis o cirugía biliar?",
+              "q": "Fezes claras/esbranquiçadas (acolia ou hipocolia fecal)?",
+              "qEs": "¿Heces claras/blanquecinas (acolia o hipocolia fecal)?",
+              "type": "yn"
+            },
+            {
+              "q": "Prurido (coceira) generalizado, especialmente noturno?",
+              "qEs": "¿Prurito (picazón) generalizado, especialmente nocturno?",
+              "type": "yn"
+            },
+            {
+              "q": "Dor abdominal associada? Localização e caráter?",
+              "qEs": "¿Dolor abdominal asociado? ¿Localización y carácter?",
               "type": "input",
-              "ph": "Ex: fígado gorduroso, cálculos, colecistectomia",
-              "ph2": "Ej: hígado graso, cálculos, colecistectomía"
+              "ph": "Descreva localização e caráter da dor (se houver)",
+              "ph2": "Describa localización y carácter del dolor (si lo hay)"
+            },
+            {
+              "q": "Febre ou calafrios associados?",
+              "qEs": "¿Fiebre o escalofríos asociados?",
+              "type": "yn"
+            },
+            {
+              "q": "Náuseas, vômitos ou intolerância alimentar (especialmente a gorduras)?",
+              "qEs": "¿Náuseas, vómitos o intolerancia alimentaria (especialmente a las grasas)?",
+              "type": "yn"
+            },
+            {
+              "q": "Perda de peso não intencional? Quanto e em quanto tempo?",
+              "qEs": "¿Pérdida de peso no intencional? ¿Cuánto y en cuánto tiempo?",
+              "type": "input",
+              "ph": "Quilos perdidos e período",
+              "ph2": "Kilos perdidos y período"
+            },
+            {
+              "q": "Distensão abdominal ou aumento do volume do abdome (possível ascite)?",
+              "qEs": "¿Distensión abdominal o aumento del volumen del abdomen (posible ascitis)?",
+              "type": "yn"
+            },
+            {
+              "q": "Hematêmese, melena ou sangramentos fáceis (gengivorragia, equimoses)?",
+              "qEs": "¿Hematemesis, melena o sangrados fáciles (gingivorragia, equimosis)?",
+              "type": "yn"
+            },
+            {
+              "q": "Histórico de doença hepática prévia (hepatite, cirrose, esteatose)?",
+              "qEs": "¿Historial de enfermedad hepática previa (hepatitis, cirrosis, esteatosis)?",
+              "type": "yn"
+            },
+            {
+              "q": "Etilismo — quantidade e tempo de uso de álcool?",
+              "qEs": "¿Etilismo — cantidad y tiempo de consumo de alcohol?",
+              "type": "input",
+              "ph": "Descreva o padrão de consumo de álcool",
+              "ph2": "Describa el patrón de consumo de alcohol"
+            },
+            {
+              "q": "Histórico de transfusões sanguíneas, tatuagens, piercings ou uso de drogas injetáveis (risco de hepatites virais)?",
+              "qEs": "¿Historial de transfusiones sanguíneas, tatuajes, piercings o uso de drogas inyectables (riesgo de hepatitis virales)?",
+              "type": "yn"
+            },
+            {
+              "q": "Viagens recentes para áreas de saneamento precário ou contato com pessoas ictéricas?",
+              "qEs": "¿Viajes recientes a zonas de saneamiento precario o contacto con personas ictéricas?",
+              "type": "yn"
+            },
+            {
+              "q": "Uso recente de medicamentos, fitoterápicos ou suplementos potencialmente hepatotóxicos (paracetamol em altas doses, antibióticos, anticonvulsivantes, anabolizantes)?",
+              "qEs": "¿Uso reciente de medicamentos, fitoterápicos o suplementos potencialmente hepatotóxicos (paracetamol en altas dosis, antibióticos, anticonvulsivantes, anabolizantes)?",
+              "type": "input",
+              "ph": "Liste os medicamentos/substâncias em uso",
+              "ph2": "Liste los medicamentos/sustancias en uso"
+            },
+            {
+              "q": "Histórico pessoal de neoplasia (especialmente digestiva, pancreática ou hepatobiliar)?",
+              "qEs": "¿Historial personal de neoplasia (especialmente digestiva, pancreática o hepatobiliar)?",
+              "type": "yn"
             },
             {
               "q": "Evolução do quadro",
@@ -3820,63 +4019,89 @@ const MOTIVOS = {
       "catEs": "Síntomas Constitucionales",
       "items": [
         {
-          "id": "semio-febre",
+          "id": "febre",
           "name": "Febre",
           "nameEs": "Fiebre",
           "icon": "🌡️",
           "color": "mc-danger",
           "aeaGuide": [
             {
-              "q": "Temperatura máxima registrada?",
-              "qEs": "¿Temperatura máxima registrada?",
-              "type": "input",
-              "ph": "°C — se não medida, descrever como subjetiva",
-              "ph2": "°C — si no medida, describir como subjetiva"
-            },
-            {
-              "q": "Padrão da febre?",
-              "qEs": "¿Patrón de la fiebre?",
+              "q": "Início",
+              "qEs": "Inicio",
               "type": "radio",
               "opts": [
-                "Contínua (não normaliza)",
-                "Remitente (cai mas não normaliza)",
-                "Intermitente (normaliza entre picos)",
-                "Héctica/séptica (oscilações com calafrios intensos)"
-              ],
-              "optsEs": [
-                "Continua (no normaliza)",
-                "Remitente (baja pero no normaliza)",
-                "Intermitente (normaliza entre picos)",
-                "Héctica/séptica (oscilaciones con escalofríos intensos)"
+                "Súbito (calafrio + pico rápido)",
+                "Gradual/insidioso"
               ]
             },
             {
-              "q": "Calafrios e tremores?",
-              "qEs": "¿Escalofríos y temblores?",
+              "q": "Há quantos dias está com febre?",
+              "qEs": "¿Hace cuántos días tiene fiebre?",
+              "type": "input",
+              "ph": "Nº de dias",
+              "ph2": "Nº de días"
+            },
+            {
+              "q": "Temperatura máxima registrada",
+              "qEs": "Temperatura máxima registrada",
+              "type": "input",
+              "ph": "°C",
+              "ph2": "°C"
+            },
+            {
+              "q": "Padrão/curva febril ao longo do dia",
+              "qEs": "Patrón/curva febril a lo largo del día",
+              "type": "radio",
+              "opts": [
+                "Contínua",
+                "Remitente",
+                "Intermitente",
+                "Héctica/Séptica",
+                "Irregular",
+                "Ondulante (recorrente)"
+              ]
+            },
+            {
+              "q": "A febre cedeu em algum momento? Há quanto tempo terminou (se já cessou)?",
+              "qEs": "¿La fiebre cedió en algún momento? ¿Hace cuánto terminó (si ya cesó)?",
+              "type": "input",
+              "ph": "Descreva o término/evolução",
+              "ph2": "Describa el término/evolución"
+            },
+            {
+              "q": "Calafrios / tremores intensos?",
+              "qEs": "¿Escalofríos / temblores intensos?",
               "type": "yn"
             },
             {
-              "q": "Sudorese (especialmente noturna)?",
-              "qEs": "¿Sudoración (especialmente nocturna)?",
+              "q": "Sudorese profusa, principalmente noturna?",
+              "qEs": "¿Sudoración profusa, sobre todo nocturna?",
               "type": "yn"
             },
             {
-              "q": "Focos infecciosos identificados?",
-              "qEs": "¿Focos infecciosos identificados?",
+              "q": "Tratamento com antitérmico? Qual, dose e resposta?",
+              "qEs": "¿Tratamiento con antitérmico? ¿Cuál, dosis y respuesta?",
+              "type": "input",
+              "ph": "Medicamento, dose, resposta",
+              "ph2": "Medicamento, dosis, respuesta"
+            },
+            {
+              "q": "Focos infecciosos (selecione os presentes)",
+              "qEs": "Focos infecciosos (seleccione los presentes)",
               "type": "multi",
               "opts": [
-                "Odinofagia/faringite",
-                "Tosse/dispneia (pulmonar)",
+                "Tosse/dispneia (respiratório)",
+                "Odinofagia/dor de garganta",
                 "Disúria/polaciúria (urinário)",
-                "Dor abdominal (digestivo)",
-                "Secreção ou ferida local"
+                "Diarreia/dor abdominal (digestivo)",
+                "Lesão ou secreção cutânea"
               ],
               "optsEs": [
-                "Odinofagia/faringitis",
-                "Tos/disnea (pulmonar)",
+                "Tos/disnea (respiratorio)",
+                "Odinofagia/dolor de garganta",
                 "Disuria/polaquiuria (urinario)",
-                "Dolor abdominal (digestivo)",
-                "Secreción o herida local"
+                "Diarrea/dolor abdominal (digestivo)",
+                "Lesión o secreción cutánea"
               ]
             },
             {
@@ -3923,23 +4148,46 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Viagens recentes ou contato com animais?",
-              "qEs": "¿Viajes recientes o contacto con animales?",
-              "type": "input",
-              "ph": "Local da viagem / tipo de animal",
-              "ph2": "Lugar del viaje / tipo de animal"
-            },
-            {
-              "q": "Uso de medicamentos ou internação recente?",
-              "qEs": "¿Uso de medicamentos o internación reciente?",
-              "type": "input",
-              "ph": "Liste medicamentos e data de internação",
-              "ph2": "Liste medicamentos y fecha de internación"
-            },
-            {
-              "q": "Imunossupressão ou doenças de base (HIV, neoplasia, corticoides)?",
-              "qEs": "¿Inmunosupresión o enfermedades de base (HIV, neoplasia, corticoides)?",
+              "q": "Linfonodos aumentados/dolorosos (gânglios)?",
+              "qEs": "¿Ganglios linfáticos aumentados/dolorosos?",
               "type": "yn"
+            },
+            {
+              "q": "Rash ou lesões cutâneas associadas?",
+              "qEs": "¿Erupción o lesiones cutáneas asociadas?",
+              "type": "yn"
+            },
+            {
+              "q": "Perda de peso associada?",
+              "qEs": "¿Pérdida de peso asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Viagem recente para área endêmica (malária, dengue, febre amarela, outras)?",
+              "qEs": "¿Viaje reciente a área endémica (malaria, dengue, fiebre amarilla, otras)?",
+              "type": "yn"
+            },
+            {
+              "q": "Contato com pessoas doentes ou animais recentemente?",
+              "qEs": "¿Contacto con personas enfermas o animales recientemente?",
+              "type": "yn"
+            },
+            {
+              "q": "Situação vacinal em dia (incluindo febre amarela, influenza, COVID)?",
+              "qEs": "¿Situación de vacunación al día (incluyendo fiebre amarilla, influenza, COVID)?",
+              "type": "yn"
+            },
+            {
+              "q": "Condições de imunossupressão (HIV, quimioterapia, corticoide crônico, diabetes descompensado, transplante)?",
+              "qEs": "¿Condiciones de inmunosupresión (VIH, quimioterapia, corticoide crónico, diabetes descompensada, trasplante)?",
+              "type": "yn"
+            },
+            {
+              "q": "Uso de outros medicamentos recentes (incluindo antibióticos)?",
+              "qEs": "¿Uso de otros medicamentos recientes (incluyendo antibióticos)?",
+              "type": "input",
+              "ph": "Liste os medicamentos em uso",
+              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -5635,6 +5883,1148 @@ const MOTIVOS = {
             "digest",
             "motor",
             "cardio"
+          ]
+        }
+      ]
+    }
+  ],
+  "respiratorio": [
+    {
+      "cat": "Sintomas Respiratórios",
+      "catEs": "Síntomas Respiratorios",
+      "items": [
+        {
+          "id": "tosse",
+          "name": "Tosse",
+          "nameEs": "Tos",
+          "icon": "😮‍💨",
+          "color": "mc-primary",
+          "aeaGuide": [
+            {
+              "q": "Início e duração",
+              "qEs": "Inicio y duración",
+              "type": "radio",
+              "opts": [
+                "Aguda (< 3 semanas)",
+                "Subaguda (3–8 semanas)",
+                "Crônica (> 8 semanas)"
+              ],
+              "optsEs": [
+                "Aguda (< 3 semanas)",
+                "Subaguda (3–8 semanas)",
+                "Crónica (> 8 semanas)"
+              ]
+            },
+            {
+              "q": "Tipo de tosse",
+              "qEs": "Tipo de tos",
+              "type": "radio",
+              "opts": [
+                "Seca (não produtiva)",
+                "Produtiva/Úmida",
+                "Metálica/rouca"
+              ],
+              "optsEs": [
+                "Seca (no productiva)",
+                "Productiva/Húmeda",
+                "Metálica/ronca"
+              ]
+            },
+            {
+              "q": "Há expectoração (escarro)?",
+              "qEs": "¿Hay expectoración (esputo)?",
+              "type": "yn"
+            },
+            {
+              "q": "Características do escarro (cor/aspecto)",
+              "qEs": "Características del esputo (color/aspecto)",
+              "type": "radio",
+              "opts": [
+                "Mucoide (claro/branco)",
+                "Mucopurulento (amarelado — infecção)",
+                "Purulento (esverdeado/fétido — bacteriana)",
+                "Hemoptoico — com sangue (alarme)",
+                "Seroso/espumoso (rosado — edema pulmonar)"
+              ],
+              "optsEs": [
+                "Mucoide (claro/blanco)",
+                "Mucopurulento (amarillento — infección)",
+                "Purulento (verdoso/fétido — bacteriana)",
+                "Hemoptoico — con sangre (alarma)",
+                "Seroso/espumoso (rosado — edema pulmonar)"
+              ]
+            },
+            {
+              "q": "Hemoptise (sangue no escarro)?",
+              "qEs": "¿Hemoptisis (sangre en el esputo)?",
+              "type": "yn"
+            },
+            {
+              "q": "Momento de predomínio",
+              "qEs": "Momento de predominio",
+              "type": "radio",
+              "opts": [
+                "Constante (diurna)",
+                "Noturna",
+                "Matutina (ao acordar)",
+                "Pós-prandial ou ao deitar"
+              ],
+              "optsEs": [
+                "Constante (diurna)",
+                "Nocturna",
+                "Matutina (al despertar)",
+                "Posprandial o al acostarse"
+              ]
+            },
+            {
+              "q": "Fatores desencadeantes ou agravantes",
+              "qEs": "Factores desencadenantes o agravantes",
+              "type": "multi",
+              "opts": [
+                "Frio/ar gelado",
+                "Exercício físico",
+                "Decúbito (ao deitar)",
+                "Alérgenos (pólen, pelos, ácaros)",
+                "Fumaça/irritantes",
+                "Pós-refeição",
+                "Conversa prolongada",
+                "Inspiração profunda"
+              ],
+              "optsEs": [
+                "Frío/aire frío",
+                "Ejercicio físico",
+                "Decúbito (al acostarse)",
+                "Alérgenos (polvo, pelo, ácaros)",
+                "Humo/irritantes",
+                "Posprandial",
+                "Conversación prolongada",
+                "Inspiración profunda"
+              ]
+            },
+            {
+              "q": "Outros fatores desencadeantes (campo livre)",
+              "qEs": "Otros factores desencadenantes (campo libre)",
+              "type": "input",
+              "ph": "Descreva outros fatores",
+              "ph2": "Describa otros factores"
+            },
+            {
+              "q": "Fatores de alívio",
+              "qEs": "Factores de alivio",
+              "type": "multi",
+              "opts": [
+                "Repouso",
+                "Mudança de posição",
+                "Broncodilatadores/inalador",
+                "Antitussígenos",
+                "Vapor/umidificação",
+                "Nenhum fator identificado"
+              ],
+              "optsEs": [
+                "Reposo",
+                "Cambio de posición",
+                "Broncodilatadores/inhalador",
+                "Antitusígenos",
+                "Vapor/humidificación",
+                "Ningún factor identificado"
+              ]
+            },
+            {
+              "q": "Outros fatores de alívio (campo livre)",
+              "qEs": "Otros factores de alivio (campo libre)",
+              "type": "input",
+              "ph": "Descreva outros fatores",
+              "ph2": "Describa otros factores"
+            },
+            {
+              "q": "Febre associada?",
+              "qEs": "¿Fiebre asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Dispneia associada?",
+              "qEs": "¿Disnea asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Sibilância/chiado?",
+              "qEs": "¿Sibilancias?",
+              "type": "yn"
+            },
+            {
+              "q": "Dor torácica associada?",
+              "qEs": "¿Dolor torácico asociado?",
+              "type": "yn"
+            },
+            {
+              "q": "Coriza, espirros ou gotejamento pós-nasal?",
+              "qEs": "¿Rinorrea, estornudos o goteo posnasal?",
+              "type": "yn"
+            },
+            {
+              "q": "Pirose ou regurgitação (DRGE)?",
+              "qEs": "¿Pirosis o regurgitación (ERGE)?",
+              "type": "yn"
+            },
+            {
+              "q": "Tabagismo — carga tabágica",
+              "qEs": "Tabaquismo — carga tabáquica",
+              "type": "input",
+              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
+              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
+            },
+            {
+              "q": "Uso de IECA (captopril, enalapril, lisinopril)?",
+              "qEs": "¿Uso de IECA (captopril, enalapril, lisinopril)?",
+              "type": "yn"
+            },
+            {
+              "q": "Antecedentes respiratórios",
+              "qEs": "Antecedentes respiratorios",
+              "type": "multi",
+              "opts": [
+                "Asma",
+                "DPOC",
+                "Tuberculose prévia",
+                "Bronquiectasia",
+                "Nenhum antecedente relevante"
+              ],
+              "optsEs": [
+                "Asma",
+                "EPOC",
+                "Tuberculosis previa",
+                "Bronquiectasia",
+                "Sin antecedente relevante"
+              ]
+            },
+            {
+              "q": "Exposição ocupacional ou ambiental",
+              "qEs": "Exposición ocupacional o ambiental",
+              "type": "multi",
+              "opts": [
+                "Poeiras (madeira, farinha, cimento)",
+                "Fumaças e gases tóxicos",
+                "Animais/penas/pelos",
+                "Fibras minerais (amianto, sílica)",
+                "Fungos/mofo em ambiente fechado",
+                "Sem exposição identificada"
+              ],
+              "optsEs": [
+                "Polvos (madera, harina, cemento)",
+                "Humos y gases tóxicos",
+                "Animales/plumas/pelaje",
+                "Fibras minerales (amianto, sílice)",
+                "Hongos/moho en ambientes cerrados",
+                "Sin exposición identificada"
+              ]
+            },
+            {
+              "q": "Perda de peso não intencional?",
+              "qEs": "¿Pérdida de peso no intencional?",
+              "type": "yn"
+            },
+            {
+              "q": "Sudorese noturna?",
+              "qEs": "¿Sudoración nocturna?",
+              "type": "yn"
+            },
+            {
+              "q": "Situação vacinal (influenza, pneumocócica, coqueluche)?",
+              "qEs": "¿Estado vacunal (influenza, neumocócica, tos ferina)?",
+              "type": "yn"
+            },
+            {
+              "q": "Contato com pessoa doente ou caso suspeito de TB?",
+              "qEs": "¿Contacto con persona enferma o caso sospechoso de TB?",
+              "type": "yn"
+            },
+            {
+              "q": "Evolução do quadro",
+              "qEs": "Evolución del cuadro",
+              "type": "radio",
+              "opts": [
+                "Progressiva (piora contínua)",
+                "Flutuante (piora e melhora)",
+                "Estável (sem mudança)",
+                "Regressiva (melhorando)"
+              ],
+              "optsEs": [
+                "Progresiva (empeoramiento continuo)",
+                "Fluctuante (empeora y mejora)",
+                "Estable (sin cambio)",
+                "Regresiva (mejorando)"
+              ]
+            },
+            {
+              "q": "O que motivou buscar atendimento hoje?",
+              "qEs": "¿Qué motivó buscar atención hoy?",
+              "type": "input",
+              "ph": "Descreva o que motivou vir hoje",
+              "ph2": "Describa qué motivó venir hoy"
+            }
+          ],
+          "rasHighlight": [
+            "resp",
+            "cabeca"
+          ]
+        },
+        {
+          "id": "expectoracao",
+          "name": "Expectoração",
+          "nameEs": "Expectoración",
+          "icon": "🫧",
+          "color": "mc-primary",
+          "aeaGuide": [
+            {
+              "q": "Início e duração",
+              "qEs": "Inicio y duración",
+              "type": "radio",
+              "opts": [
+                "Aguda (< 3 semanas)",
+                "Subaguda (3–8 semanas)",
+                "Crônica (> 8 semanas)"
+              ],
+              "optsEs": [
+                "Aguda (< 3 semanas)",
+                "Subaguda (3–8 semanas)",
+                "Crónica (> 8 semanas)"
+              ]
+            },
+            {
+              "q": "Características do escarro (aspecto/cor)",
+              "qEs": "Características del esputo (aspecto/color)",
+              "type": "radio",
+              "opts": [
+                "Seroso — líquido, transparente/espumoso (edema pulmonar)",
+                "Mucoide — claro/branco, viscoso (bronquite crônica, asma)",
+                "Mucopurulento — amarelado (infecção bacteriana inicial)",
+                "Purulento — esverdeado/fétido (bacteriana estabelecida)",
+                "Sanguinolento/hemoptoico — com sangue",
+                "Herrumbroso (enferrujado) — achocolatado (pneumonia pneumocócica)",
+                "Numulares (moedas) — coágulos esféricos (TB, bronquiectasia)"
+              ],
+              "optsEs": [
+                "Seroso — líquido, transparente/espumoso (edema pulmonar)",
+                "Mucoide — claro/blanco, viscoso (bronquitis crónica, asma)",
+                "Mucopurulento — amarillento (infección bacteriana inicial)",
+                "Purulento — verdoso/fétido (bacteriana establecida)",
+                "Sanguinolento/hemoptoico — con sangre",
+                "Herrumbroso (oxidado) — achocolatado (neumonía neumocócica)",
+                "Numular (monedas) — coágulos esféricos (TB, bronquiectasia)"
+              ]
+            },
+            {
+              "q": "Volume diário estimado de escarro",
+              "qEs": "Volumen diario estimado de esputo",
+              "type": "radio",
+              "opts": [
+                "Escasso (< 10 mL/dia — colher de chá)",
+                "Moderado (10–150 mL/dia — meia xícara)",
+                "Abundante (> 150 mL/dia — bronquiectasia, abscesso)",
+                "Vômica — eliminação súbita > 300 mL (ruptura de cavidade)"
+              ],
+              "optsEs": [
+                "Escaso (< 10 mL/día — cucharadita)",
+                "Moderado (10–150 mL/día — media taza)",
+                "Abundante (> 150 mL/día — bronquiectasia, absceso)",
+                "Vómica — eliminación súbita > 300 mL (rotura de cavidad)"
+              ]
+            },
+            {
+              "q": "Odor do escarro",
+              "qEs": "Olor del esputo",
+              "type": "radio",
+              "opts": [
+                "Inodoro",
+                "Fétido/pútrido (anaeróbios — abscesso, bronquiectasia infectada)",
+                "Sem referência pelo paciente"
+              ],
+              "optsEs": [
+                "Inodoro",
+                "Fétido/pútrido (anaerobios — absceso, bronquiectasia infectada)",
+                "Sin referencia por el paciente"
+              ]
+            },
+            {
+              "q": "Momento de maior produção",
+              "qEs": "Momento de mayor producción",
+              "type": "radio",
+              "opts": [
+                "Matutino (ao acordar) — bronquiectasia, bronquite crônica",
+                "Noturno",
+                "Contínuo ao longo do dia",
+                "Postural (muda com posição) — abscesso, bronquiectasia"
+              ],
+              "optsEs": [
+                "Matutino (al despertar) — bronquiectasia, bronquitis crónica",
+                "Nocturno",
+                "Continuo a lo largo del día",
+                "Postural (cambia con la posición) — absceso, bronquiectasia"
+              ]
+            },
+            {
+              "q": "Variação com postura corporal?",
+              "qEs": "¿Varía con la postura corporal?",
+              "type": "yn"
+            },
+            {
+              "q": "Há sangue no escarro (hemoptise)?",
+              "qEs": "¿Hay sangre en el esputo (hemoptisis)?",
+              "type": "yn"
+            },
+            {
+              "q": "Tosse associada?",
+              "qEs": "¿Tos asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Febre associada?",
+              "qEs": "¿Fiebre asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Dispneia associada?",
+              "qEs": "¿Disnea asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Dor torácica pleurítica?",
+              "qEs": "¿Dolor torácico pleurítico?",
+              "type": "yn"
+            },
+            {
+              "q": "Antecedentes respiratórios relevantes",
+              "qEs": "Antecedentes respiratorios relevantes",
+              "type": "multi",
+              "opts": [
+                "Bronquiectasia",
+                "DPOC / Bronquite crônica",
+                "Asma",
+                "Tuberculose prévia",
+                "Abscesso pulmonar",
+                "Fibrose cística",
+                "Nenhum antecedente relevante"
+              ],
+              "optsEs": [
+                "Bronquiectasia",
+                "EPOC / Bronquitis crónica",
+                "Asma",
+                "Tuberculosis previa",
+                "Absceso pulmonar",
+                "Fibrosis quística",
+                "Sin antecedente relevante"
+              ]
+            },
+            {
+              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
+              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
+              "type": "input",
+              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
+              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
+            },
+            {
+              "q": "Perda de peso não intencional ou sudorese noturna?",
+              "qEs": "¿Pérdida de peso no intencional o sudoración nocturna?",
+              "type": "yn"
+            },
+            {
+              "q": "Evolução do quadro",
+              "qEs": "Evolución del cuadro",
+              "type": "radio",
+              "opts": [
+                "Progressiva (piora contínua)",
+                "Flutuante (piora e melhora)",
+                "Estável (sem mudança)",
+                "Regressiva (melhorando)"
+              ],
+              "optsEs": [
+                "Progresiva (empeoramiento continuo)",
+                "Fluctuante (empeora y mejora)",
+                "Estable (sin cambio)",
+                "Regresiva (mejorando)"
+              ]
+            },
+            {
+              "q": "O que motivou buscar atendimento hoje?",
+              "qEs": "¿Qué motivó buscar atención hoy?",
+              "type": "input",
+              "ph": "Descreva o que motivou vir hoje",
+              "ph2": "Describa qué motivó venir hoy"
+            }
+          ],
+          "rasHighlight": [
+            "resp"
+          ]
+        },
+        {
+          "id": "hemoptise",
+          "name": "Hemoptise",
+          "nameEs": "Hemoptisis",
+          "icon": "🩸",
+          "color": "mc-danger",
+          "aeaGuide": [
+            {
+              "q": "Confirmação: sangue é de origem respiratória?",
+              "qEs": "Confirmación: ¿la sangre es de origen respiratorio?",
+              "type": "radio",
+              "opts": [
+                "Sim — escarrado com tosse, espumoso, rutilante (vivo)",
+                "Possível epistaxe deglutida — sangue pelo nariz/garganta",
+                "Possível hematêmese — vômito com sangue escuro/borra de café",
+                "Incerto"
+              ],
+              "optsEs": [
+                "Sí — expectorado con tos, espumoso, rutilante (vivo)",
+                "Posible epistaxis deglutida — sangre por nariz/garganta",
+                "Posible hematemesis — vómito con sangre oscura/borra de café",
+                "Incierto"
+              ]
+            },
+            {
+              "q": "Volume estimado de sangue expectorado",
+              "qEs": "Volumen estimado de sangre expectorada",
+              "type": "radio",
+              "opts": [
+                "Laivos (estrias) — hemoptise mínima / escarro hemoptoico",
+                "< 250 mL/24h — hemoptise leve (não compromete via aérea)",
+                "250–500 mL/24h — hemoptise moderada (vigilância intensiva)",
+                "500–600 mL/24h — hemoptise grave (risco de asfixia)",
+                "> 600 mL/24h — hemoptise fulminante (emergência)"
+              ],
+              "optsEs": [
+                "Estrías — hemoptisis mínima / esputo hemoptoico",
+                "< 250 mL/24h — hemoptisis leve (no compromete la vía aérea)",
+                "250–500 mL/24h — hemoptisis moderada (vigilancia intensiva)",
+                "500–600 mL/24h — hemoptisis grave (riesgo de asfixia)",
+                "> 600 mL/24h — hemoptisis fulminante (emergencia)"
+              ]
+            },
+            {
+              "q": "Início do episódio atual",
+              "qEs": "Inicio del episodio actual",
+              "type": "radio",
+              "opts": [
+                "Súbito (sem aviso)",
+                "Precedido de tosse ou esforço",
+                "Gradual — escarro cada vez mais sanguinolento",
+                "Episódios recorrentes"
+              ],
+              "optsEs": [
+                "Súbito (sin aviso)",
+                "Precedido de tos o esfuerzo",
+                "Gradual — esputo progresivamente sanguinolento",
+                "Episodios recurrentes"
+              ]
+            },
+            {
+              "q": "Cor do sangue expectorado",
+              "qEs": "Color de la sangre expectorada",
+              "type": "radio",
+              "opts": [
+                "Vermelho vivo / rutilante",
+                "Rosado/espumoso (edema pulmonar)",
+                "Escuro/acastanhado",
+                "Misto (variável)"
+              ],
+              "optsEs": [
+                "Rojo vivo / rutilante",
+                "Rosado/espumoso (edema pulmonar)",
+                "Oscuro/achocolatado",
+                "Mixto (variable)"
+              ]
+            },
+            {
+              "q": "Tosse precedendo ou acompanhando?",
+              "qEs": "¿Tos precediendo o acompañando?",
+              "type": "yn"
+            },
+            {
+              "q": "Dor torácica pleurítica (piora à respiração/tosse)?",
+              "qEs": "¿Dolor torácico pleurítico (empeora con la respiración/tos)?",
+              "type": "yn"
+            },
+            {
+              "q": "Dispneia associada?",
+              "qEs": "¿Disnea asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Febre associada?",
+              "qEs": "¿Fiebre asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Sintomas constitucionais (perda de peso, sudorese noturna, fadiga)?",
+              "qEs": "¿Síntomas constitucionales (pérdida de peso, sudoración nocturna, fatiga)?",
+              "type": "yn"
+            },
+            {
+              "q": "Antecedentes relevantes",
+              "qEs": "Antecedentes relevantes",
+              "type": "multi",
+              "opts": [
+                "Tuberculose prévia ou contato TB",
+                "Neoplasia pulmonar (diagnóstico ou suspeita)",
+                "Bronquiectasia",
+                "Estenose mitral / cardiopatia",
+                "Tromboembolismo pulmonar (TEP)",
+                "Insuficiência cardíaca",
+                "Bronquite crônica / DPOC",
+                "Coagulopatia / uso de anticoagulante",
+                "Nenhum antecedente relevante"
+              ],
+              "optsEs": [
+                "Tuberculosis previa o contacto TB",
+                "Neoplasia pulmonar (diagnóstico o sospecha)",
+                "Bronquiectasia",
+                "Estenosis mitral / cardiopatía",
+                "Tromboembolismo pulmonar (TEP)",
+                "Insuficiencia cardíaca",
+                "Bronquitis crónica / EPOC",
+                "Coagulopatía / uso de anticoagulante",
+                "Sin antecedente relevante"
+              ]
+            },
+            {
+              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
+              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
+              "type": "input",
+              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
+              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
+            },
+            {
+              "q": "Uso de anticoagulantes ou antiagregantes?",
+              "qEs": "¿Uso de anticoagulantes o antiagregantes?",
+              "type": "yn"
+            },
+            {
+              "q": "Trauma torácico recente?",
+              "qEs": "¿Trauma torácico reciente?",
+              "type": "yn"
+            },
+            {
+              "q": "Episódios anteriores de hemoptise — frequência?",
+              "qEs": "¿Episodios previos de hemoptisis — frecuencia?",
+              "type": "input",
+              "ph": "Descreva frequência e volume de episódios anteriores",
+              "ph2": "Describa frecuencia y volumen de episodios anteriores"
+            },
+            {
+              "q": "O que motivou buscar atendimento hoje?",
+              "qEs": "¿Qué motivó buscar atención hoy?",
+              "type": "input",
+              "ph": "Descreva o que motivou vir hoje",
+              "ph2": "Describa qué motivó venir hoy"
+            }
+          ],
+          "rasHighlight": [
+            "resp",
+            "cardio"
+          ]
+        },
+        {
+          "id": "dispneia",
+          "name": "Dispneia",
+          "nameEs": "Disnea",
+          "icon": "🫁",
+          "color": "mc-primary",
+          "aeaGuide": [
+            {
+              "q": "Início",
+              "qEs": "Inicio",
+              "type": "radio",
+              "opts": [
+                "Brusco/Súbito (minutos)",
+                "Agudo (horas a dias)",
+                "Progressivo/crônico (semanas a meses)",
+                "Crônico com piora aguda"
+              ]
+            },
+            {
+              "q": "Intensidade (escala mMRC)",
+              "qEs": "Intensidad (escala mMRC)",
+              "type": "radio",
+              "opts": [
+                "Grau 0 — só com exercício intenso",
+                "Grau 1 — ao apressar o passo/subir ladeira",
+                "Grau 2 — anda mais devagar que pessoas da idade",
+                "Grau 3 — para para respirar após ~100m",
+                "Grau 4 — ao vestir-se / não sai de casa"
+              ]
+            },
+            {
+              "q": "Relação com esforço físico",
+              "qEs": "Relación con el esfuerzo físico",
+              "type": "radio",
+              "opts": [
+                "Aos grandes esforços",
+                "Aos médios esforços",
+                "Aos pequenos esforços",
+                "Em repouso"
+              ]
+            },
+            {
+              "q": "Relação com decúbito",
+              "qEs": "Relación con decúbito",
+              "type": "radio",
+              "opts": [
+                "Ortopneia (piora deitado)",
+                "Platipneia (melhora deitado)",
+                "Sem relação"
+              ]
+            },
+            {
+              "q": "Ortopneia — quantos travesseiros usa para dormir?",
+              "qEs": "Ortopnea — ¿cuántas almohadas usa para dormir?",
+              "type": "input",
+              "ph": "Número de travesseiros",
+              "ph2": "Número de almohadas"
+            },
+            {
+              "q": "Dispneia paroxística noturna (acorda sufocado)?",
+              "qEs": "¿Disnea paroxística nocturna (se despierta sofocado)?",
+              "type": "yn"
+            },
+            {
+              "q": "Fatores desencadeantes (esforço, frio, alérgenos, posição, estresse, infecções)?",
+              "qEs": "¿Factores desencadenantes (esfuerzo, frío, alérgenos, posición, estrés, infecciones)?",
+              "type": "input",
+              "ph": "Descreva os fatores desencadeantes",
+              "ph2": "Describa los factores desencadenantes"
+            },
+            {
+              "q": "Chiado no peito / Sibilância?",
+              "qEs": "¿Silbido en el pecho?",
+              "type": "yn"
+            },
+            {
+              "q": "Tosse associada?",
+              "qEs": "¿Tos asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Tosse — desde quando?",
+              "qEs": "Tos — ¿desde cuándo?",
+              "type": "radio",
+              "opts": [
+                "Aguda (< 3 semanas)",
+                "Subaguda (3–8 semanas)",
+                "Crônica (> 8 semanas)"
+              ],
+              "optsEs": [
+                "Aguda (< 3 semanas)",
+                "Subaguda (3–8 semanas)",
+                "Crónica (> 8 semanas)"
+              ]
+            },
+            {
+              "q": "Tosse — seca ou produtiva?",
+              "qEs": "Tos — ¿seca o productiva?",
+              "type": "radio",
+              "opts": [
+                "Seca (não produtiva)",
+                "Produtiva — com escarro"
+              ],
+              "optsEs": [
+                "Seca (no productiva)",
+                "Productiva — con esputo"
+              ]
+            },
+            {
+              "q": "Há expectoração?",
+              "qEs": "¿Hay expectoración?",
+              "type": "yn"
+            },
+            {
+              "q": "Hemoptise?",
+              "qEs": "¿Hemoptisis?",
+              "type": "yn"
+            },
+            {
+              "q": "Predomínio noturno da tosse?",
+              "qEs": "¿Predominio nocturno de la tos?",
+              "type": "yn"
+            },
+            {
+              "q": "Dor torácica associada?",
+              "qEs": "¿Dolor torácico asociado?",
+              "type": "yn"
+            },
+            {
+              "q": "Edema de membros inferiores associado?",
+              "qEs": "¿Edema de miembros inferiores asociado?",
+              "type": "yn"
+            },
+            {
+              "q": "Palpitações associadas?",
+              "qEs": "¿Palpitaciones asociadas?",
+              "type": "yn"
+            },
+            {
+              "q": "Febre associada?",
+              "qEs": "¿Fiebre asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Antecedentes cardíacos (ICC, valvopatia, IAM) ou pulmonares (asma, DPOC, fibrose)?",
+              "qEs": "¿Antecedentes cardíacos (ICC, valvulopatía, IAM) o pulmonares (asma, EPOC, fibrosis)?",
+              "type": "yn"
+            },
+            {
+              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
+              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
+              "type": "input",
+              "ph": "Anos-maço",
+              "ph2": "Años-paquete"
+            },
+            {
+              "q": "Exposições ocupacionais ou alérgenos (poeiras, fumaças, animais, mofo)?",
+              "qEs": "¿Exposiciones ocupacionales o alérgenos (polvos, humos, animales, moho)?",
+              "type": "yn"
+            },
+            {
+              "q": "Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?",
+              "qEs": "¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?",
+              "type": "input",
+              "ph": "Descreva episódios anteriores e tratamento",
+              "ph2": "Describa episodios anteriores y tratamiento"
+            },
+            {
+              "q": "Uso de medicamentos (broncodilatadores, diuréticos, anti-hipertensivos, IECA)?",
+              "qEs": "¿Uso de medicamentos (broncodilatadores, diuréticos, antihipertensivos, IECA)?",
+              "type": "input",
+              "ph": "Liste os medicamentos em uso",
+              "ph2": "Liste los medicamentos en uso"
+            },
+            {
+              "q": "Evolução do quadro",
+              "qEs": "Evolución del cuadro",
+              "type": "radio",
+              "opts": [
+                "Progressiva (piora contínua)",
+                "Flutuante (piora e melhora)",
+                "Estável (sem mudança)",
+                "Regressiva (melhorando)"
+              ],
+              "optsEs": [
+                "Progresiva (empeoramiento continuo)",
+                "Fluctuante (empeora y mejora)",
+                "Estable (sin cambio)",
+                "Regresiva (mejorando)"
+              ]
+            },
+            {
+              "q": "O que motivou buscar atendimento hoje?",
+              "qEs": "¿Qué motivó buscar atención hoy?",
+              "type": "input",
+              "ph": "Descreva o que motivou vir hoje",
+              "ph2": "Describa qué motivó venir hoy"
+            }
+          ],
+          "rasHighlight": [
+            "resp",
+            "cardio"
+          ]
+        },
+        {
+          "id": "dor-toracica",
+          "name": "Dor Torácica",
+          "nameEs": "Dolor Torácico",
+          "icon": "❤️",
+          "color": "mc-danger",
+          "isPain": true,
+          "aeaGuide": [
+            {
+              "q": "Localização da dor",
+              "qEs": "Localización del dolor",
+              "type": "radio",
+              "opts": [
+                "Retroesternal",
+                "Precordial",
+                "Lateral/pleural",
+                "Epigástrica",
+                "Difusa"
+              ],
+              "optsEs": [
+                "Retroesternal",
+                "Precordial",
+                "Lateral/pleural",
+                "Epigástrico",
+                "Difuso"
+              ]
+            },
+            {
+              "q": "Irradiação",
+              "qEs": "Irradiación",
+              "type": "radio",
+              "opts": [
+                "Membro superior esquerdo",
+                "Mandíbula/pescoço",
+                "Ombro direito",
+                "Dorso/interescapular",
+                "Sem irradiação"
+              ],
+              "optsEs": [
+                "Miembro superior izquierdo",
+                "Mandíbula/cuello",
+                "Hombro derecho",
+                "Dorso/interescapular",
+                "Sin irradiación"
+              ]
+            },
+            {
+              "q": "Tipo/caráter da dor",
+              "qEs": "Tipo/carácter del dolor",
+              "type": "radio",
+              "opts": [
+                "Em aperto/opressão",
+                "Em queimação",
+                "Em pontada/agulhada",
+                "Lancinante/dilacerante",
+                "Em peso"
+              ],
+              "optsEs": [
+                "Opresivo",
+                "Ardor/quemante",
+                "Punzante",
+                "Lancinante/desgarrante",
+                "Pesadez"
+              ]
+            },
+            {
+              "q": "Intensidade (EVA 0-10)",
+              "qEs": "Intensidad (EVA 0-10)",
+              "type": "input",
+              "ph": "0 a 10",
+              "ph2": "0 a 10"
+            },
+            {
+              "q": "Duração do episódio",
+              "qEs": "Duración del episodio",
+              "type": "radio",
+              "opts": [
+                "Segundos",
+                "Minutos (<20min)",
+                "Mais de 20-30 minutos",
+                "Persistente/contínua"
+              ],
+              "optsEs": [
+                "Segundos",
+                "Minutos (<20min)",
+                "Más de 20-30 minutos",
+                "Persistente/continuo"
+              ]
+            },
+            {
+              "q": "Início",
+              "qEs": "Inicio",
+              "type": "radio",
+              "opts": [
+                "Súbito (segundos)",
+                "Gradual/progressivo"
+              ],
+              "optsEs": [
+                "Súbito (segundos)",
+                "Gradual/progresivo"
+              ]
+            },
+            {
+              "q": "Relação com esforço",
+              "qEs": "Relación con esfuerzo",
+              "type": "radio",
+              "opts": [
+                "Piora com esforço",
+                "Melhora com esforço",
+                "Sem relação com esforço",
+                "Em repouso"
+              ],
+              "optsEs": [
+                "Empeora con el esfuerzo",
+                "Mejora con el esfuerzo",
+                "Sin relación con el esfuerzo",
+                "En reposo"
+              ]
+            },
+            {
+              "q": "Relação com a respiração ou tosse (dor pleurítica)?",
+              "qEs": "¿Relación con la respiración o la tos (dolor pleurítico)?",
+              "type": "yn"
+            },
+            {
+              "q": "Relação com posição ou alimentação",
+              "qEs": "Relación con la posición o la alimentación",
+              "type": "radio",
+              "opts": [
+                "Piora ao deitar-se",
+                "Melhora ao sentar-se/inclinar para frente",
+                "Relação com alimentação (piora/melhora pós-prandial)",
+                "Piora ao engolir",
+                "Sem relação"
+              ],
+              "optsEs": [
+                "Empeora al acostarse",
+                "Mejora al sentarse/inclinarse hacia adelante",
+                "Relación con la alimentación (empeora/mejora posprandial)",
+                "Empeora al tragar",
+                "Sin relación"
+              ]
+            },
+            {
+              "q": "Alivia com nitroglicerina?",
+              "qEs": "¿Alivia con nitroglicerina?",
+              "type": "yn"
+            },
+            {
+              "q": "Evolução desde o início (piorando, estável, melhorando)?",
+              "qEs": "¿Evolución desde el inicio (empeorando, estable, mejorando)?",
+              "type": "radio",
+              "opts": [
+                "Piorando progressivamente",
+                "Estável",
+                "Melhorando",
+                "Em crises recorrentes"
+              ]
+            },
+            {
+              "q": "Palpitações associadas?",
+              "qEs": "¿Palpitaciones asociadas?",
+              "type": "yn"
+            },
+            {
+              "q": "Dispneia associada?",
+              "qEs": "¿Disnea asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Sudorese fria associada?",
+              "qEs": "¿Sudoración fría asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Náuseas ou vômitos associados?",
+              "qEs": "¿Náuseas o vómitos asociados?",
+              "type": "yn"
+            },
+            {
+              "q": "Síncope ou pré-síncope associada?",
+              "qEs": "¿Síncope o presíncope asociado?",
+              "type": "yn"
+            },
+            {
+              "q": "Febre?",
+              "qEs": "¿Fiebre?",
+              "type": "yn"
+            },
+            {
+              "q": "Tosse associada?",
+              "qEs": "¿Tos asociada?",
+              "type": "yn"
+            },
+            {
+              "q": "Tosse — seca ou produtiva?",
+              "qEs": "Tos — ¿seca o productiva?",
+              "type": "radio",
+              "opts": [
+                "Seca (não produtiva)",
+                "Produtiva — com escarro"
+              ],
+              "optsEs": [
+                "Seca (no productiva)",
+                "Productiva — con esputo"
+              ]
+            },
+            {
+              "q": "Há expectoração?",
+              "qEs": "¿Hay expectoración?",
+              "type": "yn"
+            },
+            {
+              "q": "Hemoptise?",
+              "qEs": "¿Hemoptisis?",
+              "type": "yn"
+            },
+            {
+              "q": "Dor torácica em \"facada\" no dorso/interescapular, com diferença de pressão arterial entre os braços (suspeita de dissecção aórtica) — sinal de alarme?",
+              "qEs": "¿Dolor torácico \"como puñalada\" en dorso/interescapular, con diferencia de presión arterial entre brazos (sospecha de disección aórtica) — signo de alarma?",
+              "type": "yn"
+            },
+            {
+              "q": "Antecedentes cardiovasculares (IAM, angina, revascularização, arritmias)?",
+              "qEs": "¿Antecedentes cardiovasculares (IAM, angina, revascularización, arritmias)?",
+              "type": "yn"
+            },
+            {
+              "q": "Fatores de risco cardiovascular (HAS, diabetes, dislipidemia, tabagismo, obesidade, história familiar)?",
+              "qEs": "¿Factores de riesgo cardiovascular (HTA, diabetes, dislipidemia, tabaquismo, obesidad, antecedentes familiares)?",
+              "type": "yn"
+            },
+            {
+              "q": "Uso de medicamentos (anticoagulantes, antiagregantes, anti-hipertensivos, estatinas)?",
+              "qEs": "¿Uso de medicamentos (anticoagulantes, antiagregantes, antihipertensivos, estatinas)?",
+              "type": "input",
+              "ph": "Liste os medicamentos em uso",
+              "ph2": "Liste los medicamentos en uso"
+            },
+            {
+              "q": "Evolução do quadro",
+              "qEs": "Evolución del cuadro",
+              "type": "radio",
+              "opts": [
+                "Progressiva (piora contínua)",
+                "Flutuante (piora e melhora)",
+                "Estável (sem mudança)",
+                "Regressiva (melhorando)"
+              ],
+              "optsEs": [
+                "Progresiva (empeoramiento continuo)",
+                "Fluctuante (empeora y mejora)",
+                "Estable (sin cambio)",
+                "Regresiva (mejorando)"
+              ]
+            },
+            {
+              "q": "O que motivou buscar atendimento hoje?",
+              "qEs": "¿Qué motivó buscar atención hoy?",
+              "type": "input",
+              "ph": "Descreva o que motivou vir hoje",
+              "ph2": "Describa qué motivó venir hoy"
+            }
+          ],
+          "rasHighlight": [
+            "resp",
+            "cardio"
+          ],
+          "ddx": [
+            [
+              "IAM",
+              "Opressão, irradiação MSE, sudorese, >20min",
+              "Sem alívio NTG, enzimas ↑"
+            ],
+            [
+              "Angina instável",
+              "Opressão típica, <20min",
+              "Alivia NTG, enzimas normais"
+            ],
+            [
+              "Dissecção aórtica",
+              "Desgarrante, dorso, HTA",
+              "Assimetria pulsos"
+            ],
+            [
+              "TEP",
+              "Pleurítica, dispneia súbita",
+              "SpO2 ↓, TVP"
+            ],
+            [
+              "Pericardite",
+              "Melhora sentado, atrito",
+              "Difusa, ECG ST difuso"
+            ],
+            [
+              "DRGE",
+              "Queimação, pós-prandial",
+              "Melhora IBP/antiácido"
+            ]
           ]
         }
       ]
@@ -12920,9 +14310,4 @@ const GUIDE_CONTENT = {
 };
 
 // Aliases: motivos que herdam o guia clínico de outro (definido uma única vez)
-GUIDE_CONTENT["semio-disnea"] = GUIDE_CONTENT["dispneia"];
-GUIDE_CONTENT["semio-edema"] = GUIDE_CONTENT["edema"];
-GUIDE_CONTENT["semio-febre"] = GUIDE_CONTENT["febre"];
-GUIDE_CONTENT["semio-ictericia"] = GUIDE_CONTENT["ictericia"];
 GUIDE_CONTENT["semio-peso"] = GUIDE_CONTENT["perda-peso"];
-GUIDE_CONTENT["semio-tosse"] = GUIDE_CONTENT["tosse"];

@@ -3,7 +3,7 @@
 //       require('./build').assemble()  → retorna as strings geradas (sem gravar)  [usado pelo verify.sh]
 const fs=require('fs'), path=require('path');
 const ROOT=path.resolve(__dirname,'..');
-const ESP_ORDER=['clinica','semiologia','cirurgia']; // ordem das especialidades no grid
+const ESP_ORDER=['clinica','semiologia','cirurgia','respiratorio']; // ordem das especialidades no grid
 
 function assemble(){
   const reg={motivos:{}, esp:{}, ras:null};

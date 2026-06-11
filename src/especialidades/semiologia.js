@@ -5,8 +5,8 @@ AM.especialidade("semiologia", [
     "catEs": "Dolor y Disnea",
     "items": [
       "semio-dor",
-      "semio-disnea",
-      "semio-tosse"
+      "dispneia",
+      "tosse"
     ]
   },
   {
@@ -14,15 +14,15 @@ AM.especialidade("semiologia", [
     "catEs": "Signos Clínicos",
     "items": [
       "semio-cianose",
-      "semio-edema",
-      "semio-ictericia"
+      "edema",
+      "ictericia"
     ]
   },
   {
     "cat": "Sintomas Constitucionais",
     "catEs": "Síntomas Constitucionales",
     "items": [
-      "semio-febre",
+      "febre",
       "semio-astenia",
       "semio-peso"
     ]

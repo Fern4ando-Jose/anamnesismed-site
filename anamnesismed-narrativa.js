@@ -509,7 +509,7 @@ function gerarNarrativaAEA_tosse(ans, lng){
   }
   return texto;
 }
-var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia, 'tosse': gerarNarrativaAEA_tosse, 'semio-tosse': gerarNarrativaAEA_tosse };
+var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia, 'tosse': gerarNarrativaAEA_tosse };
 
 function gerarNarrativaAEA(mObj, lng, idPfx, opts){
   if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length) return null;
