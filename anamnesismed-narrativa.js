@@ -316,12 +316,19 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   if(B.DUREP) c.push((pt?'com duração de cada episódio de ':'con duración de cada episodio de ')+low(B.DUREP));
   if(B.FREQ.length) c.push((pt?'de padrão ':'de patrón ')+join(B.FREQ.map(low),pt?' e ':' y '));
   function normEvol(e){
-    e=low(e).replace(/\s*\(.*\)$/,'');
+    // remove parêntese final e um eventual "desde o início" embutido (o frame já adiciona um)
+    e=low(e).replace(/\s*\(.*\)$/,'').replace(/\s+desde (o|el) in[íi]cio.*$/,'').trim();
     if(/pior|empeor|progres/.test(e)) return pt?'piora progressiva':'empeoramiento progresivo';
+    if(/melhor|mejor|regres/.test(e)) return pt?'melhora gradual':'mejoría gradual';
     if(/est[áa]vel|estable/.test(e)) return pt?'curso estável':'curso estable';
-    if(/melhor|mejor/.test(e)) return pt?'melhora gradual':'mejoría gradual';
     if(/crise|crisis/.test(e)) return pt?'curso em crises':'curso en crisis';
-    return e;
+    if(/flutu|fluct|intermit/.test(e)) return pt?'curso flutuante':'curso fluctuante';
+    if(/migrat/.test(e)) return pt?'curso migratório':'curso migratorio';
+    if(/aditiv/.test(e)) return pt?'padrão aditivo':'patrón aditivo';
+    if(/epis[óo]dic|recorrent|recurrent/.test(e)) return pt?'curso recorrente':'curso recurrente';
+    if(/ascendent/.test(e)) return pt?'progressão ascendente':'progresión ascendente';
+    if(/migrou|mudou de car|cambi[óo] de car/.test(e)) return pt?'migração e mudança de caráter da dor':'migración y cambio de carácter del dolor';
+    return (pt?'curso ':'curso ')+e;   // fallback: prefixa "curso" p/ virar substantivo (ex.: "curso súbito e intenso")
   }
   var leadN = isPain ? (pt?'dor ':'dolor ') : (pt?'quadro ':'cuadro ');
   var caracSent='';
