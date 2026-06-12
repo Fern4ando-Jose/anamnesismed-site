@@ -1730,10 +1730,10 @@ function onMCInput(val){
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
     var specLabel = m._spec==='clinica'?(lang==='pt'?'Clínica Médica':'Clínica Médica'):(lang==='pt'?'Cirurgia Geral':'Cirugía General');
-    return '<div onclick="selectMotivoFromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
-      +'<span style="flex-shrink:0;color:var(--primary)">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>'
-      +'<div><div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'
-      +'<div style="font-size:10px;color:var(--muted)">'+specLabel+'</div></div>'
+    return '<div onclick="selectMotivoFromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
+      +'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>'
+      +'<div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'
+      +'<div style="font-size:10px;color:var(--muted);line-height:1.3;margin-top:1px">'+specLabel+'</div></div>'
       +'</div>';
   }).join('');
   // Position relative to parent
@@ -1800,7 +1800,7 @@ function mcbSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo2FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary)">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
+    return '<div onclick="selectMotivo2FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'+'</div>';
   }).join('');
   var inp = document.getElementById('mc-b');
   sug.style.display = 'block';
@@ -1844,7 +1844,7 @@ function mccSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo3FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary)">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
+    return '<div onclick="selectMotivo3FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'+'</div>';
   }).join('');
   sug.style.display = 'block';
 }
