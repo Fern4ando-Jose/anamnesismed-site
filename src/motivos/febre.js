@@ -14,192 +14,67 @@ AM.motivo("febre", {
   ],
   "aeaGuide": [
     {
-      "q": "Início",
-      "qEs": "Inicio",
+      "q": "Início (I)",
+      "qEs": "Inicio (I)",
       "type": "radio",
       "opts": [
-        "Súbito (calafrio + pico rápido)",
-        "Gradual/insidioso"
+        "Brusco (calafrio + pico rápido)",
+        "Insidioso / gradual"
+      ],
+      "optsEs": [
+        "Brusco (escalofrío + pico rápido)",
+        "Insidioso / gradual"
       ]
     },
     {
-      "q": "Há quantos dias está com febre?",
-      "qEs": "¿Hace cuántos días tiene fiebre?",
+      "q": "Intensidade (I) — temperatura máxima registrada",
+      "qEs": "Intensidad (I) — temperatura máxima registrada",
       "type": "input",
-      "ph": "Nº de dias",
-      "ph2": "Nº de días"
+      "ph": "°C — febrícula 37,3–38 · moderada 38–39 · alta >39 · hiperpirexia >41",
+      "ph2": "°C — febrícula 37,3–38 · moderada 38–39 · alta >39 · hiperpirexia >41"
     },
     {
-      "q": "Temperatura máxima registrada",
-      "qEs": "Temperatura máxima registrada",
+      "q": "Duração (D) — há quantos dias?",
+      "qEs": "Duración (D) — ¿hace cuántos días?",
       "type": "input",
-      "ph": "°C",
-      "ph2": "°C"
+      "ph": "Nº de dias (>2 semanas = febre prolongada / FOI)",
+      "ph2": "Nº de días (>2 semanas = fiebre prolongada / FOD)"
     },
     {
-      "q": "Padrão/curva febril ao longo do dia",
-      "qEs": "Patrón/curva febril a lo largo del día",
+      "q": "Evolução (E) — padrão / curva febril",
+      "qEs": "Evolución (E) — patrón / curva febril",
       "type": "radio",
       "opts": [
         "Contínua",
         "Remitente",
         "Intermitente",
         "Héctica/Séptica",
-        "Irregular",
-        "Ondulante (recorrente)"
-      ]
-    },
-    {
-      "q": "A febre cedeu em algum momento? Há quanto tempo terminou (se já cessou)?",
-      "qEs": "¿La fiebre cedió en algún momento? ¿Hace cuánto terminó (si ya cesó)?",
-      "type": "input",
-      "ph": "Descreva o término/evolução",
-      "ph2": "Describa el término/evolución"
-    },
-    {
-      "q": "Calafrios / tremores intensos?",
-      "qEs": "¿Escalofríos / temblores intensos?",
-      "type": "yn"
-    },
-    {
-      "q": "Sudorese profusa, principalmente noturna?",
-      "qEs": "¿Sudoración profusa, sobre todo nocturna?",
-      "type": "yn"
-    },
-    {
-      "q": "Tratamento com antitérmico? Qual, dose e resposta?",
-      "qEs": "¿Tratamiento con antitérmico? ¿Cuál, dosis y respuesta?",
-      "type": "input",
-      "ph": "Medicamento, dose, resposta",
-      "ph2": "Medicamento, dosis, respuesta"
-    },
-    {
-      "q": "Focos infecciosos (selecione os presentes)",
-      "qEs": "Focos infecciosos (seleccione los presentes)",
-      "type": "multi",
-      "opts": [
-        "Tosse/dispneia (respiratório)",
-        "Odinofagia/dor de garganta",
-        "Disúria/polaciúria (urinário)",
-        "Diarreia/dor abdominal (digestivo)",
-        "Lesão ou secreção cutânea"
+        "Recorrente",
+        "Ondulante"
       ],
       "optsEs": [
-        "Tos/disnea (respiratorio)",
-        "Odinofagia/dolor de garganta",
-        "Disuria/polaquiuria (urinario)",
-        "Diarrea/dolor abdominal (digestivo)",
-        "Lesión o secreción cutánea"
+        "Continua",
+        "Remitente",
+        "Intermitente",
+        "Héctica/Séptica",
+        "Recurrente",
+        "Ondulante"
       ]
     },
     {
-      "q": "Tosse — desde quando?",
-      "qEs": "Tos — ¿desde cuándo?",
+      "q": "Término (T)",
+      "qEs": "Terminación (T)",
       "type": "radio",
       "opts": [
-        "Aguda (< 3 semanas)",
-        "Subaguda (3–8 semanas)",
-        "Crônica (> 8 semanas)"
+        "Em crise (queda rápida)",
+        "Em lise (descenso gradual)",
+        "Ainda persiste"
       ],
       "optsEs": [
-        "Aguda (< 3 semanas)",
-        "Subaguda (3–8 semanas)",
-        "Crónica (> 8 semanas)"
+        "En crisis (caída rápida)",
+        "En lisis (descenso gradual)",
+        "Aún persiste"
       ]
-    },
-    {
-      "q": "Tosse — seca ou produtiva?",
-      "qEs": "Tos — ¿seca o productiva?",
-      "type": "radio",
-      "opts": [
-        "Seca (não produtiva)",
-        "Produtiva — com escarro"
-      ],
-      "optsEs": [
-        "Seca (no productiva)",
-        "Productiva — con esputo"
-      ]
-    },
-    {
-      "q": "Há expectoração?",
-      "qEs": "¿Hay expectoración?",
-      "type": "yn"
-    },
-    {
-      "q": "Hemoptise?",
-      "qEs": "¿Hemoptisis?",
-      "type": "yn"
-    },
-    {
-      "q": "Dispneia associada à tosse?",
-      "qEs": "¿Disnea asociada a la tos?",
-      "type": "yn"
-    },
-    {
-      "q": "Linfonodos aumentados/dolorosos (gânglios)?",
-      "qEs": "¿Ganglios linfáticos aumentados/dolorosos?",
-      "type": "yn"
-    },
-    {
-      "q": "Rash ou lesões cutâneas associadas?",
-      "qEs": "¿Erupción o lesiones cutáneas asociadas?",
-      "type": "yn"
-    },
-    {
-      "q": "Perda de peso associada?",
-      "qEs": "¿Pérdida de peso asociada?",
-      "type": "yn"
-    },
-    {
-      "q": "Viagem recente para área endêmica (malária, dengue, febre amarela, outras)?",
-      "qEs": "¿Viaje reciente a área endémica (malaria, dengue, fiebre amarilla, otras)?",
-      "type": "yn"
-    },
-    {
-      "q": "Contato com pessoas doentes ou animais recentemente?",
-      "qEs": "¿Contacto con personas enfermas o animales recientemente?",
-      "type": "yn"
-    },
-    {
-      "q": "Situação vacinal em dia (incluindo febre amarela, influenza, COVID)?",
-      "qEs": "¿Situación de vacunación al día (incluyendo fiebre amarilla, influenza, COVID)?",
-      "type": "yn"
-    },
-    {
-      "q": "Condições de imunossupressão (HIV, quimioterapia, corticoide crônico, diabetes descompensado, transplante)?",
-      "qEs": "¿Condiciones de inmunosupresión (VIH, quimioterapia, corticoide crónico, diabetes descompensada, trasplante)?",
-      "type": "yn"
-    },
-    {
-      "q": "Uso de outros medicamentos recentes (incluindo antibióticos)?",
-      "qEs": "¿Uso de otros medicamentos recientes (incluyendo antibióticos)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
-      "q": "Evolução do quadro",
-      "qEs": "Evolución del cuadro",
-      "type": "radio",
-      "opts": [
-        "Progressiva (piora contínua)",
-        "Flutuante (piora e melhora)",
-        "Estável (sem mudança)",
-        "Regressiva (melhorando)"
-      ],
-      "optsEs": [
-        "Progresiva (empeoramiento continuo)",
-        "Fluctuante (empeora y mejora)",
-        "Estable (sin cambio)",
-        "Regresiva (mejorando)"
-      ]
-    },
-    {
-      "q": "O que motivou buscar atendimento hoje?",
-      "qEs": "¿Qué motivó buscar atención hoy?",
-      "type": "input",
-      "ph": "Descreva o que motivou vir hoje",
-      "ph2": "Describa qué motivó venir hoy"
     }
   ],
   "guidePt": {

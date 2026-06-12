@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AnamnesísMed — App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0a0c10; --paper:#f5f1e8; --cream:#ede8d8; --white:#ffffff;
+  --red:#c0392b; --teal:#1a5c5c; --gold:#9a6800; --green:#1e6b3c;
+  --purple:#5b2d8e; --orange:#b85c00; --navy:#1a3a5c; --slate:#2c3e50;
+  --muted:#6b6660; --line:rgba(10,12,16,0.10);
+  --sidebar-w:240px;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:15px;overflow-x:hidden}
+
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);background:var(--ink);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  transition:transform .3s var(--ease);
+}
+.sidebar::before{
+  content:'';position:absolute;top:-60px;left:-60px;
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(192,57,43,.15) 0%,transparent 65%);
+  pointer-events:none;
+}
+.sb-logo{
+  padding:22px 20px 18px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  flex-shrink:0;
+}
+.sb-logo-text{
+  font-family:var(--serif);font-size:17px;font-weight:900;
+  color:var(--white);letter-spacing:-.5px;text-decoration:none;display:block;
+}
+.sb-logo-text span{color:var(--red)}
+.sb-logo-sub{font-size:9px;font-family:var(--mono);letter-spacing:1.5px;
+  text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:2px;display:block}
+
+.sb-search{
+  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;
+}
+.sb-search-inner{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:7px;padding:7px 11px;
+}
+.sb-search-inner input{
+  background:transparent;border:none;outline:none;
+  font-size:12px;font-family:var(--sans);color:var(--white);width:100%;
+}
+.sb-search-inner input::placeholder{color:rgba(255,255,255,.25)}
+.sb-search-icon{font-size:12px;opacity:.4;flex-shrink:0}
+
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0 16px;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+
+.sb-cat{
+  font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.2);padding:12px 16px 5px;
+}
+.sb-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 16px;font-size:12px;font-weight:500;
+  color:rgba(255,255,255,.45);cursor:pointer;
+  transition:all .15s;text-decoration:none;user-select:none;
+  border-left:2px solid transparent;
+}
+.sb-item:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.04)}
+.sb-item.active{color:var(--white);background:rgba(255,255,255,.07);border-left-color:var(--red)}
+.sb-item-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.sb-item-badge{
+  margin-left:auto;font-size:8px;font-weight:700;font-family:var(--mono);
+  padding:1px 5px;border-radius:6px;
+  background:rgba(192,57,43,.25);color:#e07060;
+}
+.sb-item-badge.new{background:rgba(30,107,60,.3);color:#6cd48a}
+
+.sb-bottom{
+  padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;
+}
+.sb-lang{
+  display:flex;background:rgba(255,255,255,.05);border-radius:14px;
+  overflow:hidden;border:1px solid rgba(255,255,255,.08);margin-bottom:10px;
+}
+.sb-lang-btn{
+  flex:1;padding:5px;font-size:10px;font-weight:700;font-family:var(--mono);
+  letter-spacing:1px;border:none;background:transparent;
+  cursor:pointer;color:rgba(255,255,255,.3);transition:all .2s;text-align:center;
+}
+.sb-lang-btn.active{background:var(--red);color:var(--white);border-radius:12px}
+
+.sb-user{
+  display:flex;align-items:center;gap:9px;padding:9px 11px;
+  border-radius:7px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.07);cursor:pointer;
+  transition:background .2s;text-decoration:none;
+}
+.sb-user:hover{background:rgba(255,255,255,.08)}
+.sb-avatar{
+  width:28px;height:28px;border-radius:50%;background:var(--red);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:11px;color:var(--white);flex-shrink:0;
+}
+.sb-uname{font-size:11px;font-weight:600;color:var(--white)}
+.sb-uplan{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.3);margin-top:1px}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(245,241,232,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:12px 28px;display:flex;align-items:center;gap:14px;
+}
+.topbar-back{
+  display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  color:var(--muted);text-decoration:none;cursor:pointer;
+  padding:6px 12px;border-radius:6px;border:1.5px solid var(--line);
+  background:var(--white);transition:all .18s;white-space:nowrap;
+}
+.topbar-back:hover{border-color:var(--ink);color:var(--ink)}
+.topbar-breadcrumb{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--muted);flex:1;min-width:0;
+}
+.topbar-breadcrumb .sep{opacity:.4}
+.topbar-breadcrumb .current{font-weight:700;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn-new{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 16px;background:var(--red);color:var(--white);
+  font-size:12px;font-weight:600;border:none;border-radius:7px;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+  box-shadow:0 3px 10px rgba(192,57,43,.3);
+}
+.btn-new:hover{background:#a03020;transform:translateY(-1px)}
+
+/* ════════════════════════════════════════
+   INDEX SCREEN
+════════════════════════════════════════ */
+.index-screen{padding:24px 28px 60px;display:none}
+.index-screen.active{display:block}
+
+.spec-header{
+  display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  padding-bottom:20px;border-bottom:1px solid var(--line);
+}
+.spec-icon-big{
+  font-size:36px;width:60px;height:60px;
+  border-radius:14px;background:var(--cream);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.spec-title{font-family:var(--serif);font-size:26px;font-weight:900;
+  letter-spacing:-.5px;line-height:1.2}
+.spec-subtitle{font-size:13px;color:var(--muted);margin-top:4px}
+.spec-stats{display:flex;gap:16px;margin-top:8px}
+.spec-stat{font-size:11px;color:var(--muted);font-family:var(--mono);
+  display:flex;align-items:center;gap:4px}
+.spec-stat span{color:var(--ink);font-weight:700}
+
+/* Spec tabs (Clínica Médica / Cirugía etc) */
+.spec-tabs{
+  display:flex;gap:6px;margin-bottom:24px;
+  border-bottom:2px solid var(--line);padding-bottom:0;
+}
+.spec-tab{
+  padding:9px 18px;font-size:13px;font-weight:600;
+  color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
+  margin-bottom:-2px;transition:all .18s;white-space:nowrap;user-select:none;
+  text-decoration:none;display:flex;align-items:center;gap:7px;
+}
+.spec-tab:hover{color:var(--ink)}
+.spec-tab.active{color:var(--ink);border-bottom-color:var(--red)}
+.spec-tab-count{
+  font-size:9px;font-family:var(--mono);font-weight:700;
+  padding:1px 6px;border-radius:8px;
+  background:var(--cream);color:var(--muted);
+}
+.spec-tab.active .spec-tab-count{background:var(--red);color:var(--white)}
+
+/* Category sections */
+.cat-section{margin-bottom:28px}
+.cat-lbl{
+  font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;padding:0 2px;
+  display:flex;align-items:center;gap:8px;
+}
+.cat-lbl::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.motivo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.motivo-card{
+  background:var(--white);border-radius:10px;border:1.5px solid var(--line);
+  padding:14px 13px;cursor:pointer;user-select:none;
+  transition:all .18s;display:flex;align-items:flex-start;gap:10px;
+  position:relative;overflow:hidden;text-decoration:none;
+}
+.motivo-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.09);border-color:rgba(0,0,0,.12)}
+.motivo-card:active{transform:scale(.98)}
+.motivo-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.mc-red::before{background:var(--red)} .mc-teal::before{background:var(--teal)}
+.mc-gold::before{background:var(--gold)} .mc-slate::before{background:var(--slate)}
+.mc-purple::before{background:var(--purple)} .mc-green::before{background:var(--green)}
+.mc-orange::before{background:var(--orange)} .mc-navy::before{background:var(--navy)}
+
+.motivo-icon{font-size:20px;flex-shrink:0;line-height:1;margin-top:1px;
+  width:36px;height:36px;background:var(--cream);border-radius:8px;
+  display:flex;align-items:center;justify-content:center}
+.motivo-info{flex:1;min-width:0}
+.motivo-name{font-size:12px;font-weight:700;line-height:1.3;color:var(--ink)}
+.motivo-sub{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.motivo-badge{
+  display:inline-block;font-size:7px;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;padding:1px 5px;border-radius:6px;
+  margin-top:4px;color:var(--white);
+}
+.mb-red{background:var(--red)} .mb-teal{background:var(--teal)}
+.mb-gold{background:var(--gold)} .mb-slate{background:var(--slate)}
+.mb-purple{background:var(--purple)} .mb-green{background:var(--green)}
+.mb-orange{background:var(--orange)} .mb-navy{background:var(--navy)}
+
+/* ════════════════════════════════════════
+   HC SCREEN
+════════════════════════════════════════ */
+.hc-screen{display:none;flex-direction:column;min-height:calc(100vh - 53px)}
+.hc-screen.active{display:flex}
+
+/* HC Header */
+.hc-header{
+  background:var(--white);border-bottom:1px solid var(--line);
+  padding:16px 28px 0;flex-shrink:0;
+}
+.hc-header-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.hc-motivo-icon{
+  font-size:24px;width:46px;height:46px;border-radius:10px;
+  background:var(--cream);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.hc-motivo-info{flex:1}
+.hc-motivo-name{font-family:var(--serif);font-size:20px;font-weight:900;
+  letter-spacing:-.5px;line-height:1.2}
+.hc-motivo-spec{font-size:11px;color:var(--muted);margin-top:3px;
+  display:flex;align-items:center;gap:8px}
+.hc-motivo-badge{
+  font-size:8px;font-weight:700;font-family:var(--mono);letter-spacing:1px;
+  text-transform:uppercase;padding:2px 7px;border-radius:6px;
+  color:var(--white);
+}
+
+/* Progress bar */
+.hc-progress{height:2px;background:var(--cream);margin:0 -28px;position:relative}
+.hc-progress-fill{height:100%;background:var(--red);transition:width .4s var(--ease);width:0%}
+
+/* 7 TABS */
+.hc-tabs{
+  display:flex;overflow-x:auto;scrollbar-width:none;
+  border-bottom:2px solid var(--line);background:var(--white);
+  padding:0 28px;flex-shrink:0;gap:0;
+}
+.hc-tabs::-webkit-scrollbar{display:none}
+.hc-tab{
+  flex:0 0 auto;padding:10px 14px;font-size:11px;font-weight:700;
+  color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  white-space:nowrap;user-select:none;transition:all .15s;
+  display:flex;align-items:center;gap:5px;
+}
+.hc-tab:hover{color:var(--ink)}
+.hc-tab.active{color:var(--ink);border-bottom-color:var(--red)}
+.hc-tab-icon{font-size:13px}
+
+/* Tab pages */
+.hc-pages{flex:1;overflow-y:auto}
+.hc-page{display:none;padding:20px 28px 80px;animation:fadeUp .2s var(--ease)}
+.hc-page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── FORM ELEMENTS ── */
+.f-section{margin-bottom:20px}
+.f-section-lbl{
+  font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.f-section-lbl::after{content:'';flex:1;height:1px;background:rgba(192,57,43,.15)}
+
+.f-card{
+  background:var(--white);border-radius:10px;border:1.5px solid var(--line);
+  overflow:hidden;margin-bottom:10px;
+}
+.f-card-head{
+  padding:8px 14px;background:var(--cream);
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink);
+  border-bottom:1px solid var(--line);
+}
+.f-card-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+.f-row{padding:10px 14px;border-bottom:1px solid var(--line)}
+.f-row:last-child{border-bottom:none}
+.f-label{font-size:11px;font-weight:700;margin-bottom:5px;color:rgba(10,12,16,.75);
+  display:flex;align-items:center;gap:6px}
+.f-hint{font-size:10px;color:rgba(107,102,96,.5);font-style:italic;margin-bottom:4px}
+.f-input{
+  width:100%;background:#fafaf8;border:1.5px solid var(--line);border-radius:7px;
+  padding:9px 12px;font-size:14px;font-family:var(--sans);color:var(--ink);
+  outline:none;transition:border-color .2s;-webkit-appearance:none;
+}
+.f-input:focus{border-color:var(--red);background:var(--white)}
+.f-input::placeholder{color:rgba(107,102,96,.35)}
+textarea.f-input{min-height:64px;resize:vertical}
+select.f-input{cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6660' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;
+}
+.f-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* Radio buttons */
+.f-radios{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0 3px}
+.f-radio{
+  padding:6px 13px;background:var(--cream);border:1.5px solid var(--line);
+  border-radius:20px;font-size:11px;cursor:pointer;user-select:none;
+  white-space:nowrap;transition:all .15s;
+}
+.f-radio.sel{background:var(--red);border-color:var(--red);color:var(--white);font-weight:700}
+
+/* Checkboxes */
+.f-checks{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:3px 0 4px}
+.f-check{
+  display:flex;align-items:center;gap:7px;padding:7px 9px;
+  background:var(--cream);border-radius:6px;cursor:pointer;
+  user-select:none;font-size:11px;line-height:1.3;transition:background .15s;
+}
+.f-check.on{background:#f5eaea}
+.f-check.on .f-checkbox{background:var(--red);border-color:var(--red);color:var(--white)}
+.f-checkbox{
+  width:16px;height:16px;border:2px solid var(--line);border-radius:3px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;transition:all .15s;
+}
+
+/* EVA scale */
+.f-eva{display:flex;gap:2px;padding:2px 0 3px}
+.f-eva-btn{
+  flex:1;text-align:center;padding:8px 1px;background:var(--cream);
+  border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;
+  user-select:none;transition:all .15s;
+}
+.f-eva-btn.sel{background:var(--red);color:var(--white)}
+.f-eva-lbl{display:flex;justify-content:space-between;
+  font-size:9px;color:rgba(107,102,96,.5);padding:0 1px 5px}
+
+/* ── MNEMONIC CARDS ── */
+.mnem-card{
+  background:var(--white);border-radius:10px;border:1.5px solid var(--line);
+  margin-bottom:10px;overflow:hidden;
+}
+.mnem-card-head{
+  padding:12px 16px 6px;display:flex;align-items:flex-end;gap:10px;
+  border-bottom:1px solid var(--line);background:var(--cream);
+}
+.mnem-kw{
+  font-family:var(--serif);font-size:26px;font-weight:900;
+  color:var(--red);letter-spacing:-1.5px;line-height:1;
+}
+.mnem-name{font-size:10px;color:var(--muted);padding-bottom:2px}
+.mnem-row{
+  display:flex;gap:10px;padding:8px 16px;
+  border-bottom:1px solid var(--line);align-items:flex-start;
+}
+.mnem-row:last-child{border-bottom:none}
+.mnem-letter{
+  font-size:13px;font-weight:900;color:var(--red);
+  min-width:14px;line-height:1.6;flex-shrink:0;
+}
+.mnem-term{font-size:12px;font-weight:700;display:block;line-height:1.4;color:var(--ink)}
+.mnem-hint{font-size:10px;color:var(--muted);display:block;line-height:1.4}
+
+/* ── ACCORDION (manobras / signos) ── */
+.acc{
+  background:var(--white);border-radius:10px;border:1.5px solid var(--line);
+  margin-bottom:8px;overflow:hidden;
+}
+.acc-head{
+  display:flex;align-items:center;gap:10px;padding:13px 16px;
+  cursor:pointer;user-select:none;
+}
+.acc-num{
+  font-size:16px;font-weight:900;color:var(--red);opacity:.2;
+  min-width:24px;line-height:1;flex-shrink:0;
+}
+.acc-title{font-size:13px;font-weight:700;flex:1;line-height:1.3}
+.acc-subtitle{font-size:10px;color:var(--muted);margin-top:1px}
+.acc-toggle{font-size:18px;color:var(--red);transition:transform .25s;flex-shrink:0}
+.acc.open .acc-toggle{transform:rotate(45deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .38s ease}
+.acc.open .acc-body{max-height:2000px}
+
+.acc-steps{list-style:none;padding:6px 16px}
+.acc-step{
+  display:flex;gap:8px;padding:7px 0;
+  border-bottom:1px solid var(--line);font-size:12px;line-height:1.6;
+}
+.acc-step:last-child{border-bottom:none}
+.acc-step-n{
+  font-size:9px;font-weight:700;color:var(--red);
+  min-width:16px;margin-top:2px;flex-shrink:0;
+}
+.acc-findings{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 16px 10px}
+.acc-finding{padding:8px 11px;border-left:3px solid;border-radius:0 5px 5px 0;font-size:11px;line-height:1.5}
+.acc-finding.normal{border-color:var(--teal);background:#eef5f5}
+.acc-finding.abnormal{border-color:var(--red);background:#fdf0eb}
+.acc-finding-lbl{
+  font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:3px;color:rgba(10,12,16,.35);display:block;
+}
+.acc-note-wrap{padding:0 16px 12px}
+
+/* ── SCORE TABLES ── */
+.score-title{
+  font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--ink);margin:16px 0 8px;display:flex;align-items:center;gap:8px;
+}
+.score-title::after{content:'';flex:1;height:1px;background:var(--line)}
+.score-table{
+  width:100%;border-collapse:collapse;font-size:11px;
+  background:var(--white);border-radius:10px;overflow:hidden;
+  border:1.5px solid var(--line);margin-bottom:10px;
+}
+.score-table th{
+  background:var(--ink);color:var(--white);padding:8px 10px;
+  text-align:left;font-size:8px;letter-spacing:1px;text-transform:uppercase;
+}
+.score-table td{
+  padding:8px 10px;border-bottom:1px solid var(--line);
+  vertical-align:top;line-height:1.5;
+}
+.score-table tr:nth-child(even) td{background:var(--cream)}
+.score-table tr:last-child td{border-bottom:none}
+.score-table td:first-child{font-weight:700;color:var(--red);font-size:12px}
+.score-note{
+  background:#eef5f5;border-left:3px solid var(--teal);
+  border-radius:0 7px 7px 0;padding:9px 13px;
+  font-size:11px;line-height:1.6;margin-bottom:12px;color:var(--teal);
+}
+.score-note strong{display:block;font-size:9px;letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:2px;opacity:.7}
+
+/* ── DIFF DX TABLE ── */
+.ddx-table{
+  width:100%;border-collapse:collapse;font-size:11px;
+  background:var(--white);border-radius:10px;overflow:hidden;
+  border:1.5px solid var(--line);margin-bottom:10px;
+}
+.ddx-table th{
+  background:var(--ink);color:var(--white);padding:8px 10px;
+  text-align:left;font-size:8px;letter-spacing:1px;text-transform:uppercase;
+}
+.ddx-table td{
+  padding:9px 10px;border-bottom:1px solid var(--line);
+  vertical-align:top;line-height:1.55;font-size:11px;
+}
+.ddx-table tr:last-child td{border-bottom:none}
+.ddx-table td:first-child{font-weight:700;color:var(--ink);font-size:12px;white-space:nowrap}
+.ddx-inc{color:var(--red);font-size:9px;font-weight:700;font-family:var(--mono)}
+.ddx-exc{color:var(--teal);font-size:9px;font-weight:700;font-family:var(--mono)}
+.ddx-favor{color:var(--ink);font-size:10px}
+.ddx-contra{color:var(--muted);font-size:10px}
+
+/* ── INFO BOXES ── */
+.ibox{
+  border-left:3px solid;border-radius:0 7px 7px 0;
+  padding:10px 13px;margin-bottom:10px;font-size:12px;line-height:1.65;
+}
+.ibox-red{background:#fff0ee;border-color:var(--red)}
+.ibox-teal{background:#eef5f5;border-color:var(--teal)}
+.ibox-gold{background:#fff8ee;border-color:var(--gold)}
+.ibox-ink{background:#f0eff0;border-color:var(--ink)}
+.ibox strong{display:block;font-size:9px;letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:3px;opacity:.6}
+
+/* ── SIGN CARDS (Signos Clásicos) ── */
+.sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sign-card{
+  background:var(--white);border-radius:10px;border:1.5px solid var(--line);
+  padding:14px;overflow:hidden;position:relative;
+}
+.sign-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red)}
+.sign-name{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sign-eponym{font-size:9px;font-family:var(--mono);color:var(--red);
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:block}
+.sign-how{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.sign-means{
+  font-size:10px;font-weight:700;color:var(--ink);
+  background:var(--cream);padding:5px 9px;border-radius:5px;
+  display:inline-block;
+}
+
+/* ── CONDUTA ── */
+.conduta-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 20px;font-size:13px;font-weight:600;
+  border-radius:8px;border:none;cursor:pointer;transition:all .2s;
+  text-decoration:none;margin-right:8px;margin-bottom:8px;
+}
+.conduta-btn-primary{background:var(--red);color:var(--white);box-shadow:0 3px 12px rgba(192,57,43,.3)}
+.conduta-btn-primary:hover{background:#a03020;transform:translateY(-1px)}
+.conduta-btn-secondary{background:var(--white);color:var(--ink);border:1.5px solid var(--line)}
+.conduta-btn-secondary:hover{border-color:var(--ink)}
+.conduta-btn-pdf{background:var(--ink);color:var(--white)}
+.conduta-btn-pdf:hover{background:#1e2430}
+
+/* ── BOTTOM NAV BAR (mobile) ── */
+.bottom-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:var(--white);border-top:1px solid var(--line);
+  padding:6px 0 env(safe-area-inset-bottom,0px);
+}
+.bottom-nav-inner{display:flex;justify-content:space-around}
+.bnav-item{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 12px;cursor:pointer;font-size:9px;font-weight:600;
+  color:var(--muted);user-select:none;transition:color .15s;
+}
+.bnav-item.active{color:var(--red)}
+.bnav-icon{font-size:18px}
+
+/* ── HAMBURGER ── */
+.hamburger{display:none;background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink);padding:4px}
+.sb-overlay{display:none;position:fixed;inset:0;z-index:190;background:rgba(10,12,16,.5)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.3)}
+  .sb-overlay.open{display:block}
+  .main{margin-left:0}
+  .hamburger{display:block}
+  .motivo-grid{grid-template-columns:1fr 1fr}
+  .index-screen,.hc-page{padding:16px 16px 100px}
+  .hc-header{padding:14px 16px 0}
+  .hc-tabs{padding:0 16px}
+  .topbar{padding:10px 16px}
+  .bottom-nav{display:block}
+  .sign-grid{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  .motivo-grid{grid-template-columns:1fr}
+  .f-row-2,.f-row-3{grid-template-columns:1fr}
+  .acc-findings{grid-template-columns:1fr}
+}
+@media print{
+  .sidebar,.topbar,.hc-tabs,.bottom-nav,.hc-progress{display:none!important}
+  .main{margin-left:0}
+  .hc-page{display:block!important;padding:0}
+  .acc-body{max-height:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <a href="anamnesismed-dashboard.html" class="sb-logo-text">Anamnesis<span>Med</span></a>
+    <span class="sb-logo-sub es">Historia Clínica</span>
+    <span class="sb-logo-sub pt">História Clínica</span>
+  </div>
+  <div class="sb-search">
+    <div class="sb-search-inner">
+      <span class="sb-search-icon">🔍</span>
+      <input id="sb-search-input" type="text" oninput="filterMotivos()"
+        placeholder="Buscar motivo..." class="es">
+      <input type="text" oninput="filterMotivos()"
+        placeholder="Buscar motivo..." class="pt">
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-cat es">Especialidades</div>
+    <div class="sb-cat pt">Especialidades</div>
+    <div class="sb-item active" data-spec="clinica" onclick="showSpec('clinica');setSBActive(this)">
+      <span class="sb-item-icon">🩺</span>
+      <span class="es">Clínica Médica</span>
+      <span class="pt">Clínica Médica</span>
+      <span class="sb-item-badge new">v1</span>
+    </div>
+    <div class="sb-item" data-spec="cirurgia" onclick="showSpec('cirurgia');setSBActive(this)">
+      <span class="sb-item-icon">🔪</span>
+      <span class="es">Cirugía General</span>
+      <span class="pt">Cirurgia Geral</span>
+      <span class="sb-item-badge new">v1</span>
+    </div>
+    <div class="sb-item" style="opacity:.45;pointer-events:none">
+      <span class="sb-item-icon">🦴</span>
+      <span class="es">Traumatología</span>
+      <span class="pt">Traumatologia</span>
+      <span class="sb-item-badge es">pronto</span>
+      <span class="sb-item-badge pt">em breve</span>
+    </div>
+    <div class="sb-item" style="opacity:.45;pointer-events:none">
+      <span class="sb-item-icon">👶</span>
+      <span class="es">Pediatría</span>
+      <span class="pt">Pediatria</span>
+      <span class="sb-item-badge es">pronto</span>
+      <span class="sb-item-badge pt">em breve</span>
+    </div>
+    <div class="sb-cat es">Cuenta</div>
+    <div class="sb-cat pt">Conta</div>
+    <a class="sb-item" href="anamnesismed-dashboard.html">
+      <span class="sb-item-icon">🏠</span>
+      <span class="es">Dashboard</span>
+      <span class="pt">Dashboard</span>
+    </a>
+    <a class="sb-item" href="anamnesismed-dashboard.html">
+      <span class="sb-item-icon">📋</span>
+      <span class="es">Mis HCs</span>
+      <span class="pt">Minhas HCs</span>
+    </a>
+  </nav>
+  <div class="sb-bottom">
+    <div class="sb-lang">
+      <button class="sb-lang-btn active" id="slang-es" onclick="setLang('es')">ES</button>
+      <button class="sb-lang-btn" id="slang-pt" onclick="setLang('pt')">PT</button>
+    </div>
+    <a href="anamnesismed-dashboard.html" class="sb-user">
+      <div class="sb-avatar">C</div>
+      <div>
+        <div class="sb-uname">Carlos M.</div>
+        <div class="sb-uplan es">Trial — 27 días</div>
+        <div class="sb-uplan pt">Trial — 27 dias</div>
+      </div>
+    </a>
+  </div>
+</aside>
+<div class="sb-overlay" id="sb-overlay" onclick="toggleSB()"></div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="hamburger" onclick="toggleSB()">☰</button>
+    <button class="topbar-back" id="topbar-back" style="display:none" onclick="goIndex()">
+      ← <span class="es">Índice</span><span class="pt">Índice</span>
+    </button>
+    <div class="topbar-breadcrumb">
+      <span class="es" id="bc-spec-es">Clínica Médica</span>
+      <span class="pt" id="bc-spec-pt">Clínica Médica</span>
+      <span class="sep" id="bc-hc" style="display:none">
+        <span>›</span>
+        <span class="current es" id="bc-hc-es"></span>
+        <span class="current pt" id="bc-hc-pt"></span>
+      </span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a href="anamnesismed-dashboard.html" style="font-size:12px;color:var(--muted);text-decoration:none;
+        padding:7px 12px;border:1.5px solid var(--line);border-radius:6px;background:var(--white);
+        white-space:nowrap;transition:all .18s"
+        onmouseover="this.style.borderColor='var(--ink)'" onmouseout="this.style.borderColor='var(--line)'">
+        🏠 <span class="es">Dashboard</span><span class="pt">Dashboard</span>
+      </a>
+      <button class="btn-new" id="btn-new">
+        + <span class="es">Nueva HC</span><span class="pt">Nova HC</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SPECIALTY TABS -->
+  <div style="background:var(--white);border-bottom:1px solid var(--line);padding:0 28px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none">
+    <div class="spec-tab active" data-spec="clinica" onclick="showSpec('clinica')">
+      <span>🩺</span>
+      <span class="es">Clínica Médica</span>
+      <span class="pt">Clínica Médica</span>
+      <span class="spec-tab-count">25</span>
+    </div>
+    <div class="spec-tab" data-spec="cirurgia" onclick="showSpec('cirurgia')">
+      <span>🔪</span>
+      <span class="es">Cirugía General</span>
+      <span class="pt">Cirurgia Geral</span>
+      <span class="spec-tab-count">26</span>
+    </div>
+    <div class="spec-tab" style="opacity:.45;cursor:not-allowed">
+      <span>🦴</span>
+      <span class="es">Traumatología</span>
+      <span class="pt">Traumatologia</span>
+      <span class="spec-tab-count es">pronto</span>
+      <span class="spec-tab-count pt">em breve</span>
+    </div>
+    <div class="spec-tab" style="opacity:.45;cursor:not-allowed">
+      <span>👶</span>
+      <span class="es">Pediatría</span>
+      <span class="pt">Pediatria</span>
+      <span class="spec-tab-count es">pronto</span>
+      <span class="spec-tab-count pt">em breve</span>
+    </div>
+  </div>
+
+  <!-- INDEX SCREENS -->
+  <div id="spec-clinica" class="index-screen spec-index"><div class="spec-header"><div class="spec-icon-big">🩺</div><div><div class="spec-title es">Clínica Médica</div><div class="spec-title pt">Clínica Médica</div><div class="spec-subtitle es">Selecciona el motivo de consulta</div><div class="spec-subtitle pt">Selecione o motivo de consulta</div></div></div><div style="position:relative;margin-bottom:20px">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.4;font-size:14px;pointer-events:none">🔍</span>
+      <input id="search-input" type="text" oninput="filterMotivos()"
+        style="width:100%;background:#fff;border:1.5px solid var(--line);border-radius:9px;
+        padding:11px 14px 11px 40px;font-size:14px;font-family:var(--sans);outline:none"
+        class="es" placeholder="Buscar motivo de consulta...">
+      <input id="search-input-pt" type="text" oninput="filterMotivos()"
+        style="width:100%;background:#fff;border:1.5px solid var(--line);border-radius:9px;
+        padding:11px 14px 11px 40px;font-size:14px;font-family:var(--sans);outline:none"
+        class="pt" placeholder="Buscar motivo de consulta...">
+    </div><div class="cat-section-block"><div class="cat-lbl">🔴 Síntomas Cardinales</div><div class="motivo-grid"><div class="motivo-card mc-red" 
+              data-search="fiebre / febre temperatura, idet, focos"
+              onclick="openHC('febre','Fiebre','Febre','🌡️','red')">
+              <div class="motivo-icon">🌡️</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Fiebre</div>
+                <div class="motivo-name pt">Febre</div>
+                <div class="motivo-sub">Temperatura, IDET, focos</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="dolor torácico / dor torácica socrates, acs, tep"
+              onclick="openHC('dor_toracica','Dolor Torácico','Dor Torácica','🫀','red')">
+              <div class="motivo-icon">🫀</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Dolor Torácico</div>
+                <div class="motivo-name pt">Dor Torácica</div>
+                <div class="motivo-sub">SOCRATES, ACS, TEP</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="disnea / dispneia mmrc, amiidcaf, causas"
+              onclick="openHC('dispneia','Disnea','Dispneia','😮‍💨','red')">
+              <div class="motivo-icon">😮‍💨</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Disnea</div>
+                <div class="motivo-name pt">Dispneia</div>
+                <div class="motivo-sub">MMRC, AMIIDCAF, causas</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="cefalea / cefaleia pound, meningismo, alarma"
+              onclick="openHC('cefalea','Cefalea','Cefaleia','🧠','red')">
+              <div class="motivo-icon">🧠</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Cefalea</div>
+                <div class="motivo-name pt">Cefaleia</div>
+                <div class="motivo-sub">POUND, meningismo, alarma</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="síncope / síncope chess, presíncope"
+              onclick="openHC('sincope','Síncope','Síncope','😵','red')">
+              <div class="motivo-icon">😵</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Síncope</div>
+                <div class="motivo-name pt">Síncope</div>
+                <div class="motivo-sub">CHESS, presíncope</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="dolor abdominal / dor abdominal localización, cuadrantes"
+              onclick="openHC('dor_abd','Dolor Abdominal','Dor Abdominal','🫃','red')">
+              <div class="motivo-icon">🫃</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Dolor Abdominal</div>
+                <div class="motivo-name pt">Dor Abdominal</div>
+                <div class="motivo-sub">Localización, cuadrantes</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🟡 Digestivo</div><div class="motivo-grid"><div class="motivo-card mc-gold" 
+              data-search="náuseas y vómitos / náuseas e vômitos onset, contenido"
+              onclick="openHC('nauseas','Náuseas y Vómitos','Náuseas e Vômitos','🤢','gold')">
+              <div class="motivo-icon">🤢</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Náuseas y Vómitos</div>
+                <div class="motivo-name pt">Náuseas e Vômitos</div>
+                <div class="motivo-sub">Onset, contenido</div>
+                <span class="motivo-badge mb-gold">GI</span>
+              </div>
+            </div><div class="motivo-card mc-gold" 
+              data-search="diarrea / diarreia bristol, osmótico vs secretor"
+              onclick="openHC('diarrea','Diarrea','Diarreia','💧','gold')">
+              <div class="motivo-icon">💧</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Diarrea</div>
+                <div class="motivo-name pt">Diarreia</div>
+                <div class="motivo-sub">Bristol, osmótico vs secretor</div>
+                <span class="motivo-badge mb-gold">GI</span>
+              </div>
+            </div><div class="motivo-card mc-gold" 
+              data-search="hemorragia digestiva / hemorragia digestiva hematoquecia, melena"
+              onclick="openHC('hemorragia_dige','Hemorragia Digestiva','Hemorragia Digestiva','🩸','gold')">
+              <div class="motivo-icon">🩸</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hemorragia Digestiva</div>
+                <div class="motivo-name pt">Hemorragia Digestiva</div>
+                <div class="motivo-sub">Hematoquecia, melena</div>
+                <span class="motivo-badge mb-gold">GI</span>
+              </div>
+            </div><div class="motivo-card mc-gold" 
+              data-search="ictericia / icterícia pre/intra/poshepática"
+              onclick="openHC('ictericia','Ictericia','Icterícia','🟡','gold')">
+              <div class="motivo-icon">🟡</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Ictericia</div>
+                <div class="motivo-name pt">Icterícia</div>
+                <div class="motivo-sub">Pre/intra/poshepática</div>
+                <span class="motivo-badge mb-gold">Biliar</span>
+              </div>
+            </div><div class="motivo-card mc-gold" 
+              data-search="dispepsia / dispepsia alarm, h. pylori"
+              onclick="openHC('dispepsia','Dispepsia','Dispepsia','🔥','gold')">
+              <div class="motivo-icon">🔥</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Dispepsia</div>
+                <div class="motivo-name pt">Dispepsia</div>
+                <div class="motivo-sub">ALARM, H. pylori</div>
+                <span class="motivo-badge mb-gold">GI</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🩵 Cardiorrespiratorio</div><div class="motivo-grid"><div class="motivo-card mc-navy" 
+              data-search="palpitaciones / palpitações ecg, chads, fa"
+              onclick="openHC('palpitaciones','Palpitaciones','Palpitações','💓','navy')">
+              <div class="motivo-icon">💓</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Palpitaciones</div>
+                <div class="motivo-name pt">Palpitações</div>
+                <div class="motivo-sub">ECG, CHADS, FA</div>
+                <span class="motivo-badge mb-navy">Cardio</span>
+              </div>
+            </div><div class="motivo-card mc-navy" 
+              data-search="edema / edema fóvea, causas, bnp"
+              onclick="openHC('edema','Edema','Edema','💧','navy')">
+              <div class="motivo-icon">💧</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Edema</div>
+                <div class="motivo-name pt">Edema</div>
+                <div class="motivo-sub">Fóvea, causas, BNP</div>
+                <span class="motivo-badge mb-navy">Cardio</span>
+              </div>
+            </div><div class="motivo-card mc-navy" 
+              data-search="crisis hta / crise has emergencia vs urgencia"
+              onclick="openHC('hta_crisis','Crisis HTA','Crise HAS','🩺','navy')">
+              <div class="motivo-icon">🩺</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Crisis HTA</div>
+                <div class="motivo-name pt">Crise HAS</div>
+                <div class="motivo-sub">Emergencia vs urgencia</div>
+                <span class="motivo-badge mb-navy">Cardio</span>
+              </div>
+            </div><div class="motivo-card mc-teal" 
+              data-search="tos / tosse aguda vs crónica, causas"
+              onclick="openHC('tos','Tos','Tosse','😮','teal')">
+              <div class="motivo-icon">😮</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Tos</div>
+                <div class="motivo-name pt">Tosse</div>
+                <div class="motivo-sub">Aguda vs crónica, causas</div>
+                <span class="motivo-badge mb-teal">Pulmo</span>
+              </div>
+            </div><div class="motivo-card mc-teal" 
+              data-search="hemoptisis / hemoptise diagnóstico diferencial"
+              onclick="openHC('hemoptisis','Hemoptisis','Hemoptise','🩸','teal')">
+              <div class="motivo-icon">🩸</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hemoptisis</div>
+                <div class="motivo-name pt">Hemoptise</div>
+                <div class="motivo-sub">Diagnóstico diferencial</div>
+                <span class="motivo-badge mb-teal">Pulmo</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🟢 Sistémico / Endocrino</div><div class="motivo-grid"><div class="motivo-card mc-green" 
+              data-search="pérdida de peso / perda de peso mint, constitucional"
+              onclick="openHC('peso_perda','Pérdida de Peso','Perda de Peso','⚖️','green')">
+              <div class="motivo-icon">⚖️</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Pérdida de Peso</div>
+                <div class="motivo-name pt">Perda de Peso</div>
+                <div class="motivo-sub">MINT, constitucional</div>
+                <span class="motivo-badge mb-green">Sistémico</span>
+              </div>
+            </div><div class="motivo-card mc-green" 
+              data-search="astenia / astenia orgánica vs funcional"
+              onclick="openHC('astenia','Astenia','Astenia','😴','green')">
+              <div class="motivo-icon">😴</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Astenia</div>
+                <div class="motivo-name pt">Astenia</div>
+                <div class="motivo-sub">Orgánica vs funcional</div>
+                <span class="motivo-badge mb-green">Sistémico</span>
+              </div>
+            </div><div class="motivo-card mc-green" 
+              data-search="dm descompensada / dm descompensada dka, hhs"
+              onclick="openHC('dm_descomp','DM Descompensada','DM Descompensada','🩸','green')">
+              <div class="motivo-icon">🩸</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">DM Descompensada</div>
+                <div class="motivo-name pt">DM Descompensada</div>
+                <div class="motivo-sub">DKA, HHS</div>
+                <span class="motivo-badge mb-green">Endocrino</span>
+              </div>
+            </div><div class="motivo-card mc-green" 
+              data-search="anemia / anemia ferropénica, b12, hemolítica"
+              onclick="openHC('anemia','Anemia','Anemia','🔴','green')">
+              <div class="motivo-icon">🔴</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Anemia</div>
+                <div class="motivo-name pt">Anemia</div>
+                <div class="motivo-sub">Ferropénica, B12, hemolítica</div>
+                <span class="motivo-badge mb-green">Hemato</span>
+              </div>
+            </div><div class="motivo-card mc-green" 
+              data-search="artralgia / artralgia mono/poli, inflamatoria"
+              onclick="openHC('artralgia','Artralgia','Artralgia','🦴','green')">
+              <div class="motivo-icon">🦴</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Artralgia</div>
+                <div class="motivo-name pt">Artralgia</div>
+                <div class="motivo-sub">Mono/poli, inflamatoria</div>
+                <span class="motivo-badge mb-green">Reuma</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🔵 Neurológico / Urinario</div><div class="motivo-grid"><div class="motivo-card mc-navy" 
+              data-search="avc / avc / tia fast, nihss, trombolisis"
+              onclick="openHC('avc','AVC','AVC','🧠','navy')">
+              <div class="motivo-icon">🧠</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">AVC</div>
+                <div class="motivo-name pt">AVC</div>
+                <div class="motivo-sub">FAST, NIHSS, trombolisis</div>
+                <span class="motivo-badge mb-navy">Neuro</span>
+              </div>
+            </div><div class="motivo-card mc-navy" 
+              data-search="convulsión / convulsão tipos, estado epiléptico"
+              onclick="openHC('convulsao','Convulsión','Convulsão','⚡','navy')">
+              <div class="motivo-icon">⚡</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Convulsión</div>
+                <div class="motivo-name pt">Convulsão</div>
+                <div class="motivo-sub">Tipos, estado epiléptico</div>
+                <span class="motivo-badge mb-navy">Neuro</span>
+              </div>
+            </div><div class="motivo-card mc-navy" 
+              data-search="hematuria / hematúria macro/micro, nefrológica"
+              onclick="openHC('hematuria','Hematuria','Hematúria','🩸','navy')">
+              <div class="motivo-icon">🩸</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hematuria</div>
+                <div class="motivo-name pt">Hematúria</div>
+                <div class="motivo-sub">Macro/micro, nefrológica</div>
+                <span class="motivo-badge mb-navy">Uro</span>
+              </div>
+            </div><div class="motivo-card mc-teal" 
+              data-search="itu / itu cistitis, pielonefritis"
+              onclick="openHC('itu','ITU','ITU','🦠','teal')">
+              <div class="motivo-icon">🦠</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">ITU</div>
+                <div class="motivo-name pt">ITU</div>
+                <div class="motivo-sub">Cistitis, pielonefritis</div>
+                <span class="motivo-badge mb-teal">Uro</span>
+              </div>
+            </div><div class="motivo-card mc-slate" 
+              data-search="dolor lumbar / dor lombar red flags, lumbago"
+              onclick="openHC('lombago','Dolor Lumbar','Dor Lombar','🦴','slate')">
+              <div class="motivo-icon">🦴</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Dolor Lumbar</div>
+                <div class="motivo-name pt">Dor Lombar</div>
+                <div class="motivo-sub">Red flags, LUMBAGO</div>
+                <span class="motivo-badge mb-slate">MSC</span>
+              </div>
+            </div></div></div></div>
+  <div id="spec-cirurgia" class="index-screen spec-index"><div class="spec-header"><div class="spec-icon-big">🔪</div><div><div class="spec-title es">Cirugía General</div><div class="spec-title pt">Cirurgia Geral</div><div class="spec-subtitle es">Selecciona el motivo de consulta</div><div class="spec-subtitle pt">Selecione o motivo de consulta</div></div></div><div style="position:relative;margin-bottom:20px">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.4;font-size:14px;pointer-events:none">🔍</span>
+      <input id="search-input" type="text" oninput="filterMotivos()"
+        style="width:100%;background:#fff;border:1.5px solid var(--line);border-radius:9px;
+        padding:11px 14px 11px 40px;font-size:14px;font-family:var(--sans);outline:none"
+        class="es" placeholder="Buscar motivo de consulta...">
+      <input id="search-input-pt" type="text" oninput="filterMotivos()"
+        style="width:100%;background:#fff;border:1.5px solid var(--line);border-radius:9px;
+        padding:11px 14px 11px 40px;font-size:14px;font-family:var(--sans);outline:none"
+        class="pt" placeholder="Buscar motivo de consulta...">
+    </div><div class="cat-section-block"><div class="cat-lbl">🔴 Abdomen Agudo</div><div class="motivo-grid"><div class="motivo-card mc-red" 
+              data-search="apendicitis / apendicite alvarado, mcburney"
+              onclick="openHC('apendicitis','Apendicitis','Apendicite','💥','red')">
+              <div class="motivo-icon">💥</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Apendicitis</div>
+                <div class="motivo-name pt">Apendicite</div>
+                <div class="motivo-sub">Alvarado, McBurney</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-gold" 
+              data-search="colecistitis / colecistite murphy, tokyo tg18"
+              onclick="openHC('colecistitis','Colecistitis','Colecistite','🟡','gold')">
+              <div class="motivo-icon">🟡</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Colecistitis</div>
+                <div class="motivo-name pt">Colecistite</div>
+                <div class="motivo-sub">Murphy, Tokyo TG18</div>
+                <span class="motivo-badge mb-gold">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="obstrucción intestinal / oclusão vodd, bridas"
+              onclick="openHC('oclusion','Obstrucción Intestinal','Oclusão','🚫','red')">
+              <div class="motivo-icon">🚫</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Obstrucción Intestinal</div>
+                <div class="motivo-name pt">Oclusão</div>
+                <div class="motivo-sub">VODD, bridas</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="peritonitis / peritonite abdomen en tabla"
+              onclick="openHC('peritonitis','Peritonitis','Peritonite','🔴','red')">
+              <div class="motivo-icon">🔴</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Peritonitis</div>
+                <div class="motivo-name pt">Peritonite</div>
+                <div class="motivo-sub">Abdomen en tabla</div>
+                <span class="motivo-badge mb-red">Emergencia</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="pancreatitis / pancreatite getsmashed, ranson"
+              onclick="openHC('pancreatitis','Pancreatitis','Pancreatite','🔥','red')">
+              <div class="motivo-icon">🔥</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Pancreatitis</div>
+                <div class="motivo-name pt">Pancreatite</div>
+                <div class="motivo-sub">GETSMASHED, Ranson</div>
+                <span class="motivo-badge mb-red">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-red" 
+              data-search="hernia estrangulada / hérnia estrangulada irefer"
+              onclick="openHC('hernia_estrang','Hernia Estrangulada','Hérnia Estrangulada','🔒','red')">
+              <div class="motivo-icon">🔒</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hernia Estrangulada</div>
+                <div class="motivo-name pt">Hérnia Estrangulada</div>
+                <div class="motivo-sub">IREFER</div>
+                <span class="motivo-badge mb-red">Emergencia</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🟠 Hemorragia Digestiva</div><div class="motivo-grid"><div class="motivo-card mc-orange" 
+              data-search="hda — hemorragia alta forrest, blatchford"
+              onclick="openHC('hda','HDA — Hemorragia Alta','HDA — Hemorragia Alta','🩸','orange')">
+              <div class="motivo-icon">🩸</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">HDA — Hemorragia Alta</div>
+                <div class="motivo-name pt">HDA — Hemorragia Alta</div>
+                <div class="motivo-sub">Forrest, Blatchford</div>
+                <span class="motivo-badge mb-orange">Urgente</span>
+              </div>
+            </div><div class="motivo-card mc-orange" 
+              data-search="hdb — hemorragia baja oakland score"
+              onclick="openHC('hdb','HDB — Hemorragia Baja','HDB — Hemorragia Baja','💉','orange')">
+              <div class="motivo-icon">💉</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">HDB — Hemorragia Baja</div>
+                <div class="motivo-name pt">HDB — Hemorragia Baja</div>
+                <div class="motivo-sub">Oakland Score</div>
+                <span class="motivo-badge mb-orange">Urgente</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">⚫ Oncología Digestiva</div><div class="motivo-grid"><div class="motivo-card mc-slate" 
+              data-search="ca gástrico / ca gástrico abcde-g, vespa, viblum"
+              onclick="openHC('ca_gastrico','CA Gástrico','CA Gástrico','🫀','slate')">
+              <div class="motivo-icon">🫀</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">CA Gástrico</div>
+                <div class="motivo-name pt">CA Gástrico</div>
+                <div class="motivo-sub">ABCDE-G, VESPA, VIBLUM</div>
+                <span class="motivo-badge mb-slate">TNM</span>
+              </div>
+            </div><div class="motivo-card mc-slate" 
+              data-search="ca colon/recto / ca cólon camelot, dukes"
+              onclick="openHC('ca_colon','CA Colon/Recto','CA Cólon','🌀','slate')">
+              <div class="motivo-icon">🌀</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">CA Colon/Recto</div>
+                <div class="motivo-name pt">CA Cólon</div>
+                <div class="motivo-sub">CAMELOT, Dukes</div>
+                <span class="motivo-badge mb-slate">TNM</span>
+              </div>
+            </div><div class="motivo-card mc-slate" 
+              data-search="ca hepático (chc) bclc, child-pugh"
+              onclick="openHC('ca_higado','CA Hepático (CHC)','CA Hepático (CHC)','🟤','slate')">
+              <div class="motivo-icon">🟤</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">CA Hepático (CHC)</div>
+                <div class="motivo-name pt">CA Hepático (CHC)</div>
+                <div class="motivo-sub">BCLC, Child-Pugh</div>
+                <span class="motivo-badge mb-slate">TNM</span>
+              </div>
+            </div><div class="motivo-card mc-slate" 
+              data-search="ca páncreas / ca pâncreas courvoisier, pancreas"
+              onclick="openHC('ca_pancreas','CA Páncreas','CA Pâncreas','⚡','slate')">
+              <div class="motivo-icon">⚡</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">CA Páncreas</div>
+                <div class="motivo-name pt">CA Pâncreas</div>
+                <div class="motivo-sub">Courvoisier, PANCREAS</div>
+                <span class="motivo-badge mb-slate">TNM</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🩵 Hernias / Pared</div><div class="motivo-grid"><div class="motivo-card mc-teal" 
+              data-search="hernia inguinal / hérnia inguinal nyhus, hesselbach"
+              onclick="openHC('hernia_ing','Hernia Inguinal','Hérnia Inguinal','↗️','teal')">
+              <div class="motivo-icon">↗️</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hernia Inguinal</div>
+                <div class="motivo-name pt">Hérnia Inguinal</div>
+                <div class="motivo-sub">Nyhus, Hesselbach</div>
+                <span class="motivo-badge mb-teal">Electiva</span>
+              </div>
+            </div><div class="motivo-card mc-teal" 
+              data-search="hernia umbilical / hérnia umbilical tamaño, reductible"
+              onclick="openHC('hernia_umb','Hernia Umbilical','Hérnia Umbilical','⭕','teal')">
+              <div class="motivo-icon">⭕</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hernia Umbilical</div>
+                <div class="motivo-name pt">Hérnia Umbilical</div>
+                <div class="motivo-sub">Tamaño, reductible</div>
+                <span class="motivo-badge mb-teal">Electiva</span>
+              </div>
+            </div><div class="motivo-card mc-teal" 
+              data-search="hernia incisional / hérnia incisional ehs, malla"
+              onclick="openHC('hernia_inc','Hernia Incisional','Hérnia Incisional','📌','teal')">
+              <div class="motivo-icon">📌</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hernia Incisional</div>
+                <div class="motivo-name pt">Hérnia Incisional</div>
+                <div class="motivo-sub">EHS, malla</div>
+                <span class="motivo-badge mb-teal">Electiva</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🟡 Vía Biliar</div><div class="motivo-grid"><div class="motivo-card mc-gold" 
+              data-search="colelitiasis / colelitíase cólico biliar, 5f"
+              onclick="openHC('colelitiasis','Colelitiasis','Colelitíase','🪨','gold')">
+              <div class="motivo-icon">🪨</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Colelitiasis</div>
+                <div class="motivo-name pt">Colelitíase</div>
+                <div class="motivo-sub">Cólico biliar, 5F</div>
+                <span class="motivo-badge mb-gold">Biliar</span>
+              </div>
+            </div><div class="motivo-card mc-gold" 
+              data-search="coledocolitiasis / coledocolitíase charcot, reynolds"
+              onclick="openHC('coledoco','Coledocolitiasis','Coledocolitíase','💛','gold')">
+              <div class="motivo-icon">💛</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Coledocolitiasis</div>
+                <div class="motivo-name pt">Coledocolitíase</div>
+                <div class="motivo-sub">Charcot, Reynolds</div>
+                <span class="motivo-badge mb-gold">Biliar</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🟣 Proctología</div><div class="motivo-grid"><div class="motivo-card mc-purple" 
+              data-search="hemorroides / hemorroidas goligher i-iv"
+              onclick="openHC('hemorroides','Hemorroides','Hemorroidas','🔵','purple')">
+              <div class="motivo-icon">🔵</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Hemorroides</div>
+                <div class="motivo-name pt">Hemorroidas</div>
+                <div class="motivo-sub">Goligher I-IV</div>
+                <span class="motivo-badge mb-purple">Procto</span>
+              </div>
+            </div><div class="motivo-card mc-purple" 
+              data-search="fisura anal / fissura anal aguda vs crónica"
+              onclick="openHC('fisura','Fisura Anal','Fissura Anal','⚡','purple')">
+              <div class="motivo-icon">⚡</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Fisura Anal</div>
+                <div class="motivo-name pt">Fissura Anal</div>
+                <div class="motivo-sub">Aguda vs crónica</div>
+                <span class="motivo-badge mb-purple">Procto</span>
+              </div>
+            </div><div class="motivo-card mc-purple" 
+              data-search="absceso perianal / abscesso perianal clasificación"
+              onclick="openHC('absceso_peri','Absceso Perianal','Abscesso Perianal','🔴','purple')">
+              <div class="motivo-icon">🔴</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Absceso Perianal</div>
+                <div class="motivo-name pt">Abscesso Perianal</div>
+                <div class="motivo-sub">Clasificación</div>
+                <span class="motivo-badge mb-purple">Urgente</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🟢 Tiroides / Mama</div><div class="motivo-grid"><div class="motivo-card mc-green" 
+              data-search="ca tiroideo / ca tireoide bethesda, tirads, alarm"
+              onclick="openHC('ca_tiroide','CA Tiroideo','CA Tireoide','🫁','green')">
+              <div class="motivo-icon">🫁</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">CA Tiroideo</div>
+                <div class="motivo-name pt">CA Tireoide</div>
+                <div class="motivo-sub">BETHESDA, TIRADS, ALARM</div>
+                <span class="motivo-badge mb-green">TNM</span>
+              </div>
+            </div><div class="motivo-card mc-green" 
+              data-search="bocio / bócio tirads, pemberton"
+              onclick="openHC('bocio','Bocio','Bócio','🟢','green')">
+              <div class="motivo-icon">🟢</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Bocio</div>
+                <div class="motivo-name pt">Bócio</div>
+                <div class="motivo-sub">TIRADS, Pemberton</div>
+                <span class="motivo-badge mb-green">Tiroides</span>
+              </div>
+            </div><div class="motivo-card mc-navy" 
+              data-search="ca de mama / ca de mama birads, frisk, sign"
+              onclick="openHC('ca_mama','CA de Mama','CA de Mama','🎗️','navy')">
+              <div class="motivo-icon">🎗️</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">CA de Mama</div>
+                <div class="motivo-name pt">CA de Mama</div>
+                <div class="motivo-sub">BIRADS, FRISK, SIGN</div>
+                <span class="motivo-badge mb-navy">TNM</span>
+              </div>
+            </div><div class="motivo-card mc-navy" 
+              data-search="masa mamaria benigna / massa mamária birads 2-3"
+              onclick="openHC('masa_mama','Masa Mamaria Benigna','Massa Mamária','⚪','navy')">
+              <div class="motivo-icon">⚪</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Masa Mamaria Benigna</div>
+                <div class="motivo-name pt">Massa Mamária</div>
+                <div class="motivo-sub">BIRADS 2-3</div>
+                <span class="motivo-badge mb-navy">Mama</span>
+              </div>
+            </div></div></div><div class="cat-section-block"><div class="cat-lbl">🟠 Trauma / Vascular</div><div class="motivo-grid"><div class="motivo-card mc-orange" 
+              data-search="trauma abdominal / trauma abdominal fast, atls, abcde"
+              onclick="openHC('trauma_abd','Trauma Abdominal','Trauma Abdominal','💢','orange')">
+              <div class="motivo-icon">💢</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Trauma Abdominal</div>
+                <div class="motivo-name pt">Trauma Abdominal</div>
+                <div class="motivo-sub">FAST, ATLS, ABCDE</div>
+                <span class="motivo-badge mb-orange">Trauma</span>
+              </div>
+            </div><div class="motivo-card mc-orange" 
+              data-search="isquemia mesentérica / isquemia mesentérica alarm"
+              onclick="openHC('isquemia_mes','Isquemia Mesentérica','Isquemia Mesentérica','🩺','orange')">
+              <div class="motivo-icon">🩺</div>
+              <div class="motivo-info">
+                <div class="motivo-name es">Isquemia Mesentérica</div>
+                <div class="motivo-name pt">Isquemia Mesentérica</div>
+                <div class="motivo-sub">ALARM</div>
+                <span class="motivo-badge mb-orange">Vascular</span>
+              </div>
+            </div></div></div></div>
+
+  <!-- HC SCREEN -->
+  <div id="hc-screen" class="hc-screen">
+  <div class="hc-header">
+    <div class="hc-header-top">
+      <div class="hc-motivo-icon" id="hc-icon">🌡️</div>
+      <div class="hc-motivo-info">
+        <div class="hc-motivo-name es" id="hc-name-es">Fiebre</div>
+        <div class="hc-motivo-name pt" id="hc-name-pt">Febre</div>
+        <div class="hc-motivo-spec">
+          <span class="hc-motivo-badge" id="hc-badge" style="background:var(--red)">Clínica Médica</span>
+          <span class="es">· Historia Clínica Completa</span>
+          <span class="pt">· História Clínica Completa</span>
+        </div>
+      </div>
+    </div>
+    <div class="hc-progress"><div class="hc-progress-fill" id="hc-prog-fill"></div></div>
+  </div>
+  <div class="hc-tabs" id="hc-tabs-bar"><div class="hc-tab  active" onclick="switchHCTab(0)"><span class="hc-tab-icon">📋</span><span class="es">Anamnesis</span><span class="pt">Anamnese</span></div><div class="hc-tab" onclick="switchHCTab(1)"><span class="hc-tab-icon">🧠</span><span class="es">Mnemotécnicas</span><span class="pt">Mnemônicas</span></div><div class="hc-tab" onclick="switchHCTab(2)"><span class="hc-tab-icon">🩺</span><span class="es">Maniobras</span><span class="pt">Manobras</span></div><div class="hc-tab" onclick="switchHCTab(3)"><span class="hc-tab-icon">⚠️</span><span class="es">Signos Clásicos</span><span class="pt">Sinais Clássicos</span></div><div class="hc-tab" onclick="switchHCTab(4)"><span class="hc-tab-icon">🔀</span><span class="es">Diagnóstico Diferencial</span><span class="pt">Diagnóstico Diferencial</span></div><div class="hc-tab" onclick="switchHCTab(5)"><span class="hc-tab-icon">📊</span><span class="es">Escalas / Scores</span><span class="pt">Escalas / Scores</span></div><div class="hc-tab" onclick="switchHCTab(6)"><span class="hc-tab-icon">🎯</span><span class="es">Conducta</span><span class="pt">Conduta</span></div></div>
+  <div class="hc-pages"><div class="hc-page active" id="page-anamnese">
+<div class="f-section">
+  <div class="f-section-lbl es">Datos del Paciente</div>
+  <div class="f-section-lbl pt">Dados do Paciente</div>
+  <div class="f-card">
+    <div class="f-card-head"><div class="f-card-dot" style="background:var(--red)"></div><span class="es">Identificación</span><span class="pt">Identificação</span></div>
+    <div class="f-row">
+      <div class="f-row-2">
+        <div>
+          <div class="f-label es">Nombre completo</div>
+          <div class="f-label pt">Nome completo</div>
+          <input class="f-input" type="text" placeholder="Apellidos, Nombre / Sobrenome, Nome" id="pac_nombre">
+        </div>
+        <div>
+          <div class="f-label es">Fecha / N.° HC</div>
+          <div class="f-label pt">Data / N.° HC</div>
+          <input class="f-input" type="text" placeholder="dd/mm/aaaa" id="pac_fecha">
+        </div>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-row-3">
+        <div>
+          <div class="f-label es">Edad</div>
+          <div class="f-label pt">Idade</div>
+          <input class="f-input" type="number" placeholder="años / anos" id="pac_edad">
+        </div>
+        <div>
+          <div class="f-label es">Sexo</div>
+          <div class="f-label pt">Sexo</div>
+          <select class="f-input" id="pac_sexo">
+            <option value="">--</option>
+            <option class="es">Masculino</option><option class="pt">Masculino</option>
+            <option class="es">Femenino</option><option class="pt">Feminino</option>
+            <option class="es">Otro</option><option class="pt">Outro</option>
+          </select>
+        </div>
+        <div>
+          <div class="f-label es">Teléfono</div>
+          <div class="f-label pt">Telefone</div>
+          <input class="f-input" type="tel" placeholder="+00 000 0000" id="pac_tel">
+        </div>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-row-2">
+        <div>
+          <div class="f-label es">Procedencia / Residencia</div>
+          <div class="f-label pt">Procedência / Residência</div>
+          <input class="f-input" type="text" placeholder="Ciudad, zona rural/urbana" id="pac_proc">
+        </div>
+        <div>
+          <div class="f-label es">Cómo llegó</div>
+          <div class="f-label pt">Como chegou</div>
+          <div class="f-radios">
+            <div class="f-radio es" onclick="selR(this,'pac_llegada','caminando')">Caminando</div>
+            <div class="f-radio pt" onclick="selR(this,'pac_llegada','caminhando')">Caminhando</div>
+            <div class="f-radio es" onclick="selR(this,'pac_llegada','silla')">Silla de ruedas</div>
+            <div class="f-radio pt" onclick="selR(this,'pac_llegada','cadeira')">Cadeira de rodas</div>
+            <div class="f-radio es" onclick="selR(this,'pac_llegada','camilla')">Camilla</div>
+            <div class="f-radio pt" onclick="selR(this,'pac_llegada','maca')">Maca</div>
+            <div class="f-radio es" onclick="selR(this,'pac_llegada','ambulancia')">Ambulancia</div>
+            <div class="f-radio pt" onclick="selR(this,'pac_llegada','ambulancia')">Ambulância</div>
+          </div>
+          <input type="hidden" id="pac_llegada">
+        </div>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Ocupación</div>
+      <div class="f-label pt">Ocupação</div>
+      <input class="f-input" type="text" placeholder="Trabajo actual, exposición ocupacional" id="pac_ocup">
+    </div>
+  </div>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Motivo de Consulta</div>
+  <div class="f-section-lbl pt">Motivo de Consulta</div>
+  <div class="f-card">
+    <div class="f-row">
+      <div class="f-label es">Motivo en palabras del paciente</div>
+      <div class="f-label pt">Motivo nas palavras do paciente</div>
+      <textarea class="f-input" id="motivo_texto" placeholder="Ej: &#34;Tengo fiebre desde hace 3 días y me duele el cuerpo&#34;"></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-row-2">
+        <div>
+          <div class="f-label es">Tiempo de evolución</div>
+          <div class="f-label pt">Tempo de evolução</div>
+          <input class="f-input" type="text" placeholder="horas / días / semanas" id="motivo_tiempo">
+        </div>
+        <div>
+          <div class="f-label es">Forma de inicio</div>
+          <div class="f-label pt">Forma de início</div>
+          <div class="f-radios">
+            <div class="f-radio es" onclick="selR(this,'inicio','subito')">Súbito</div>
+            <div class="f-radio pt" onclick="selR(this,'inicio','subito')">Súbito</div>
+            <div class="f-radio es" onclick="selR(this,'inicio','gradual')">Gradual</div>
+            <div class="f-radio pt" onclick="selR(this,'inicio','gradual')">Gradual</div>
+            <div class="f-radio es" onclick="selR(this,'inicio','insidioso')">Insidioso</div>
+            <div class="f-radio pt" onclick="selR(this,'inicio','insidioso')">Insidioso</div>
+          </div>
+          <input type="hidden" id="inicio">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Antecedentes de la Enfermedad Actual (AEA)</div>
+  <div class="f-section-lbl pt">Histórico da Doença Atual (HDA)</div>
+  <div class="f-card">
+    <div class="f-row">
+      <div class="f-label es">Fiebre — Caracterización (IDET)</div>
+      <div class="f-label pt">Febre — Caracterização (IDET)</div>
+      <div class="f-hint es">Inicio · Duración · Evolución · Temperatura máx</div>
+      <div class="f-hint pt">Início · Duração · Evolução · Temperatura máx</div>
+      <textarea class="f-input" id="fiebre_idet" placeholder="Inicio: hace 3 días / Duración: continua / Evolución: progresiva / T° máx: 39.5°C"></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Patrón de la fiebre</div>
+      <div class="f-label pt">Padrão da febre</div>
+      <div class="f-radios">
+        <div class="f-radio es" onclick="selR(this,'patron','continua')">Continua</div>
+        <div class="f-radio pt" onclick="selR(this,'patron','continua')">Contínua</div>
+        <div class="f-radio es" onclick="selR(this,'patron','remitente')">Remitente</div>
+        <div class="f-radio pt" onclick="selR(this,'patron','remitente')">Remitente</div>
+        <div class="f-radio es" onclick="selR(this,'patron','intermitente')">Intermitente</div>
+        <div class="f-radio pt" onclick="selR(this,'patron','intermitente')">Intermitente</div>
+        <div class="f-radio es" onclick="selR(this,'patron','hectica')">Héctica</div>
+        <div class="f-radio pt" onclick="selR(this,'patron','hectica')">Hética</div>
+        <div class="f-radio es" onclick="selR(this,'patron','tertiana')">Terciana</div>
+        <div class="f-radio pt" onclick="selR(this,'patron','tertiana')">Terçã</div>
+      </div>
+      <input type="hidden" id="patron">
+    </div>
+    <div class="f-row">
+      <div class="f-label es">¿Escalofríos / Rigor?</div>
+      <div class="f-label pt">Calafrios / Tremores?</div>
+      <div class="f-radios">
+        <div class="f-radio es" onclick="selR(this,'escalosfrios','si_escal')">Sí, escalofríos</div>
+        <div class="f-radio pt" onclick="selR(this,'escalosfrios','si_cal')">Sim, calafrios</div>
+        <div class="f-radio es" onclick="selR(this,'escalosfrios','rigor')">Rigor (temblores intensos)</div>
+        <div class="f-radio pt" onclick="selR(this,'escalosfrios','rigor')">Tremores intensos</div>
+        <div class="f-radio es" onclick="selR(this,'escalosfrios','no')">No</div>
+        <div class="f-radio pt" onclick="selR(this,'escalosfrios','no')">Não</div>
+      </div>
+      <input type="hidden" id="escalosfrios">
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Síntomas acompañantes</div>
+      <div class="f-label pt">Sintomas acompanhantes</div>
+      <div class="f-checks">
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Cefalea</span><span class="pt">Cefaleia</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Mialgia / artralgia</span><span class="pt">Mialgia / artralgia</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Tos</span><span class="pt">Tosse</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Disnea</span><span class="pt">Dispneia</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Dolor torácico</span><span class="pt">Dor torácica</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Náuseas / vómitos</span><span class="pt">Náuseas / vômitos</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Diarrea</span><span class="pt">Diarreia</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Dolor abdominal</span><span class="pt">Dor abdominal</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Disuria / frecuencia</span><span class="pt">Disúria / frequência</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Rash / exantema</span><span class="pt">Rash / exantema</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Rigidez de nuca</span><span class="pt">Rigidez de nuca</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Fotofobia / fonofobia</span><span class="pt">Fotofobia / fonofobia</span></div>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Localización del foco sospechoso</div>
+      <div class="f-label pt">Localização do foco suspeito</div>
+      <div class="f-radios">
+        <div class="f-radio es" onclick="selR(this,'foco','respiratorio')">Respiratorio</div>
+        <div class="f-radio pt" onclick="selR(this,'foco','respiratorio')">Respiratório</div>
+        <div class="f-radio es" onclick="selR(this,'foco','urinario')">Urinario</div>
+        <div class="f-radio pt" onclick="selR(this,'foco','urinario')">Urinário</div>
+        <div class="f-radio es" onclick="selR(this,'foco','digestivo')">Digestivo</div>
+        <div class="f-radio pt" onclick="selR(this,'foco','digestivo')">Digestivo</div>
+        <div class="f-radio es" onclick="selR(this,'foco','cutaneo')">Cutáneo</div>
+        <div class="f-radio pt" onclick="selR(this,'foco','cutaneo')">Cutâneo</div>
+        <div class="f-radio es" onclick="selR(this,'foco','neurologico')">Neurológico</div>
+        <div class="f-radio pt" onclick="selR(this,'foco','neurologico')">Neurológico</div>
+        <div class="f-radio es" onclick="selR(this,'foco','sin_foco')">Sin foco evidente</div>
+        <div class="f-radio pt" onclick="selR(this,'foco','sem_foco')">Sem foco evidente</div>
+      </div>
+      <input type="hidden" id="foco">
+    </div>
+  </div>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Antecedentes Remotos</div>
+  <div class="f-section-lbl pt">Antecedentes Remotos</div>
+  <div class="f-card">
+    <div class="f-row">
+      <div class="f-label es">Patologías crónicas</div>
+      <div class="f-label pt">Doenças crônicas</div>
+      <div class="f-checks">
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div>HTA</div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Diabetes mellitus</span><span class="pt">Diabetes mellitus</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Inmunosupresión / VIH</span><span class="pt">Imunossupressão / HIV</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Neoplasia activa</span><span class="pt">Neoplasia ativa</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Hepatopatía / Cirrosis</span><span class="pt">Hepatopatia / Cirrose</span></div>
+        <div class="f-check" onclick="togC(this)"><div class="f-checkbox"></div><span class="es">Insuf. renal crónica</span><span class="pt">Insuf. renal crônica</span></div>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Cirugías / hospitalizaciones previas</div>
+      <div class="f-label pt">Cirurgias / hospitalizações prévias</div>
+      <textarea class="f-input" id="cirugias" placeholder="Tipo y fecha aproximada"></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Medicación actual</div>
+      <div class="f-label pt">Medicação atual</div>
+      <textarea class="f-input" id="medicacion" placeholder="Incluir antibióticos recientes, corticoides, inmunosupresores, biológicos..."></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Alergias</div>
+      <div class="f-label pt">Alergias</div>
+      <input class="f-input" type="text" id="alergias" placeholder="Medicamentos, alimentos, contraste...">
+    </div>
+  </div>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Hábitos y Epidemiología</div>
+  <div class="f-section-lbl pt">Hábitos e Epidemiologia</div>
+  <div class="f-card">
+    <div class="f-row">
+      <div class="f-row-3">
+        <div>
+          <div class="f-label es">Tabaco</div>
+          <div class="f-label pt">Tabaco</div>
+          <div class="f-radios">
+            <div class="f-radio es" onclick="selR(this,'tabaco','no')">No</div>
+            <div class="f-radio pt" onclick="selR(this,'tabaco','nao')">Não</div>
+            <div class="f-radio es" onclick="selR(this,'tabaco','ex')">Ex</div>
+            <div class="f-radio pt" onclick="selR(this,'tabaco','ex')">Ex</div>
+            <div class="f-radio es" onclick="selR(this,'tabaco','si')">Sí</div>
+            <div class="f-radio pt" onclick="selR(this,'tabaco','sim')">Sim</div>
+          </div>
+          <input type="hidden" id="tabaco">
+        </div>
+        <div>
+          <div class="f-label es">Alcohol</div>
+          <div class="f-label pt">Álcool</div>
+          <div class="f-radios">
+            <div class="f-radio es" onclick="selR(this,'alcohol','no')">No</div>
+            <div class="f-radio pt" onclick="selR(this,'alcohol','nao')">Não</div>
+            <div class="f-radio es" onclick="selR(this,'alcohol','ocasional')">Ocasional</div>
+            <div class="f-radio pt" onclick="selR(this,'alcohol','ocasional')">Ocasional</div>
+            <div class="f-radio es" onclick="selR(this,'alcohol','habitual')">Habitual</div>
+            <div class="f-radio pt" onclick="selR(this,'alcohol','habitual')">Habitual</div>
+          </div>
+          <input type="hidden" id="alcohol">
+        </div>
+        <div>
+          <div class="f-label es">Viajes recientes</div>
+          <div class="f-label pt">Viagens recentes</div>
+          <input class="f-input" type="text" id="viajes" placeholder="¿Dónde? ¿Hace cuánto?">
+        </div>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Contacto con enfermos / animales / agua</div>
+      <div class="f-label pt">Contato com doentes / animais / água</div>
+      <textarea class="f-input" id="contacto" placeholder="Contacto con TB, ingesta de agua no potable, animales, etc."></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Antecedentes familiares relevantes</div>
+      <div class="f-label pt">Antecedentes familiares relevantes</div>
+      <textarea class="f-input" id="familiares" placeholder="Enfermedades hereditarias, infecciones en el hogar..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Examen Físico General</div>
+  <div class="f-section-lbl pt">Exame Físico Geral</div>
+  <div class="f-card">
+    <div class="f-row">
+      <div class="f-label es">Signos vitales</div>
+      <div class="f-label pt">Sinais vitais</div>
+      <div class="f-row-3">
+        <div>
+          <div class="f-hint">T° (°C)</div>
+          <input class="f-input" type="text" id="sv_temp" placeholder="38.5">
+        </div>
+        <div>
+          <div class="f-hint">FC (lpm)</div>
+          <input class="f-input" type="text" id="sv_fc" placeholder="98">
+        </div>
+        <div>
+          <div class="f-hint">PA (mmHg)</div>
+          <input class="f-input" type="text" id="sv_pa" placeholder="120/80">
+        </div>
+        <div>
+          <div class="f-hint">FR (rpm)</div>
+          <input class="f-input" type="text" id="sv_fr" placeholder="18">
+        </div>
+        <div>
+          <div class="f-hint">SpO₂ (%)</div>
+          <input class="f-input" type="text" id="sv_sat" placeholder="97">
+        </div>
+        <div>
+          <div class="f-hint es">Glasgow</div>
+          <div class="f-hint pt">Glasgow</div>
+          <input class="f-input" type="text" id="sv_glasgow" placeholder="15">
+        </div>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Estado general</div>
+      <div class="f-label pt">Estado geral</div>
+      <div class="f-radios">
+        <div class="f-radio es" onclick="selR(this,'eg','buen')">Buen estado general</div>
+        <div class="f-radio pt" onclick="selR(this,'eg','bom')">Bom estado geral</div>
+        <div class="f-radio es" onclick="selR(this,'eg','regular')">Regular</div>
+        <div class="f-radio pt" onclick="selR(this,'eg','regular')">Regular</div>
+        <div class="f-radio es" onclick="selR(this,'eg','grave')">Grave</div>
+        <div class="f-radio pt" onclick="selR(this,'eg','grave')">Grave</div>
+        <div class="f-radio es" onclick="selR(this,'eg','critico')">Crítico</div>
+        <div class="f-radio pt" onclick="selR(this,'eg','critico')">Crítico</div>
+      </div>
+      <input type="hidden" id="eg">
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Notas del examen físico</div>
+      <div class="f-label pt">Notas do exame físico</div>
+      <textarea class="f-input" id="ef_notas" placeholder="Hallazgos del examen por aparatos / aparelhos..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Hipótesis Diagnóstica y Plan</div>
+  <div class="f-section-lbl pt">Hipótese Diagnóstica e Plano</div>
+  <div class="f-card">
+    <div class="f-row">
+      <div class="f-label es">Diagnóstico presuntivo</div>
+      <div class="f-label pt">Diagnóstico presuntivo</div>
+      <textarea class="f-input" id="dx_principal" placeholder="Síndrome febril de probable foco..."></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Diagnósticos diferenciales</div>
+      <div class="f-label pt">Diagnósticos diferenciais</div>
+      <textarea class="f-input" id="dx_dif" placeholder="1. ... / 2. ... / 3. ..."></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Exámenes solicitados</div>
+      <div class="f-label pt">Exames solicitados</div>
+      <textarea class="f-input" id="examenes" placeholder="Hemograma, PCR, hemocultivos, urianálisis, Rx tórax..."></textarea>
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Tratamiento / Conducta</div>
+      <div class="f-label pt">Tratamento / Conduta</div>
+      <textarea class="f-input" id="tratamiento" placeholder="Hidratación, antipirético, antibioticoterapia empírica si indicado..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+  <button class="conduta-btn conduta-btn-pdf" onclick="exportPDF()">📄 <span class="es">Exportar PDF narrativo</span><span class="pt">Exportar PDF narrativo</span></button>
+  <button class="conduta-btn conduta-btn-secondary" onclick="saveHC()">💾 <span class="es">Guardar borrador</span><span class="pt">Salvar rascunho</span></button>
+  <button class="conduta-btn conduta-btn-secondary" onclick="clearHC()">🗑️ <span class="es">Limpiar HC</span><span class="pt">Limpar HC</span></button>
+</div>
+</div><div class="hc-page" id="page-mnemotecnicas">
+<div class="ibox ibox-red">
+  <strong>ABA — MNEMOTÉCNICAS</strong>
+  <span class="es">Reglas nemotécnicas específicas para el síndrome febril. Usa estas guías durante la anamnesis.</span>
+  <span class="pt">Regras mnemônicas específicas para a síndrome febril. Use estas guias durante a anamnese.</span>
+</div>
+
+<div class="mnem-card">
+  <div class="mnem-card-head">
+    <span class="mnem-kw">LITIDIFIS</span>
+    <span class="mnem-name es">Para caracterizar cualquier síntoma</span>
+    <span class="mnem-name pt">Para caracterizar qualquer sintoma</span>
+  </div>
+  <div class="mnem-row"><span class="mnem-letter">L</span><div><span class="mnem-term es">Localización</span><span class="mnem-term pt">Localização</span><span class="mnem-hint es">¿Dónde exactamente? Señala con el dedo</span><span class="mnem-hint pt">Onde exatamente? Aponta com o dedo</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">I</span><div><span class="mnem-term es">Irradiación</span><span class="mnem-term pt">Irradiação</span><span class="mnem-hint es">¿Se mueve a otro sitio?</span><span class="mnem-hint pt">Se move para outro lugar?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">T</span><div><span class="mnem-term es">Tipo / Calidad</span><span class="mnem-term pt">Tipo / Qualidade</span><span class="mnem-hint es">¿Cómo es? Opresivo, punzante, ardor...</span><span class="mnem-hint pt">Como é? Opressivo, pontada, ardor...</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">I</span><div><span class="mnem-term es">Intensidad (EVA)</span><span class="mnem-term pt">Intensidade (EVA)</span><span class="mnem-hint es">0-10 ¿Impide actividades normales?</span><span class="mnem-hint pt">0-10 Impede atividades normais?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">D</span><div><span class="mnem-term es">Duración</span><span class="mnem-term pt">Duração</span><span class="mnem-hint es">¿Cuánto dura cada episodio?</span><span class="mnem-hint pt">Quanto dura cada episódio?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">I</span><div><span class="mnem-term es">Inicio</span><span class="mnem-term pt">Início</span><span class="mnem-hint es">¿Cuándo comenzó? ¿Súbito o gradual?</span><span class="mnem-hint pt">Quando começou? Súbito ou gradual?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">F</span><div><span class="mnem-term es">Factores (mejoran / empeoran)</span><span class="mnem-term pt">Fatores (melhoram / pioram)</span><span class="mnem-hint es">¿Qué lo alivia? ¿Qué lo empeora?</span><span class="mnem-hint pt">O que alivia? O que piora?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">I</span><div><span class="mnem-term es">Incidencia (episodios previos)</span><span class="mnem-term pt">Incidência (episódios prévios)</span><span class="mnem-hint es">¿Nunca, primera vez? ¿Cuántas veces?</span><span class="mnem-hint pt">Nunca, primeira vez? Quantas vezes?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">S</span><div><span class="mnem-term es">Síntomas acompañantes</span><span class="mnem-term pt">Sintomas acompanhantes</span><span class="mnem-hint es">¿Qué más tiene? Revisar por sistemas</span><span class="mnem-hint pt">O que mais tem? Revisar por sistemas</span></div></div>
+</div>
+
+<div class="mnem-card">
+  <div class="mnem-card-head">
+    <span class="mnem-kw">IDET</span>
+    <span class="mnem-name es">Caracterización específica de la fiebre</span>
+    <span class="mnem-name pt">Caracterização específica da febre</span>
+  </div>
+  <div class="mnem-row"><span class="mnem-letter">I</span><div><span class="mnem-term es">Inicio</span><span class="mnem-term pt">Início</span><span class="mnem-hint es">¿Cuándo comenzó exactamente? ¿Qué estaba haciendo?</span><span class="mnem-hint pt">Quando começou exatamente? O que estava fazendo?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">D</span><div><span class="mnem-term es">Duración</span><span class="mnem-term pt">Duração</span><span class="mnem-hint es">¿Cuántos días? ¿Continua o intermitente?</span><span class="mnem-hint pt">Quantos dias? Contínua ou intermitente?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">E</span><div><span class="mnem-term es">Evolución</span><span class="mnem-term pt">Evolução</span><span class="mnem-hint es">¿Progresiva, estable, regresiva? ¿Ha cedido con antitérmicos?</span><span class="mnem-hint pt">Progressiva, estável, regressiva? Cedeu com antitérmicos?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">T</span><div><span class="mnem-term es">Temperatura</span><span class="mnem-term pt">Temperatura</span><span class="mnem-hint es">¿Máxima registrada? ¿Fue medida o referida?</span><span class="mnem-hint pt">Máxima registrada? Foi medida ou referida?</span></div></div>
+</div>
+
+<div class="mnem-card">
+  <div class="mnem-card-head">
+    <span class="mnem-kw">ROTA</span>
+    <span class="mnem-name es">Epidemiología de la fiebre</span>
+    <span class="mnem-name pt">Epidemiologia da febre</span>
+  </div>
+  <div class="mnem-row"><span class="mnem-letter">R</span><div><span class="mnem-term es">Residencia / Región</span><span class="mnem-term pt">Residência / Região</span><span class="mnem-hint es">¿Zona endémica? (malaria, dengue, leishmaniasis)</span><span class="mnem-hint pt">Zona endêmica? (malária, dengue, leishmaniose)</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">O</span><div><span class="mnem-term es">Ocupación / Exposición</span><span class="mnem-term pt">Ocupação / Exposição</span><span class="mnem-hint es">Agricultores, veterinarios, hacinamiento</span><span class="mnem-hint pt">Agricultores, veterinários, aglomeração</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">T</span><div><span class="mnem-term es">Travel (Viajes)</span><span class="mnem-term pt">Viagens</span><span class="mnem-hint es">¿Viajó recientemente? ¿A dónde? ¿Profilaxis?</span><span class="mnem-hint pt">Viajou recentemente? Para onde? Profilaxia?</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">A</span><div><span class="mnem-term es">Animales / Agua / Alimentos</span><span class="mnem-term pt">Animais / Água / Alimentos</span><span class="mnem-hint es">Zoonosis, bromatológico, leptospirosis</span><span class="mnem-hint pt">Zoonoses, bromatológico, leptospirose</span></div></div>
+</div>
+
+<div class="mnem-card">
+  <div class="mnem-card-head">
+    <span class="mnem-kw">FOCOS</span>
+    <span class="mnem-name es">Focos infecciosos a descartar</span>
+    <span class="mnem-name pt">Focos infecciosos a descartar</span>
+  </div>
+  <div class="mnem-row"><span class="mnem-letter">F</span><div><span class="mnem-term">Pulmonar (Foco respiratorio)</span><span class="mnem-hint es">Tos, disnea, esputo, Rx tórax</span><span class="mnem-hint pt">Tosse, dispneia, escarro, Rx tórax</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">O</span><div><span class="mnem-term">Orina (Foco urinario)</span><span class="mnem-hint es">Disuria, polaquiuria, dolor lumbar</span><span class="mnem-hint pt">Disúria, polaciúria, dor lombar</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">C</span><div><span class="mnem-term">Cutáneo / Celulitis</span><span class="mnem-hint es">Eritema, calor, fluctuación, puerta de entrada</span><span class="mnem-hint pt">Eritema, calor, flutuação, porta de entrada</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">O</span><div><span class="mnem-term">Osteoarticular</span><span class="mnem-hint es">Artritis séptica, osteomielitis, articulación caliente</span><span class="mnem-hint pt">Artrite séptica, osteomielite, articulação quente</span></div></div>
+  <div class="mnem-row"><span class="mnem-letter">S</span><div><span class="mnem-term es">Sin foco (Fiebre de origen desconocido)</span><span class="mnem-term pt">Sem foco (Febre de origem desconhecida)</span><span class="mnem-hint es">&gt;3 semanas, T°&gt;38.3°C, sin diagnóstico → FOD</span><span class="mnem-hint pt">&gt;3 semanas, T°&gt;38.3°C, sem diagnóstico → FDO</span></div></div>
+</div>
+</div><div class="hc-page" id="page-manobras">
+<div class="ibox ibox-teal">
+  <strong es>ABA — MANOBRAS SEMIOLÓGICAS</strong>
+  <strong pt>ABA — MANOBRAS SEMIOLÓGICAS</strong>
+  <span class="es">Técnica paso a paso para el examen físico en paciente febril. Cada acordeón incluye pasos + hallazgos.</span>
+  <span class="pt">Técnica passo a passo para o exame físico no paciente febril. Cada acordeão inclui passos + achados.</span>
+</div>
+
+<div class="acc" id="acc1">
+  <div class="acc-head" onclick="togAcc('acc1')">
+    <span class="acc-num">01</span>
+    <div><div class="acc-title es">Inspección General y Estado General</div>
+    <div class="acc-title pt">Inspeção Geral e Estado Geral</div>
+    <div class="acc-subtitle es">Facies, hidratación, coloración, postura</div>
+    <div class="acc-subtitle pt">Fácies, hidratação, coloração, postura</div></div>
+    <span class="acc-toggle">+</span>
+  </div>
+  <div class="acc-body">
+    <ul class="acc-steps">
+      <li class="acc-step"><span class="acc-step-n">1</span><span class="es">Observa la facies: facies tóxica (pómulos rojos, ojos brillantes, labios secos) indica proceso infeccioso activo.</span><span class="pt">Observe a fácies: fácies tóxica (maçãs do rosto vermelhas, olhos brilhantes, lábios secos) indica processo infeccioso ativo.</span></li>
+      <li class="acc-step"><span class="acc-step-n">2</span><span class="es">Evalúa hidratación: mucosas, turgencia de piel, llene capilar (&lt;2s = normal).</span><span class="pt">Avalie hidratação: mucosas, turgor cutâneo, enchimento capilar (&lt;2s = normal).</span></li>
+      <li class="acc-step"><span class="acc-step-n">3</span><span class="es">Coloración: palidez (anemia / shock), ictericia (hepatitis / malaria), cianosis (sepsis avanzada).</span><span class="pt">Coloração: palidez (anemia / choque), icterícia (hepatite / malária), cianose (sepse avançada).</span></li>
+      <li class="acc-step"><span class="acc-step-n">4</span><span class="es">Busca rash: localización, morfología (macular, papular, petequial), distribución.</span><span class="pt">Busque rash: localização, morfologia (macular, papular, petequial), distribuição.</span></li>
+    </ul>
+    <div class="acc-findings">
+      <div class="acc-finding normal"><span class="acc-finding-lbl">Normal</span>Alerta, hidratado, coloración normal, sin rash</div>
+      <div class="acc-finding abnormal"><span class="acc-finding-lbl">Alarma</span>Facies tóxica, deshidratado, petequias → meningococo, sepsis</div>
+    </div>
+    <div class="acc-note-wrap">
+      <textarea class="f-input" placeholder="Hallazgos del examen general..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="acc" id="acc2">
+  <div class="acc-head" onclick="togAcc('acc2')">
+    <span class="acc-num">02</span>
+    <div><div class="acc-title es">Examen de Ganglios Linfáticos</div>
+    <div class="acc-title pt">Exame de Linfonodos</div>
+    <div class="acc-subtitle es">Cadenas cervicales, axilares, inguinales</div>
+    <div class="acc-subtitle pt">Cadeias cervicais, axilares, inguinais</div></div>
+    <span class="acc-toggle">+</span>
+  </div>
+  <div class="acc-body">
+    <ul class="acc-steps">
+      <li class="acc-step"><span class="acc-step-n">1</span><span class="es">Cervical: palpa las cadenas anterior, posterior, submandibular, submentoniana, supraclavicular. Sistemáticamente de arriba hacia abajo.</span><span class="pt">Cervical: palpe as cadeias anterior, posterior, submandibular, submentoniana, supraclavicular. Sistematicamente de cima para baixo.</span></li>
+      <li class="acc-step"><span class="acc-step-n">2</span><span class="es">Axilar: paciente con el brazo levantado, palpa el vértice y las paredes axilares.</span><span class="pt">Axilar: paciente com o braço levantado, palpe o vértice e as paredes axilares.</span></li>
+      <li class="acc-step"><span class="acc-step-n">3</span><span class="es">Inguinal: palpa horizontal y vertical. Normal encontrar ganglios pequeños (hasta 1cm) en ingle.</span><span class="pt">Inguinal: palpe horizontal e vertical. Normal encontrar linfonodos pequenos (até 1cm) na virilha.</span></li>
+      <li class="acc-step"><span class="acc-step-n">4</span><span class="es">Caracteriza: tamaño (cm), consistencia (blanda/firme/pétrea), movilidad, dolor, eritema suprayacente.</span><span class="pt">Caracterize: tamanho (cm), consistência (mole/firme/pétrea), mobilidade, dor, eritema sobre o gânglio.</span></li>
+    </ul>
+    <div class="acc-findings">
+      <div class="acc-finding normal"><span class="acc-finding-lbl">Normal</span>Sin adenopatías o ganglios &lt;1cm, blandos, móviles, no dolorosos</div>
+      <div class="acc-finding abnormal"><span class="acc-finding-lbl">Anormal</span>Adenopatías &gt;1cm, duras/fijas → neoplasia; dolorosas/eritematosas → infección</div>
+    </div>
+    <div class="acc-note-wrap">
+      <textarea class="f-input" placeholder="Describir adenopatías si presentes..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="acc" id="acc3">
+  <div class="acc-head" onclick="togAcc('acc3')">
+    <span class="acc-num">03</span>
+    <div><div class="acc-title es">Signos Meníngeos</div>
+    <div class="acc-title pt">Sinais Meníngeos</div>
+    <div class="acc-subtitle es">Kernig · Brudzinski · Rigidez de nuca</div>
+    <div class="acc-subtitle pt">Kernig · Brudzinski · Rigidez de nuca</div></div>
+    <span class="acc-toggle">+</span>
+  </div>
+  <div class="acc-body">
+    <ul class="acc-steps">
+      <li class="acc-step"><span class="acc-step-n">1</span><span class="es">Rigidez de nuca: con el paciente en decúbito, intenta flexionar el cuello pasivamente. Resistencia o dolor = positivo.</span><span class="pt">Rigidez de nuca: com o paciente em decúbito, tente flexionar o pescoço passivamente. Resistência ou dor = positivo.</span></li>
+      <li class="acc-step"><span class="acc-step-n">2</span><span class="es">Signo de Kernig: flexiona la cadera a 90°, luego intenta extender la rodilla. Dolor o resistencia = positivo.</span><span class="pt">Sinal de Kernig: flexione o quadril a 90°, depois tente estender o joelho. Dor ou resistência = positivo.</span></li>
+      <li class="acc-step"><span class="acc-step-n">3</span><span class="es">Signo de Brudzinski: flexión pasiva del cuello produce flexión involuntaria de ambas rodillas = positivo.</span><span class="pt">Sinal de Brudzinski: flexão passiva do pescoço provoca flexão involuntária dos joelhos = positivo.</span></li>
+      <li class="acc-step"><span class="acc-step-n">4</span><span class="es">Jolt accentuation: pide al paciente mover la cabeza horizontalmente (no, no, no) — empeoramiento de cefalea = meningitis.</span><span class="pt">Jolt accentuation: peça para o paciente mover a cabeça horizontalmente (não, não) — piora da cefaleia = meningite.</span></li>
+    </ul>
+    <div class="acc-findings">
+      <div class="acc-finding normal"><span class="acc-finding-lbl">Normal</span>Sin rigidez de nuca, Kernig –, Brudzinski –</div>
+      <div class="acc-finding abnormal"><span class="acc-finding-lbl">Meningismo</span>Rigidez + Kernig/Brudzinski + → meningitis hasta demostrar lo contrario → PL urgente</div>
+    </div>
+    <div class="acc-note-wrap">
+      <textarea class="f-input" placeholder="Signos meníngeos..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="acc" id="acc4">
+  <div class="acc-head" onclick="togAcc('acc4')">
+    <span class="acc-num">04</span>
+    <div><div class="acc-title es">Auscultación Pulmonar</div>
+    <div class="acc-title pt">Ausculta Pulmonar</div>
+    <div class="acc-subtitle es">Técnica sistemática de 8 focos + VVT</div>
+    <div class="acc-subtitle pt">Técnica sistemática de 8 focos + FVT</div></div>
+    <span class="acc-toggle">+</span>
+  </div>
+  <div class="acc-body">
+    <ul class="acc-steps">
+      <li class="acc-step"><span class="acc-step-n">1</span><span class="es">Siempre ANTES de palpar y percutir. Posición sentada, boca abierta, respiración profunda lenta.</span><span class="pt">Sempre ANTES de palpar e percutir. Posição sentada, boca aberta, respiração profunda lenta.</span></li>
+      <li class="acc-step"><span class="acc-step-n">2</span><span class="es">8 focos: 2 apicales anteriores → 2 infraclaviculares → 2 laterales → 2 basales posteriores. Compara lado a lado.</span><span class="pt">8 focos: 2 apicais anteriores → 2 infraclaviculares → 2 laterais → 2 basais posteriores. Compara lado a lado.</span></li>
+      <li class="acc-step"><span class="acc-step-n">3</span><span class="es">Busca: crepitantes (neumonía), broncofonía, soplo tubario, reducción del MV.</span><span class="pt">Busque: crepitantes (pneumonia), broncofonia, sopro tubário, redução do MV.</span></li>
+    </ul>
+    <div class="acc-findings">
+      <div class="acc-finding normal"><span class="acc-finding-lbl">Normal</span>MV presente bilateral, sin ruidos agregados</div>
+      <div class="acc-finding abnormal"><span class="acc-finding-lbl">Anormal</span>Crepitantes + soplo tubario + consolidación → neumonía → Rx tórax urgente</div>
+    </div>
+    <div class="acc-note-wrap">
+      <textarea class="f-input" placeholder="Hallazgos de la auscultación pulmonar..."></textarea>
+    </div>
+  </div>
+</div>
+</div><div class="hc-page" id="page-signos">
+<div class="ibox ibox-gold">
+  <strong>ABA — SIGNOS CLÁSICOS</strong>
+  <span class="es">Signos físicos asociados a la fiebre con su significado clínico.</span>
+  <span class="pt">Sinais físicos associados à febre com seu significado clínico.</span>
+</div>
+
+<div class="sign-grid">
+  <div class="sign-card">
+    <div class="sign-name es">Signo de Kernig</div>
+    <div class="sign-name pt">Sinal de Kernig</div>
+    <span class="sign-eponym">Vladimir Kernig · 1882</span>
+    <div class="sign-how es">Flexión de cadera 90° + extensión de rodilla resistida o dolorosa.</div>
+    <div class="sign-how pt">Flexão do quadril 90° + extensão do joelho resistida ou dolorosa.</div>
+    <span class="sign-means es">Irritación meníngea → meningitis o HSA</span>
+    <span class="sign-means pt">Irritação meníngea → meningite ou HSA</span>
+  </div>
+  <div class="sign-card">
+    <div class="sign-name es">Signo de Brudzinski</div>
+    <div class="sign-name pt">Sinal de Brudzinski</div>
+    <span class="sign-eponym">Józef Brudziński · 1909</span>
+    <div class="sign-how es">Flexión pasiva del cuello → flexión involuntaria de rodillas.</div>
+    <div class="sign-how pt">Flexão passiva do pescoço → flexão involuntária dos joelhos.</div>
+    <span class="sign-means es">Irritación meníngea → meningitis bacteriana</span>
+    <span class="sign-means pt">Irritação meníngea → meningite bacteriana</span>
+  </div>
+  <div class="sign-card">
+    <div class="sign-name es">Petequias con fiebre</div>
+    <div class="sign-name pt">Petéquias com febre</div>
+    <span class="sign-eponym">Signo de alarma · No epónimo</span>
+    <div class="sign-how es">Puntos rojizos no blanqueables al vitroprensión en piel o mucosas.</div>
+    <div class="sign-how pt">Pontos avermelhados não branqueáveis à digitopressão em pele ou mucosas.</div>
+    <span class="sign-means es">⚠️ Meningococcemia / sepsis grave — emergencia</span>
+    <span class="sign-means pt">⚠️ Meningococcemia / sepse grave — emergência</span>
+  </div>
+  <div class="sign-card">
+    <div class="sign-name es">Manchas de Osler</div>
+    <div class="sign-name pt">Nódulos de Osler</div>
+    <span class="sign-eponym">William Osler · 1885</span>
+    <div class="sign-how es">Nódulos rojos dolorosos en pulpejos de los dedos y palmas.</div>
+    <div class="sign-how pt">Nódulos vermelhos dolorosos nas polpas dos dedos e palmas.</div>
+    <span class="sign-means es">Endocarditis infecciosa (embolia séptica)</span>
+    <span class="sign-means pt">Endocardite infecciosa (embolia séptica)</span>
+  </div>
+  <div class="sign-card">
+    <div class="sign-name es">Manchas de Janeway</div>
+    <div class="sign-name pt">Lesões de Janeway</div>
+    <span class="sign-eponym">Edward Janeway · 1899</span>
+    <div class="sign-how es">Máculas eritematosas no dolorosas en palmas y plantas.</div>
+    <div class="sign-how pt">Máculas eritematosas não dolorosas em palmas e plantas.</div>
+    <span class="sign-means es">Endocarditis infecciosa (más en S. aureus)</span>
+    <span class="sign-means pt">Endocardite infecciosa (mais em S. aureus)</span>
+  </div>
+  <div class="sign-card">
+    <div class="sign-name es">Triángulo de Grocco</div>
+    <div class="sign-name pt">Triângulo de Grocco</div>
+    <span class="sign-eponym">Pietro Grocco · 1902</span>
+    <div class="sign-how es">Matidez triangular paravertebral contralateral al derrame pleural.</div>
+    <div class="sign-how pt">Macicez triangular paravertebral contralateral ao derrame pleural.</div>
+    <span class="sign-means es">Derrame pleural → neumonía, TBC, empiema</span>
+    <span class="sign-means pt">Derrame pleural → pneumonia, TB, empiema</span>
+  </div>
+</div>
+</div><div class="hc-page" id="page-diferencial">
+<div class="ibox ibox-ink">
+  <strong>ABA — DIAGNÓSTICO DIFERENCIAL EXPLICADO</strong>
+  <span class="es">No solo una lista — para cada diagnóstico, qué lo favorece y qué lo descarta según los hallazgos clínicos.</span>
+  <span class="pt">Não só uma lista — para cada diagnóstico, o que favorece e o que descarta segundo os achados clínicos.</span>
+</div>
+
+<table class="ddx-table">
+  <thead>
+    <tr>
+      <th es>Diagnóstico</th><th pt>Diagnóstico</th>
+      <th es>A favor</th><th pt>A favor</th>
+      <th es>En contra</th><th pt>Contra</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Neumonía bacteriana</td>
+      <td><div class="ddx-favor es">Tos productiva, crepitantes, soplo tubario, Rx consolidación, escalofríos</div><div class="ddx-favor pt">Tosse produtiva, crepitantes, sopro tubário, Rx consolidação, calafrios</div></td>
+      <td><div class="ddx-contra es">Sin síntomas respiratorios, auscultación normal, Rx normal</div><div class="ddx-contra pt">Sem sintomas respiratórios, ausculta normal, Rx normal</div></td>
+    </tr>
+    <tr>
+      <td>Infección urinaria (pielonefritis)</td>
+      <td><div class="ddx-favor es">Disuria, polaquiuria, dolor lumbar/puñopercusión (+), piuria</div><div class="ddx-favor pt">Disúria, polaciúria, dor lombar/punho-percussão (+), piúria</div></td>
+      <td><div class="ddx-contra es">Sin síntomas urinarios, urocultivo negativo</div><div class="ddx-contra pt">Sem sintomas urinários, urocultura negativa</div></td>
+    </tr>
+    <tr>
+      <td>Meningitis bacteriana</td>
+      <td><div class="ddx-favor es">Cefalea intensa, rigidez de nuca, Kernig/Brudzinski (+), fotofobia, petequias</div><div class="ddx-favor pt">Cefaleia intensa, rigidez de nuca, Kernig/Brudzinski (+), fotofobia, petéquias</div></td>
+      <td><div class="ddx-contra es">Sin síntomas meníngeos, signos meníngeos negativos</div><div class="ddx-contra pt">Sem sintomas meníngeos, sinais meníngeos negativos</div></td>
+    </tr>
+    <tr>
+      <td>Endocarditis infecciosa</td>
+      <td><div class="ddx-favor es">Fiebre prolongada, soplo cardíaco nuevo, Osler/Janeway, esplenomegalia, UDVP, prótesis valvular</div><div class="ddx-favor pt">Febre prolongada, sopro cardíaco novo, Osler/Janeway, esplenomegalia, UDVP, prótese valvar</div></td>
+      <td><div class="ddx-contra es">Fiebre &lt;5 días, sin soplo, sin factores de riesgo</div><div class="ddx-contra pt">Febre &lt;5 dias, sem sopro, sem fatores de risco</div></td>
+    </tr>
+    <tr>
+      <td es>Dengue / Arbovirus</td><td pt>Dengue / Arbovirus</td>
+      <td><div class="ddx-favor es">Zona endémica, dolor retroocular, mialgia intensa, rash, plaquetopenia, tourniquet (+)</div><div class="ddx-favor pt">Zona endêmica, dor retroocular, mialgia intensa, rash, plaquetopenia, Laço (+)</div></td>
+      <td><div class="ddx-contra es">Sin epidemiología compatible, plaquetas normales, sin rash</div><div class="ddx-contra pt">Sem epidemiologia compatível, plaquetas normais, sem rash</div></td>
+    </tr>
+    <tr>
+      <td es>FOD (Fiebre de Origen Desconocido)</td><td pt>FDO (Febre de Origem Desconhecida)</td>
+      <td><div class="ddx-favor es">Fiebre &gt;3 semanas, T°&gt;38.3°C en ≥2 ocasiones, sin diagnóstico tras estudio básico</div><div class="ddx-favor pt">Febre &gt;3 semanas, T°&gt;38.3°C em ≥2 ocasiões, sem diagnóstico após estudo básico</div></td>
+      <td><div class="ddx-contra es">Fiebre de corta evolución con foco evidente</div><div class="ddx-contra pt">Febre de curta evolução com foco evidente</div></td>
+    </tr>
+  </tbody>
+</table>
+</div><div class="hc-page" id="page-escalas">
+<div class="ibox ibox-teal">
+  <strong>ABA — ESCALAS Y SCORES</strong>
+  <span class="es">Herramientas de estratificación de riesgo en el paciente febril.</span>
+  <span class="pt">Ferramentas de estratificação de risco no paciente febril.</span>
+</div>
+
+<div class="score-title es">Criterios de SEPSIS (Sepsis-3)</div>
+<div class="score-title pt">Critérios de SEPSIS (Sepsis-3)</div>
+<table class="score-table">
+  <thead><tr><th>Criterio</th><th es>Descripción</th><th pt>Descrição</th></tr></thead>
+  <tbody>
+    <tr><td>SIRS</td><td colspan="2" class="es">T°&gt;38°C o &lt;36°C + FC&gt;90 + FR&gt;20 + Leucos &gt;12k o &lt;4k (no necesario en Sepsis-3)</td></tr>
+    <tr><td>qSOFA</td><td colspan="2"><span class="es">FR≥22, Alt. conciencia, TAS≤100 — ≥2 = sospecha sepsis fuera de UCI</span><span class="pt">FR≥22, Alt. consciência, TAS≤100 — ≥2 = suspeita sepse fora da UTI</span></td></tr>
+    <tr><td>SOFA</td><td colspan="2"><span class="es">Disfunción orgánica: ΔqSOFA≥2 o SOFA≥2 + foco infeccioso = SEPSIS</span><span class="pt">Disfunção orgânica: ΔqSOFA≥2 ou SOFA≥2 + foco infeccioso = SEPSE</span></td></tr>
+    <tr><td>Shock séptico</td><td colspan="2"><span class="es">Sepsis + vasopresores para mantener PAM≥65 + lactato&gt;2 mmol/L</span><span class="pt">Sepse + vasopressores para manter PAM≥65 + lactato&gt;2 mmol/L</span></td></tr>
+  </tbody>
+</table>
+<div class="score-note">
+  <strong>HORA 1 BUNDLE SEPSIS</strong>
+  <span class="es">Hemocultivos → ATB empírico → Lactato → Fluidos 30mL/kg → Vasopresores si PAM&lt;65</span>
+  <span class="pt">Hemoculturas → ATB empírico → Lactato → Fluidos 30mL/kg → Vasopressores se PAM&lt;65</span>
+</div>
+
+<div class="score-title es">Criterios de Duke Modificados — Endocarditis</div>
+<div class="score-title pt">Critérios de Duke Modificados — Endocardite</div>
+<table class="score-table">
+  <thead><tr><th es>Criterio</th><th pt>Critério</th><th es>Descripción</th><th pt>Descrição</th></tr></thead>
+  <tbody>
+    <tr><td es>Mayor 1</td><td pt>Maior 1</td><td><span class="es">Hemocultivo positivo con microorganismo típico (≥2 separados)</span><span class="pt">Hemocultura positiva com microorganismo típico (≥2 separadas)</span></td></tr>
+    <tr><td es>Mayor 2</td><td pt>Maior 2</td><td><span class="es">Ecocardiograma positivo (vegetación, absceso, nueva dehiscencia prótesis, nueva regurgitación)</span><span class="pt">Ecocardiograma positivo (vegetação, abscesso, nova regurgitação valvar)</span></td></tr>
+    <tr><td es>Menor</td><td pt>Menor</td><td><span class="es">Predisposición, fiebre&gt;38°C, fenómenos vasculares (Janeway), inmunológicos (Osler, FR+), hemocultivo no mayor</span><span class="pt">Predisposição, febre&gt;38°C, fenômenos vasculares (Janeway), imunológicos (Osler)</span></td></tr>
+  </tbody>
+</table>
+<div class="score-note">
+  <strong>DIAGNÓSTICO</strong>
+  <span class="es">Definitivo: 2 mayores / 1 mayor + 3 menores / 5 menores. Posible: 1 mayor + 1 menor / 3 menores</span>
+  <span class="pt">Definitivo: 2 maiores / 1 maior + 3 menores / 5 menores. Possível: 1 maior + 1 menor / 3 menores</span>
+</div>
+
+<div class="score-title es">Temperatura — Clasificación</div>
+<div class="score-title pt">Temperatura — Classificação</div>
+<table class="score-table">
+  <thead><tr><th es>Rango</th><th pt>Faixa</th><th es>Interpretación</th><th pt>Interpretação</th></tr></thead>
+  <tbody>
+    <tr><td es>36.0–37.2°C</td><td pt>36.0–37.2°C</td><td><span class="es">Normal</span><span class="pt">Normal</span></td></tr>
+    <tr><td es>37.3–37.9°C</td><td pt>37.3–37.9°C</td><td><span class="es">Subfebril</span><span class="pt">Subfebril</span></td></tr>
+    <tr><td es>38.0–38.9°C</td><td pt>38.0–38.9°C</td><td><span class="es">Fiebre moderada</span><span class="pt">Febre moderada</span></td></tr>
+    <tr><td es>39.0–39.9°C</td><td pt>39.0–39.9°C</td><td><span class="es">Fiebre alta</span><span class="pt">Febre alta</span></td></tr>
+    <tr><td es>≥40.0°C</td><td pt>≥40.0°C</td><td><span class="es">Hiperpirexia — riesgo de convulsiones</span><span class="pt">Hiperpiréxia — risco de convulsões</span></td></tr>
+    <tr><td es>&lt;36.0°C</td><td pt>&lt;36.0°C</td><td><span class="es">Hipotermia — pensar sepsis, hipotiroidismo</span><span class="pt">Hipotermia — pensar sepse, hipotiroidismo</span></td></tr>
+  </tbody>
+</table>
+</div><div class="hc-page" id="page-conduta">
+<div class="ibox ibox-red">
+  <strong>ABA — CONDUTA</strong>
+  <span class="es">Resumen de la conducta clínica según el escenario de fiebre.</span>
+  <span class="pt">Resumo da conduta clínica segundo o cenário de febre.</span>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Manejo Inicial</div>
+  <div class="f-section-lbl pt">Manejo Inicial</div>
+  <div class="f-card">
+    <div class="f-row">
+      <div class="f-label es">Conducta inmediata</div>
+      <div class="f-label pt">Conduta imediata</div>
+      <div class="f-radios">
+        <div class="f-radio es" onclick="selR(this,'conduta_imediata','alta_obs')">Alta con observación</div>
+        <div class="f-radio pt" onclick="selR(this,'conduta_imediata','alta_obs')">Alta com observação</div>
+        <div class="f-radio es" onclick="selR(this,'conduta_imediata','internacion')">Internación</div>
+        <div class="f-radio pt" onclick="selR(this,'conduta_imediata','internacao')">Internação</div>
+        <div class="f-radio es" onclick="selR(this,'conduta_imediata','uci')">UCI / UTI</div>
+        <div class="f-radio pt" onclick="selR(this,'conduta_imediata','uti')">UTI</div>
+        <div class="f-radio es" onclick="selR(this,'conduta_imediata','derivacion')">Derivación</div>
+        <div class="f-radio pt" onclick="selR(this,'conduta_imediata','encaminhamento')">Encaminhamento</div>
+      </div>
+      <input type="hidden" id="conduta_imediata">
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Antibioticoterapia</div>
+      <div class="f-label pt">Antibioticoterapia</div>
+      <div class="f-radios">
+        <div class="f-radio es" onclick="selR(this,'atb','no')">No indicada</div>
+        <div class="f-radio pt" onclick="selR(this,'atb','nao')">Não indicada</div>
+        <div class="f-radio es" onclick="selR(this,'atb','empirica')">Empírica</div>
+        <div class="f-radio pt" onclick="selR(this,'atb','empirica')">Empírica</div>
+        <div class="f-radio es" onclick="selR(this,'atb','dirigida')">Dirigida (cultivo)</div>
+        <div class="f-radio pt" onclick="selR(this,'atb','dirigida')">Dirigida (cultura)</div>
+      </div>
+      <input type="hidden" id="atb">
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Esquema antibiótico elegido</div>
+      <div class="f-label pt">Esquema antibiótico escolhido</div>
+      <input class="f-input" type="text" id="atb_esquema" placeholder="Ej: Amoxicilina 500mg c/8h VO x 7 días">
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Antipirético</div>
+      <div class="f-label pt">Antitérmico</div>
+      <div class="f-radios">
+        <div class="f-radio es" onclick="selR(this,'antipiretico','paracetamol')">Paracetamol 500-1000mg c/6-8h</div>
+        <div class="f-radio pt" onclick="selR(this,'antipiretico','paracetamol')">Paracetamol 500-1000mg c/6-8h</div>
+        <div class="f-radio es" onclick="selR(this,'antipiretico','ibuprofeno')">Ibuprofeno 400mg c/8h</div>
+        <div class="f-radio pt" onclick="selR(this,'antipiretico','ibuprofeno')">Ibuprofeno 400mg c/8h</div>
+        <div class="f-radio es" onclick="selR(this,'antipiretico','dipirona')">Dipirona 500mg c/6h</div>
+        <div class="f-radio pt" onclick="selR(this,'antipiretico','dipirona')">Dipirona 500mg c/6h</div>
+      </div>
+      <input type="hidden" id="antipiretico">
+    </div>
+    <div class="f-row">
+      <div class="f-label es">Notas de conducta</div>
+      <div class="f-label pt">Notas de conduta</div>
+      <textarea class="f-input" id="notas_conduta" placeholder="Observaciones adicionales, plan de seguimiento, señales de alarma para el paciente..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="f-section">
+  <div class="f-section-lbl es">Signos de Alarma para el Paciente</div>
+  <div class="f-section-lbl pt">Sinais de Alarme para o Paciente</div>
+  <div class="ibox ibox-red">
+    <span class="es">Instruir al paciente regresar si presenta: T°≥39.5°C que no cede / petequias o rash / rigidez de cuello / confusión / dificultad respiratoria / hipotensión / no tolera líquidos</span>
+    <span class="pt">Instruir o paciente a retornar se apresentar: T°≥39.5°C que não cede / petéquias ou rash / rigidez de nuca / confusão / dificuldade respiratória / hipotensão / não tolera líquidos</span>
+  </div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
+  <button class="conduta-btn conduta-btn-pdf" onclick="exportPDF()">📄 <span class="es">Exportar PDF narrativo</span><span class="pt">Exportar PDF narrativo</span></button>
+  <button class="conduta-btn conduta-btn-secondary" onclick="saveHC()">💾 <span class="es">Guardar borrador</span><span class="pt">Salvar rascunho</span></button>
+  <button class="conduta-btn conduta-btn-secondary" onclick="window.print()">🖨️ <span class="es">Imprimir</span><span class="pt">Imprimir</span></button>
+</div>
+</div></div>
+</div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV (mobile) -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bnav-item active" onclick="goIndex()">
+      <span class="bnav-icon">📋</span>
+      <span class="es">Índice</span><span class="pt">Índice</span>
+    </div>
+    <div class="bnav-item" onclick="if(currentHC)switchHCTab(0)">
+      <span class="bnav-icon">📝</span>
+      <span class="es">Anamnesis</span><span class="pt">Anamnese</span>
+    </div>
+    <div class="bnav-item" onclick="if(currentHC)switchHCTab(1)">
+      <span class="bnav-icon">🧠</span>
+      <span class="es">Mnemotéc.</span><span class="pt">Mnemôn.</span>
+    </div>
+    <div class="bnav-item" onclick="if(currentHC)switchHCTab(6)">
+      <span class="bnav-icon">🎯</span>
+      <span class="es">Conduta</span><span class="pt">Conduta</span>
+    </div>
+    <div class="bnav-item" onclick="if(currentHC)exportPDF()">
+      <span class="bnav-icon">📄</span>
+      <span>PDF</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const LANG = () => document.documentElement.dataset.lang || 'es';
+
+// ── LANGUAGE ──
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.getElementById('slang-es').classList.toggle('active',l==='es');
+  document.getElementById('slang-pt').classList.toggle('active',l==='pt');
+  localStorage.setItem('am_lang',l);
+}
+
+// ── SIDEBAR ──
+function toggleSB(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('open');
+}
+
+// ── SPECIALTY SWITCHING ──
+let currentSpec = 'clinica';
+function showSpec(spec){
+  currentSpec = spec;
+  document.querySelectorAll('.spec-index').forEach(el=>{
+    el.style.display = el.id === 'spec-'+spec ? '' : 'none';
+  });
+  document.querySelectorAll('.spec-tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.spec===spec);
+  });
+  updateBreadcrumb('index');
+}
+
+// ── INDEX ↔ HC ──
+let currentHC = null;
+function openHC(id, esName, ptName, icon, colorVar){
+  currentHC = {id, esName, ptName, icon, colorVar};
+
+  // Hide all index screens
+  document.querySelectorAll('.index-screen').forEach(el=>el.classList.remove('active'));
+
+  // Show HC screen
+  const hcEl = document.getElementById('hc-screen');
+  hcEl.classList.add('active');
+
+  // Update header
+  document.getElementById('hc-icon').textContent = icon;
+  document.getElementById('hc-name-es').textContent = esName;
+  document.getElementById('hc-name-pt').textContent = ptName;
+  document.getElementById('hc-badge').style.background = 'var(--'+colorVar+')';
+
+  // Load content
+  loadHCContent(id);
+
+  // Switch to first tab
+  switchHCTab(0);
+  updateBreadcrumb('hc');
+  window.scrollTo(0,0);
+}
+
+function goIndex(){
+  currentHC = null;
+  document.querySelectorAll('.index-screen').forEach(el=>{
+    if(el.id === 'spec-'+currentSpec) el.classList.add('active');
+  });
+  document.getElementById('hc-screen').classList.remove('active');
+  updateBreadcrumb('index');
+  window.scrollTo(0,0);
+}
+
+// ── HC TABS ──
+const TAB_IDS = ['anamnese','mnemotecnicas','manobras','signos','diferencial','escalas','conduta'];
+
+function switchHCTab(idx){
+  document.querySelectorAll('.hc-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.hc-page').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  const pct = Math.round((idx+1)/TAB_IDS.length*100);
+  document.getElementById('hc-prog-fill').style.width = pct+'%';
+  window.scrollTo(0,0);
+}
+
+// ── LOAD HC CONTENT ──
+// For now loads febre HC for all; in production, load per ID
+function loadHCContent(id){
+  // Content is already embedded per HC id
+  // Just show the hc-screen; tab content is pre-rendered
+}
+
+// ── FORM HELPERS ──
+function selR(btn, id, val){
+  const row = btn.closest('.f-radios');
+  if(row) row.querySelectorAll('.f-radio').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const h = document.getElementById(id);
+  if(h){ h.value=val; saveData(); }
+}
+
+function togC(item){
+  item.classList.toggle('on');
+  const cb = item.querySelector('.f-checkbox');
+  cb.textContent = item.classList.contains('on') ? '✓' : '';
+  saveData();
+}
+
+function togAcc(id){
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── SAVE / LOAD ──
+function saveData(){
+  if(!currentHC) return;
+  const key = 'am_hc_'+currentHC.id;
+  const data = {};
+  document.querySelectorAll('#hc-screen input, #hc-screen textarea, #hc-screen select').forEach(el=>{
+    if(el.id && el.id!=='') data[el.id] = el.value;
+  });
+  const checks = [];
+  document.querySelectorAll('#hc-screen .f-check.on').forEach(el=>{
+    checks.push(el.textContent.replace('✓','').trim());
+  });
+  data._checks = checks;
+  try{ localStorage.setItem(key, JSON.stringify(data)); }catch(e){}
+}
+
+function loadData(){
+  if(!currentHC) return;
+  const key = 'am_hc_'+currentHC.id;
+  try{
+    const data = JSON.parse(localStorage.getItem(key)||'{}');
+    Object.entries(data).forEach(([id,val])=>{
+      if(id==='_checks') return;
+      const el = document.getElementById(id);
+      if(el) el.value = val;
+    });
+    // Restore radio selections
+    document.querySelectorAll('#hc-screen input[type=hidden]').forEach(h=>{
+      if(!h.value || !h.id) return;
+      const parent = h.parentElement;
+      if(!parent) return;
+      parent.querySelectorAll('.f-radio').forEach(btn=>{
+        const oc = btn.getAttribute('onclick')||'';
+        if(oc.includes("'"+h.value+"'")) btn.classList.add('sel');
+      });
+    });
+  }catch(e){}
+}
+
+function saveHC(){
+  saveData();
+  const btn = event.target.closest('button');
+  if(btn){ const t=btn.textContent; btn.textContent='✓ '+t; setTimeout(()=>btn.textContent=t,2000); }
+}
+
+function clearHC(){
+  if(!currentHC) return;
+  if(!confirm(LANG()==='es'?'¿Limpiar toda esta historia clínica?':'Limpar toda esta história clínica?')) return;
+  document.querySelectorAll('#hc-screen input, #hc-screen textarea, #hc-screen select').forEach(el=>el.value='');
+  document.querySelectorAll('#hc-screen .f-radio.sel').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('#hc-screen .f-check.on').forEach(el=>{
+    el.classList.remove('on'); el.querySelector('.f-checkbox').textContent='';
+  });
+  try{ localStorage.removeItem('am_hc_'+currentHC.id); }catch(e){}
+}
+
+// ── BREADCRUMB ──
+function updateBreadcrumb(screen){
+  const specNames = {clinica:{es:'Clínica Médica',pt:'Clínica Médica'},cirurgia:{es:'Cirugía General',pt:'Cirurgia Geral'}};
+  const sn = specNames[currentSpec] || {es:'',pt:''};
+  if(screen==='index'){
+    document.getElementById('bc-spec-es').textContent = sn.es;
+    document.getElementById('bc-spec-pt').textContent = sn.pt;
+    document.getElementById('bc-hc').style.display = 'none';
+    document.getElementById('topbar-back').style.display = 'none';
+    document.getElementById('btn-new').style.display = '';
+  } else {
+    document.getElementById('bc-spec-es').textContent = sn.es;
+    document.getElementById('bc-spec-pt').textContent = sn.pt;
+    const bcHC = document.getElementById('bc-hc');
+    bcHC.style.display = '';
+    document.getElementById('bc-hc-es').textContent = currentHC ? currentHC.esName : '';
+    document.getElementById('bc-hc-pt').textContent = currentHC ? currentHC.ptName : '';
+    document.getElementById('topbar-back').style.display = '';
+    document.getElementById('btn-new').style.display = 'none';
+  }
+}
+
+// ── SIDEBAR NAV HIGHLIGHT ──
+function setSBActive(el){
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── SEARCH FILTER ──
+function filterMotivos(){
+  const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+  const qSB = (document.getElementById('sb-search-input') ? document.getElementById('sb-search-input').value : '').toLowerCase().trim();
+  const query = q || qSB;
+  document.querySelectorAll('.motivo-card').forEach(c=>{
+    const txt = (c.dataset.search||'').toLowerCase();
+    c.style.display = (!query || txt.includes(query)) ? '' : 'none';
+  });
+  document.querySelectorAll('.cat-section-block').forEach(sec=>{
+    const vis = [...sec.querySelectorAll('.motivo-card')].some(c=>c.style.display!=='none');
+    sec.style.display = vis ? '' : 'none';
+  });
+}
+
+// ── PDF EXPORT (narrative) ──
+function exportPDF(){
+  const lang = LANG();
+  // Gather form data
+  const get = id => { const el=document.getElementById(id); return el?el.value:''; };
+  const nombre = get('pac_nombre') || (lang==='es'?'Paciente':'Paciente');
+  const edad = get('pac_edad');
+  const sexo = get('pac_sexo');
+  const fecha = get('pac_fecha') || new Date().toLocaleDateString();
+  const motivo = get('motivo_texto');
+  const tiempo = get('motivo_tiempo');
+  const temp = get('sv_temp');
+  const fc = get('sv_fc');
+  const pa = get('sv_pa');
+  const dx = get('dx_principal');
+  const plan = get('examenes');
+  const tto = get('tratamiento');
+
+  let narrative = '';
+  if(lang==='es'){
+    narrative = `HISTORIA CLÍNICA — ${fecha}\n\n`;
+    narrative += `Paciente ${nombre}${edad?', de '+edad+' años':''}${sexo?', '+sexo.toLowerCase():''}, `;
+    narrative += motivo ? `que consulta por: ${motivo}. ` : 'que consulta a nuestro servicio. ';
+    narrative += tiempo ? `Con ${tiempo} de evolución. ` : '';
+    narrative += temp ? `\n\nSignos vitales: T° ${temp}°C` : '\n\nSignos vitales: ';
+    narrative += fc ? `, FC ${fc} lpm` : '';
+    narrative += pa ? `, PA ${pa} mmHg` : '';
+    narrative += dx ? `\n\nImpresión diagnóstica: ${dx}` : '';
+    narrative += plan ? `\n\nExámenes solicitados: ${plan}` : '';
+    narrative += tto ? `\n\nTratamiento / Conducta: ${tto}` : '';
+  } else {
+    narrative = `HISTÓRIA CLÍNICA — ${fecha}\n\n`;
+    narrative += `Paciente ${nombre}${edad?', de '+edad+' anos':''}${sexo?', '+sexo.toLowerCase():''}, `;
+    narrative += motivo ? `que consulta por: ${motivo}. ` : 'que consulta ao nosso serviço. ';
+    narrative += tiempo ? `Com ${tiempo} de evolução. ` : '';
+    narrative += temp ? `\n\nSinais vitais: T° ${temp}°C` : '\n\nSinais vitais: ';
+    narrative += fc ? `, FC ${fc} bpm` : '';
+    narrative += pa ? `, PA ${pa} mmHg` : '';
+    narrative += dx ? `\n\nImpressão diagnóstica: ${dx}` : '';
+    narrative += plan ? `\n\nExames solicitados: ${plan}` : '';
+    narrative += tto ? `\n\nTratamento / Conduta: ${tto}` : '';
+  }
+
+  // Open print window with narrative
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head>
+    <meta charset="UTF-8">
+    <title>HC — ${nombre}</title>
+    <style>
+      body{font-family:'DM Sans',Arial,sans-serif;max-width:700px;margin:40px auto;font-size:14px;line-height:1.8;color:#0a0c10}
+      h1{font-family:'Playfair Display',Georgia,serif;font-size:22px;margin-bottom:4px}
+      h2{font-size:11px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px}
+      pre{white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.8}
+      .footer{margin-top:40px;font-size:11px;color:#aaa;border-top:1px solid #eee;padding-top:12px}
+    </style>
+  </head><body>
+    <h1>AnamnesísMed</h1>
+    <h2>${lang==='es'?'Historia Clínica':'História Clínica'} — ${currentHC?currentHC[lang+'Name']:'HC'}</h2>
+    <pre>${narrative}</pre>
+    <div class="footer">Generado por AnamnesísMed · anamnesismed.com</div>
+    <script>window.print();window.onafterprint=()=>window.close()<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+// ── INPUT AUTOSAVE ──
+document.addEventListener('input', e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT'){
+    saveData();
+  }
+});
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',()=>{
+  const savedLang = localStorage.getItem('am_lang') || 'es';
+  setLang(savedLang);
+  showSpec('clinica');
+});
+</script>
+</body>
+</html>

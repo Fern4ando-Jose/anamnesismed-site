@@ -77,6 +77,34 @@ git checkout HEAD -- <arquivo>
 
 O mount Windows↔Linux pode truncar arquivos grandes ao gravá-los via bash. Para gravar arquivos grandes (>500 linhas), usar sempre `cat > arquivo << 'EOF' ... EOF` ou `cp /tmp/arquivo_preparado destino` em vez de ferramentas que fazem write incremental. Verificar com `wc -l` e `tail -3` imediatamente após gravar.
 
+## 10. Sidebar é um componente único — nunca duplicar inline
+
+O sidebar da área autenticada vive exclusivamente em **`sidebar.js`** (HTML + lógica de toggle + active state) e **`sidebar.css`** (todos os estilos). Esses dois arquivos são a fonte canônica.
+
+**Para incluir o sidebar em qualquer página nova:**
+```html
+<!-- no <head>, após o </style> -->
+<link rel="stylesheet" href="sidebar.css">
+
+<!-- no <body> -->
+<div id="sidebar-root"></div>
+
+<!-- antes do </body> -->
+<script src="sidebar.js"></script>
+```
+
+**Regras:**
+- **Nunca** copiar o HTML do sidebar dentro de uma página `.html` — toda página usa `<div id="sidebar-root"></div>`.
+- **Nunca** reescrever CSS do sidebar dentro de uma página — editar somente `sidebar.css`.
+- Para mudar conteúdo ou estilo do sidebar (links, ícones, cores, contadores), editar `sidebar.js` ou `sidebar.css` — a mudança reflete automaticamente em todas as páginas.
+- Ao adicionar uma nova página na área autenticada, sempre incluir os 3 trechos acima.
+- Ao adicionar uma nova página ao app, atualizar também as regras de active state dentro de `sidebar.js` (objeto `rules` na função `_sidebarSetActive`).
+
+**Estrutura do sidebar (referência):**
+- PRINCIPAL: Início (`anamnesismed-dashboard.html`), Nova HC (`anamnesismed-app.html`), Minhas HCs (`anamnesismed-dashboard.html?view=hcs`)
+- ESPECIALIDADES: semiologia, respiratório, clínica médica, cirurgia (com contadores de motivos)
+- FERRAMENTAS: Mnemônicas, Configurações, Upgrade Pro, Sair
+
 ## Contexto do produto
 
 Meta: 100 mil usuários até o fim de 2026 — tratar tudo como produto profissional, sem "detalhes menores".

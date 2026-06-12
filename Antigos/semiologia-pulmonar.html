@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semiología Pulmonar — Guía Clínica 4º Año</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1117;
+    --paper: #f5f0e8;
+    --cream: #ede8da;
+    --accent: #c1440e;
+    --accent2: #2a5c8a;
+    --accent3: #2e7d4f;
+    --gold: #b8860b;
+    --light-line: rgba(15,17,23,0.12);
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --serif: 'Playfair Display', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    min-height: 100vh;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 20% 80%, rgba(193,68,14,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(42,92,138,0.20) 0%, transparent 60%);
+  }
+
+  .cover-lung-bg {
+    position: absolute;
+    font-size: 38vw;
+    opacity: 0.03;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .cover-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .cover h1 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 6vw, 80px);
+    font-weight: 900;
+    line-height: 1.05;
+    position: relative;
+    max-width: 800px;
+  }
+
+  .cover h1 em {
+    font-style: italic;
+    color: #e07a5f;
+  }
+
+  .cover-sub {
+    margin-top: 28px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(245,240,232,0.6);
+    position: relative;
+  }
+
+  .cover-divider {
+    width: 60px;
+    height: 2px;
+    background: var(--accent);
+    margin: 32px auto;
+    position: relative;
+  }
+
+  .cover-tags {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+  }
+
+  .cover-tag {
+    border: 1px solid rgba(245,240,232,0.2);
+    padding: 6px 16px;
+    font-size: 12px;
+    font-family: var(--mono);
+    border-radius: 2px;
+    color: rgba(245,240,232,0.7);
+  }
+
+  /* ─── NAV ─── */
+  .toc {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 40px;
+  }
+
+  .toc h2 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 4px;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+    color: rgba(245,240,232,0.8);
+  }
+
+  .toc-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    min-width: 24px;
+  }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    padding: 72px 40px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .section + .section {
+    border-top: 1px solid var(--light-line);
+  }
+
+  .sec-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .sec-title {
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 36px;
+  }
+
+  .sec-intro {
+    font-size: 15px;
+    color: rgba(15,17,23,0.7);
+    max-width: 680px;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+
+  /* ─── SYMPTOM CARDS ─── */
+  .symptom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2px;
+  }
+
+  .symptom-card {
+    background: var(--cream);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .symptom-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+
+  .symptom-card.red::before { background: var(--accent); }
+  .symptom-card.blue::before { background: var(--accent2); }
+  .symptom-card.green::before { background: var(--accent3); }
+  .symptom-card.gold::before { background: var(--gold); }
+
+  .symptom-card h3 {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .symptom-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(15,17,23,0.45);
+    margin-bottom: 16px;
+  }
+
+  .symptom-questions {
+    list-style: none;
+  }
+
+  .symptom-questions li {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--light-line);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(15,17,23,0.8);
+  }
+
+  .symptom-questions li:last-child { border-bottom: none; }
+
+  .symptom-questions li::before {
+    content: '→ ';
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* ─── MNEMONICS ─── */
+  .mnemonic-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 72px 40px;
+  }
+
+  .mnemonic-section .sec-title { color: var(--paper); }
+
+  .mnemonic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .mnemonic-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 32px;
+    position: relative;
+  }
+
+  .mnemonic-keyword {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+
+  .mnemonic-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    margin-bottom: 24px;
+  }
+
+  .mnemonic-rows { list-style: none; }
+
+  .mnemonic-row {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    align-items: start;
+  }
+
+  .mnemonic-row:last-child { border-bottom: none; }
+
+  .mnemonic-letter {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1.5;
+  }
+
+  .mnemonic-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(245,240,232,0.8);
+  }
+
+  .mnemonic-desc strong {
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  .mnemonic-desc span {
+    font-size: 11px;
+    color: rgba(245,240,232,0.45);
+    display: block;
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+
+  /* ─── MANEUVERS ─── */
+  .maneuver-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .maneuver-item {
+    background: var(--cream);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .maneuver-header {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 28px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .maneuver-number {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--accent);
+    opacity: 0.3;
+    line-height: 1;
+  }
+
+  .maneuver-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .maneuver-sub {
+    font-size: 12px;
+    color: rgba(15,17,23,0.5);
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+
+  .maneuver-toggle {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--accent);
+    transition: transform 0.3s;
+  }
+
+  .maneuver-item.open .maneuver-toggle { transform: rotate(45deg); }
+
+  .maneuver-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .maneuver-item.open .maneuver-body { max-height: 600px; }
+
+  .maneuver-content {
+    padding: 0 28px 28px 120px;
+  }
+
+  .maneuver-steps {
+    counter-reset: step;
+    list-style: none;
+    margin-bottom: 16px;
+  }
+
+  .maneuver-steps li {
+    counter-increment: step;
+    padding: 9px 0 9px 36px;
+    position: relative;
+    border-bottom: 1px solid var(--light-line);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: rgba(15,17,23,0.8);
+  }
+
+  .maneuver-steps li:last-child { border-bottom: none; }
+
+  .maneuver-steps li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    top: 11px;
+  }
+
+  .findings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .finding-box {
+    padding: 14px;
+    border-left: 3px solid;
+    background: rgba(15,17,23,0.04);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .finding-box.normal { border-color: var(--accent3); }
+  .finding-box.abnormal { border-color: var(--accent); }
+
+  .finding-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: rgba(15,17,23,0.45);
+  }
+
+  /* ─── RESPIRATORY EXAM TABLE ─── */
+  .exam-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 24px;
+  }
+
+  .exam-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 400;
+  }
+
+  .exam-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--light-line);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .exam-table tr:nth-child(even) td { background: var(--cream); }
+
+  .exam-table td:first-child {
+    font-weight: 600;
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--accent2);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--ink);
+    color: rgba(245,240,232,0.35);
+    text-align: center;
+    padding: 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  /* ─── UTILITY ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .tag-pill {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-right: 4px;
+  }
+
+  .tag-pill.blue { background: var(--accent2); }
+  .tag-pill.green { background: var(--accent3); }
+
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(193,68,14,0.08), rgba(42,92,138,0.06));
+    border: 1px solid rgba(193,68,14,0.2);
+    padding: 20px 24px;
+    margin: 24px 0;
+    border-radius: 2px;
+  }
+
+  .highlight-box p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: rgba(15,17,23,0.75);
+  }
+
+  @media (max-width: 640px) {
+    .section { padding: 48px 20px; }
+    .mnemonic-section { padding: 48px 20px; }
+    .two-col { grid-template-columns: 1fr; }
+    .findings-grid { grid-template-columns: 1fr; }
+    .maneuver-content { padding: 0 20px 24px; }
+    .maneuver-header { grid-template-columns: 48px 1fr auto; padding: 18px 20px; }
+    .maneuver-number { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-lung-bg">🫁</div>
+  <div class="cover-label">Semiología Médica · 4º Año de Medicina</div>
+  <h1>Historia Clínica<br><em>Pulmonar</em></h1>
+  <div class="cover-divider"></div>
+  <p class="cover-sub">Anamnesis · Mnemotécnicas · Examen Físico Torácico</p>
+  <br>
+  <div class="cover-tags">
+    <span class="cover-tag">Disnea</span>
+    <span class="cover-tag">Tos</span>
+    <span class="cover-tag">Hemoptisis</span>
+    <span class="cover-tag">Dolor Torácico</span>
+    <span class="cover-tag">Sibilancias</span>
+    <span class="cover-tag">Inspección · Palpación · Percusión · Auscultación</span>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Índice del Guía</h2>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01</span> Identificación del Paciente</div>
+    <div class="toc-item"><span class="toc-num">02</span> Motivo de Consulta</div>
+    <div class="toc-item"><span class="toc-num">03</span> Síntomas Cardinales</div>
+    <div class="toc-item"><span class="toc-num">04</span> Mnemotécnicas</div>
+    <div class="toc-item"><span class="toc-num">05</span> Antecedentes</div>
+    <div class="toc-item"><span class="toc-num">06</span> Revisión por Aparatos</div>
+    <div class="toc-item"><span class="toc-num">07</span> Examen Físico Torácico</div>
+    <div class="toc-item"><span class="toc-num">08</span> Interpretación de Hallazgos</div>
+  </div>
+</div>
+
+<!-- SECTION 1: IDENTIFICACION -->
+<div class="section">
+  <div class="sec-label">01 — Apertura</div>
+  <h2 class="sec-title">Identificación &<br>Motivo de Consulta</h2>
+  <p class="sec-intro">
+    Antes de explorar los síntomas respiratorios, establece el contexto del paciente. La demografía y el contexto social orientan el diagnóstico diferencial desde el primer momento.
+  </p>
+
+  <div class="two-col">
+    <div class="symptom-card blue" style="background:var(--cream)">
+      <div class="symptom-tag">Datos de identificación</div>
+      <ul class="symptom-questions">
+        <li>Nombre, edad, sexo, ocupación</li>
+        <li>Lugar de residencia (rural/urbano)</li>
+        <li>Nivel de escolaridad</li>
+        <li>Estado civil, con quién vive</li>
+        <li>Religión (relevante para transfusiones)</li>
+        <li>¿A qué se dedica? ¿Expuesto a polvos, gases, humos?</li>
+      </ul>
+    </div>
+    <div class="symptom-card red" style="background:var(--cream)">
+      <div class="symptom-tag">Motivo de consulta</div>
+      <ul class="symptom-questions">
+        <li>¿Cuál es el problema principal que lo trajo hoy?</li>
+        <li>¿Desde cuándo tiene ese problema?</li>
+        <li>¿Cómo comenzó? ¿De repente o poco a poco?</li>
+        <li>¿Ha tenido esto antes en su vida?</li>
+        <li>¿Qué lo trajo a consultar hoy y no antes?</li>
+        <li>Dejar que el paciente hable con sus propias palabras</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: SINTOMAS CARDINALES -->
+<div class="section">
+  <div class="sec-label">03 — Anamnesis</div>
+  <h2 class="sec-title">Síntomas Cardinales<br>del Aparato Respiratorio</h2>
+  <p class="sec-intro">
+    Interroga de forma sistemática cada síntoma cardinal. Usa las mnemotécnicas de la sección siguiente para no omitir ninguna característica semiológica.
+  </p>
+
+  <div class="symptom-grid">
+
+    <div class="symptom-card red">
+      <h3>Disnea</h3>
+      <div class="symptom-tag">Síntoma cardinal N.º1 — usa AMIIDCAF</div>
+      <ul class="symptom-questions">
+        <li>¿Siente que le falta el aire o que no puede respirar bien?</li>
+        <li>¿Cuándo apareció? ¿Fue súbita o progresiva?</li>
+        <li>¿En reposo, con esfuerzo leve, moderado o intenso?</li>
+        <li>¿Cuántas almohadas usa para dormir? (ortopnea)</li>
+        <li>¿Se despierta de noche con ahogo? (DPN)</li>
+        <li>¿Mejor sentado o de pie? ¿Peor acostado?</li>
+        <li>¿Se acompaña de sibilancias, tos o dolor?</li>
+        <li>¿Empeora con el frío, el polvo, el ejercicio o el estrés?</li>
+        <li>¿Ha tenido episodios similares antes?</li>
+      </ul>
+    </div>
+
+    <div class="symptom-card blue">
+      <h3>Tos</h3>
+      <div class="symptom-tag">Síntoma cardinal N.º2 — usa LITIDIFIS</div>
+      <ul class="symptom-questions">
+        <li>¿Tiene tos? ¿Desde cuándo?</li>
+        <li>¿Es seca o productiva (con flema)?</li>
+        <li>¿A qué hora del día es más frecuente?</li>
+        <li>¿La flema de qué color es? ¿Hay sangre?</li>
+        <li>¿Qué tanto flema produce al día? (cucharadas, tazas)</li>
+        <li>¿Hay factores que la mejoran o empeoran?</li>
+        <li>¿Se acompaña de sibilancias, dolor o fiebre?</li>
+        <li>¿Tiene goteo nasal, ardor de garganta?</li>
+        <li>¿Tos convulsiva, emetizante, quintosa?</li>
+      </ul>
+    </div>
+
+    <div class="symptom-card red">
+      <h3>Hemoptisis</h3>
+      <div class="symptom-tag">Síntoma cardinal N.º3 — usa LITIDIFIS</div>
+      <ul class="symptom-questions">
+        <li>¿Ha escupido o tosido sangre alguna vez?</li>
+        <li>¿Cuánta sangre? ¿Hilos, esputos rosados, franca sangre?</li>
+        <li>¿De color rojo brillante, oscuro o mezclado con flema?</li>
+        <li>¿Cuántos episodios y en cuántos días?</li>
+        <li>¿Se acompaña de dolor torácico o disnea?</li>
+        <li>¿Ha tenido fiebre, sudores o pérdida de peso?</li>
+        <li>Descartar origen ORL o digestivo (hematemesis vs hemoptisis)</li>
+        <li>¿Viajes recientes? ¿Contacto con tuberculosis?</li>
+      </ul>
+    </div>
+
+    <div class="symptom-card gold">
+      <h3>Dolor Torácico</h3>
+      <div class="symptom-tag">Síntoma cardinal N.º4 — usa LITIDIFIS</div>
+      <ul class="symptom-questions">
+        <li>¿Tiene dolor en el pecho? ¿Dónde exactamente?</li>
+        <li>¿Con qué irradia? ¿Hombro, cuello, brazo, espalda?</li>
+        <li>¿Qué tipo de dolor? (punzante, opresivo, quemante)</li>
+        <li>¿Se relaciona con la respiración o la tos? (pleurítico)</li>
+        <li>¿Empeora con los movimientos del tórax?</li>
+        <li>¿Mejora con analgésicos, posición o reposo?</li>
+        <li>¿Intensidad del 1 al 10?</li>
+        <li>¿Empezó de repente o fue gradual?</li>
+      </ul>
+    </div>
+
+    <div class="symptom-card green">
+      <h3>Expectoración</h3>
+      <div class="symptom-tag">Característica del esputo</div>
+      <ul class="symptom-questions">
+        <li>¿De qué color es el esputo? (blanco, amarillo, verde, herrumbroso)</li>
+        <li>¿Qué consistencia? (fluida, viscosa, gelatinosa)</li>
+        <li>¿Cuánto produce por día? (en mililitros o cucharadas)</li>
+        <li>¿Tiene olor fetido? (absceso pulmonar)</li>
+        <li>¿Tiene aspecto de "grosella" o gelatinoso? (K. pneumoniae)</li>
+        <li>¿Espumoso rosado? (edema pulmonar)</li>
+        <li>¿Numuloso (tipo monedas)? (TBC)</li>
+        <li>¿Aumenta en alguna postura específica?</li>
+      </ul>
+    </div>
+
+    <div class="symptom-card blue">
+      <h3>Sibilancias / Estridor</h3>
+      <div class="symptom-tag">Ruidos respiratorios audibles</div>
+      <ul class="symptom-questions">
+        <li>¿Escucha un silbido al respirar?</li>
+        <li>¿Es al inhalar, al exhalar o en ambas fases?</li>
+        <li>¿Desde cuándo? ¿Siempre o episódico?</li>
+        <li>¿Qué lo desencadena? (ejercicio, alérgenos, frío)</li>
+        <li>¿Mejora con broncodilatadores?</li>
+        <li>¿Tiene asma diagnosticada o historia familiar?</li>
+        <li>¿Estridor (ruido de cornaje) de alta tonalidad al inhalar?</li>
+        <li>¿Se acompaña de dificultad para tragar?</li>
+      </ul>
+    </div>
+
+    <div class="symptom-card gold">
+      <h3>Fiebre / Síntomas Sistémicos</h3>
+      <div class="symptom-tag">Contexto infeccioso — usa IDET</div>
+      <ul class="symptom-questions">
+        <li>¿Ha tenido fiebre? ¿Cuánto mide? ¿Cuándo aparece?</li>
+        <li>¿Escalofríos, sudores nocturnos, temblores?</li>
+        <li>¿Ha perdido peso sin intentarlo? ¿Cuántos kilos en cuánto tiempo?</li>
+        <li>¿Fatiga o debilidad generalizada?</li>
+        <li>¿Pérdida de apetito?</li>
+        <li>¿Contacto con personas enfermas o con TBC?</li>
+      </ul>
+    </div>
+
+    <div class="symptom-card green">
+      <h3>Cianosis / Hipoxemia</h3>
+      <div class="symptom-tag">Signos de insuficiencia respiratoria</div>
+      <ul class="symptom-questions">
+        <li>¿Ha notado coloración azulada en labios, uñas o punta de nariz?</li>
+        <li>¿Confusión mental, somnolencia o agitación?</li>
+        <li>¿Cefalea matutina? (hipercapnia nocturna)</li>
+        <li>¿Edema en piernas? (cor pulmonale)</li>
+        <li>¿Palpitaciones o taquicardia?</li>
+        <li>¿Usa oxígeno domiciliario? ¿Desde cuándo?</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 3: ANTECEDENTES -->
+<div class="section">
+  <div class="sec-label">05 — Contexto</div>
+  <h2 class="sec-title">Antecedentes Relevantes</h2>
+
+  <div class="symptom-grid">
+    <div class="symptom-card blue">
+      <h3>Personales Patológicos</h3>
+      <div class="symptom-tag">Historia médica previa</div>
+      <ul class="symptom-questions">
+        <li>¿Asma bronquial diagnosticada? ¿Desde qué edad?</li>
+        <li>¿EPOC, bronquitis crónica o enfisema?</li>
+        <li>¿Tuberculosis previa? ¿Recibió tratamiento completo?</li>
+        <li>¿Neumonías o infecciones respiratorias frecuentes?</li>
+        <li>¿Tromboembolismo pulmonar (TEP) previo?</li>
+        <li>¿Cáncer de cualquier tipo?</li>
+        <li>¿Enfermedades autoinmunes (sarcoidosis, LES, AR)?</li>
+        <li>¿VIH o inmunodepresión?</li>
+      </ul>
+    </div>
+    <div class="symptom-card red">
+      <h3>Exposición y Hábitos</h3>
+      <div class="symptom-tag">Factores de riesgo</div>
+      <ul class="symptom-questions">
+        <li>¿Fuma o ha fumado? ¿Cuántos cigarrillos/día por cuántos años? (paquetes/año)</li>
+        <li>¿Exposición al humo de leña o cocina de biomasa?</li>
+        <li>¿Mascotas en casa? ¿Aves, perros, gatos?</li>
+        <li>¿Trabaja con asbesto, sílice, polvo, pinturas, químicos?</li>
+        <li>¿Consumo de drogas (marihuana, cocaína)?</li>
+        <li>¿Viajes recientes a zonas endémicas?</li>
+        <li>¿Hacinamiento en casa o en el trabajo?</li>
+        <li>¿Inmovilización prolongada, cirugía reciente o viaje largo? (TEP)</li>
+      </ul>
+    </div>
+    <div class="symptom-card green">
+      <h3>Farmacológicos</h3>
+      <div class="symptom-tag">Medicamentos actuales y previos</div>
+      <ul class="symptom-questions">
+        <li>¿Usa broncodilatadores? ¿Con qué frecuencia?</li>
+        <li>¿Corticoides inhalados o sistémicos?</li>
+        <li>¿IECA (captopril, enalapril)? → tos seca</li>
+        <li>¿Amiodarona, metotrexato, nitrofurantoína? → toxicidad pulmonar</li>
+        <li>¿Betabloqueadores? → broncoespasmo</li>
+        <li>¿Anticoagulantes? (AAS, warfarina, NACO)</li>
+        <li>¿Alergias a medicamentos?</li>
+      </ul>
+    </div>
+    <div class="symptom-card gold">
+      <h3>Familiares</h3>
+      <div class="symptom-tag">Historia hereditaria</div>
+      <ul class="symptom-questions">
+        <li>¿Familiares con asma, EPOC o fibrosis?</li>
+        <li>¿Familiares con tuberculosis activa?</li>
+        <li>¿Déficit de alfa-1 antitripsina en la familia?</li>
+        <li>¿Cáncer de pulmón en familiar directo?</li>
+        <li>¿Fibrosis quística en hermanos o hijos?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: MNEMONICS -->
+<div class="mnemonic-section">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="sec-label" style="color:var(--accent)">04 — Mnemotécnicas</div>
+    <h2 class="sec-title">Herramientas para No Olvidar<br>Ningún Atributo del Síntoma</h2>
+    <p class="sec-intro" style="color:rgba(245,240,232,0.6)">
+      Cada síntoma tiene múltiples características que deben interrogarse. Estas mnemotécnicas te ayudan a sistematizar la anamnesis de forma completa, igual que en el modelo LITIDIFIS, IDET y otros.
+    </p>
+
+    <div class="mnemonic-grid">
+
+      <!-- LITIDIFIS -->
+      <div class="mnemonic-card">
+        <div class="mnemonic-keyword">LITIDIFIS</div>
+        <div class="mnemonic-name">Para: Tos · Hemoptisis · Dolor torácico · Disnea</div>
+        <ul class="mnemonic-rows">
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">L</span>
+            <div class="mnemonic-desc"><strong>Localización</strong><span>¿Dónde exactamente? ¿Pecho, garganta, tráquea?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">I</span>
+            <div class="mnemonic-desc"><strong>Irradiación</strong><span>¿Se extiende hacia otro lugar? ¿Hombro, cuello?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">T</span>
+            <div class="mnemonic-desc"><strong>Tipo / Calidad</strong><span>¿Seco, productivo, opresivo, punzante, quemante?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">I</span>
+            <div class="mnemonic-desc"><strong>Intensidad</strong><span>Del 1 al 10. ¿Incapacitante? ¿Interfiere con el sueño?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">D</span>
+            <div class="mnemonic-desc"><strong>Duración / Evolución</strong><span>¿Cuánto tiempo lleva? ¿Continuo, episódico, progresivo?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">I</span>
+            <div class="mnemonic-desc"><strong>Inicio</strong><span>¿Cuándo comenzó? ¿Súbito o gradual? ¿Qué estaba haciendo?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">F</span>
+            <div class="mnemonic-desc"><strong>Factores que modifican</strong><span>¿Qué lo mejora o empeora? (postura, medicamentos, esfuerzo)</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">I</span>
+            <div class="mnemonic-desc"><strong>Incidencia</strong><span>¿Primera vez o recurrente? ¿Con qué frecuencia?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">S</span>
+            <div class="mnemonic-desc"><strong>Síntomas asociados</strong><span>¿Qué más acompaña al síntoma? (fiebre, disnea, sudores)</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- IDET -->
+      <div class="mnemonic-card">
+        <div class="mnemonic-keyword">IDET</div>
+        <div class="mnemonic-name">Para: Fiebre</div>
+        <ul class="mnemonic-rows">
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">I</span>
+            <div class="mnemonic-desc"><strong>Inicio</strong><span>¿Cuándo comenzó la fiebre? ¿Súbita o insidiosa?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">D</span>
+            <div class="mnemonic-desc"><strong>Duración</strong><span>¿Cuántos días lleva con fiebre? ¿Persistente o intermitente?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">E</span>
+            <div class="mnemonic-desc"><strong>Evolución / Patrón</strong><span>¿Continua, remitente, intermitente, séptica, ondulante?</span></div>
+          </li>
+          <li class="mnemonic-row">
+            <span class="mnemonic-letter">T</span>
+            <div class="mnemonic-desc"><strong>Temperatura máxima</strong><span>¿Cuánto grados? ¿Se acompaña de escalofríos o diaforesis?</span></div>
+          </li>
+        </ul>
+        <br>
+        <div class="mnemonic-keyword" style="font-size:22px;margin-top:8px">AMIIDCAF</div>
+        <div class="mnemonic-name">Para: Disnea (escala funcional)</div>
+        <ul class="mnemonic-rows">
+          <li class="mnemonic-row"><span class="mnemonic-letter">A</span><div class="mnemonic-desc"><strong>Aparición</strong><span>¿Cuándo comenzó la disnea?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">M</span><div class="mnemonic-desc"><strong>Magnitud (grado)</strong><span>¿En reposo, esfuerzo leve, moderado o máximo?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">I</span><div class="mnemonic-desc"><strong>Inicio</strong><span>¿Súbito (TEP, neumotórax) o progresivo (EPOC, ICC)?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">I</span><div class="mnemonic-desc"><strong>Intermitencia</strong><span>¿Continua o en episodios? ¿Cuánto dura cada episodio?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">D</span><div class="mnemonic-desc"><strong>Desencadenantes</strong><span>¿Ejercicio, alérgenos, frío, decúbito, estrés?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">C</span><div class="mnemonic-desc"><strong>Características</strong><span>¿Ortopnea, DPN, platipnea, trepopnea?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">A</span><div class="mnemonic-desc"><strong>Alivio</strong><span>¿Qué la mejora? ¿Sentarse, broncodilatadores, oxígeno?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">F</span><div class="mnemonic-desc"><strong>Factores / síntomas asociados</strong><span>¿Tos, sibilancias, dolor, cianosis, edemas?</span></div></li>
+        </ul>
+      </div>
+
+      <!-- ESPUTO y ESCALAS -->
+      <div class="mnemonic-card">
+        <div class="mnemonic-keyword">VOCCOF</div>
+        <div class="mnemonic-name">Para: Esputo / Expectoración</div>
+        <ul class="mnemonic-rows">
+          <li class="mnemonic-row"><span class="mnemonic-letter">V</span><div class="mnemonic-desc"><strong>Volumen</strong><span>¿Cuánto produce al día? (en cucharadas o mL)</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">O</span><div class="mnemonic-desc"><strong>Olor</strong><span>¿Fetido? → absceso; Inodoro → habitual</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">C</span><div class="mnemonic-desc"><strong>Color</strong><span>Blanco = viral; Amarillo/Verde = bacteriano; Herrumbroso = neumococo; Rosado espumoso = edema pulmonar</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">C</span><div class="mnemonic-desc"><strong>Consistencia</strong><span>¿Fluida, viscosa, perlada, gelatinosa?</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">O</span><div class="mnemonic-desc"><strong>Origen</strong><span>¿Aumenta en postura drenante? → bronquiectasias</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">F</span><div class="mnemonic-desc"><strong>Frecuencia</strong><span>¿Diario, episódico, matutino, nocturno?</span></div></li>
+        </ul>
+        <br>
+        <div class="mnemonic-keyword" style="font-size:22px;margin-top:8px">THOS</div>
+        <div class="mnemonic-name">Para: Hemoptisis — diagnóstico diferencial</div>
+        <ul class="mnemonic-rows">
+          <li class="mnemonic-row"><span class="mnemonic-letter">T</span><div class="mnemonic-desc"><strong>Tuberculosis / Tumor</strong><span>TBC activa, carcinoma broncogénico</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">H</span><div class="mnemonic-desc"><strong>Hemostasia</strong><span>Coagulopatías, anticoagulantes, vasculitis</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">O</span><div class="mnemonic-desc"><strong>Otras infecciones</strong><span>Bronquiectasias, absceso, micosis, TEP</span></div></li>
+          <li class="mnemonic-row"><span class="mnemonic-letter">S</span><div class="mnemonic-desc"><strong>Sistémicas</strong><span>LES, Goodpasture, Wegener, ICC severa</span></div></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: EXAMEN FISICO -->
+<div class="section">
+  <div class="sec-label">07 — Examen Físico</div>
+  <h2 class="sec-title">Maniobras del Examen<br>Físico Torácico</h2>
+  <p class="sec-intro">
+    El examen torácico sigue el orden clásico: <strong>Inspección → Palpación → Percusión → Auscultación</strong>. Nunca omitas ningún paso. A continuación, las maniobras específicas con su técnica de ejecución.
+  </p>
+
+  <div class="highlight-box">
+    <p>🩺 <strong>Posición del paciente:</strong> Sentado al borde de la camilla, espalda expuesta, brazos cruzados adelante para separar escápulas. Examina cara anterior, posterior y lateral. Compara siempre lado derecho vs izquierdo de forma simultánea o en espejo.</p>
+  </div>
+
+  <div class="maneuver-list" id="maneuvers">
+
+    <!-- 1 INSPECCION -->
+    <div class="maneuver-item" onclick="toggleManeuver(this)">
+      <div class="maneuver-header">
+        <span class="maneuver-number">01</span>
+        <div>
+          <div class="maneuver-title">Inspección Torácica</div>
+          <div class="maneuver-sub">Estática y dinámica</div>
+        </div>
+        <span class="maneuver-toggle">+</span>
+      </div>
+      <div class="maneuver-body">
+        <div class="maneuver-content">
+          <p style="font-size:13.5px;color:rgba(15,17,23,0.65);margin-bottom:16px;line-height:1.7">Observación sistemática del tórax sin tocar al paciente. Divide en estática (forma) y dinámica (movimiento).</p>
+          <ul class="maneuver-steps">
+            <li>Coloca al paciente sentado o de pie, tórax completamente expuesto bajo buena iluminación.</li>
+            <li><strong>Inspección estática:</strong> Observa la forma del tórax: ¿simétrico? ¿deformidades como tórax en barril (EPOC), en quilla (pectus carinatum), en embudo (pectus excavatum), en escudo, raquítico?</li>
+            <li>Evalúa la relación diámetro anteroposterior vs transverso (normal: 1:2). En EPOC crónico se aproxima a 1:1.</li>
+            <li>Busca cicatrices, deformidades óseas, columna (cifosis, escoliosis), asimetrías.</li>
+            <li><strong>Inspección dinámica:</strong> Observa el ritmo, la frecuencia (normal 12–20 rpm), la profundidad y la simetría de los movimientos respiratorios.</li>
+            <li>Identifica el tipo de respiración: torácica, abdominal o mixta. En hombres predomina abdominal; en mujeres torácica.</li>
+            <li>Detecta uso de músculos accesorios: esternocleidomastoideo, escalenos, intercostales → signo de dificultad respiratoria.</li>
+            <li>Busca tiraje intercostal (retracción de espacios intercostales al inhalar), signo de Hoover (retracción paradójica del reborde costal inferior).</li>
+            <li>Observa si los dos hemitórax se expanden simétricamente. Asimetría → patología unilateral (derrame, neumotórax, consolidación).</li>
+          </ul>
+          <div class="findings-grid">
+            <div class="finding-box normal"><div class="finding-label">Normal</div>Tórax simétrico, expansión bilateral igual, FR 12–20/min, sin uso de músculos accesorios.</div>
+            <div class="finding-box abnormal"><div class="finding-label">Anormal</div>Asimetría, hemitórax inmóvil, tórax en barril, tiraje, aleteo nasal, cianosis central.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 PALPACION EXPANSION -->
+    <div class="maneuver-item" onclick="toggleManeuver(this)">
+      <div class="maneuver-header">
+        <span class="maneuver-number">02</span>
+        <div>
+          <div class="maneuver-title">Palpación — Expansión Torácica</div>
+          <div class="maneuver-sub">Maniobra de expansibilidad torácica</div>
+        </div>
+        <span class="maneuver-toggle">+</span>
+      </div>
+      <div class="maneuver-body">
+        <div class="maneuver-content">
+          <ul class="maneuver-steps">
+            <li><strong>Cara posterior (más informativa):</strong> Coloca ambas manos planas sobre la parte baja de la espalda del paciente, con los pulgares en la línea media apuntando hacia arriba, el resto de los dedos abrazando las costillas laterales.</li>
+            <li>Junta los pulgares en la línea media formando un pliegue cutáneo y pide al paciente que haga una inspiración profunda.</li>
+            <li>Observa el desplazamiento simétrico de ambos pulgares alejándose de la línea media. La separación normal es de 3–5 cm.</li>
+            <li><strong>Cara anterior:</strong> Coloca las manos sobre la cara anterior del tórax a nivel del 4.° espacio intercostal, pulgares al nivel del xifoides.</li>
+            <li>Repite la maniobra. Cualquier asimetría indica patología en el lado que se mueve menos.</li>
+            <li>Palpa también el ápex (fosas supraclaviculares) para detectar asimetría apical (TBC, Pancoast).</li>
+          </ul>
+          <div class="findings-grid">
+            <div class="finding-box normal"><div class="finding-label">Normal</div>Expansión simétrica, ≥3 cm de separación de los pulgares bilateralmente.</div>
+            <div class="finding-box abnormal"><div class="finding-label">Anormal</div>Expansión reducida unilateral → derrame pleural, neumotórax, fibrosis, consolidación ipsilateral.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 FREMITO -->
+    <div class="maneuver-item" onclick="toggleManeuver(this)">
+      <div class="maneuver-header">
+        <span class="maneuver-number">03</span>
+        <div>
+          <div class="maneuver-title">Palpación — Frémito Vocal Táctil (FVT)</div>
+          <div class="manuver-sub" style="font-size:12px;color:rgba(15,17,23,0.5);font-family:'DM Mono',monospace;margin-top:2px">Vibraciones de voz transmitidas a la pared</div>
+        </div>
+        <span class="maneuver-toggle">+</span>
+      </div>
+      <div class="maneuver-body">
+        <div class="maneuver-content">
+          <ul class="maneuver-steps">
+            <li>Usa el borde cubital de ambas manos (hipotenar) o las últimas falanges de los dedos juntos — son más sensibles a vibraciones.</li>
+            <li>Coloca ambas manos simétricamente en los campos pulmonares superiores posteriores.</li>
+            <li>Pide al paciente que diga en voz baja y grave: <em>"treinta y tres"</em> repetidamente.</li>
+            <li>Desplaza las manos sistemáticamente hacia abajo comparando: campo superior → campo medio → campo inferior, siempre de manera bilateral y simultánea.</li>
+            <li>Evalúa si las vibraciones son iguales en ambos lados, aumentadas o disminuidas.</li>
+            <li>Repite en cara anterior y lateral si es necesario.</li>
+          </ul>
+          <div class="findings-grid">
+            <div class="finding-box normal"><div class="finding-label">Normal</div>FVT simétrico, ligeramente mayor en el lado derecho y en campos superiores (por proximidad bronquial).</div>
+            <div class="finding-box abnormal"><div class="finding-label">Aumentado</div>Condensación (neumonía): el parénquima sólido transmite mejor las vibraciones.</div>
+          </div>
+          <div class="findings-grid" style="margin-top:8px">
+            <div class="finding-box abnormal"><div class="finding-label">Disminuido / Abolido</div>Derrame pleural (líquido interpuesto), neumotórax (aire), enfisema, obesidad extrema, obstrucción bronquial.</div>
+            <div class="finding-box normal"><div class="finding-label">Truco clínico</div>Si dudas, usar palabras bisílabas graves: "uno-uno", "ole ole". Evita gritar al paciente.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 PERCUSION -->
+    <div class="maneuver-item" onclick="toggleManeuver(this)">
+      <div class="maneuver-header">
+        <span class="maneuver-number">04</span>
+        <div>
+          <div class="maneuver-title">Percusión Torácica</div>
+          <div class="maneuver-sub">Técnica digito-digital y comparativa</div>
+        </div>
+        <span class="maneuver-toggle">+</span>
+      </div>
+      <div class="maneuver-body">
+        <div class="maneuver-content">
+          <ul class="maneuver-steps">
+            <li>Apoya firmemente el dedo medio de la mano no dominante (plexímetro) sobre el espacio intercostal, paralelo a las costillas. Levanta los otros dedos para que no amortigüen.</li>
+            <li>Con el dedo medio de la mano dominante (percutor), golpea la articulación interfalángica media del plexímetro con movimiento rápido de muñeca — 2 golpes cortos.</li>
+            <li>Comienza en los ápices (fosas supraclaviculares) y desciende simétricamente por los espacios intercostales: 2.°, 4.°, 6.° EEII.</li>
+            <li>Percute cara posterior primero (más campo pulmonar visible), luego anterior y lateral.</li>
+            <li>En cara posterior: pide que el paciente cruce los brazos para exponer la escápula. Percute por fuera de las escápulas y en las fosas supraespinosas.</li>
+            <li><strong>Percusión comparativa:</strong> Compara el sonido de un lado con el del otro en el mismo nivel. Un sonido diferente indica patología.</li>
+            <li><strong>Percusión del límite diafragmático:</strong> Percute de cefálico a caudal hasta que el sonido cambie de sonoro a mate. Marca el punto. Pide inspiración máxima y vuelve a percutir. La diferencia normal es de 3–5 cm (movilidad diafragmática).</li>
+          </ul>
+
+          <table class="exam-table" style="margin-top:20px">
+            <thead>
+              <tr>
+                <th>Sonido</th>
+                <th>Descripción</th>
+                <th>Hallazgo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sonoro / Resonante</td>
+                <td>Grave, hueco, prolongado</td>
+                <td>Parénquima pulmonar normal</td>
+              </tr>
+              <tr>
+                <td>Mate</td>
+                <td>Sordo, corto, agudo</td>
+                <td>Consolidación, derrame, masa</td>
+              </tr>
+              <tr>
+                <td>Hipersonoro</td>
+                <td>Más grave y hueco que lo normal</td>
+                <td>Enfisema, neumotórax a tensión</td>
+              </tr>
+              <tr>
+                <td>Timpánico</td>
+                <td>Muy resonante, similar a tambor</td>
+                <td>Neumotórax, gran cavidad (caverna)</td>
+              </tr>
+              <tr>
+                <td>Submate</td>
+                <td>Intermedio entre mate y sonoro</td>
+                <td>Zona de consolidación incipiente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 AUSCULTACION -->
+    <div class="maneuver-item" onclick="toggleManeuver(this)">
+      <div class="maneuver-header">
+        <span class="maneuver-number">05</span>
+        <div>
+          <div class="maneuver-title">Auscultación Pulmonar</div>
+          <div class="maneuver-sub">Murmullo vesicular y ruidos adventicios</div>
+        </div>
+        <span class="maneuver-toggle">+</span>
+      </div>
+      <div class="maneuver-body">
+        <div class="maneuver-content">
+          <ul class="maneuver-steps">
+            <li>Usa la membrana del estetoscopio para ruidos de alta frecuencia (ruidos respiratorios normales y sibilancias) y la campana para baja frecuencia (crepitantes finos).</li>
+            <li>Pide al paciente que respire lenta y profundamente con la boca abierta. Advierte que puede marearse (hiperventilación).</li>
+            <li>Ausculta los mismos puntos que la percusión: ápices, campos medios e inferiores, de manera comparativa bilateral.</li>
+            <li>Escucha al menos un ciclo respiratorio completo en cada punto (inspiración + espiración).</li>
+            <li>Identifica el murmullo vesicular normal: suave, de baja intensidad, audible principalmente en inspiración (3:1 ins/esp).</li>
+            <li>Evalúa si el murmullo está conservado, disminuido (derrame, atelectasia, enfisema) o aumentado.</li>
+            <li>Busca ruidos adventicios sobreañadidos: crepitantes, sibilancias, roncus, frote pleural.</li>
+          </ul>
+
+          <table class="exam-table" style="margin-top:20px">
+            <thead>
+              <tr>
+                <th>Ruido</th>
+                <th>Características</th>
+                <th>Significado clínico</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Crepitantes finos</td>
+                <td>Discontinuos, cortos, final de inspiración — "crujido de papel"</td>
+                <td>Fibrosis, neumonía, ICC (Velcro® en bases)</td>
+              </tr>
+              <tr>
+                <td>Crepitantes gruesos</td>
+                <td>Discontinuos, más graves, inicio de inspiración y espiración</td>
+                <td>Secreciones en vía aérea, bronquiectasias</td>
+              </tr>
+              <tr>
+                <td>Sibilancias</td>
+                <td>Continuas, agudas, musicales, esp > insp</td>
+                <td>Obstrucción bronquial: asma, EPOC, tumor</td>
+              </tr>
+              <tr>
+                <td>Roncus</td>
+                <td>Continuos, graves, como ronquido — cambian con la tos</td>
+                <td>Secreciones en bronquios gruesos</td>
+              </tr>
+              <tr>
+                <td>Estridor</td>
+                <td>Monofónico, agudo, predominio inspiratorio, se oye sin estetoscopio</td>
+                <td>Obstrucción vía aérea superior (laringe, tráquea)</td>
+              </tr>
+              <tr>
+                <td>Frote pleural</td>
+                <td>Discontinuo, crujiente, en inspiración y espiración, no cambia con la tos</td>
+                <td>Pleuritis, inflamación pleural</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 MANIOBRAS DE VOCALIZACIÓN -->
+    <div class="maneuver-item" onclick="toggleManeuver(this)">
+      <div class="maneuver-header">
+        <span class="maneuver-number">06</span>
+        <div>
+          <div class="maneuver-title">Maniobras de Vocalización</div>
+          <div class="maneuver-sub">Broncofonía · Egofonia · Pectoriloquia áfona</div>
+        </div>
+        <span class="maneuver-toggle">+</span>
+      </div>
+      <div class="maneuver-body">
+        <div class="maneuver-content">
+          <ul class="maneuver-steps">
+            <li><strong>Broncofonía:</strong> Pide al paciente que diga "treinta y tres" mientras auscultas. Normalmente se escucha atenuado e indistinto. En condensación: se escucha nítido y más fuerte (trasmisión mejorada del sonido). Es positiva en neumonía.</li>
+            <li><strong>Pectoriloquia áfona:</strong> Pide que susurre "uno, uno, uno". Normalmente no se escucha o es muy vago. En consolidación: se oye claramente el susurro (signo de patología). Es la más específica de condensación.</li>
+            <li><strong>Egofonia (voz de cabra):</strong> Ausculta mientras el paciente dice "eee" de forma prolongada. En zona de consolidación o encima de un derrame: la "eee" suena como una "aaa" nasal o de cabra. Indica interfaz líquido-aire.</li>
+            <li>Realiza todas las maniobras comparando simétricamente ambos pulmones en los mismos puntos.</li>
+          </ul>
+          <div class="findings-grid">
+            <div class="finding-box normal"><div class="finding-label">Condensación (Neumonía)</div>FVT ↑ · Matidez a la percusión · Broncofonía (+) · Pectoriloquia áfona (+) · Egofonia (+) · Crepitantes</div>
+            <div class="finding-box abnormal"><div class="finding-label">Derrame Pleural</div>FVT abolido · Matidez en curva de Ellis-Damoiseau · Broncofonía ausente · Ruidos abolidos · Egofonia en límite superior</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 MANIOBRAS ESPECIALES -->
+    <div class="maneuver-item" onclick="toggleManeuver(this)">
+      <div class="maneuver-header">
+        <span class="maneuver-number">07</span>
+        <div>
+          <div class="maneuver-title">Maniobras Especiales</div>
+          <div class="maneuver-sub">Neumotórax · Derrame · Atelectasia</div>
+        </div>
+        <span class="maneuver-toggle">+</span>
+      </div>
+      <div class="maneuver-body">
+        <div class="maneuver-content">
+          <ul class="maneuver-steps">
+            <li><strong>Signo de Grocco-Rauchfuss (triángulo paravertebral):</strong> En derrame pleural unilateral, al percutir la columna paravertebral del lado contralateral se detecta una zona de submatidez triangular. Indica gran derrame que desplaza mediastino.</li>
+            <li><strong>Maniobra de Schepelmann:</strong> Pide al paciente que se incline lateralmente. Si el dolor torácico aumenta al inclinarse hacia el lado afectado → pleuritis. Si aumenta al inclinarse al lado contrario → neuralgia intercostal.</li>
+            <li><strong>Percusión del mediastino (maniobra de Krönig):</strong> Percute las fosas supraclaviculares de lateral a medial. Detecta la isthmus de Krönig (zona sonora sobre el ápex pulmonar). Se estrecha en fibrosis apical o TBC.</li>
+            <li><strong>Prueba de la moneda (coin test):</strong> Coloca una moneda en el hemitórax. Ausculta el otro lado mientras percutes la moneda con otra. Un sonido metálico (neumotórax a tensión) indica gran colección de aire.</li>
+            <li><strong>Evaluación de la traqueya:</strong> Palpa la posición de la tráquea por encima de la horquilla esternal con el dedo índice. Desviación hacia el lado enfermo → atelectasia, fibrosis. Desviación contralateral → neumotórax a tensión, gran derrame.</li>
+          </ul>
+          <div class="highlight-box">
+            <p>🎯 <strong>Regla de los tres:</strong> Para diferenciar Consolidación vs Derrame vs Neumotórax, recuerda: <br>• Consolidación: FVT ↑, Matidez, Crepitantes, Broncofonía (+)<br>• Derrame: FVT ↓, Matidez franca, Silencio auscultatorio, Egofonia en límite<br>• Neumotórax: FVT abolido, Hipersonoridad/Timpanismo, Silencio, Tráquea desviada</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end maneuver-list -->
+</div>
+
+<!-- SECTION 6: TABLA RESUMEN -->
+<div class="section">
+  <div class="sec-label">08 — Síntesis</div>
+  <h2 class="sec-title">Tabla Resumen: Síndromes<br>Pleuropulmonares</h2>
+
+  <table class="exam-table">
+    <thead>
+      <tr>
+        <th>Síndrome</th>
+        <th>Inspección</th>
+        <th>Palpación (FVT)</th>
+        <th>Percusión</th>
+        <th>Auscultación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Consolidación (Neumonía)</td>
+        <td>↓ expansión ipsilateral</td>
+        <td>↑ Aumentado</td>
+        <td>Mate</td>
+        <td>Crepitantes, soplo tubárico, broncofonía (+)</td>
+      </tr>
+      <tr>
+        <td>Derrame Pleural</td>
+        <td>↓ expansión, hemitórax abombado</td>
+        <td>Abolido</td>
+        <td>Mate + curva de Damoieau</td>
+        <td>Silencio, egofonia en límite superior</td>
+      </tr>
+      <tr>
+        <td>Neumotórax</td>
+        <td>↓ expansión, posible abombamiento</td>
+        <td>Abolido</td>
+        <td>Hipersonoro / Timpánico</td>
+        <td>Abolida o muy reducida</td>
+      </tr>
+      <tr>
+        <td>Atelectasia</td>
+        <td>↓ expansión, retracción</td>
+        <td>Abolido o ↓</td>
+        <td>Mate</td>
+        <td>Abolida o muy reducida</td>
+      </tr>
+      <tr>
+        <td>EPOC / Enfisema</td>
+        <td>Tórax en barril, FR ↑, uso músculos accesorios</td>
+        <td>↓ Disminuido bilateral</td>
+        <td>Hipersonoro bilateral</td>
+        <td>MV ↓ difuso, sibilancias espiratorias</td>
+      </tr>
+      <tr>
+        <td>Asma (crisis)</td>
+        <td>Uso músculos accesorios, taquipnea</td>
+        <td>↓ Disminuido</td>
+        <td>Hipersonoro</td>
+        <td>Sibilancias difusas esp > insp, ↓ MV</td>
+      </tr>
+      <tr>
+        <td>Fibrosis Pulmonar</td>
+        <td>↓ expansión bilateral, acropaquia</td>
+        <td>Normal o ↑</td>
+        <td>Mate a submate</td>
+        <td>Crepitantes "Velcro" en bases</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  SEMIOLOGÍA MÉDICA · 4.º AÑO · APARATO RESPIRATORIO · USO ACADÉMICO
+</div>
+
+<script>
+  function toggleManeuver(el) {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.maneuver-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+  // Open first by default
+  document.querySelector('.maneuver-item').classList.add('open');
+</script>
+</body>
+</html>
