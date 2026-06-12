@@ -155,18 +155,41 @@ function buildCondutaHTML(gc){
 }
 
 // ── GUIDE CONTENT (Mnemônicas, DDx etc.) ──────────────
-function renderGuideContent(mObj){
+// Agrega os guias de TODOS os motivos selecionados (1º, 2º, 3º) em cada aba.
+// Sem argumento: lê window.currentMotivo / currentMotivo2 / currentMotivo3.
+function renderGuideContent(){
   var area=document.getElementById('guide-content-area');
-  if(!mObj)return;
-  var gc=GUIDE_CONTENT[mObj.id]||null;
+  if(!area) return;
+  var motivos=[window.currentMotivo, window.currentMotivo2, window.currentMotivo3].filter(Boolean);
+  // dedupe por id (mesmo motivo não repete)
+  var seen={}; motivos=motivos.filter(function(m){ if(seen[m.id])return false; seen[m.id]=1; return true; });
+  if(!motivos.length){ area.innerHTML=''; return; }
+  var lang=document.documentElement.getAttribute('data-lang')||'pt';
+  function hdr(m){
+    var nm = lang==='es'?(m.nameEs||m.name):m.name;
+    var ic = window.amIcon?window.amIcon(m.icon,16):m.icon;
+    return '<div style="display:flex;align-items:center;gap:8px;margin:4px 0 12px;padding:7px 11px;background:var(--bg);border-left:3px solid var(--primary);border-radius:6px;font-weight:800;font-size:13px;color:var(--ink)"><span style="line-height:0;color:var(--primary)">'+ic+'</span><span>'+nm+'</span></div>';
+  }
+  // Agrega uma seção: só os motivos que têm conteúdo; cabeçalho por motivo quando há >1 motivo.
+  function agg(builderFn, key){
+    var withContent = motivos.filter(function(m){
+      var gc=GUIDE_CONTENT[m.id]; if(!gc) return false;
+      var v=gc[key];
+      return key==='conduta' ? !!v : !!(v && v.length);
+    });
+    if(!withContent.length) return builderFn(null);                     // placeholder único
+    if(motivos.length===1) return builderFn(GUIDE_CONTENT[motivos[0].id]||null);
+    return withContent.map(function(m){ return hdr(m)+builderFn(GUIDE_CONTENT[m.id]); })
+                      .join('<div style="height:1px;background:var(--line);margin:20px 0"></div>');
+  }
   var p='<div style="padding:18px 24px 60px">',pe='</div>';
   var html='';
-  html+='<div class="guide-page active" id="gp-mnemonics">'+p+buildMnemonicsHTML(gc)+pe+'</div>';
-  html+='<div class="guide-page" id="gp-manobras">'+p+buildManobrasHTML(gc)+pe+'</div>';
-  html+='<div class="guide-page" id="gp-sinais">'+p+buildSinaisHTML(gc)+pe+'</div>';
-  html+='<div class="guide-page" id="gp-ddx">'+p+buildDDxHTML(gc)+pe+'</div>';
-  html+='<div class="guide-page" id="gp-escalas">'+p+buildEscalasHTML(gc)+pe+'</div>';
-  html+='<div class="guide-page" id="gp-conduta">'+p+buildCondutaHTML(gc)
+  html+='<div class="guide-page active" id="gp-mnemonics">'+p+agg(buildMnemonicsHTML,'mnemonics')+pe+'</div>';
+  html+='<div class="guide-page" id="gp-manobras">'+p+agg(buildManobrasHTML,'manobras')+pe+'</div>';
+  html+='<div class="guide-page" id="gp-sinais">'+p+agg(buildSinaisHTML,'sinais')+pe+'</div>';
+  html+='<div class="guide-page" id="gp-ddx">'+p+agg(buildDDxHTML,'ddx')+pe+'</div>';
+  html+='<div class="guide-page" id="gp-escalas">'+p+agg(buildEscalasHTML,'escalas')+pe+'</div>';
+  html+='<div class="guide-page" id="gp-conduta">'+p+agg(buildCondutaHTML,'conduta')
     +'<div class="f-row" style="margin-top:14px"><label class="f-label pt">Notas de conduta para este paciente</label><label class="f-label es">Notas de conducta para este paciente</label><textarea class="f-input" rows="4" id="conduta-guide-text"></textarea></div>'
     +pe+'</div>';
   area.innerHTML=html;

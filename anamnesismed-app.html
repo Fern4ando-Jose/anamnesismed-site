@@ -1667,6 +1667,7 @@ function newHC(){
   document.getElementById('mc-c-suggestions').style.display = 'none';
   var mc3s = document.getElementById('aea-mc3-section');
   if(mc3s){mc3s.style.display='none';mc3s.innerHTML='';}
+  if(typeof renderGuideContent==='function') renderGuideContent(); // limpa a guia (sem motivos)
   // Reset HC header
   document.getElementById('hc-icon').textContent = '📋';
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
@@ -1787,7 +1788,7 @@ function selectMotivoFromMC(id){
   // Update dynamic sections
   renderAEAGuide(mObj);
   renderRAS(mObj.rasHighlight || []);
-  renderGuideContent(mObj);
+  renderGuideContent();
   updateProgress();
   // Open AEA panel
   var aeaPanel = document.getElementById('panel-aea');
@@ -1800,6 +1801,7 @@ function clearMotivo(){
   document.getElementById('mc-motivo-badge').style.display = 'none';
   document.getElementById('aea-guided-content').innerHTML = '';
   renderRAS([]);
+  renderGuideContent();
 }
 
 function clearMotivo2(){
@@ -1808,6 +1810,7 @@ function clearMotivo2(){
   document.getElementById('mc-b-badge').style.display = 'none';
   var sect = document.getElementById('aea-mc2-section');
   if(sect){sect.style.display='none';sect.innerHTML='';}
+  renderGuideContent();
 }
 
 function mcbSearch(val){
@@ -1840,6 +1843,7 @@ function selectMotivo2FromMC(id){
   document.getElementById('mc-b-badge-name').textContent = nm;
   currentMotivo2 = mObj;
   renderAEAGuide2(mObj);
+  renderGuideContent();
   // Abre painel AEA se fechado
   var aeaPanel = document.getElementById('panel-aea');
   if(aeaPanel && !aeaPanel.classList.contains('open')) aeaPanel.classList.add('open');
@@ -1852,6 +1856,7 @@ function clearMotivo3(){
   document.getElementById('mc-c-badge').style.display = 'none';
   var sect = document.getElementById('aea-mc3-section');
   if(sect){sect.style.display='none';sect.innerHTML='';}
+  renderGuideContent();
 }
 
 function mccSearch(val){
@@ -1883,6 +1888,7 @@ function selectMotivo3FromMC(id){
   document.getElementById('mc-c-badge-name').textContent = nm;
   currentMotivo3 = mObj;
   renderAEAGuide3(mObj);
+  renderGuideContent();
   var aeaPanel = document.getElementById('panel-aea');
   if(aeaPanel && !aeaPanel.classList.contains('open')) aeaPanel.classList.add('open');
 }
@@ -2010,7 +2016,7 @@ function openHC(id){
   // Load RAS filtered
   renderRAS(mObj.rasHighlight || []);
   // Load guide content (DDx etc.)
-  renderGuideContent(mObj);
+  renderGuideContent();
   
   showScreen('hc');
   showGuide('form', document.querySelector('.guide-tab'));
