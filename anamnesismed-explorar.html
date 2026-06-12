@@ -201,7 +201,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     <div class="sec-label es">Más recursos</div>
     <div class="tools-grid">
       <div class="tool-tile" style="--c:#8b5cf6;--cbg:rgba(139,92,246,.12)">
-        <div class="tool-tile-icon">📚</div>
+        <div class="tool-tile-icon" data-am-icon="book" data-am-size="26"></div>
         <div class="tool-tile-name pt">Referências Clínicas</div>
         <div class="tool-tile-name es">Referencias Clínicas</div>
         <div class="tool-tile-desc pt">Resumos, guias clínicos e casos práticos por especialidade.</div>
@@ -210,7 +210,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <span class="soon-badge es">Próximamente</span>
       </div>
       <div class="tool-tile" style="--c:#10b981;--cbg:rgba(16,185,129,.12)">
-        <div class="tool-tile-icon">✨</div>
+        <div class="tool-tile-icon" data-am-icon="sparkles" data-am-size="26"></div>
         <div class="tool-tile-name pt">Assistente com IA</div>
         <div class="tool-tile-name es">Asistente con IA</div>
         <div class="tool-tile-desc pt">Apoio inteligente na anamnese e no raciocínio clínico.</div>
@@ -300,7 +300,7 @@ function renderMosaic(){
     var count = countMotivos(e.id);
     var motTxt = count + " motivos";
     return '<a href="anamnesismed-especialidades.html?esp='+e.id+'" class="esp-tile" style="--c:'+e.c+';--cbg:'+e.cbg+'">'
-      + '<div class="esp-tile-icon">'+e.icon+'</div>'
+      + '<div class="esp-tile-icon">'+(window.amIcon?amIcon(e.icon,26):e.icon)+'</div>'
       + '<div class="esp-tile-name">'+espName(e)+'</div>'
       + '<div class="esp-tile-desc">'+espDesc(e)+'</div>'
       + '<div class="esp-tile-foot"><span class="esp-tile-count">'+motTxt+'</span><span class="esp-tile-go">›</span></div>'
@@ -327,7 +327,7 @@ function runSearch(q){
   box.innerHTML = matches.map(function(m){
     var lbl = SPEC_LABEL[m.spec] ? (currentLang==="es"?SPEC_LABEL[m.spec].es:SPEC_LABEL[m.spec].pt) : m.spec;
     return '<a class="sr-item" href="anamnesismed-app.html?esp='+m.spec+'&motivo='+m.id+'">'
-      + '<span class="sr-icon">'+m.icon+'</span>'
+      + '<span class="sr-icon">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>'
       + '<span class="sr-name">'+srName(m)+'</span>'
       + '<span class="sr-spec">'+lbl+'</span>'
       + '</a>';

@@ -15,6 +15,14 @@
 (function () {
   'use strict';
 
+  /* alinhamento padrão dos ícones (inline e dentro de flex) */
+  if (typeof document !== 'undefined' && !document.getElementById('am-icons-style')) {
+    var st = document.createElement('style');
+    st.id = 'am-icons-style';
+    st.textContent = '.am-ico{display:inline-block;vertical-align:middle;flex-shrink:0}';
+    (document.head || document.documentElement).appendChild(st);
+  }
+
   var AM_ICONS = {
     /* ── navegação ── */
     home:        '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
@@ -65,6 +73,15 @@
     abdomen:     '<circle cx="12" cy="12" r="9"/><path d="M12 3a4 4 0 0 0 0 8 4 4 0 0 1 0 8"/>',
     drum:        '<path d="m2 2 8 8"/><path d="m22 2-8 8"/><ellipse cx="12" cy="9" rx="10" ry="4"/><path d="M2 9v6a10 4 0 0 0 20 0V9"/>',
 
+    /* RAS — sistemas */
+    ear:         '<path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"/>',
+    nose:        '<path d="M12 3c-1 4-2.5 6-4 8.5-.8 1.3-.5 3 1 3.5"/><path d="M9 15a3 3 0 0 0 6 0"/><path d="M15 15c1.5-.5 1.8-2.2 1-3.5C14.5 9 13 7 12 3"/>',
+    tooth:       '<path d="M9 22c-1.5 0-2-2-2.5-5C6 14 5 12 5 9a7 7 0 0 1 14 0c0 3-1 5-1.5 8C17 20 16.5 22 15 22s-2-3-3-3-1.5 3-3 3z"/>',
+    kidney:      '<path d="M14 3c-4 0-7 3-7 8s3 8 7 8c2 0 3.2-1.2 3.2-3.2 0-1.6-1.2-2.3-1.2-3.8s1.2-2.2 1.2-3.8C17.2 5 16 3 14 3z"/>',
+    cloud:       '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>',
+    microscope:  '<path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/>',
+    flask:       '<path d="M10 2v6.3a1 1 0 0 1-.17.55L4.6 17a1 1 0 0 0 .83 1.55h13.14a1 1 0 0 0 .83-1.55l-5.23-8.15a1 1 0 0 1-.17-.55V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',
+
     /* fallback */
     _fallback:   '<circle cx="12" cy="12" r="9"/>'
   };
@@ -83,6 +100,8 @@
     '🚽':'toilet','🚻':'toilet','⛔':'ban','⚠️':'alert','🚨':'alert','🤕':'alert',
     '👁️':'eye','👁':'eye','📐':'ruler','🥁':'drum','🫃':'abdomen','💊':'pill',
     '📄':'file','📝':'file','📋':'clipboard','🎯':'target','🏠':'home',
+    '👂':'ear','👃':'nose','🦷':'tooth','🫘':'kidney','🫱':'hand','🦿':'bone',
+    '💭':'cloud','🔬':'microscope','⚗️':'flask','⚗':'flask','🫀':'heart',
     '🔘':'_fallback','◎':'home','☰':'clipboard','⊕':'plus','◯':'_fallback'
   };
 

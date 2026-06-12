@@ -402,7 +402,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   <!-- INDEX SCREEN -->
   <div class="index-screen active" id="screen-index">
     <div class="spec-header" id="spec-header-semiologia" style="display:none">
-      <div class="spec-icon-big">📖</div>
+      <div class="spec-icon-big" data-am-icon="book" data-am-size="30"></div>
       <div>
         <h1 class="spec-title pt">Semiologia Básica</h1>
         <h1 class="spec-title es">Semiología Básica</h1>
@@ -411,7 +411,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
       </div>
     </div>
     <div class="spec-header" id="spec-header-clinica">
-      <div class="spec-icon-big">🩺</div>
+      <div class="spec-icon-big" data-am-icon="stethoscope" data-am-size="30"></div>
       <div>
         <h1 class="spec-title pt">Clínica Médica</h1>
         <h1 class="spec-title es">Clínica Médica</h1>
@@ -420,7 +420,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
       </div>
     </div>
     <div class="spec-header" id="spec-header-cirurgia" style="display:none">
-      <div class="spec-icon-big">🔪</div>
+      <div class="spec-icon-big" data-am-icon="scalpel" data-am-size="30"></div>
       <div>
         <h1 class="spec-title pt">Cirurgia Geral</h1>
         <h1 class="spec-title es">Cirugía General</h1>
@@ -431,15 +431,15 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
     <div class="spec-tabs">
       <div class="spec-tab" id="stab-semiologia" onclick="showSpec('semiologia')">
-        📖 <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
+        <span data-am-icon="book" data-am-size="15"></span> <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
         <span class="spec-tab-count" id="count-semiologia">0</span>
       </div>
       <div class="spec-tab active" id="stab-clinica" onclick="showSpec('clinica')">
-        🩺 <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
+        <span data-am-icon="stethoscope" data-am-size="15"></span> <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
         <span class="spec-tab-count" id="count-clinica">0</span>
       </div>
       <div class="spec-tab" id="stab-cirurgia" onclick="showSpec('cirurgia')">
-        🔪 <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
+        <span data-am-icon="scalpel" data-am-size="15"></span> <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
         <span class="spec-tab-count" id="count-cirurgia">0</span>
       </div>
     </div>
@@ -453,7 +453,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     <!-- Motivo header -->
     <div class="hc-header">
       <div class="hc-header-top">
-        <div class="hc-motivo-icon" id="hc-icon">🩺</div>
+        <div class="hc-motivo-icon" id="hc-icon" data-am-icon="stethoscope" data-am-size="24"></div>
         <div>
           <div class="hc-motivo-name" id="hc-name">—</div>
           <div class="hc-motivo-spec" id="hc-spec"></div>
@@ -1720,7 +1720,7 @@ function onMCInput(val){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
     var specLabel = m._spec==='clinica'?(lang==='pt'?'Clínica Médica':'Clínica Médica'):(lang==='pt'?'Cirurgia Geral':'Cirugía General');
     return '<div onclick="selectMotivoFromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
-      +'<span style="font-size:18px;flex-shrink:0">'+m.icon+'</span>'
+      +'<span style="flex-shrink:0;color:var(--primary)">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>'
       +'<div><div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'
       +'<div style="font-size:10px;color:var(--muted)">'+specLabel+'</div></div>'
       +'</div>';
@@ -1744,11 +1744,11 @@ function selectMotivoFromMC(id){
   document.getElementById('mc-a').value = nm;
   // Show badge
   document.getElementById('mc-motivo-badge').style.display = 'block';
-  document.getElementById('mc-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-badge-icon').innerHTML = window.amIcon?amIcon(mObj.icon,18):mObj.icon;
   document.getElementById('mc-badge-name').textContent = nm;
   // Update HC motivo header
   currentMotivo = mObj;
-  document.getElementById('hc-icon').textContent = mObj.icon;
+  document.getElementById('hc-icon').innerHTML = window.amIcon?amIcon(mObj.icon,24):mObj.icon;
   document.getElementById('hc-name').textContent = nm;
   document.getElementById('tb-motivo').textContent = nm;
   // Update dynamic sections
@@ -1789,7 +1789,7 @@ function mcbSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo2FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="font-size:17px;flex-shrink:0">'+m.icon+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
+    return '<div onclick="selectMotivo2FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary)">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
   }).join('');
   var inp = document.getElementById('mc-b');
   sug.style.display = 'block';
@@ -1803,7 +1803,7 @@ function selectMotivo2FromMC(id){
   var nm = lang==='es'?(mObj.nameEs||mObj.name):mObj.name;
   document.getElementById('mc-b').value = nm;
   document.getElementById('mc-b-badge').style.display = 'block';
-  document.getElementById('mc-b-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-b-badge-icon').innerHTML = window.amIcon?amIcon(mObj.icon,18):mObj.icon;
   document.getElementById('mc-b-badge-name').textContent = nm;
   currentMotivo2 = mObj;
   renderAEAGuide2(mObj);
@@ -1833,7 +1833,7 @@ function mccSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo3FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="font-size:17px;flex-shrink:0">'+m.icon+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
+    return '<div onclick="selectMotivo3FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary)">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
   }).join('');
   sug.style.display = 'block';
 }
@@ -1846,7 +1846,7 @@ function selectMotivo3FromMC(id){
   var nm = lang==='es'?(mObj.nameEs||mObj.name):mObj.name;
   document.getElementById('mc-c').value = nm;
   document.getElementById('mc-c-badge').style.display = 'block';
-  document.getElementById('mc-c-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-c-badge-icon').innerHTML = window.amIcon?amIcon(mObj.icon,18):mObj.icon;
   document.getElementById('mc-c-badge-name').textContent = nm;
   currentMotivo3 = mObj;
   renderAEAGuide3(mObj);
@@ -1939,7 +1939,7 @@ function renderMotivoGrid(spec){
     cat.items.forEach(function(m){
       var nm = lang==='es'?(m.nameEs||m.name):m.name;
       html += '<div class="motivo-card '+m.color+'" onclick="openHC(\''+m.id+'\')">';
-      html += '<div class="motivo-icon">'+m.icon+'</div>';
+      html += '<div class="motivo-icon">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</div>';
       html += '<div class="motivo-info"><div class="motivo-name">'+nm+'</div></div>';
       html += '</div>';
     });
@@ -1963,14 +1963,14 @@ function openHC(id){
   currentMotivo = mObj;
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
   var nm = lang==='es'?(mObj.nameEs||mObj.name):mObj.name;
-  document.getElementById('hc-icon').textContent = mObj.icon;
+  document.getElementById('hc-icon').innerHTML = window.amIcon?amIcon(mObj.icon,24):mObj.icon;
   document.getElementById('hc-name').textContent = nm;
   document.getElementById('hc-spec').textContent = lang==='pt'?'Clínica Médica / Cirurgia Geral':'Clínica Médica / Cirugía General';
   document.getElementById('tb-motivo').textContent = nm;
   document.getElementById('mc-a').value = nm;
   // Show badge
   document.getElementById('mc-motivo-badge').style.display = 'block';
-  document.getElementById('mc-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-badge-icon').innerHTML = window.amIcon?amIcon(mObj.icon,18):mObj.icon;
   document.getElementById('mc-badge-name').textContent = nm;
   // Load AEA guided questions
   renderAEAGuide(mObj);
@@ -2044,7 +2044,7 @@ function renderRAS(highlight){
     var nm = lang==='es'?sys.nameEs:sys.name;
     html += '<div class="ras-system'+(relevant?' relevant':'')+(relevant?' open':'')+'" id="ras-'+sys.id+'">';
     html += '<div class="ras-head" onclick="toggleRas(this)">';
-    html += '<span class="ras-icon">'+sys.icon+'</span>';
+    html += '<span class="ras-icon">'+(window.amIcon?amIcon(sys.icon,16):sys.icon)+'</span>';
     html += '<span class="ras-name">'+nm+'</span>';
     if(relevant) html += '<span class="ras-badge rel pt">Relevante para este motivo</span><span class="ras-badge rel es">Relevante para este motivo</span>';
     html += '<span class="ras-toggle">+</span></div>';
