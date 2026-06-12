@@ -145,8 +145,8 @@ table.sx tbody tr:hover td:first-child{background:#eef6f8}
       </button>
       <a href="anamnesismed-especialidades.html?esp=respiratorio" class="topbar-back"><span class="pt">← Respiratório</span><span class="es">← Respiratorio</span></a>
       <span class="topbar-sep">›</span>
-      <span class="topbar-title pt">Exame Físico</span>
-      <span class="topbar-title es">Examen Físico</span>
+      <span class="topbar-title pt">Sintomas e Exame Físico</span>
+      <span class="topbar-title es">Síntomas y Examen Físico</span>
     </div>
     <div class="lang-toggle">
       <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
@@ -156,10 +156,10 @@ table.sx tbody tr:hover td:first-child{background:#eef6f8}
 
   <div class="hero">
     <div class="hero-eyebrow">🫁 <span class="pt">Referência Clínica · Respiratório</span><span class="es">Referencia Clínica · Respiratorio</span></div>
-    <div class="hero-title pt">Exame Físico do Aparelho Respiratório</div>
-    <div class="hero-title es">Examen Físico del Aparato Respiratorio</div>
-    <div class="hero-sub pt">Roteiro completo: topografia, inspeção, palpação, percussão e ausculta — e como os achados se combinam nos principais síndromes respiratórios.</div>
-    <div class="hero-sub es">Guía completa: topografía, inspección, palpación, percusión y auscultación — y cómo los hallazgos se combinan en los principales síndromes respiratorios.</div>
+    <div class="hero-title pt">Aparelho Respiratório — Sintomas e Exame Físico</div>
+    <div class="hero-title es">Aparato Respiratorio — Síntomas y Examen Físico</div>
+    <div class="hero-sub pt">Roteiro completo: semiologia dos sintomas cardinais (tosse, expectoração, hemoptise, dispneia, dor torácica), topografia, inspeção, palpação, percussão, ausculta, manobras especiais — e como os achados se combinam nos principais síndromes respiratórios.</div>
+    <div class="hero-sub es">Guía completa: semiología de los síntomas cardinales (tos, expectoración, hemoptisis, disnea, dolor torácico), topografía, inspección, palpación, percusión, auscultación, maniobras especiales — y cómo los hallazgos se combinan en los principales síndromes respiratorios.</div>
   </div>
 
   <nav class="secnav" id="secnav"><!-- preenchido por JS --></nav>
@@ -172,6 +172,30 @@ var L = "es";
 
 /* ─────────── DADOS (bilíngue) ─────────── */
 var SECTIONS = [
+  {
+    id:"sintomas", emoji:"🗣️", icon:"0",
+    t:{es:"Síntomas / Motivos de consulta", pt:"Sintomas / Motivos de consulta"},
+    intro:{
+      es:"Semiología de los síntomas cardinales del aparato respiratorio: cómo caracterizarlos en la anamnesis y qué orientan.",
+      pt:"Semiologia dos sintomas cardinais do aparelho respiratório: como caracterizá-los na anamnese e o que orientam."},
+    accs:[
+      {t:{es:"Tos",pt:"Tosse"},body:{
+        es:"<p><b>Definición:</b> espiración explosiva con glotis cerrada; reflejo defensivo con centro en el bulbo. Estímulos inflamatorios, mecánicos o químicos.</p><p><b>Cómo caracterizar:</b></p><ul><li><b>Evolución:</b> aguda (&lt;3 sem) · subaguda (3–8 sem) · crónica (&gt;8 sem)</li><li><b>Seca o productiva</b> (húmeda con expectoración)</li><li><b>Timbre:</b> perruna (laríngea) · bitonal (parálisis recurrencial → sospecha tumoral) · quintosa/coqueluchoide · emetizante</li><li><b>Horario/desencadenantes:</b> nocturna (asma, ERGE, IC), matutina (bronquitis crónica), decúbito, ejercicio, frío, alérgenos</li><li><b>Acompañantes:</b> fiebre, disnea, sibilancias, dolor, goteo posnasal, pirosis</li></ul><div class='callout'><b>Tos crónica — tríada causal:</b> goteo posnasal (UACS) · asma · ERGE explican la mayoría con Rx normal. <b>OJO:</b> IECA (tos seca) y tabaquismo.</div><p><b>Complicaciones:</b> síncope tusígeno, fracturas costales, vómito (emetizante).</p>",
+        pt:"<p><b>Definição:</b> expiração explosiva com glote fechada; reflexo defensivo com centro no bulbo. Estímulos inflamatórios, mecânicos ou químicos.</p><p><b>Como caracterizar:</b></p><ul><li><b>Evolução:</b> aguda (&lt;3 sem) · subaguda (3–8 sem) · crônica (&gt;8 sem)</li><li><b>Seca ou produtiva</b> (úmida com expectoração)</li><li><b>Timbre:</b> ladrante (laríngea) · bitonal (paralisia do recorrente → suspeita tumoral) · quintosa/coqueluchoide · emetizante</li><li><b>Horário/desencadeantes:</b> noturna (asma, DRGE, IC), matutina (bronquite crônica), decúbito, exercício, frio, alérgenos</li><li><b>Acompanhantes:</b> febre, dispneia, sibilância, dor, gotejamento pós-nasal, pirose</li></ul><div class='callout'><b>Tosse crônica — tríade causal:</b> gotejamento pós-nasal (UACS) · asma · DRGE explicam a maioria com Rx normal. <b>ATENÇÃO:</b> IECA (tosse seca) e tabagismo.</div><p><b>Complicações:</b> síncope tussígena, fraturas de costela, vômito (emetizante).</p>"}},
+      {t:{es:"Expectoración",pt:"Expectoração"},body:{
+        es:"<p>Caracterizar <b>color, aspecto, volumen y olor</b> del esputo:</p><ul><li><b>Mucoso</b> claro/blanco (viral, bronquitis crónica, asma)</li><li><b>Mucopurulento / purulento</b> amarillo-verdoso (infección bacteriana)</li><li><b>Herrumbroso</b> (achocolatado) → neumonía neumocócica</li><li><b>Rosado espumoso</b> → edema agudo de pulmón</li><li><b>«Jalea de grosella»</b> → Klebsiella pneumoniae</li><li><b>Numular</b> (monedas) → TBC, bronquiectasias</li><li><b>Fétido</b> → anaerobios (absceso, bronquiectasia infectada)</li></ul><p><b>Volumen:</b> escaso · moderado · abundante (bronquiectasia). <b>Vómica:</b> eliminación súbita &gt;300 mL al abrirse una colección purulenta en un bronquio.</p><p><b>Elementos especiales:</b> moldes/espirales de Curschmann (asma), tapones de Dittrich (fétidos).</p>",
+        pt:"<p>Caracterizar <b>cor, aspecto, volume e odor</b> do escarro:</p><ul><li><b>Mucoide</b> claro/branco (viral, bronquite crônica, asma)</li><li><b>Mucopurulento / purulento</b> amarelo-esverdeado (infecção bacteriana)</li><li><b>Ferruginoso</b> (achocolatado) → pneumonia pneumocócica</li><li><b>Rosado espumoso</b> → edema agudo de pulmão</li><li><b>«Geleia de groselha»</b> → Klebsiella pneumoniae</li><li><b>Numular</b> (moedas) → TB, bronquiectasias</li><li><b>Fétido</b> → anaeróbios (abscesso, bronquiectasia infectada)</li></ul><p><b>Volume:</b> escasso · moderado · abundante (bronquiectasia). <b>Vômica:</b> eliminação súbita &gt;300 mL ao abrir-se uma coleção purulenta num brônquio.</p><p><b>Elementos especiais:</b> moldes/espirais de Curschmann (asma), tampões de Dittrich (fétidos).</p>"}},
+      {t:{es:"Hemoptisis",pt:"Hemoptise"},body:{
+        es:"<p><b>Definición:</b> expulsión por la boca de sangre de las vías respiratorias bajas. Suele precederla un cosquilleo laringotraqueal; sangre <b>roja rutilante, espumosa, aireada</b>, con tos y sin restos alimentarios.</p><p><b>Clasificación por volumen/24h:</b></p><ul><li>Mínima/estrías · Leve &lt;250 mL · Moderada 250–500 mL · Grave 500–600 mL · <b>Fulminante &gt;600 mL</b> (muerte por asfixia)</li></ul><p><b>4 causas respiratorias clásicas:</b> TBC · bronquitis crónica · cáncer de pulmón · bronquiectasias. Extrapulmonares: estenosis mitral, IC izquierda, TEP.</p><div class='callout'><b>Hemoptisis vs hematemesis:</b> la hematemesis se precede de náuseas/vómito, es sangre <b>oscura con coágulos y restos alimentarios</b> y deja melena. Descartar también epistaxis deglutida y gingivorragia.</div>",
+        pt:"<p><b>Definição:</b> expulsão pela boca de sangue das vias respiratórias baixas. Costuma ser precedida por cócegas laringotraqueais; sangue <b>vermelho rutilante, espumoso, aerado</b>, com tosse e sem restos alimentares.</p><p><b>Classificação por volume/24h:</b></p><ul><li>Mínima/estrias · Leve &lt;250 mL · Moderada 250–500 mL · Grave 500–600 mL · <b>Fulminante &gt;600 mL</b> (morte por asfixia)</li></ul><p><b>4 causas respiratórias clássicas:</b> TB · bronquite crônica · câncer de pulmão · bronquiectasias. Extrapulmonares: estenose mitral, IC esquerda, TEP.</p><div class='callout'><b>Hemoptise vs hematêmese:</b> a hematêmese é precedida por náuseas/vômito, é sangue <b>escuro com coágulos e restos alimentares</b> e deixa melena. Descartar também epistaxe deglutida e gengivorragia.</div>"}},
+      {t:{es:"Disnea",pt:"Dispneia"},body:{
+        es:"<p><b>Definición:</b> percepción consciente y desagradable de dificultad para respirar.</p><p><b>Caracterizar:</b> aparición (súbita/progresiva), magnitud (reposo o esfuerzo), relación con el decúbito y alivio.</p><ul><li><b>Ortopnea:</b> aparece al acostarse (n.º de almohadas) → IC izquierda</li><li><b>DPN:</b> despierta sofocado por la noche</li><li><b>Platipnea / trepopnea:</b> según la posición</li></ul><p><b>Escala mMRC (0–4):</b> cuantifica la limitación funcional.</p><span class='tag'>Aguda: asma · TEP · neumonía · neumotórax · pánico</span><span class='tag'>Crónica: EPOC · IC · anemia · obesidad · derrame</span>",
+        pt:"<p><b>Definição:</b> percepção consciente e desagradável de dificuldade para respirar.</p><p><b>Caracterizar:</b> instalação (súbita/progressiva), magnitude (repouso ou esforço), relação com o decúbito e alívio.</p><ul><li><b>Ortopneia:</b> surge ao deitar (n.º de travesseiros) → IC esquerda</li><li><b>DPN:</b> desperta sufocado à noite</li><li><b>Platipneia / trepopneia:</b> conforme a posição</li></ul><p><b>Escala mMRC (0–4):</b> quantifica a limitação funcional.</p><span class='tag'>Aguda: asma · TEP · pneumonia · pneumotórax · pânico</span><span class='tag'>Crônica: DPOC · IC · anemia · obesidade · derrame</span>"}},
+      {t:{es:"Dolor torácico",pt:"Dor torácica"},body:{
+        es:"<p><b>Dos grandes tipos según el origen:</b></p><ul><li><b>Visceral (traqueobronquial):</b> mal localizado, retroesternal, urente/opresivo. El parénquima pulmonar <b>no tiene receptores nociceptivos</b>.</li><li><b>Parietal/pleurítico (somático):</b> punzante, bien localizado, <b>aumenta con la respiración, la tos y los movimientos</b> → pleuritis, neumonía, TEP, neumotórax, neoplasia.</li></ul><p><b>Caracterizar (ALICIA):</b> Aparición · Localización · Irradiación · Carácter · Intensidad · Atenuantes/agravantes · síntomas Acompañantes.</p><div class='callout'><b>Banderas rojas:</b> opresivo irradiado a MSI/mandíbula con esfuerzo (isquemia) · desgarrante hacia el dorso con asimetría de pulsos (disección aórtica) · pleurítico súbito con disnea (TEP/neumotórax).</div>",
+        pt:"<p><b>Dois grandes tipos conforme a origem:</b></p><ul><li><b>Visceral (traqueobrônquica):</b> mal localizada, retroesternal, em queimação/opressão. O parênquima pulmonar <b>não tem receptores nociceptivos</b>.</li><li><b>Parietal/pleurítica (somática):</b> em pontada, bem localizada, <b>aumenta com a respiração, a tosse e os movimentos</b> → pleurite, pneumonia, TEP, pneumotórax, neoplasia.</li></ul><p><b>Caracterizar (ALICIA):</b> Aparecimento · Localização · Irradiação · Caráter · Intensidade · Atenuantes/agravantes · sintomas Acompanhantes.</p><div class='callout'><b>Sinais de alarme:</b> opressiva irradiada a MSE/mandíbula ao esforço (isquemia) · dilacerante para o dorso com assimetria de pulsos (dissecção aórtica) · pleurítica súbita com dispneia (TEP/pneumotórax).</div>"}}
+    ]
+  },
   {
     id:"topografia", emoji:"📐", icon:"1",
     t:{es:"Topografía torácica", pt:"Topografia torácica"},
@@ -263,7 +287,24 @@ var SECTIONS = [
     ]
   },
   {
-    id:"sindromes", emoji:"🧩", icon:"6",
+    id:"maniobras", emoji:"🎯", icon:"6",
+    t:{es:"Maniobras y signos especiales", pt:"Manobras e sinais especiais"},
+    intro:{es:"Maniobras complementarias del examen físico que ayudan a confirmar síndromes específicos.",
+           pt:"Manobras complementares do exame físico que ajudam a confirmar síndromes específicos."},
+    accs:[
+      {t:{es:"Movilidad diafragmática",pt:"Mobilidade diafragmática"},body:{
+        es:"<p>Se percute de cefálico a caudal hasta el cambio de sonoridad a matidez; se marca el punto en espiración y luego en inspiración máxima. La excursión normal es de <b>3–5 cm</b>.</p><p><b>Disminuida en:</b> enfisema, derrame pleural, parálisis frénica, fibrosis.</p>",
+        pt:"<p>Percute-se de cefálico para caudal até a mudança de sonoridade para macicez; marca-se o ponto em expiração e depois em inspiração máxima. A excursão normal é de <b>3–5 cm</b>.</p><p><b>Diminuída em:</b> enfisema, derrame pleural, paralisia frênica, fibrose.</p>"}},
+      {t:{es:"Maniobras de vocalización",pt:"Manobras de vocalização"},body:{
+        es:"<ul><li><b>Broncofonía:</b> el paciente dice «treinta y tres»; en condensación se oye más nítido y fuerte.</li><li><b>Pectoriloquia áfona:</b> susurra «treinta y tres»; se escucha claramente sobre una condensación (signo muy específico).</li><li><b>Egofonía (voz de cabra):</b> la «e» suena como «a» nasal, en el límite superior de un derrame.</li><li><b>Disminución/abolición de la voz:</b> derrame, neumotórax, atelectasia obstructiva.</li></ul>",
+        pt:"<ul><li><b>Broncofonia:</b> o paciente diz «trinta e três»; na condensação ouve-se mais nítido e forte.</li><li><b>Pectorilóquia áfona:</b> sussurra «trinta e três»; ouve-se claramente sobre uma condensação (sinal muito específico).</li><li><b>Egofonia (voz de cabra):</b> o «e» soa como «a» nasal, no limite superior de um derrame.</li><li><b>Diminuição/abolição da voz:</b> derrame, pneumotórax, atelectasia obstrutiva.</li></ul>"}},
+      {t:{es:"Signos especiales",pt:"Sinais especiais"},body:{
+        es:"<ul><li><b>Triángulo de Grocco-Rauchfuss:</b> submatidez paravertebral <b>contralateral</b> en grandes derrames.</li><li><b>Maniobra de Schepelmann:</b> el dolor aumenta al inclinarse hacia el lado afectado → pleuritis; hacia el contrario → neuralgia intercostal.</li><li><b>Istmo de Krönig:</b> banda de sonoridad sobre el vértice; se estrecha en fibrosis apical o TBC.</li><li><b>Prueba de la moneda:</b> sonido metálico (soplo anfórico) en neumotórax.</li><li><b>Posición de la tráquea:</b> se desvía <b>hacia</b> el lado enfermo en atelectasia/fibrosis y <b>al contrario</b> en neumotórax a tensión y gran derrame.</li></ul>",
+        pt:"<ul><li><b>Triângulo de Grocco-Rauchfuss:</b> submacicez paravertebral <b>contralateral</b> em grandes derrames.</li><li><b>Manobra de Schepelmann:</b> a dor aumenta ao inclinar-se para o lado afetado → pleurite; para o contrário → nevralgia intercostal.</li><li><b>Istmo de Krönig:</b> banda de sonoridade sobre o ápice; estreita-se na fibrose apical ou TB.</li><li><b>Prova da moeda:</b> som metálico (sopro anfórico) no pneumotórax.</li><li><b>Posição da traqueia:</b> desvia-se <b>para</b> o lado doente na atelectasia/fibrose e <b>para o contrário</b> no pneumotórax hipertensivo e grande derrame.</li></ul>"}}
+    ]
+  },
+  {
+    id:"sindromes", emoji:"🧩", icon:"7",
     t:{es:"Síndromes respiratorios", pt:"Síndromes respiratórios"},
     intro:{es:"Cómo se combinan los hallazgos. La tabla compara los síndromes por VV, percusión, murmullo vesicular y ruidos agregados.",
            pt:"Como os achados se combinam. A tabela compara os síndromes por VV, percussão, murmúrio vesicular e ruídos adventícios."},
