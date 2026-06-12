@@ -1759,14 +1759,10 @@ function onMCInput(val){
       +'<div style="font-size:10px;color:var(--muted);line-height:1.3;margin-top:1px">'+specLabel+'</div></div>'
       +'</div>';
   }).join('');
-  // Position relative to parent
-  var inp = document.getElementById('mc-a');
-  var rect = inp.getBoundingClientRect();
+  // Posição já vem do CSS inline (top:calc(100% + 2px);left:0;width:100%)
+  // relativo ao .f-row — não sobrescrever via JS (offsetTop usava o wrapper
+  // interno do ícone como referência e jogava o dropdown sobre o input).
   sug.style.display = 'block';
-  sug.style.top = (inp.offsetTop + inp.offsetHeight + 4)+'px';
-  sug.style.left = inp.offsetLeft+'px';
-  sug.style.width = inp.offsetWidth+'px';
-  sug.style.position = 'absolute';
 }
 
 function selectMotivoFromMC(id){
