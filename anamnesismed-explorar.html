@@ -227,19 +227,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 <nav class="mobile-nav">
   <div class="mn-row">
     <a href="anamnesismed-dashboard.html" class="mn-item">
-      <span class="mn-icon">🏠</span>
+      <span class="mn-icon" data-am-icon="home" data-am-size="22"></span>
       <span class="pt">Início</span><span class="es">Inicio</span>
     </a>
     <a href="anamnesismed-explorar.html" class="mn-item active">
-      <span class="mn-icon">🧭</span>
+      <span class="mn-icon" data-am-icon="compass" data-am-size="22"></span>
       <span class="pt">Explorar</span><span class="es">Explorar</span>
     </a>
     <a href="anamnesismed-mnemonicas.html" class="mn-item">
-      <span class="mn-icon">🧠</span>
+      <span class="mn-icon" data-am-icon="puzzle" data-am-size="22"></span>
       <span class="pt">Mnemônicas</span><span class="es">Mnemot.</span>
     </a>
     <a href="anamnesismed-config.html" class="mn-item">
-      <span class="mn-icon">⚙️</span>
+      <span class="mn-icon" data-am-icon="settings" data-am-size="22"></span>
       <span class="pt">Config.</span><span class="es">Config.</span>
     </a>
   </div>
@@ -380,6 +380,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 <script src="supabase-integration.js" defer></script>
+<script src="am-icons.js"></script>
 <script src="sidebar.js"></script>
 </body>
 </html>

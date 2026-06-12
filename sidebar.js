@@ -23,15 +23,15 @@
     '    <div class="nav-section-label pt">Principal</div>',
     '    <div class="nav-section-label es">Principal</div>',
     '    <a href="anamnesismed-dashboard.html" class="nav-item" id="nav-inicio">',
-    '      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span>',
+    '      <span class="nav-icon">' + amIcon('home', 18) + '</span>',
     '      <span class="pt">In&#xED;cio</span><span class="es">Inicio</span>',
     '    </a>',
     '    <a href="anamnesismed-explorar.html" class="nav-item" id="nav-explorar">',
-    '      <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="16 8 14 14 8 16 10 10 16 8"/></svg></span>',
+    '      <span class="nav-icon">' + amIcon('compass', 18) + '</span>',
     '      <span class="pt">Especialidades</span><span class="es">Especialidades</span>',
     '    </a>',
     '    <a href="anamnesismed-dashboard.html?view=hcs" class="nav-item" id="nav-hcs">',
-    '      <span class="nav-icon">&#x1F4CB;</span>',
+    '      <span class="nav-icon">' + amIcon('clipboard', 18) + '</span>',
     '      <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>',
     '      <span class="nav-badge hcs-badge" style="display:none"></span>',
     '    </a>',
@@ -43,19 +43,19 @@
     '    <div class="nav-section-label pt" style="margin-top:4px">Ferramentas</div>',
     '    <div class="nav-section-label es" style="margin-top:4px">Herramientas</div>',
     '    <a href="anamnesismed-mnemonicas.html" class="nav-item" id="nav-mnemonicas">',
-    '      <span class="nav-icon">&#x1F9E9;</span>',
+    '      <span class="nav-icon">' + amIcon('puzzle', 18) + '</span>',
     '      <span class="pt">Mnem&#xF4;nicas</span><span class="es">Mnemot&#xE9;cnicas</span>',
     '    </a>',
     '    <a href="anamnesismed-config.html" class="nav-item" id="nav-config">',
-    '      <span class="nav-icon">&#x2699;&#xFE0F;</span>',
+    '      <span class="nav-icon">' + amIcon('settings', 18) + '</span>',
     '      <span class="pt">Configura&#xE7;&#xF5;es</span><span class="es">Configuraci&#xF3;n</span>',
     '    </a>',
     '    <a href="anamnesismed-landing.html#pricing" class="nav-item" id="nav-upgrade" style="color:var(--accent,#FF5C49);border-color:rgba(255,92,73,.22)">',
-    '      <span class="nav-icon">&#x2728;</span>',
+    '      <span class="nav-icon">' + amIcon('sparkles', 18) + '</span>',
     '      <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>',
     '    </a>',
     '    <button class="nav-item nav-item-logout" onclick="if(window.encerrarSessao)encerrarSessao()">',
-    '      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>',
+    '      <span class="nav-icon">' + amIcon('logout', 16) + '</span>',
     '      <span class="pt">Encerrar sess&#xE3;o</span><span class="es">Cerrar sesi&#xF3;n</span>',
     '    </button>',
     '  </nav>',
@@ -109,15 +109,15 @@
 
   /* ── ACESSADO POR ÚLTIMO (dinâmico, 3 últimos) ── */
   var DEST = {
-    'esp-semiologia':  { pt: 'Semiologia Básica', es: 'Semiología Básica', icon: '📘', url: 'anamnesismed-especialidades.html?esp=semiologia' },
-    'esp-respiratorio':{ pt: 'Respiratório',       es: 'Respiratorio',          icon: '🫁', url: 'anamnesismed-especialidades.html?esp=respiratorio' },
-    'esp-clinica':     { pt: 'Clínica Médica',es: 'Clínica Médica',icon: '🏥', url: 'anamnesismed-especialidades.html?esp=clinica' },
-    'esp-cirurgia':    { pt: 'Cirurgia Geral',         es: 'Cirugía General',   icon: '🔪', url: 'anamnesismed-especialidades.html?esp=cirurgia' },
-    'explorar':        { pt: 'Especialidades',         es: 'Especialidades',        icon: '🧭', url: 'anamnesismed-explorar.html' },
-    'mnemonicas':      { pt: 'Mnemônicas',        es: 'Mnemotécnicas',    icon: '🧩', url: 'anamnesismed-mnemonicas.html' },
-    'config':          { pt: 'Configurações',es: 'Configuración',    icon: '⚙️',  url: 'anamnesismed-config.html' },
-    'app':             { pt: 'Nova HC',                es: 'Nueva HC',              icon: '🩺', url: 'anamnesismed-app.html?novo=1' },
-    'ref-resp-exfisico':{ pt: 'Exame Físico (Resp.)', es: 'Examen Físico (Resp.)', icon: '📚', url: 'anamnesismed-ref-respiratorio-exfisico.html#topografia' }
+    'esp-semiologia':  { pt: 'Semiologia Básica', es: 'Semiología Básica', icon: 'book', url: 'anamnesismed-especialidades.html?esp=semiologia' },
+    'esp-respiratorio':{ pt: 'Respiratório',       es: 'Respiratorio',          icon: 'lung', url: 'anamnesismed-especialidades.html?esp=respiratorio' },
+    'esp-clinica':     { pt: 'Clínica Médica',es: 'Clínica Médica',icon: 'hospital', url: 'anamnesismed-especialidades.html?esp=clinica' },
+    'esp-cirurgia':    { pt: 'Cirurgia Geral',         es: 'Cirugía General',   icon: 'scalpel', url: 'anamnesismed-especialidades.html?esp=cirurgia' },
+    'explorar':        { pt: 'Especialidades',         es: 'Especialidades',        icon: 'compass', url: 'anamnesismed-explorar.html' },
+    'mnemonicas':      { pt: 'Mnemônicas',        es: 'Mnemotécnicas',    icon: 'puzzle', url: 'anamnesismed-mnemonicas.html' },
+    'config':          { pt: 'Configurações',es: 'Configuración',    icon: 'settings',  url: 'anamnesismed-config.html' },
+    'app':             { pt: 'Nova HC',                es: 'Nueva HC',              icon: 'stethoscope', url: 'anamnesismed-app.html?novo=1' },
+    'ref-resp-exfisico':{ pt: 'Exame Físico (Resp.)', es: 'Examen Físico (Resp.)', icon: 'book', url: 'anamnesismed-ref-respiratorio-exfisico.html#topografia' }
   };
   var path = window.location.pathname;
   var params = new URLSearchParams(window.location.search);
@@ -148,7 +148,7 @@
   if (box && show.length) {
     box.innerHTML = show.map(function (id) {
       var d = DEST[id];
-      return '<a href="' + d.url + '" class="nav-item"><span class="nav-icon">' + d.icon + '</span>' +
+      return '<a href="' + d.url + '" class="nav-item"><span class="nav-icon">' + amIcon(d.icon, 18) + '</span>' +
              '<span class="pt">' + d.pt + '</span><span class="es">' + d.es + '</span></a>';
     }).join('');
     var lp = document.getElementById('recent-label-pt'); if (lp) lp.style.display = '';

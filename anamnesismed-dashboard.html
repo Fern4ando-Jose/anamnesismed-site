@@ -159,7 +159,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
   <header class="topbar">
     <div class="topbar-left">
-      <button class="hamburger" id="menu-btn" onclick="toggleSidebar()" aria-label="Menu">&#x2630;</button>
+      <button class="hamburger" id="menu-btn" onclick="toggleSidebar()" aria-label="Menu"><span data-am-icon="menu" data-am-size="22"></span></button>
       <div>
         <div class="topbar-title">Inicio</div>
         <div class="topbar-subtitle pt" id="page-sub">&#x2014;</div>
@@ -299,10 +299,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
 <nav class="mobile-nav">
   <div class="mobile-nav-items">
-    <button class="mn-item active" id="mn-inicio" onclick="setView('dashboard')"><span class="mn-icon">&#9678;</span><span class="pt">In&#xED;cio</span><span class="es">Inicio</span></button>
-    <a href="anamnesismed-app.html?novo=1" class="mn-item"><span class="mn-icon">&#10010;</span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
-    <button class="mn-item" id="mn-hcs" onclick="setView('hcs')"><span class="mn-icon">&#9776;</span><span class="pt">Minhas HCs</span><span class="es">Mis HCs</span></button>
-    <button class="mn-item" onclick="window.location.href='anamnesismed-config.html'"><span class="mn-icon">&#9881;</span><span class="pt">Conta</span><span class="es">Cuenta</span></button>
+    <button class="mn-item active" id="mn-inicio" onclick="setView('dashboard')"><span class="mn-icon" data-am-icon="home" data-am-size="22"></span><span class="pt">In&#xED;cio</span><span class="es">Inicio</span></button>
+    <a href="anamnesismed-app.html?novo=1" class="mn-item"><span class="mn-icon" data-am-icon="plus" data-am-size="22"></span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
+    <button class="mn-item" id="mn-hcs" onclick="setView('hcs')"><span class="mn-icon" data-am-icon="clipboard" data-am-size="22"></span><span class="pt">Minhas HCs</span><span class="es">Mis HCs</span></button>
+    <button class="mn-item" onclick="window.location.href='anamnesismed-config.html'"><span class="mn-icon" data-am-icon="settings" data-am-size="22"></span><span class="pt">Conta</span><span class="es">Cuenta</span></button>
   </div>
 </nav>
 
@@ -361,6 +361,7 @@ function setView(v){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-integration.js"></script>
+<script src="am-icons.js"></script>
 <script src="sidebar.js"></script>
 </body>
 </html>

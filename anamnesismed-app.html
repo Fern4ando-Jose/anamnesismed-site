@@ -386,7 +386,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 <div class="main">
   <!-- TOPBAR -->
   <header class="topbar" id="topbar">
-    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu"><span data-am-icon="menu" data-am-size="22"></span></button>
     <a href="anamnesismed-dashboard.html" class="topbar-back" onclick="return confirmDiscardHC()">← <span class="pt">Início</span><span class="es">Inicio</span></a>
     <div class="topbar-breadcrumb">
       <span id="tb-spec" class="pt">Clínica Médica</span>
@@ -1576,19 +1576,19 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
     <div class="bnav-item active" id="bnav-inicio" onclick="if(confirmDiscardHC()){hcDirty=false;showScreen('index');}">
-      <span class="bnav-icon">🏠</span>
+      <span class="bnav-icon" data-am-icon="home" data-am-size="22"></span>
       <span class="pt">Início</span><span class="es">Inicio</span>
     </div>
     <div class="bnav-item" onclick="newHC()">
-      <span class="bnav-icon">➕</span>
+      <span class="bnav-icon" data-am-icon="plus" data-am-size="22"></span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
     </div>
     <div class="bnav-item" onclick="goToDashboard('hcs')">
-      <span class="bnav-icon">📋</span>
+      <span class="bnav-icon" data-am-icon="clipboard" data-am-size="22"></span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
     </div>
     <div class="bnav-item" onclick="exportPDF()">
-      <span class="bnav-icon">📄</span>PDF
+      <span class="bnav-icon" data-am-icon="file" data-am-size="22"></span>PDF
     </div>
   </div>
 </nav>
@@ -2425,6 +2425,7 @@ function showToast(lang,msg){
   }
 })();
 </script>
+<script src="am-icons.js"></script>
 <script src="sidebar.js"></script>
 </body>
 </html>
