@@ -170,7 +170,7 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     s=s.replace(/^[¿¡\s]+/,'');            // remove ¿/¡ iniciais (espanhol)
     s=s.replace(/[?¿¡].*$/,'');             // corta na 1ª interrogação
     s=s.replace(/\s*[—–-]\s+.*$/,'');       // remove " — explicação"
-    return s.replace(/\s+/g,' ').trim();
+    return s.replace(/\s+/g,' ').replace(/\s+([,;:.])/g,'$1').trim();   // normaliza espaço antes de pontuação
   }
   function cleanVal(v){ return (v||'').replace(/\s*\([^)]*\)\s*$/,'').trim(); }
   function isPlaceholder(v){ return /^(descreva|describa|relate|liste|ex\.?:|ej\.?:|n[ºo]\/dia|nº|dum\b|fum\b|medicamento,|°c$|0 a 10$|quanto|cu[áa]nt|anos?-ma|a[ñn]os?-paq|%|qual$)/i.test(low(v).trim()); }
@@ -312,7 +312,12 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   var c=[];
   if(B.CAR) c.push((pt?'de caráter ':'de carácter ')+low(B.CAR));
   if(B.IRR){ var ir=low(B.IRR); if(!/sem irradia|sin irradia/.test(ir)) c.push((pt?gA('irradiad')+' para ':'irradiado hacia ')+ir.replace(/^(para|hacia)\s+/,'')); }
-  if(B.INT){ var iv=B.INT.trim(); c.push((pt?'de intensidade ':'de intensidad ')+(/^\d+$/.test(iv)?iv+(pt?'/10 na EVA':'/10 en EVA'):low(iv))); }
+  if(B.INT){
+    var iv=B.INT.trim();
+    var ivTxt=/^\d+$/.test(iv) ? iv+(pt?'/10 na EVA':'/10 en EVA')
+                               : low(iv).replace(/\s*[—–]\s*(.+)$/, ' ($1)');   // "grau 0 — só com exercício" → "grau 0 (só com exercício)"
+    c.push((pt?'de intensidade ':'de intensidad ')+ivTxt);
+  }
   if(B.DUREP) c.push((pt?'com duração de cada episódio de ':'con duración de cada episodio de ')+low(B.DUREP));
   if(B.FREQ.length) c.push((pt?'de padrão ':'de patrón ')+join(B.FREQ.map(low),pt?' e ':' y '));
   function normEvol(e){
@@ -380,8 +385,11 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
 
   // ── 8. OUTROS DESCRITIVOS (limpos) ──
   if(B.DESC.length){
-    var ds=B.DESC.filter(function(d){return d.l && d.v && !isPlaceholder(d.v);}).map(function(d){return low(d.l)+': '+low(d.v);});
-    if(ds.length) P.push(cap((pt?'descreve ainda — ':'describe además — ')+ds.join('; '))+'.');
+    var ds=B.DESC.filter(function(d){return d.l && d.v && !isPlaceholder(d.v);}).map(function(d){
+      var dv=low(d.v).replace(/\s*[—–]\s*(.+)$/, ' ($1)');   // tail com travessão → parêntese
+      return low(d.l)+' ('+dv+')';
+    });
+    if(ds.length) P.push((pt?'Refere ainda: ':'Refiere además: ')+ds.join('; ')+'.');
   }
 
   // ── 9. ALARME PRESENTE ──
