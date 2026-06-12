@@ -205,7 +205,7 @@ STATUS DO PROJETO:
 ✅ Dashboard               — redesign completo (sidebar + stats + HCs)
 🔶 App Principal           — estrutura OK, pendente aplicar novo design
 🔲 Backend (Supabase)      — autenticação real (TODO: integrar)
-🔲 Stripe                  — pagamentos $0.99/mês (TODO: integrar)
+🔲 Stripe                  — pagamentos $1.99/mês (TODO: integrar)
 🔲 Expandir HCs            — completar 25 motivos de Clínica Médica
 🔲 Deploy                  — Vercel / Netlify → anamnesismed.com
 🟡 Domínio                 — anamnesismed.com já registrado ✓
@@ -214,7 +214,7 @@ PRÓXIMOS PASSOS:
 ────────────────────────────────────────────────────────────────────────
 1. Aplicar design "Saúde Confiável" ao anamnesismed-app.html
 2. Backend — Supabase (auth real: magic link + Google OAuth)
-3. Stripe — integração de pagamento ($0.99/mês)
+3. Stripe — integração de pagamento ($1.99/mês)
 4. Expandir conteúdo — HCs dos 25 motivos de Clínica Médica
 5. Deploy — publicar em anamnesismed.com via Vercel
 

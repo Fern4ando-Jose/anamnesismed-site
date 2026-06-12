@@ -899,13 +899,13 @@ function showPaywall(reason) {
       </h2>
       <p style="font-size:14px;color:#6b6660;margin-bottom:24px;line-height:1.6">
         ${lang === 'es'
-          ? 'Activa tu plan por solo <strong>$0.99/mes</strong> y sigue usando AnamnesísMed sin límites.'
-          : 'Ative seu plano por apenas <strong>$0,99/mês</strong> e continue usando o AnamnesísMed sem limites.'}
+          ? 'Activa tu plan por solo <strong>$1.99/mes</strong> y sigue usando AnamnesísMed sin límites.'
+          : 'Ative seu plano por apenas <strong>$1,99/mês</strong> e continue usando o AnamnesísMed sem limites.'}
       </p>
       <button onclick="window.location.href='anamnesismed-landing.html#pricing'"
         style="background:#c0392b;color:#fff;border:none;border-radius:8px;
         padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-bottom:10px">
-        ${lang === 'es' ? 'Activar plan — $0.99/mes →' : 'Ativar plano — $0,99/mês →'}
+        ${lang === 'es' ? 'Activar plan — $1.99/mes →' : 'Ativar plano — $1,99/mês →'}
       </button>
       <a href="anamnesismed-auth.html"
         style="font-size:12px;color:#6b6660;text-decoration:none;display:block">

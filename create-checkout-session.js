@@ -4,7 +4,7 @@
  * 
  * Variáveis de ambiente necessárias no Vercel:
  *   STRIPE_SECRET_KEY   → chave secreta do Stripe (sk_live_...)
- *   STRIPE_PRICE_ID     → id do preço recorrente ($0.99/mês)
+ *   STRIPE_PRICE_ID     → id do preço recorrente ($1.99/mês)
  *   NEXT_PUBLIC_URL     → https://anamnesismed.com
  */
 
