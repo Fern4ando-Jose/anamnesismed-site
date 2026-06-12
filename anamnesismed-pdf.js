@@ -215,6 +215,7 @@ function exportPDF(){
       if(fieldVal('app-trauma')) extras.push((lang==='pt'?'Traumatismos: ':'Traumatismos: ')+fieldVal('app-trauma'));
       if(fieldVal('app-intern')) extras.push((lang==='pt'?'Internações prévias: ':'Internaciones previas: ')+fieldVal('app-intern'));
       var vac = selOne('app-vacina'); if(vac && vac!=='—') extras.push((lang==='pt'?'Vacinação: ':'Vacunación: ')+vac);
+      if(fieldVal('app-medicacao')) extras.push((lang==='pt'?'Medicação em uso: ':'Medicación en uso: ')+fieldVal('app-medicacao'));
       if(fieldVal('app-outras')) extras.push((lang==='pt'?'Outros antecedentes: ':'Otros antecedentes: ')+fieldVal('app-outras'));
       if(extras.length) t += (t?'\n':'')+extras.join('\n');
       return t||'—';

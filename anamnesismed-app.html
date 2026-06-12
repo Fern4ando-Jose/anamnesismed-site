@@ -1035,6 +1035,14 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span class="pt">Febre reumática</span><span class="es">Fiebre reumática</span></div>
             </div>
 
+            <div class="f-section-lbl pt">Medicação em uso</div>
+            <div class="f-section-lbl es">Medicación en uso</div>
+            <div class="f-row">
+              <label class="f-label pt">Medicamentos de uso contínuo / recente (nome, dose, frequência)</label>
+              <label class="f-label es">Medicamentos de uso continuo / reciente (nombre, dosis, frecuencia)</label>
+              <textarea class="f-input" id="app-medicacao" rows="2" placeholder="Ex: Losartana 50mg 1x/dia; AAS 100mg..." data-ph-pt="Ex: Losartana 50mg 1x/dia; AAS 100mg..." data-ph-es="Ej: Losartán 50mg 1x/día; AAS 100mg..."></textarea>
+            </div>
+
             <div class="f-row" style="margin-top:10px">
               <label class="f-label pt">Outras patologias (texto livre)</label>
               <label class="f-label es">Otras patologías (texto libre)</label>
@@ -1670,7 +1678,7 @@ function newHC(){
   // Reset key text fields
   ['dp-nome','dp-ci','dp-idade','dp-ocup','dp-proc','dp-res','dp-tel','dp-acomp-nome','dp-acomp-vinculo','dp-aportado',
    'mc-a','mc-b','mc-c','aea-texto','aea-narrativa',
-   'area-desc','app-cirurg','app-trauma','app-intern','app-outras','adm-texto',
+   'area-desc','app-cirurg','app-trauma','app-intern','app-medicacao','app-outras','adm-texto',
    'sum-achados','sum-sindromes','sum-hipoteses','plan-exames','plan-trat','plan-conduta','plan-obs'
   ].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   var iaStatus = document.getElementById('ia-hc-status'); if(iaStatus) iaStatus.textContent='';
