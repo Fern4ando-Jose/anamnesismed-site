@@ -22,6 +22,9 @@ html,body{height:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px}
 .wrap{max-width:920px;margin:0 auto 0 var(--sidebar-w);padding:18px 24px 60px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.topbar-left{display:flex;align-items:center;gap:10px;min-width:0}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
+.hamburger:hover{background:var(--bg-card)}
 .topbar-back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;cursor:pointer;padding:7px 13px;border-radius:6px;border:1.5px solid var(--line-md);background:var(--bg-card)}
 .topbar-back:hover{color:var(--primary);border-color:var(--primary)}
 .lang-switch{display:flex;gap:4px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:8px;padding:3px}
@@ -73,7 +76,7 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 .lang-es .pt{display:none}
 .lang-es .es{display:inline}
 @media(max-width:600px){.acc-findings{grid-template-columns:1fr}.mnem-kw{font-size:20px}}
-@media(max-width:768px){.wrap{margin-left:0;padding:16px 14px 80px}}
+@media(max-width:768px){.wrap{margin-left:0;padding:16px 14px 80px}.hamburger{display:flex}}
 </style>
 <link rel="stylesheet" href="sidebar.css">
 </head>
@@ -81,7 +84,14 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 <div id="sidebar-root"></div>
 <div class="wrap">
   <div class="topbar">
-    <a class="topbar-back" href="anamnesismed-dashboard.html">← <span class="pt">Voltar ao início</span><span class="es">Volver al inicio</span></a>
+    <div class="topbar-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/>
+        </svg>
+      </button>
+      <a class="topbar-back" href="anamnesismed-dashboard.html">← <span class="pt">Voltar ao início</span><span class="es">Volver al inicio</span></a>
+    </div>
     <div class="lang-switch">
       <div class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</div>
       <div class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</div>
