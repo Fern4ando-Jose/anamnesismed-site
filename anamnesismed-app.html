@@ -339,9 +339,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .index-screen,.hc-sections{padding:12px 14px 100px}
   .hc-header{padding:12px 14px 0}
   .guide-tabs{padding:0 8px}
-  .guide-tab{padding:8px 9px;font-size:10px}
-  .guide-tab-icon{font-size:14px}
-  .guide-tab span:not(.guide-tab-icon){display:none}
+  .guide-tab{padding:8px 11px;font-size:11px}
+  /* mantém os rótulos visíveis no mobile (a barra rola na horizontal) — só ícone confunde */
   .guide-page{padding:16px 14px 60px}
   .guide-page > div{padding:14px 14px 80px}
   .guide-page > div[style*="padding"]{padding:14px 14px 80px!important}
@@ -485,31 +484,31 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     <!-- Clinical guide tabs (motivo-specific) -->
     <div class="guide-tabs" id="guide-tabs">
       <div class="guide-tab active" onclick="showGuide('form',this)">
-        <span class="guide-tab-icon">📋</span>
+        <span class="guide-tab-icon" data-am-icon="clipboard" data-am-size="15"></span>
         <span class="pt">Formulário HC</span><span class="es">Formulario HC</span>
       </div>
       <div class="guide-tab" onclick="showGuide('mnemonics',this)">
-        <span class="guide-tab-icon">🧠</span>
+        <span class="guide-tab-icon" data-am-icon="brain" data-am-size="15"></span>
         <span class="pt">Mnemônicas</span><span class="es">Mnemotécnicas</span>
       </div>
       <div class="guide-tab" onclick="showGuide('manobras',this)">
-        <span class="guide-tab-icon">🩺</span>
+        <span class="guide-tab-icon" data-am-icon="stethoscope" data-am-size="15"></span>
         <span class="pt">Manobras</span><span class="es">Maniobras</span>
       </div>
       <div class="guide-tab" onclick="showGuide('sinais',this)">
-        <span class="guide-tab-icon">⚕️</span>
+        <span class="guide-tab-icon" data-am-icon="activity" data-am-size="15"></span>
         <span class="pt">Sinais Clássicos</span><span class="es">Signos Clásicos</span>
       </div>
       <div class="guide-tab" onclick="showGuide('ddx',this)">
-        <span class="guide-tab-icon">⚖️</span>
+        <span class="guide-tab-icon" data-am-icon="scale" data-am-size="15"></span>
         <span class="pt">Diagnóstico Diferencial</span><span class="es">Diagnóstico Diferencial</span>
       </div>
       <div class="guide-tab" onclick="showGuide('escalas',this)">
-        <span class="guide-tab-icon">📊</span>
+        <span class="guide-tab-icon" data-am-icon="chart" data-am-size="15"></span>
         <span class="pt">Escalas</span><span class="es">Escalas</span>
       </div>
       <div class="guide-tab" onclick="showGuide('conduta',this)">
-        <span class="guide-tab-icon">📋</span>
+        <span class="guide-tab-icon" data-am-icon="file" data-am-size="15"></span>
         <span class="pt">Conduta</span><span class="es">Conducta</span>
       </div>
     </div>

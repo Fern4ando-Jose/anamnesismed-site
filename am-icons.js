@@ -37,6 +37,7 @@
     'file-plus': '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 15h6"/><path d="M12 12v6"/>',
     file:        '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 13h6"/><path d="M9 17h6"/>',
     target:      '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    chart:       '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
     book:        '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
     user:        '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
 
@@ -99,7 +100,7 @@
     '🦴':'bone','🦵':'activity','⚖️':'scale','⚖':'scale','🔻':'trending-down','🫸':'hand','✋':'hand',
     '🚽':'toilet','🚻':'toilet','⛔':'ban','⚠️':'alert','🚨':'alert','🤕':'alert',
     '👁️':'eye','👁':'eye','📐':'ruler','🥁':'drum','🫃':'abdomen','💊':'pill',
-    '📄':'file','📝':'file','📋':'clipboard','🎯':'target','🏠':'home',
+    '📄':'file','📝':'file','📋':'clipboard','🎯':'target','🏠':'home','📊':'chart','⚕️':'activity','⚕':'activity','📈':'chart',
     '👂':'ear','👃':'nose','🦷':'tooth','🫘':'kidney','🫱':'hand','🦿':'bone','🩻':'abdomen',
     '💭':'cloud','🔬':'microscope','⚗️':'flask','⚗':'flask','🫀':'heart',
     '🔘':'_fallback','◎':'home','☰':'clipboard','⊕':'plus','◯':'_fallback'
