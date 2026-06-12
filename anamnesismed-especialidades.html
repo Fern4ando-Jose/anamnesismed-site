@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
 <title>AnamnesísMed — Nova HC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -279,103 +280,34 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <div class="esp-drawer-list" id="esp-drawer-list"><!-- preenchido por JS --></div>
 </div>
 
+<script src="anamnesismed-motivos.js"></script>
 <script>
 // ── DADOS ────────────────────────────────────────────────────────────────────
-const ESPECIALIDADES = [
-  {
-    id:"semiologia", icon:"📖",
-    namePt:"Semiologia", nameEs:"Semiología",
-    cats:[
-      { catPt:"Dor e Dispneia", catEs:"Dolor y Disnea", items:[
-        {id:"semio-dor",    namePt:"Dor",            nameEs:"Dolor",          icon:"🔴"},
-        {id:"dispneia", namePt:"Dispneia",        nameEs:"Disnea",         icon:"🫁"},
-        {id:"tosse",  namePt:"Tosse",           nameEs:"Tos",            icon:"😤"}
-      ]},
-      { catPt:"Sinais Clínicos", catEs:"Signos Clínicos", items:[
-        {id:"semio-cianose",   namePt:"Cianose",    nameEs:"Cianosis",   icon:"🔵"},
-        {id:"edema",     namePt:"Edema",      nameEs:"Edema",      icon:"💧"},
-        {id:"ictericia", namePt:"Icterícia",  nameEs:"Ictericia",  icon:"🟡"}
-      ]},
-      { catPt:"Sintomas Constitucionais", catEs:"Síntomas Constitucionales", items:[
-        {id:"febre",   namePt:"Febre",              nameEs:"Fiebre",         icon:"🌡️"},
-        {id:"semio-astenia", namePt:"Astenia / Fadiga",   nameEs:"Astenia / Fatiga",icon:"😴"},
-        {id:"semio-peso",    namePt:"Alteração de Peso",  nameEs:"Cambio de Peso", icon:"⚖️"}
-      ]}
-    ]
-  },
-  {
-    id:"clinica", icon:"🏥",
-    namePt:"Clínica Médica", nameEs:"Clínica Médica",
-    cats:[
-      { catPt:"Cardiorrespiratório", catEs:"Cardiorrespiratorio", items:[
-        {id:"dor-toracica", namePt:"Dor Torácica",  nameEs:"Dolor Torácico",  icon:"❤️"},
-        {id:"dispneia",     namePt:"Dispneia",      nameEs:"Disnea",          icon:"🫁"},
-        {id:"palpitacoes",  namePt:"Palpitações",   nameEs:"Palpitaciones",   icon:"💓"}
-      ]},
-      { catPt:"Neurológico", catEs:"Neurológico", items:[
-        {id:"cefaleia",          namePt:"Cefaleia",          nameEs:"Cefalea",            icon:"🧠"},
-        {id:"convulsao-sincope", namePt:"Convulsão / Síncope",nameEs:"Convulsión / Síncope",icon:"⚡"},
-        {id:"tontura-vertigem",  namePt:"Tontura / Vertigem", nameEs:"Mareo / Vértigo",    icon:"🌀"}
-      ]},
-      { catPt:"Infeccioso / Geral", catEs:"Infeccioso / General", items:[
-        {id:"febre",      namePt:"Febre",         nameEs:"Fiebre",        icon:"🌡️"},
-        {id:"perda-peso", namePt:"Perda de Peso", nameEs:"Pérdida de Peso",icon:"⚖️"}
-      ]},
-      { catPt:"Gastrointestinal", catEs:"Gastrointestinal", items:[
-        {id:"dor-abdominal",   namePt:"Dor Abdominal",   nameEs:"Dolor Abdominal",  icon:"🫃"},
-        {id:"ictericia",       namePt:"Icterícia",       nameEs:"Ictericia",        icon:"🟡"},
-        {id:"nauseas-vomitos", namePt:"Náuseas / Vômitos",nameEs:"Náuseas / Vómitos",icon:"🤢"},
-        {id:"diarreia",        namePt:"Diarreia",        nameEs:"Diarrea",          icon:"💧"}
-      ]},
-      { catPt:"Outros", catEs:"Otros", items:[
-        {id:"edema",              namePt:"Edema",           nameEs:"Edema",          icon:"💧"},
-        {id:"tosse",              namePt:"Tosse",           nameEs:"Tos",            icon:"😤"},
-        {id:"sintomas-urinarios", namePt:"Sint. Urinários", nameEs:"Sint. Urinarios",icon:"🫧"},
-        {id:"lombalgia",          namePt:"Lombalgia",       nameEs:"Lumbalgia",      icon:"🦴"},
-        {id:"artralgia",          namePt:"Artralgia",       nameEs:"Artralgia",      icon:"🦵"}
-      ]}
-    ]
-  },
-  {
-    id:"cirurgia", icon:"🔪",
-    namePt:"Cirurgia Geral", nameEs:"Cirugía General",
-    cats:[
-      { catPt:"Abdome Agudo", catEs:"Abdomen Agudo", items:[
-        {id:"apendicite",              namePt:"Apendicite",          nameEs:"Apendicitis",          icon:"🔴"},
-        {id:"colecistite-colelitiase", namePt:"Colecistite / Colelitíase",nameEs:"Colecistitis / Colelitiasis",icon:"🟠"},
-        {id:"pancreatite-aguda",       namePt:"Pancreatite Aguda",   nameEs:"Pancreatitis Aguda",   icon:"🟡"},
-        {id:"oclusao-intestinal",      namePt:"Oclusão Intestinal",  nameEs:"Oclusión Intestinal",  icon:"🟤"}
-      ]},
-      { catPt:"Hérnias", catEs:"Hernias", items:[
-        {id:"hernia-abdominal", namePt:"Hérnia Abdominal", nameEs:"Hernia Abdominal", icon:"🫁"}
-      ]},
-      { catPt:"Hemorragia Digestiva", catEs:"Hemorragia Digestiva", items:[
-        {id:"hemorragia-digestiva-alta",  namePt:"Hemorragia Digestiva Alta", nameEs:"Hemorragia Digestiva Alta", icon:"🩸"},
-        {id:"hemorragia-digestiva-baixa", namePt:"Hemorragia Digestiva Baixa",nameEs:"Hemorragia Digestiva Baja", icon:"🩸"}
-      ]},
-      { catPt:"Doenças Colorretais", catEs:"Enfermedades Colorrectales", items:[
-        {id:"doenca-diverticular", namePt:"Doença Diverticular", nameEs:"Enfermedad Diverticular",   icon:"🫃"},
-        {id:"doencas-anorretais",  namePt:"Doenças Anorretais",  nameEs:"Enfermedades Anorrectales", icon:"🔴"}
-      ]},
-      { catPt:"Trauma", catEs:"Trauma", items:[
-        {id:"trauma-abdominal", namePt:"Trauma Abdominal", nameEs:"Trauma Abdominal", icon:"🚨"}
-      ]}
-    ]
-  },
-  {
-    id:"respiratorio", icon:"🫁",
-    namePt:"Respiratório", nameEs:"Respiratorio",
-    cats:[
-      { catPt:"Sintomas Respiratórios", catEs:"Síntomas Respiratorios", items:[
-        {id:"tosse",  namePt:"Tosse",          nameEs:"Tos",             icon:"😮‍💨"},
-        {id:"expectoracao", namePt:"Expectoração",   nameEs:"Expectoración",   icon:"🫧"},
-        {id:"hemoptise",    namePt:"Hemoptise",      nameEs:"Hemoptisis",      icon:"🩸"},
-        {id:"dispneia",     namePt:"Dispneia",       nameEs:"Disnea",          icon:"🫁"},
-        {id:"dor-toracica", namePt:"Dor Torácica",   nameEs:"Dolor Torácico",  icon:"❤️"}
-      ]}
-    ]
-  }
+// Metadados de APRESENTAÇÃO das especialidades (nome + ícone exibidos no
+// cabeçalho/cards). A LISTA de motivos por categoria NÃO mora aqui — é derivada
+// do global MOTIVOS (anamnesismed-motivos.js, gerado de src/). Ver regra #7.
+// A ordem deste array define a ordem de exibição na página.
+const SPEC_META = [
+  { id:"semiologia",   icon:"📖", namePt:"Semiologia",     nameEs:"Semiología" },
+  { id:"clinica",      icon:"🏥", namePt:"Clínica Médica", nameEs:"Clínica Médica" },
+  { id:"cirurgia",     icon:"🔪", namePt:"Cirurgia Geral", nameEs:"Cirugía General" },
+  { id:"respiratorio", icon:"🫁", namePt:"Respiratório",   nameEs:"Respiratorio" }
 ];
+
+// Adapta MOTIVOS[esp] (=[{cat,catEs?,items:[{id,name,nameEs,icon}]}]) para o
+// formato consumido pelos renders desta página ({catPt,catEs,items:[{id,namePt,nameEs,icon}]}).
+function _adaptCats(arr){
+  return (arr||[]).map(c=>({
+    catPt: c.cat,
+    catEs: c.catEs || c.cat,
+    items: (c.items||[]).map(m=>({ id:m.id, namePt:m.name, nameEs:m.nameEs||m.name, icon:m.icon }))
+  }));
+}
+
+const ESPECIALIDADES = SPEC_META.map(meta=>({
+  ...meta,
+  cats: (typeof MOTIVOS!=='undefined' && MOTIVOS[meta.id]) ? _adaptCats(MOTIVOS[meta.id]) : []
+}));
 
 // ── REFERÊNCIA CLÍNICA (material de estudo por especialidade) ─────────────────
 const REFERENCIAS = {

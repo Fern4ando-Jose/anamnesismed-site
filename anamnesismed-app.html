@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AnamnesísMed — HC Completa</title>
+<script>
+/* Idioma antes da 1ª pintura (evita flash ES→PT) + esconde a tela de seleção
+   quando a página abre direto numa HC (deep-link novo/motivo/hc). */
+(function(){try{
+  var l=localStorage.getItem('am-lang'); if(l)document.documentElement.setAttribute('data-lang',l);
+  var p=new URLSearchParams(location.search);
+  if(p.get('novo')||p.get('motivo')||p.get('hc'))document.documentElement.classList.add('deep-hc');
+}catch(e){}})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -44,6 +53,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14p
 /* ── INDEX SCREEN ── */
 .index-screen{padding:24px 24px 60px;display:none}
 .index-screen.active{display:block}
+/* deep-link direto numa HC: nunca mostrar a tela de seleção antes do roteamento */
+html.deep-hc #screen-index{display:none!important}
 .spec-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
 .spec-icon-big{font-size:32px;width:56px;height:56px;border-radius:12px;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .spec-title{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
@@ -2370,6 +2381,9 @@ function showToast(lang,msg){
       openHC(deepMotivo);
     }
   }catch(e){ console.warn('deep-link de motivo erro:', e); }
+
+  // Roteamento concluído: libera a tela de seleção para navegação normal (botão Início etc.)
+  try{ document.documentElement.classList.remove('deep-hc'); }catch(e){}
 })();
 </script>
 <script src="anamnesismed-narrativa.js"></script>
