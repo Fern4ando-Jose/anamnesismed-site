@@ -1,6 +1,13 @@
 // Especialidade: clinica — ordem de categorias + ids de motivos (referência)
 AM.especialidade("clinica", [
   {
+    "cat": "Dor",
+    "catEs": "Dolor",
+    "items": [
+      "semio-dor"
+    ]
+  },
+  {
     "cat": "Cardiorrespiratório / Cardiovascular",
     "catEs": "Cardiorrespiratorio / Cardiovascular",
     "items": [

@@ -566,9 +566,23 @@ function gerarNarrativaAEA_tosse(ans, lng){
 }
 var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia, 'tosse': gerarNarrativaAEA_tosse };
 
+// Resolve o roteiro AEA conforme a especialidade de origem (window.currentSpec).
+// Ex.: o "Dor" (semio-dor) usa LITIDIFES por padrão e ALICIA (aeaGuideCir) quando vindo de cirurgia.
+// Devolve um clone raso do motivo com .aeaGuide já apontando para o roteiro certo — render e coleta
+// continuam lendo .aeaGuide sem mudança interna, e os índices dos campos batem entre os dois.
+function aeaGuideFor(mObj){
+  if(mObj && mObj.aeaGuideCir && mObj.aeaGuideCir.length &&
+     typeof window!=='undefined' && window.currentSpec==='cirurgia'){
+    var c={}; for(var k in mObj) c[k]=mObj[k]; c.aeaGuide=mObj.aeaGuideCir; return c;
+  }
+  return mObj;
+}
+if(typeof window!=='undefined') window.aeaGuideFor = aeaGuideFor;
+
 // Coleta as respostas do guia AEA de um motivo a partir do DOM.
 // Reutilizada tanto pelo motor de regex quanto pela geração via IA — fonte única.
 function coletarRespostasAEA(mObj, lng, idPfx){
+  mObj = mObj ? aeaGuideFor(mObj) : mObj;
   if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length) return [];
   idPfx = idPfx || 'aea-g-';
   var ansArr = [];

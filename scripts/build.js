@@ -23,6 +23,7 @@ function assemble(){
         const it={id,name:m.name,nameEs:m.nameEs,icon:m.icon,color:m.color};
         if(m.isPain)it.isPain=true;
         it.aeaGuide=m.aeaGuide||[];
+        if(m.aeaGuideCir)it.aeaGuideCir=m.aeaGuideCir; // roteiro alternativo p/ cirurgia (ex.: Dor ALICIA)
         if(m.rasHighlight)it.rasHighlight=m.rasHighlight;
         if(m.ddx)it.ddx=m.ddx;
         return it;

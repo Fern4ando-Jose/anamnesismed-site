@@ -1,6 +1,13 @@
 // Especialidade: cirurgia — ordem de categorias + ids de motivos (referência)
 AM.especialidade("cirurgia", [
   {
+    "cat": "Dor",
+    "catEs": "Dolor",
+    "items": [
+      "semio-dor"
+    ]
+  },
+  {
     "cat": "Abdome Agudo",
     "catEs": "Abdomen Agudo",
     "items": [

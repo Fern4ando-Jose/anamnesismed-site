@@ -5723,6 +5723,47 @@ var GUIDE_ES = {
   "semio-dor": {
     "mnemonics": [
       {
+        "name": "Caracterización semiológica del dolor (clínica)",
+        "rows": [
+          [
+            "Localización",
+            "Dónde duele — señalar con un dedo (somática) o difusa (visceral)"
+          ],
+          [
+            "Irradiación",
+            "Hacia dónde se propaga el dolor"
+          ],
+          [
+            "Tipo",
+            "Urente, constrictivo, gravativo, terebrante, pulsátil, sordo, fulgurante, punzante, cólico, lancinante"
+          ],
+          [
+            "Intensidad",
+            "EVA 0-10 — leve, moderada, intensa"
+          ],
+          [
+            "Duración",
+            "Continua o discontinua (por crisis); tiempo de evolución"
+          ],
+          [
+            "Inicio",
+            "Brusco/súbito (vascular, perforación) o insidioso (inflamatorio)"
+          ],
+          [
+            "Factores",
+            "Qué inicia, exacerba o calma el dolor"
+          ],
+          [
+            "Evolución",
+            "Progresiva, fluctuante, estable o regresiva"
+          ],
+          [
+            "Síntomas acompañantes",
+            "Náuseas, vómitos, fiebre, sudoración, alteraciones intestinales"
+          ]
+        ]
+      },
+      {
         "name": "Caracterización semiológica del dolor",
         "rows": [
           [

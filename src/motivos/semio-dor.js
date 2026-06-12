@@ -1,4 +1,5 @@
 // Motivo: semio-dor — fonte canônica (editar AQUI; rodar scripts/build.js)
+// AEA com roteiro duplo: aeaGuide=LITIDIFES (clínica/semiologia) · aeaGuideCir=ALICIA (cirurgia). Seleção por currentSpec.
 AM.motivo("semio-dor", {
   "name": "Dor",
   "nameEs": "Dolor",
@@ -7,43 +8,51 @@ AM.motivo("semio-dor", {
   "isPain": true,
   "aeaGuide": [
     {
-      "q": "Localização da dor?",
-      "qEs": "¿Localización del dolor?",
+      "q": "Localização (L)",
+      "qEs": "Localización (L)",
       "type": "input",
-      "ph": "Ex: abdominal, torácica, cabeça, membros",
-      "ph2": "Ej: abdominal, torácica, cabeza, miembros"
+      "ph": "Onde dói? Aponte o ponto de maior dor",
+      "ph2": "¿Dónde duele? Señale el punto de mayor dolor"
     },
     {
-      "q": "Irradiação?",
-      "qEs": "¿Irradiación?",
+      "q": "Irradiação (I)",
+      "qEs": "Irradiación (I)",
       "type": "input",
-      "ph": "Ex: para o ombro, braço, virilha",
-      "ph2": "Ej: hacia el hombro, brazo, ingle"
+      "ph": "Para onde a dor se propaga?",
+      "ph2": "¿Hacia dónde se propaga el dolor?"
     },
     {
-      "q": "Caráter da dor?",
-      "qEs": "¿Carácter del dolor?",
+      "q": "Tipo (T)",
+      "qEs": "Tipo (T)",
       "type": "radio",
       "opts": [
-        "Queimação",
-        "Pontada",
-        "Cólica",
-        "Pressão/aperto",
-        "Latejante",
-        "Surda/em peso"
+        "Urente (queimação)",
+        "Constritivo (em aperto)",
+        "Gravativo (peso)",
+        "Terebrante (perfurante)",
+        "Pulsátil (latejante)",
+        "Surdo (mal definido)",
+        "Fulgurante (descarga elétrica)",
+        "Punzante (pontada)",
+        "Cólico (em crise)",
+        "Lancinante"
       ],
       "optsEs": [
-        "Ardor/quemazón",
-        "Punzada",
-        "Cólico",
-        "Presión/opresión",
+        "Urente (ardor)",
+        "Constrictivo (opresivo)",
+        "Gravativo (peso)",
+        "Terebrante (perforante)",
         "Pulsátil",
-        "Sorda/pesada"
+        "Sordo (mal definido)",
+        "Fulgurante (descarga eléctrica)",
+        "Punzante (puntada)",
+        "Cólico (por crisis)",
+        "Lancinante"
       ]
     },
     {
-      "q": "Intensidade (EVA 0–10)?",
-      "qEs": "¿Intensidad (EVA 0–10)?",
+      "q": "Intensidade (I) — EVA",
+      "qEs": "Intensidad (I) — EVA",
       "type": "radio",
       "opts": [
         "1-3 (leve)",
@@ -59,65 +68,76 @@ AM.motivo("semio-dor", {
       ]
     },
     {
-      "q": "Início e duração?",
-      "qEs": "¿Inicio y duración?",
+      "q": "Duração (D)",
+      "qEs": "Duración (D)",
       "type": "radio",
       "opts": [
-        "Agudo (<24h)",
-        "Subagudo (dias)",
-        "Crônico (>4 semanas)"
+        "Contínua",
+        "Descontínua (em crises)"
       ],
       "optsEs": [
-        "Agudo (<24h)",
-        "Subagudo (días)",
-        "Crónico (>4 semanas)"
+        "Continua",
+        "Discontinua (por crisis)"
       ]
     },
     {
-      "q": "Fatores de melhora?",
-      "qEs": "¿Factores que alivian?",
-      "type": "multi",
+      "q": "Início (I)",
+      "qEs": "Inicio (I)",
+      "type": "radio",
       "opts": [
-        "Repouso",
-        "Analgésicos",
-        "Calor local",
-        "Frio local",
-        "Alimentação",
-        "Posição antálgica"
+        "Brusco / súbito",
+        "Insidioso / gradual"
       ],
       "optsEs": [
-        "Reposo",
-        "Analgésicos",
-        "Calor local",
-        "Frío local",
-        "Alimentación",
-        "Posición antiálgica"
+        "Brusco / súbito",
+        "Insidioso / gradual"
       ]
     },
     {
-      "q": "Fatores de piora?",
-      "qEs": "¿Factores que agravan?",
+      "q": "Fatores — iniciam, exacerbam ou acalmam (F)",
+      "qEs": "Factores — inician, exacerban o calman (F)",
       "type": "multi",
       "opts": [
         "Esforço físico",
-        "Alimentação",
-        "Palpação",
         "Movimento",
-        "Inspiração profunda",
-        "Defecação"
+        "Palpação",
+        "Alimentação",
+        "Repouso",
+        "Posição antálgica",
+        "Calor/frio local",
+        "Medicação"
       ],
       "optsEs": [
         "Esfuerzo físico",
-        "Alimentación",
-        "Palpación",
         "Movimiento",
-        "Inspiración profunda",
-        "Defecación"
+        "Palpación",
+        "Alimentación",
+        "Reposo",
+        "Posición antiálgica",
+        "Calor/frío local",
+        "Medicación"
       ]
     },
     {
-      "q": "Sintomas associados?",
-      "qEs": "¿Síntomas asociados?",
+      "q": "Evolução (E)",
+      "qEs": "Evolución (E)",
+      "type": "radio",
+      "opts": [
+        "Progressiva (piora contínua)",
+        "Flutuante (piora e melhora)",
+        "Estável (sem mudança)",
+        "Regressiva (melhorando)"
+      ],
+      "optsEs": [
+        "Progresiva (empeoramiento continuo)",
+        "Fluctuante (empeora y mejora)",
+        "Estable (sin cambio)",
+        "Regresiva (mejorando)"
+      ]
+    },
+    {
+      "q": "Sintomas acompanhantes (S)",
+      "qEs": "Síntomas acompañantes (S)",
       "type": "multi",
       "opts": [
         "Náuseas/vômitos",
@@ -135,34 +155,153 @@ AM.motivo("semio-dor", {
         "Palidez",
         "Alteración intestinal"
       ]
-    },
+    }
+  ],
+  "aeaGuideCir": [
     {
-      "q": "Evolução do quadro",
-      "qEs": "Evolución del cuadro",
+      "q": "Aparición / Início (A)",
+      "qEs": "Aparición / Inicio (A)",
       "type": "radio",
       "opts": [
-        "Progressiva (piora contínua)",
-        "Flutuante (piora e melhora)",
-        "Estável (sem mudança)",
-        "Regressiva (melhorando)"
+        "Súbito (vascular / perfuração)",
+        "Gradual (inflamatório)"
       ],
       "optsEs": [
-        "Progresiva (empeoramiento continuo)",
-        "Fluctuante (empeora y mejora)",
-        "Estable (sin cambio)",
-        "Regresiva (mejorando)"
+        "Súbito (vascular / perforación)",
+        "Gradual (inflamatorio)"
       ]
     },
     {
-      "q": "O que motivou buscar atendimento hoje?",
-      "qEs": "¿Qué motivó buscar atención hoy?",
+      "q": "Localização (L)",
+      "qEs": "Localización (L)",
       "type": "input",
-      "ph": "Descreva o que motivou vir hoje",
-      "ph2": "Describa qué motivó venir hoy"
+      "ph": "Onde dói? Aponte o ponto de maior dor",
+      "ph2": "¿Dónde duele? Señale el punto de mayor dolor"
+    },
+    {
+      "q": "Irradiação (I)",
+      "qEs": "Irradiación (I)",
+      "type": "input",
+      "ph": "Para onde a dor se propaga?",
+      "ph2": "¿Hacia dónde se propaga el dolor?"
+    },
+    {
+      "q": "Caráter (C)",
+      "qEs": "Carácter (C)",
+      "type": "radio",
+      "opts": [
+        "Cólica",
+        "Queimação",
+        "Pontada",
+        "Pressão/aperto",
+        "Latejante",
+        "Surda/em peso",
+        "Lancinante"
+      ],
+      "optsEs": [
+        "Cólico",
+        "Ardor/quemazón",
+        "Punzada",
+        "Presión/opresión",
+        "Pulsátil",
+        "Sorda/pesada",
+        "Lancinante"
+      ]
+    },
+    {
+      "q": "Intensidade (I) — EVA",
+      "qEs": "Intensidad (I) — EVA",
+      "type": "radio",
+      "opts": [
+        "1-3 (leve)",
+        "4-6 (moderada)",
+        "7-8 (intensa)",
+        "9-10 (insuportável)"
+      ],
+      "optsEs": [
+        "1-3 (leve)",
+        "4-6 (moderada)",
+        "7-8 (intensa)",
+        "9-10 (insoportable)"
+      ]
+    },
+    {
+      "q": "Atenuantes / Agravantes (A)",
+      "qEs": "Atenuantes / Agravantes (A)",
+      "type": "multi",
+      "opts": [
+        "Melhora com repouso",
+        "Melhora com analgésico",
+        "Melhora com posição",
+        "Piora ao movimento",
+        "Piora à palpação",
+        "Piora com alimentação",
+        "Piora à inspiração"
+      ],
+      "optsEs": [
+        "Mejora con reposo",
+        "Mejora con analgésico",
+        "Mejora con posición",
+        "Empeora con el movimiento",
+        "Empeora a la palpación",
+        "Empeora con la alimentación",
+        "Empeora a la inspiración"
+      ]
     }
   ],
   "guidePt": {
     "mnemonics": [
+      {
+        "kw": "LITIDIFES",
+        "name": "Caracterização semiológica da dor (clínica)",
+        "rows": [
+          [
+            "L",
+            "Localización",
+            "Onde dói — apontar com um dedo (somática) ou difusa/mal definida (visceral)"
+          ],
+          [
+            "I",
+            "Irradiación",
+            "Para onde a dor se propaga (ombro na irritação diafragmática, dorso na pancreatite)"
+          ],
+          [
+            "T",
+            "Tipo",
+            "Urente, constritivo, gravativo, terebrante, pulsátil, surdo, fulgurante, punzante, cólico, lancinante"
+          ],
+          [
+            "I",
+            "Intensidad",
+            "EVA 0-10 — leve, moderada, intensa; repercussão em atividades/sono"
+          ],
+          [
+            "D",
+            "Duración",
+            "Contínua ou descontínua (em crises); tempo de evolução"
+          ],
+          [
+            "I",
+            "Inicio",
+            "Brusco/súbito (vascular, perfuração) ou insidioso (inflamatório)"
+          ],
+          [
+            "F",
+            "Factores",
+            "O que inicia, exacerba ou acalma a dor (esforço, alimentação, repouso, medicação)"
+          ],
+          [
+            "E",
+            "Evolución",
+            "Progressiva, flutuante, estável ou regressiva"
+          ],
+          [
+            "S",
+            "Síntomas acompañantes",
+            "Náuseas, vômitos, febre, sudorese, alterações intestinais"
+          ]
+        ]
+      },
       {
         "kw": "ALICIA",
         "name": "Caracterização semiológica da dor",
@@ -426,6 +565,47 @@ AM.motivo("semio-dor", {
   },
   "guideEs": {
     "mnemonics": [
+      {
+        "name": "Caracterización semiológica del dolor (clínica)",
+        "rows": [
+          [
+            "Localización",
+            "Dónde duele — señalar con un dedo (somática) o difusa (visceral)"
+          ],
+          [
+            "Irradiación",
+            "Hacia dónde se propaga el dolor"
+          ],
+          [
+            "Tipo",
+            "Urente, constrictivo, gravativo, terebrante, pulsátil, sordo, fulgurante, punzante, cólico, lancinante"
+          ],
+          [
+            "Intensidad",
+            "EVA 0-10 — leve, moderada, intensa"
+          ],
+          [
+            "Duración",
+            "Continua o discontinua (por crisis); tiempo de evolución"
+          ],
+          [
+            "Inicio",
+            "Brusco/súbito (vascular, perforación) o insidioso (inflamatorio)"
+          ],
+          [
+            "Factores",
+            "Qué inicia, exacerba o calma el dolor"
+          ],
+          [
+            "Evolución",
+            "Progresiva, fluctuante, estable o regresiva"
+          ],
+          [
+            "Síntomas acompañantes",
+            "Náuseas, vómitos, fiebre, sudoración, alteraciones intestinales"
+          ]
+        ]
+      },
       {
         "name": "Caracterización semiológica del dolor",
         "rows": [

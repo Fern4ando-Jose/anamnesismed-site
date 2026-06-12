@@ -2026,24 +2026,27 @@ function findMotivo(id){
 // buildAEAGuideHTML → ver anamnesismed-guide.js
 function renderAEAGuide(mObj){
   var cont = document.getElementById('aea-guided-content');
-  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){cont.innerHTML='';return;}
+  var g = (window.aeaGuideFor?window.aeaGuideFor(mObj):mObj);
+  if(!g || !g.aeaGuide || !g.aeaGuide.length){cont.innerHTML='';return;}
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
-  cont.innerHTML = buildAEAGuideHTML(mObj, 'aea-g-', lang);
+  cont.innerHTML = buildAEAGuideHTML(g, 'aea-g-', lang);
 }
 
 function renderAEAGuide2(mObj){
   var sect = document.getElementById('aea-mc2-section');
-  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){sect.style.display='none';sect.innerHTML='';return;}
+  var g = (window.aeaGuideFor?window.aeaGuideFor(mObj):mObj);
+  if(!g || !g.aeaGuide || !g.aeaGuide.length){sect.style.display='none';sect.innerHTML='';return;}
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
-  sect.innerHTML = buildAEAGuideHTML(mObj, 'aea-g2-', lang, 'color:var(--secondary)');
+  sect.innerHTML = buildAEAGuideHTML(g, 'aea-g2-', lang, 'color:var(--secondary)');
   sect.style.display = 'block';
 }
 
 function renderAEAGuide3(mObj){
   var sect = document.getElementById('aea-mc3-section');
-  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){sect.style.display='none';sect.innerHTML='';return;}
+  var g = (window.aeaGuideFor?window.aeaGuideFor(mObj):mObj);
+  if(!g || !g.aeaGuide || !g.aeaGuide.length){sect.style.display='none';sect.innerHTML='';return;}
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
-  sect.innerHTML = buildAEAGuideHTML(mObj, 'aea-g3-', lang, 'color:var(--secondary)');
+  sect.innerHTML = buildAEAGuideHTML(g, 'aea-g3-', lang, 'color:var(--secondary)');
   sect.style.display = 'block';
 }
 
