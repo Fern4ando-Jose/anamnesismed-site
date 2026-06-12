@@ -102,13 +102,6 @@ AM.motivo("trauma-abdominal", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes de coagulopatia ou uso de anticoagulantes?",
-      "qEs": "¿Antecedentes de coagulopatía o uso de anticoagulantes?",
-      "type": "input",
-      "ph": "Liste medicamentos anticoagulantes em uso",
-      "ph2": "Liste medicamentos anticoagulantes en uso"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

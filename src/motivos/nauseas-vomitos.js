@@ -85,11 +85,6 @@ AM.motivo("nauseas-vomitos", {
       "type": "yn"
     },
     {
-      "q": "Uso recente de medicamentos, álcool ou alimentos suspeitos?",
-      "qEs": "¿Uso reciente de medicamentos, alcohol o alimentos sospechosos?",
-      "type": "yn"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

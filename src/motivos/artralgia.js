@@ -166,21 +166,9 @@ AM.motivo("artralgia", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes pessoais ou familiares de doença autoimune, psoríase, gota ou espondiloartrite?",
-      "qEs": "¿Antecedentes personales o familiares de enfermedad autoinmune, psoriasis, gota o espondiloartritis?",
-      "type": "yn"
-    },
-    {
       "q": "Infecção recente (gastrointestinal, urinária, de vias aéreas, picada de carrapato) nas últimas semanas?",
       "qEs": "¿Infección reciente (gastrointestinal, urinaria, de vías respiratorias, picadura de garrapata) en las últimas semanas?",
       "type": "yn"
-    },
-    {
-      "q": "Uso de medicamentos (diuréticos, corticoides, imunossupressores, anticoagulantes)?",
-      "qEs": "¿Uso de medicamentos (diuréticos, corticoides, inmunosupresores, anticoagulantes)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
     },
     {
       "q": "Evolução do quadro",

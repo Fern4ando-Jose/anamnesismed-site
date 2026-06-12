@@ -98,13 +98,6 @@ AM.motivo("oclusao-intestinal", {
       "type": "yn"
     },
     {
-      "q": "Uso de opioides, antidepressivos tricíclicos ou outros medicamentos constipantes?",
-      "qEs": "¿Uso de opioides, antidepresivos tricíclicos u otros medicamentos estreñidores?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

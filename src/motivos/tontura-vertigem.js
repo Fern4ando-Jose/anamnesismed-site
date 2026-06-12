@@ -73,11 +73,6 @@ AM.motivo("tontura-vertigem", {
       "type": "yn"
     },
     {
-      "q": "Uso de medicamentos (anti-hipertensivos, sedativos, ototóxicos)?",
-      "qEs": "¿Uso de medicamentos (antihipertensivos, sedantes, ototóxicos)?",
-      "type": "yn"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

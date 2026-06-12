@@ -134,18 +134,6 @@ AM.motivo("edema", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes de doença cardíaca, renal, hepática ou tireoidiana?",
-      "qEs": "¿Antecedentes de enfermedad cardíaca, renal, hepática o tiroidea?",
-      "type": "yn"
-    },
-    {
-      "q": "Uso de medicamentos (anti-hipertensivos/BCC, AINEs, corticoides, hormônios, hipoglicemiantes)?",
-      "qEs": "¿Uso de medicamentos (antihipertensivos/BCC, AINEs, corticoides, hormonas, hipoglucemiantes)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Possibilidade de gravidez / atraso menstrual (em mulheres)?",
       "qEs": "¿Posibilidad de embarazo / atraso menstrual (en mujeres)?",
       "type": "yn"

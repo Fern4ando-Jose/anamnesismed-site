@@ -996,23 +996,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes pessoais de epilepsia, cardiopatia, AVC prévio ou diabetes?",
-              "qEs": "¿Antecedentes personales de epilepsia, cardiopatía, ACV previo o diabetes?",
-              "type": "yn"
-            },
-            {
-              "q": "Antecedentes familiares de epilepsia ou morte súbita cardíaca?",
-              "qEs": "¿Antecedentes familiares de epilepsia o muerte súbita cardíaca?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos que possam causar hipotensão, arritmia ou reduzir o limiar convulsivo (anti-hipertensivos, antidepressivos, antipsicóticos)?",
-              "qEs": "¿Uso de medicamentos que puedan causar hipotensión, arritmia o reducir el umbral convulsivo (antihipertensivos, antidepresivos, antipsicóticos)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
-            },
-            {
               "q": "Evolução do quadro",
               "qEs": "Evolución del cuadro",
               "type": "radio",
@@ -1303,18 +1286,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes cirúrgicos abdominais ou ginecológicos?",
-              "qEs": "¿Antecedentes quirúrgicos abdominales o ginecológicos?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos (AINEs, anticoagulantes, corticoides, antibióticos)?",
-              "qEs": "¿Uso de medicamentos (AINEs, anticoagulantes, corticoides, antibióticos)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
-            },
-            {
               "q": "Data da última menstruação / possibilidade de gravidez (se aplicável)?",
               "qEs": "¿Fecha de la última menstruación / posibilidad de embarazo (si aplica)?",
               "type": "input",
@@ -1434,30 +1405,6 @@ const MOTIVOS = {
               "q": "Histórico de doença hepática prévia (hepatite, cirrose, esteatose)?",
               "qEs": "¿Historial de enfermedad hepática previa (hepatitis, cirrosis, esteatosis)?",
               "type": "yn"
-            },
-            {
-              "q": "Etilismo — quantidade e tempo de uso de álcool?",
-              "qEs": "¿Etilismo — cantidad y tiempo de consumo de alcohol?",
-              "type": "input",
-              "ph": "Descreva o padrão de consumo de álcool",
-              "ph2": "Describa el patrón de consumo de alcohol"
-            },
-            {
-              "q": "Histórico de transfusões sanguíneas, tatuagens, piercings ou uso de drogas injetáveis (risco de hepatites virais)?",
-              "qEs": "¿Historial de transfusiones sanguíneas, tatuajes, piercings o uso de drogas inyectables (riesgo de hepatitis virales)?",
-              "type": "yn"
-            },
-            {
-              "q": "Viagens recentes para áreas de saneamento precário ou contato com pessoas ictéricas?",
-              "qEs": "¿Viajes recientes a zonas de saneamiento precario o contacto con personas ictéricas?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso recente de medicamentos, fitoterápicos ou suplementos potencialmente hepatotóxicos (paracetamol em altas doses, antibióticos, anticonvulsivantes, anabolizantes)?",
-              "qEs": "¿Uso reciente de medicamentos, fitoterápicos o suplementos potencialmente hepatotóxicos (paracetamol en altas dosis, antibióticos, anticonvulsivantes, anabolizantes)?",
-              "type": "input",
-              "ph": "Liste os medicamentos/substâncias em uso",
-              "ph2": "Liste los medicamentos/sustancias en uso"
             },
             {
               "q": "Histórico pessoal de neoplasia (especialmente digestiva, pancreática ou hepatobiliar)?",
@@ -1627,18 +1574,6 @@ const MOTIVOS = {
               "q": "Imobilização prolongada, viagem longa recente ou cirurgia recente (risco de TVP)?",
               "qEs": "¿Inmovilización prolongada, viaje largo reciente o cirugía reciente (riesgo de TVP)?",
               "type": "yn"
-            },
-            {
-              "q": "Antecedentes de doença cardíaca, renal, hepática ou tireoidiana?",
-              "qEs": "¿Antecedentes de enfermedad cardíaca, renal, hepática o tiroidea?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos (anti-hipertensivos/BCC, AINEs, corticoides, hormônios, hipoglicemiantes)?",
-              "qEs": "¿Uso de medicamentos (antihipertensivos/BCC, AINEs, corticoides, hormonas, hipoglucemiantes)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Possibilidade de gravidez / atraso menstrual (em mulheres)?",
@@ -1966,11 +1901,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Uso de medicamentos (anti-hipertensivos, sedativos, ototóxicos)?",
-              "qEs": "¿Uso de medicamentos (antihipertensivos, sedantes, ototóxicos)?",
-              "type": "yn"
-            },
-            {
               "q": "Evolução do quadro",
               "qEs": "Evolución del cuadro",
               "type": "radio",
@@ -2052,16 +1982,6 @@ const MOTIVOS = {
             {
               "q": "Sintomas depressivos, ansiedade, estresse recente?",
               "qEs": "¿Síntomas depresivos, ansiedad, estrés reciente?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de álcool, drogas ou medicamentos novos?",
-              "qEs": "¿Uso de alcohol, drogas o medicamentos nuevos?",
-              "type": "yn"
-            },
-            {
-              "q": "Antecedentes familiares de neoplasia?",
-              "qEs": "¿Antecedentes familiares de neoplasia?",
               "type": "yn"
             },
             {
@@ -2184,11 +2104,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Uso recente de medicamentos, álcool ou alimentos suspeitos?",
-              "qEs": "¿Uso reciente de medicamentos, alcohol o alimentos sospechosos?",
-              "type": "yn"
-            },
-            {
               "q": "Evolução do quadro",
               "qEs": "Evolución del cuadro",
               "type": "radio",
@@ -2281,16 +2196,6 @@ const MOTIVOS = {
             {
               "q": "Relação com determinados alimentos (ex.: laticínios, glúten)?",
               "qEs": "¿Relación con ciertos alimentos (ej.: lácteos, gluten)?",
-              "type": "yn"
-            },
-            {
-              "q": "Viagens recentes, ingestão de água/alimentos suspeitos, contato com doentes?",
-              "qEs": "¿Viajes recientes, ingestión de agua/alimentos sospechosos, contacto con enfermos?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso recente de antibióticos ou outros medicamentos?",
-              "qEs": "¿Uso reciente de antibióticos u otros medicamentos?",
               "type": "yn"
             },
             {
@@ -2413,16 +2318,6 @@ const MOTIVOS = {
             {
               "q": "Ansiedade ou crises de pânico associadas?",
               "qEs": "¿Ansiedad o crisis de pánico asociadas?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de cafeína, álcool, tabaco, drogas estimulantes ou medicamentos (broncodilatadores, hormônio tireoidiano)?",
-              "qEs": "¿Uso de cafeína, alcohol, tabaco, drogas estimulantes o medicamentos (broncodilatadores, hormona tiroidea)?",
-              "type": "yn"
-            },
-            {
-              "q": "Antecedentes pessoais ou familiares de arritmia, morte súbita ou doença cardíaca?",
-              "qEs": "¿Antecedentes personales o familiares de arritmia, muerte súbita o enfermedad cardíaca?",
               "type": "yn"
             },
             {
@@ -2869,21 +2764,9 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes pessoais ou familiares de doença autoimune, psoríase, gota ou espondiloartrite?",
-              "qEs": "¿Antecedentes personales o familiares de enfermedad autoinmune, psoriasis, gota o espondiloartritis?",
-              "type": "yn"
-            },
-            {
               "q": "Infecção recente (gastrointestinal, urinária, de vias aéreas, picada de carrapato) nas últimas semanas?",
               "qEs": "¿Infección reciente (gastrointestinal, urinaria, de vías respiratorias, picadura de garrapata) en las últimas semanas?",
               "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos (diuréticos, corticoides, imunossupressores, anticoagulantes)?",
-              "qEs": "¿Uso de medicamentos (diuréticos, corticoides, inmunosupresores, anticoagulantes)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -3781,18 +3664,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes de doença cardíaca, renal, hepática ou tireoidiana?",
-              "qEs": "¿Antecedentes de enfermedad cardíaca, renal, hepática o tiroidea?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos (anti-hipertensivos/BCC, AINEs, corticoides, hormônios, hipoglicemiantes)?",
-              "qEs": "¿Uso de medicamentos (antihipertensivos/BCC, AINEs, corticoides, hormonas, hipoglucemiantes)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
-            },
-            {
               "q": "Possibilidade de gravidez / atraso menstrual (em mulheres)?",
               "qEs": "¿Posibilidad de embarazo / atraso menstrual (en mujeres)?",
               "type": "yn"
@@ -3925,30 +3796,6 @@ const MOTIVOS = {
               "q": "Histórico de doença hepática prévia (hepatite, cirrose, esteatose)?",
               "qEs": "¿Historial de enfermedad hepática previa (hepatitis, cirrosis, esteatosis)?",
               "type": "yn"
-            },
-            {
-              "q": "Etilismo — quantidade e tempo de uso de álcool?",
-              "qEs": "¿Etilismo — cantidad y tiempo de consumo de alcohol?",
-              "type": "input",
-              "ph": "Descreva o padrão de consumo de álcool",
-              "ph2": "Describa el patrón de consumo de alcohol"
-            },
-            {
-              "q": "Histórico de transfusões sanguíneas, tatuagens, piercings ou uso de drogas injetáveis (risco de hepatites virais)?",
-              "qEs": "¿Historial de transfusiones sanguíneas, tatuajes, piercings o uso de drogas inyectables (riesgo de hepatitis virales)?",
-              "type": "yn"
-            },
-            {
-              "q": "Viagens recentes para áreas de saneamento precário ou contato com pessoas ictéricas?",
-              "qEs": "¿Viajes recientes a zonas de saneamiento precario o contacto con personas ictéricas?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso recente de medicamentos, fitoterápicos ou suplementos potencialmente hepatotóxicos (paracetamol em altas doses, antibióticos, anticonvulsivantes, anabolizantes)?",
-              "qEs": "¿Uso reciente de medicamentos, fitoterápicos o suplementos potencialmente hepatotóxicos (paracetamol en altas dosis, antibióticos, anticonvulsivantes, anabolizantes)?",
-              "type": "input",
-              "ph": "Liste os medicamentos/substâncias em uso",
-              "ph2": "Liste los medicamentos/sustancias en uso"
             },
             {
               "q": "Histórico pessoal de neoplasia (especialmente digestiva, pancreática ou hepatobiliar)?",
@@ -4618,11 +4465,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes de cirurgias abdominais prévias (aderências, apendicectomia)?",
-              "qEs": "¿Antecedentes de cirugías abdominales previas (adherencias, apendicectomía)?",
-              "type": "yn"
-            },
-            {
               "q": "Data da última menstruação / possibilidade de gravidez (mulheres em idade fértil)?",
               "qEs": "¿Fecha de la última menstruación / posibilidad de embarazo (mujeres en edad fértil)?",
               "type": "input",
@@ -4645,13 +4487,6 @@ const MOTIVOS = {
                 "Usó y el dolor mejoró parcialmente",
                 "Usó y no hubo mejoría (señal de alarma)"
               ]
-            },
-            {
-              "q": "Qual medicamento usou?",
-              "qEs": "¿Qué medicamento usó?",
-              "type": "input",
-              "ph": "Ex: dipirona, paracetamol, ibuprofeno...",
-              "ph2": "Ej: dipirona, paracetamol, ibuprofeno..."
             },
             {
               "q": "Evolução do quadro",
@@ -4825,13 +4660,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Medicamentos em uso (anticoncepcionais, fibratos, ceftriaxona)?",
-              "qEs": "¿Medicamentos en uso (anticonceptivos, fibratos, ceftriaxona)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
-            },
-            {
               "q": "Evolução do quadro",
               "qEs": "Evolución del cuadro",
               "type": "radio",
@@ -4981,23 +4809,9 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Etilismo — quantidade e frequência de consumo de álcool?",
-              "qEs": "¿Etilismo — cantidad y frecuencia de consumo de alcohol?",
-              "type": "input",
-              "ph": "Descreva padrão de consumo de álcool",
-              "ph2": "Describa patrón de consumo de alcohol"
-            },
-            {
               "q": "Episódios prévios de pancreatite ou cálculos biliares conhecidos?",
               "qEs": "¿Episodios previos de pancreatitis o cálculos biliares conocidos?",
               "type": "yn"
-            },
-            {
-              "q": "Medicamentos potencialmente pancreatotóxicos em uso (azatioprina, furosemida, tetraciclinas, estrógenos)?",
-              "qEs": "¿Medicamentos potencialmente pancreatotóxicos en uso (azatioprina, furosemida, tetraciclinas, estrógenos)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -5123,13 +4937,6 @@ const MOTIVOS = {
               "q": "Perda de peso recente ou alteração progressiva do hábito intestinal (suspeita de neoplasia)?",
               "qEs": "¿Pérdida de peso reciente o alteración progresiva del hábito intestinal (sospecha de neoplasia)?",
               "type": "yn"
-            },
-            {
-              "q": "Uso de opioides, antidepressivos tricíclicos ou outros medicamentos constipantes?",
-              "qEs": "¿Uso de opioides, antidepresivos tricíclicos u otros medicamentos estreñidores?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -5371,30 +5178,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Uso recente de AINEs, AAS, anticoagulantes ou corticoides?",
-              "qEs": "¿Uso reciente de AINEs, AAS, anticoagulantes o corticoides?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
-            },
-            {
-              "q": "Etilismo — quantidade e frequência?",
-              "qEs": "¿Etilismo — cantidad y frecuencia?",
-              "type": "input",
-              "ph": "Descreva padrão de consumo",
-              "ph2": "Describa patrón de consumo"
-            },
-            {
-              "q": "Antecedente de úlcera péptica, gastrite ou infecção por H. pylori?",
-              "qEs": "¿Antecedente de úlcera péptica, gastritis o infección por H. pylori?",
-              "type": "yn"
-            },
-            {
-              "q": "Antecedente de doença hepática (cirrose, hepatite) ou varizes esofágicas conhecidas?",
-              "qEs": "¿Antecedente de enfermedad hepática (cirrosis, hepatitis) o várices esofágicas conocidas?",
-              "type": "yn"
-            },
-            {
               "q": "Vômitos fortes e repetidos antes do sangramento (síndrome de Mallory-Weiss)?",
               "qEs": "¿Vómitos intensos y repetidos antes del sangrado (síndrome de Mallory-Weiss)?",
               "type": "yn"
@@ -5524,16 +5307,6 @@ const MOTIVOS = {
               "ph2": "Liste los medicamentos en uso"
             },
             {
-              "q": "Antecedentes: diverticulose, doença inflamatória intestinal (Crohn / RCU), pólipos ou câncer colorretal?",
-              "qEs": "¿Antecedentes: diverticulosis, enfermedad inflamatoria intestinal (Crohn / CU), pólipos o cáncer colorrectal?",
-              "type": "yn"
-            },
-            {
-              "q": "História familiar de câncer colorretal ou pólipos?",
-              "qEs": "¿Antecedentes familiares de cáncer colorrectal o pólipos?",
-              "type": "yn"
-            },
-            {
               "q": "Episódios semelhantes anteriores?",
               "qEs": "¿Episodios similares anteriores?",
               "type": "input",
@@ -5659,13 +5432,6 @@ const MOTIVOS = {
               "q": "Dieta pobre em fibras?",
               "qEs": "¿Dieta pobre en fibra?",
               "type": "yn"
-            },
-            {
-              "q": "Uso de AINEs, opioides ou corticoides?",
-              "qEs": "¿Uso de AINEs, opioides o corticoides?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -5953,13 +5719,6 @@ const MOTIVOS = {
               "q": "Usava cinto de segurança / capacete?",
               "qEs": "¿Usaba cinturón de seguridad / casco?",
               "type": "yn"
-            },
-            {
-              "q": "Antecedentes de coagulopatia ou uso de anticoagulantes?",
-              "qEs": "¿Antecedentes de coagulopatía o uso de anticoagulantes?",
-              "type": "input",
-              "ph": "Liste medicamentos anticoagulantes em uso",
-              "ph2": "Liste medicamentos anticoagulantes en uso"
             },
             {
               "q": "Evolução do quadro",

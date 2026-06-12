@@ -122,23 +122,9 @@ AM.motivo("pancreatite-aguda", {
       "type": "yn"
     },
     {
-      "q": "Etilismo — quantidade e frequência de consumo de álcool?",
-      "qEs": "¿Etilismo — cantidad y frecuencia de consumo de alcohol?",
-      "type": "input",
-      "ph": "Descreva padrão de consumo de álcool",
-      "ph2": "Describa patrón de consumo de alcohol"
-    },
-    {
       "q": "Episódios prévios de pancreatite ou cálculos biliares conhecidos?",
       "qEs": "¿Episodios previos de pancreatitis o cálculos biliares conocidos?",
       "type": "yn"
-    },
-    {
-      "q": "Medicamentos potencialmente pancreatotóxicos em uso (azatioprina, furosemida, tetraciclinas, estrógenos)?",
-      "qEs": "¿Medicamentos potencialmente pancreatotóxicos en uso (azatioprina, furosemida, tetraciclinas, estrógenos)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
     },
     {
       "q": "Evolução do quadro",

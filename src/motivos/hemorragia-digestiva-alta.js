@@ -66,30 +66,6 @@ AM.motivo("hemorragia-digestiva-alta", {
       "type": "yn"
     },
     {
-      "q": "Uso recente de AINEs, AAS, anticoagulantes ou corticoides?",
-      "qEs": "¿Uso reciente de AINEs, AAS, anticoagulantes o corticoides?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
-      "q": "Etilismo — quantidade e frequência?",
-      "qEs": "¿Etilismo — cantidad y frecuencia?",
-      "type": "input",
-      "ph": "Descreva padrão de consumo",
-      "ph2": "Describa patrón de consumo"
-    },
-    {
-      "q": "Antecedente de úlcera péptica, gastrite ou infecção por H. pylori?",
-      "qEs": "¿Antecedente de úlcera péptica, gastritis o infección por H. pylori?",
-      "type": "yn"
-    },
-    {
-      "q": "Antecedente de doença hepática (cirrose, hepatite) ou varizes esofágicas conhecidas?",
-      "qEs": "¿Antecedente de enfermedad hepática (cirrosis, hepatitis) o várices esofágicas conocidas?",
-      "type": "yn"
-    },
-    {
       "q": "Vômitos fortes e repetidos antes do sangramento (síndrome de Mallory-Weiss)?",
       "qEs": "¿Vómitos intensos y repetidos antes del sangrado (síndrome de Mallory-Weiss)?",
       "type": "yn"

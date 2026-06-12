@@ -67,16 +67,6 @@ AM.motivo("diarreia", {
       "type": "yn"
     },
     {
-      "q": "Viagens recentes, ingestão de água/alimentos suspeitos, contato com doentes?",
-      "qEs": "¿Viajes recientes, ingestión de agua/alimentos sospechosos, contacto con enfermos?",
-      "type": "yn"
-    },
-    {
-      "q": "Uso recente de antibióticos ou outros medicamentos?",
-      "qEs": "¿Uso reciente de antibióticos u otros medicamentos?",
-      "type": "yn"
-    },
-    {
       "q": "Sinais de desidratação?",
       "qEs": "¿Signos de deshidratación?",
       "type": "yn"

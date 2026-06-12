@@ -80,16 +80,6 @@ AM.motivo("palpitacoes", {
       "type": "yn"
     },
     {
-      "q": "Uso de cafeína, álcool, tabaco, drogas estimulantes ou medicamentos (broncodilatadores, hormônio tireoidiano)?",
-      "qEs": "¿Uso de cafeína, alcohol, tabaco, drogas estimulantes o medicamentos (broncodilatadores, hormona tiroidea)?",
-      "type": "yn"
-    },
-    {
-      "q": "Antecedentes pessoais ou familiares de arritmia, morte súbita ou doença cardíaca?",
-      "qEs": "¿Antecedentes personales o familiares de arritmia, muerte súbita o enfermedad cardíaca?",
-      "type": "yn"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

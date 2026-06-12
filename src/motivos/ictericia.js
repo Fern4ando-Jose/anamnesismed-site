@@ -87,30 +87,6 @@ AM.motivo("ictericia", {
       "type": "yn"
     },
     {
-      "q": "Etilismo — quantidade e tempo de uso de álcool?",
-      "qEs": "¿Etilismo — cantidad y tiempo de consumo de alcohol?",
-      "type": "input",
-      "ph": "Descreva o padrão de consumo de álcool",
-      "ph2": "Describa el patrón de consumo de alcohol"
-    },
-    {
-      "q": "Histórico de transfusões sanguíneas, tatuagens, piercings ou uso de drogas injetáveis (risco de hepatites virais)?",
-      "qEs": "¿Historial de transfusiones sanguíneas, tatuajes, piercings o uso de drogas inyectables (riesgo de hepatitis virales)?",
-      "type": "yn"
-    },
-    {
-      "q": "Viagens recentes para áreas de saneamento precário ou contato com pessoas ictéricas?",
-      "qEs": "¿Viajes recientes a zonas de saneamiento precario o contacto con personas ictéricas?",
-      "type": "yn"
-    },
-    {
-      "q": "Uso recente de medicamentos, fitoterápicos ou suplementos potencialmente hepatotóxicos (paracetamol em altas doses, antibióticos, anticonvulsivantes, anabolizantes)?",
-      "qEs": "¿Uso reciente de medicamentos, fitoterápicos o suplementos potencialmente hepatotóxicos (paracetamol en altas dosis, antibióticos, anticonvulsivantes, anabolizantes)?",
-      "type": "input",
-      "ph": "Liste os medicamentos/substâncias em uso",
-      "ph2": "Liste los medicamentos/sustancias en uso"
-    },
-    {
       "q": "Histórico pessoal de neoplasia (especialmente digestiva, pancreática ou hepatobiliar)?",
       "qEs": "¿Historial personal de neoplasia (especialmente digestiva, pancreática o hepatobiliar)?",
       "type": "yn"

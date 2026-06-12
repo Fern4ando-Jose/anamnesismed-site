@@ -170,18 +170,6 @@ AM.motivo("dor-abdominal", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes cirúrgicos abdominais ou ginecológicos?",
-      "qEs": "¿Antecedentes quirúrgicos abdominales o ginecológicos?",
-      "type": "yn"
-    },
-    {
-      "q": "Uso de medicamentos (AINEs, anticoagulantes, corticoides, antibióticos)?",
-      "qEs": "¿Uso de medicamentos (AINEs, anticoagulantes, corticoides, antibióticos)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Data da última menstruação / possibilidade de gravidez (se aplicável)?",
       "qEs": "¿Fecha de la última menstruación / posibilidad de embarazo (si aplica)?",
       "type": "input",

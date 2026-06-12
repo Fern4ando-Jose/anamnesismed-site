@@ -100,23 +100,6 @@ AM.motivo("convulsao-sincope", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes pessoais de epilepsia, cardiopatia, AVC prévio ou diabetes?",
-      "qEs": "¿Antecedentes personales de epilepsia, cardiopatía, ACV previo o diabetes?",
-      "type": "yn"
-    },
-    {
-      "q": "Antecedentes familiares de epilepsia ou morte súbita cardíaca?",
-      "qEs": "¿Antecedentes familiares de epilepsia o muerte súbita cardíaca?",
-      "type": "yn"
-    },
-    {
-      "q": "Uso de medicamentos que possam causar hipotensão, arritmia ou reduzir o limiar convulsivo (anti-hipertensivos, antidepressivos, antipsicóticos)?",
-      "qEs": "¿Uso de medicamentos que puedan causar hipotensión, arritmia o reducir el umbral convulsivo (antihipertensivos, antidepresivos, antipsicóticos)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

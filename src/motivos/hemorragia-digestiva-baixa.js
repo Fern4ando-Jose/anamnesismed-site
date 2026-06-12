@@ -90,16 +90,6 @@ AM.motivo("hemorragia-digestiva-baixa", {
       "ph2": "Liste los medicamentos en uso"
     },
     {
-      "q": "Antecedentes: diverticulose, doença inflamatória intestinal (Crohn / RCU), pólipos ou câncer colorretal?",
-      "qEs": "¿Antecedentes: diverticulosis, enfermedad inflamatoria intestinal (Crohn / CU), pólipos o cáncer colorrectal?",
-      "type": "yn"
-    },
-    {
-      "q": "História familiar de câncer colorretal ou pólipos?",
-      "qEs": "¿Antecedentes familiares de cáncer colorrectal o pólipos?",
-      "type": "yn"
-    },
-    {
       "q": "Episódios semelhantes anteriores?",
       "qEs": "¿Episodios similares anteriores?",
       "type": "input",

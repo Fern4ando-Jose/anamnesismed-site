@@ -57,16 +57,6 @@ AM.motivo("perda-peso", {
       "type": "yn"
     },
     {
-      "q": "Uso de álcool, drogas ou medicamentos novos?",
-      "qEs": "¿Uso de alcohol, drogas o medicamentos nuevos?",
-      "type": "yn"
-    },
-    {
-      "q": "Antecedentes familiares de neoplasia?",
-      "qEs": "¿Antecedentes familiares de neoplasia?",
-      "type": "yn"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

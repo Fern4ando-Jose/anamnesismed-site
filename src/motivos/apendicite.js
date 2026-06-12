@@ -85,11 +85,6 @@ AM.motivo("apendicite", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes de cirurgias abdominais prévias (aderências, apendicectomia)?",
-      "qEs": "¿Antecedentes de cirugías abdominales previas (adherencias, apendicectomía)?",
-      "type": "yn"
-    },
-    {
       "q": "Data da última menstruação / possibilidade de gravidez (mulheres em idade fértil)?",
       "qEs": "¿Fecha de la última menstruación / posibilidad de embarazo (mujeres en edad fértil)?",
       "type": "input",
@@ -112,13 +107,6 @@ AM.motivo("apendicite", {
         "Usó y el dolor mejoró parcialmente",
         "Usó y no hubo mejoría (señal de alarma)"
       ]
-    },
-    {
-      "q": "Qual medicamento usou?",
-      "qEs": "¿Qué medicamento usó?",
-      "type": "input",
-      "ph": "Ex: dipirona, paracetamol, ibuprofeno...",
-      "ph2": "Ej: dipirona, paracetamol, ibuprofeno..."
     },
     {
       "q": "Evolução do quadro",

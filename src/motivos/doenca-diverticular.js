@@ -87,13 +87,6 @@ AM.motivo("doenca-diverticular", {
       "type": "yn"
     },
     {
-      "q": "Uso de AINEs, opioides ou corticoides?",
-      "qEs": "¿Uso de AINEs, opioides o corticoides?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

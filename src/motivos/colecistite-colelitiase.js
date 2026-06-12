@@ -143,13 +143,6 @@ AM.motivo("colecistite-colelitiase", {
       "type": "yn"
     },
     {
-      "q": "Medicamentos em uso (anticoncepcionais, fibratos, ceftriaxona)?",
-      "qEs": "¿Medicamentos en uso (anticonceptivos, fibratos, ceftriaxona)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",
