@@ -116,9 +116,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .hl b{color:var(--ink)}
 
 /* FIGURAS SVG (topografia) */
-.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:6px 0 16px}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:6px 0 16px}
 .fig{border:1px solid var(--line);border-radius:12px;padding:14px 10px;background:#fbfdfe;text-align:center}
-.fig svg{width:100%;height:auto;max-width:250px}
+.fig svg{width:100%;height:auto;max-width:340px}
 .fig-cap{font-size:12.5px;font-weight:700;color:var(--primary-dark);margin-top:6px}
 .fig-legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:-4px 0 14px;font-size:12px;color:var(--muted)}
 .fig-legend span{display:flex;align-items:center;gap:6px}
@@ -206,48 +206,39 @@ table.sx tbody tr:hover td:first-child{background:#eef6f8}
 <script>
 var L = "es";
 
-/* ─────────── ESQUEMAS ANATÓMICOS DE LÍNEA (topografia) ─────────── */
-var THORAX = '<path d="M118 86 C113 124 113 160 119 192 C123 212 130 224 138 233 L170 214 L202 233 C210 224 217 212 221 192 C227 160 227 124 222 86 C203 78 186 76 170 76 C154 76 137 78 118 86 Z" fill="#eef7fa" stroke="#0d2d3d" stroke-width="2"/>';
-var LEAD = '<g stroke="#94a3b8" stroke-width="1" fill="none">';
-var FIG_ANTERIOR = '<svg viewBox="0 0 340 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema anterior del tórax">'
-  + THORAX
-  +'<path d="M167 80 Q149 74 132 84" fill="none" stroke="#0d2d3d" stroke-width="1.6"/>'
-  +'<path d="M173 80 Q191 74 208 84" fill="none" stroke="#0d2d3d" stroke-width="1.6"/>'
-  +'<line x1="170" y1="80" x2="170" y2="212" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 4"/>'
-  +'<line x1="146" y1="92" x2="149" y2="208" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".65"/>'
-  +'<line x1="194" y1="92" x2="191" y2="208" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".65"/>'
-  + LEAD +'<line x1="106" y1="92" x2="134" y2="92"/><line x1="106" y1="152" x2="142" y2="150"/><line x1="234" y1="118" x2="198" y2="116"/><line x1="234" y1="194" x2="196" y2="192"/></g>'
-  +'<g fill="#06b6d4"><circle cx="134" cy="92" r="2"/><circle cx="142" cy="150" r="2"/><circle cx="198" cy="116" r="2"/><circle cx="196" cy="192" r="2"/></g>'
-  +'<text x="102" y="95" text-anchor="end" font-size="12.5" fill="#334155">Supraclavicular</text>'
-  +'<text x="102" y="155" text-anchor="end" font-size="12.5" fill="#334155">Mamaria</text>'
-  +'<text x="238" y="121" text-anchor="start" font-size="12.5" fill="#334155">Infraclavicular</text>'
-  +'<text x="238" y="197" text-anchor="start" font-size="12.5" fill="#334155">Inframamaria</text>'
-  +'<text x="170" y="254" text-anchor="middle" font-size="11" fill="#0e7490">líneas: medioesternal · medioclavicular</text>'
-  +'</svg>';
-var FIG_POSTERIOR = '<svg viewBox="0 0 340 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema posterior del tórax">'
-  + THORAX
-  +'<line x1="170" y1="80" x2="170" y2="230" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>'
-  +'<path d="M134 100 L162 106 L151 150 Z" fill="none" stroke="#0d2d3d" stroke-width="1.5"/>'
-  +'<path d="M206 100 L178 106 L189 150 Z" fill="none" stroke="#0d2d3d" stroke-width="1.5"/>'
-  + LEAD +'<line x1="106" y1="98" x2="140" y2="98"/><line x1="106" y1="206" x2="150" y2="204"/><line x1="234" y1="128" x2="190" y2="126"/><line x1="234" y1="166" x2="172" y2="166"/></g>'
-  +'<g fill="#06b6d4"><circle cx="140" cy="98" r="2"/><circle cx="150" cy="204" r="2"/><circle cx="190" cy="126" r="2"/><circle cx="172" cy="166" r="2"/></g>'
-  +'<text x="102" y="101" text-anchor="end" font-size="12.5" fill="#334155">Supraescapular</text>'
-  +'<text x="102" y="209" text-anchor="end" font-size="12.5" fill="#334155">Infraescapular</text>'
-  +'<text x="238" y="131" text-anchor="start" font-size="12.5" fill="#334155">Escapular</text>'
-  +'<text x="238" y="169" text-anchor="start" font-size="12.5" fill="#334155">Interescapular</text>'
-  +'<text x="170" y="254" text-anchor="middle" font-size="11" fill="#0e7490">línea vertebral (apófisis espinosas)</text>'
-  +'</svg>';
-var FIG_LATERAL = '<svg viewBox="0 0 300 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema lateral del tórax">'
-  +'<path d="M150 80 C120 84 106 120 110 166 C113 206 126 230 150 238 C172 230 186 206 188 166 C190 124 184 92 170 84 C164 81 157 80 150 80 Z" fill="#eef7fa" stroke="#0d2d3d" stroke-width="2"/>'
-  +'<line x1="132" y1="96" x2="131" y2="226" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
-  +'<line x1="150" y1="90" x2="149" y2="232" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 4"/>'
-  +'<line x1="168" y1="96" x2="167" y2="226" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
-  + LEAD +'<line x1="92" y1="138" x2="124" y2="138"/><line x1="92" y1="206" x2="128" y2="204"/></g>'
-  +'<g fill="#06b6d4"><circle cx="124" cy="138" r="2"/><circle cx="128" cy="204" r="2"/></g>'
-  +'<text x="88" y="141" text-anchor="end" font-size="12.5" fill="#334155">Axilar</text>'
-  +'<text x="88" y="207" text-anchor="end" font-size="12.5" fill="#334155">Infraaxilar</text>'
-  +'<text x="150" y="254" text-anchor="middle" font-size="11" fill="#0e7490">axilares: anterior · media · posterior</text>'
-  +'</svg>';
+/* ── FIGURAS: torso real de Patrick J. Lynch & C. Carl Jaffe (CC BY 2.5),
+   limpo dos rótulos em inglês + sobreposição bilíngue PT/ES ── */
+function _ft(es,pt){ return L==="es"?es:pt; }
+function _figAnterior(){
+  return '<svg viewBox="-150 -6 660 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tórax anterior">'
+    +'<image href="assets/topografia/torso-anterior.svg" x="0" y="0" width="489" height="470"/>'
+    +'<g stroke="#15303d" stroke-width="1.6" fill="none"><line x1="244" y1="104" x2="244" y2="404"/><line x1="188" y1="120" x2="190" y2="404"/><line x1="300" y1="120" x2="298" y2="404"/><line x1="128" y1="150" x2="134" y2="404" opacity=".7"/><line x1="360" y1="150" x2="354" y2="404" opacity=".7"/></g>'
+    +'<g stroke="#5b6b78" stroke-width="1.2"><line x1="-8" y1="120" x2="212" y2="120"/><line x1="-8" y1="168" x2="202" y2="165"/><line x1="-8" y1="235" x2="186" y2="235"/><line x1="-8" y1="330" x2="196" y2="330"/></g>'
+    +'<g fill="#15303d"><circle cx="212" cy="120" r="3"/><circle cx="202" cy="165" r="3"/><circle cx="186" cy="235" r="3"/><circle cx="196" cy="330" r="3"/></g>'
+    +'<g font-size="17" fill="#15303d" text-anchor="end"><text x="-12" y="125">Supraclavicular</text><text x="-12" y="173">Infraclavicular</text><text x="-12" y="240">'+_ft("Mamaria","Mamária")+'</text><text x="-12" y="335">'+_ft("Inframamaria","Inframamária")+'</text></g>'
+    +'<text x="244" y="446" text-anchor="middle" font-size="13" fill="#0e7490">'+_ft("líneas: medioesternal · medioclavicular · axilar anterior","linhas: medioesternal · medioclavicular · axilar anterior")+'</text>'
+    +'</svg>';
+}
+function _figPosterior(){
+  return '<svg viewBox="-150 -6 660 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tórax posterior">'
+    +'<image href="assets/topografia/torso-posterior.svg" x="0" y="0" width="489" height="470"/>'
+    +'<g stroke="#15303d" stroke-width="1.6" fill="none"><line x1="247" y1="92" x2="247" y2="396"/><line x1="200" y1="150" x2="202" y2="396" opacity=".6" stroke-dasharray="6 4"/><line x1="294" y1="150" x2="292" y2="396" opacity=".6" stroke-dasharray="6 4"/></g>'
+    +'<g stroke="#5b6b78" stroke-width="1.2"><line x1="-8" y1="130" x2="205" y2="132"/><line x1="-8" y1="205" x2="247" y2="205"/><line x1="-8" y1="300" x2="212" y2="300"/></g>'
+    +'<g fill="#15303d"><circle cx="205" cy="132" r="3"/><circle cx="247" cy="205" r="3"/><circle cx="212" cy="300" r="3"/></g>'
+    +'<g font-size="17" fill="#15303d" text-anchor="end"><text x="-12" y="137">Supraescapular</text><text x="-12" y="210">Interescapular</text><text x="-12" y="305">Infraescapular</text></g>'
+    +'<text x="244" y="446" text-anchor="middle" font-size="13" fill="#0e7490">'+_ft("línea vertebral · líneas escapulares","linha vertebral · linhas escapulares")+'</text>'
+    +'</svg>';
+}
+function _figLateral(){
+  return '<svg viewBox="-160 -10 740 730" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tórax lateral">'
+    +'<image href="assets/topografia/torso-lateral.svg" x="0" y="0" width="514" height="700"/>'
+    +'<g stroke="#15303d" stroke-width="1.8" fill="none"><line x1="250" y1="150" x2="250" y2="560" opacity=".7" stroke-dasharray="7 5"/><line x1="290" y1="120" x2="290" y2="580"/><line x1="330" y1="150" x2="330" y2="560" opacity=".7" stroke-dasharray="7 5"/></g>'
+    +'<g stroke="#5b6b78" stroke-width="1.4"><line x1="-10" y1="250" x2="262" y2="250"/><line x1="-10" y1="430" x2="270" y2="430"/></g>'
+    +'<g fill="#15303d"><circle cx="262" cy="250" r="4"/><circle cx="270" cy="430" r="4"/></g>'
+    +'<g font-size="23" fill="#15303d" text-anchor="end"><text x="-16" y="258">Axilar</text><text x="-16" y="438">Infraaxilar</text></g>'
+    +'<text x="270" y="650" text-anchor="middle" font-size="18" fill="#0e7490">'+_ft("líneas axilares: anterior · media · posterior","linhas axilares: anterior · média · posterior")+'</text>'
+    +'</svg>';
+}
 
 /* ─────────── DADOS (bilíngue) ─────────── */
 var SECTIONS = [
@@ -525,11 +516,11 @@ function renderNav(){
 
 function renderFiguras(){
   return '<div class="figs">'
-    +'<div class="fig">'+FIG_ANTERIOR+'<div class="fig-cap">'+(L==="es"?"Cara anterior":"Face anterior")+'</div></div>'
-    +'<div class="fig">'+FIG_POSTERIOR+'<div class="fig-cap">'+(L==="es"?"Cara posterior":"Face posterior")+'</div></div>'
-    +'<div class="fig">'+FIG_LATERAL+'<div class="fig-cap">'+(L==="es"?"Cara lateral":"Face lateral")+'</div></div>'
+    +'<div class="fig">'+_figAnterior()+'<div class="fig-cap">'+(L==="es"?"Cara anterior":"Face anterior")+'</div></div>'
+    +'<div class="fig">'+_figPosterior()+'<div class="fig-cap">'+(L==="es"?"Cara posterior":"Face posterior")+'</div></div>'
+    +'<div class="fig">'+_figLateral()+'<div class="fig-cap">'+(L==="es"?"Cara lateral":"Face lateral")+'</div></div>'
     +'</div>'
-    +'<div class="fig-legend"><span><i></i>'+(L==="es"?"líneas de referencia":"linhas de referência")+'</span><span><i class="solid"></i>'+(L==="es"?"contorno / reparos":"contorno / reparos")+'</span></div>';
+    +'<div class="fig-legend"><span><i></i>'+(L==="es"?"líneas de referencia":"linhas de referência")+'</span><span style="opacity:.85">'+(L==="es"?"Ilustraciones: Patrick J. Lynch / C. Carl Jaffe — CC BY 2.5 (adaptadas)":"Ilustrações: Patrick J. Lynch / C. Carl Jaffe — CC BY 2.5 (adaptadas)")+'</span></div>';
 }
 
 function renderMnemo(){
