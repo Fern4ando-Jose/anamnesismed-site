@@ -161,19 +161,35 @@ function exportPDF(){
      txt: function(){return 'a) '+mMC+(document.getElementById('mc-b').value?'\nb) '+document.getElementById('mc-b').value:'')+(document.getElementById('mc-c').value?'\nc) '+document.getElementById('mc-c').value:'');}},
     {n:'3', tPt:'AEA — Antecedentes da Enfermidade Atual', tEs:'AEA — Antecedentes de la Enfermedad Actual',
      txt: function(){
-      var t = (mAEA && mAEA !== '—') ? mAEA : '';
-      // Texto narrativo clínico gerado a partir das perguntas guiadas
-      if(currentMotivo && currentMotivo.aeaGuide && currentMotivo.aeaGuide.length){
-        var narrativa = gerarNarrativaAEA(currentMotivo, lang, 'aea-g-');
-        if(narrativa) t += (t ? '\n\n' : '') + narrativa;
+      // A AEA é montada como UMA narrativa cronológica corrida:
+      // motivo1 + motivo2 + motivo3 + relato livre do médico, com a frase de fecho
+      // ("Procura esta unidade de saúde…") reposicionada para o FINAL de tudo.
+      function _g(mObj,pfx,cont){
+        return (mObj && mObj.aeaGuide && mObj.aeaGuide.length)
+          ? (gerarNarrativaAEA(mObj, lang, pfx, cont?{continuation:true}:undefined)||'') : '';
       }
-      if(currentMotivo2 && currentMotivo2.aeaGuide && currentMotivo2.aeaGuide.length){
-        // 2º motivo em modo "continuação": o motor já abre com "Adicionalmente/Asimismo,
-        // refere quadro de..." sem repetir os dados do paciente.
-        var narrativa2 = gerarNarrativaAEA(currentMotivo2, lang, 'aea-g2-', {continuation:true});
-        if(narrativa2) t += (t ? ' ' : '') + narrativa2;
+      // separa a frase de fecho da narrativa do 1º motivo p/ recolocá-la no fim
+      function _splitFecho(n){
+        if(!n) return {body:'',fecho:''};
+        var rx = (lang==='es') ? /\s*([^.]*acude a esta unidad de salud para evaluación médica\.)\s*$/i
+                               : /\s*([^.]*procura esta unidade de saúde para avaliação médica\.)\s*$/i;
+        var m = n.match(rx);
+        return m ? {body:n.slice(0,m.index).trim(), fecho:m[1].trim()} : {body:n, fecho:''};
       }
-      return t;
+      var m3 = (typeof currentMotivo3 !== 'undefined') ? currentMotivo3 : null;
+      var sp = _splitFecho(_g(currentMotivo,'aea-g-',false));
+      var parts = [];
+      if(sp.body) parts.push(sp.body);
+      var n2 = _g(currentMotivo2,'aea-g2-',true); if(n2) parts.push(n2);
+      var n3 = _g(m3,'aea-g3-',true);             if(n3) parts.push(n3);
+      // relato livre do médico, enquadrado como continuação cronológica da história
+      if(mAEA && mAEA !== '—'){
+        var rl = mAEA.trim().replace(/\s*\.\s*$/,'');
+        if(rl){ rl = rl.charAt(0).toLowerCase()+rl.slice(1);
+          parts.push((lang==='es'?'Relata además que ':'Relata ainda que ')+rl+'.'); }
+      }
+      if(sp.fecho) parts.push(sp.fecho);   // fecho por último
+      return parts.join(' ') || '—';
     }},
     {n:'4', tPt:'AREA — Antecedentes Remotos', tEs:'AREA — Antecedentes Remotos',
      txt: function(){return document.getElementById('area-desc').value||'—';}},
