@@ -463,7 +463,13 @@ function selectEsp(id){
   document.getElementById("panel").scrollTop=0;
 }
 
+// Especialidades cuja "Referência Clínica" é um guia único → abre a página direto
+const REF_PAGE = { respiratorio: "anamnesismed-ref-respiratorio-exfisico.html" };
 function setTab(t){
+  if(t==="material" && currentEsp && REF_PAGE[currentEsp.id]){
+    window.location.href = REF_PAGE[currentEsp.id];
+    return;
+  }
   currentTab=t;
   renderPanel();
 }
