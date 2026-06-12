@@ -128,9 +128,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .panel{padding:16px 14px 90px}
   .topbar{padding:0 14px;gap:8px}
   .hamburger{display:flex}
-  .topbar-title{font-size:15px}
-  .topbar-subtitle{display:none}
-  .search-input{width:130px}
+  /* saudação some no mobile (estourava o topbar e colidia com busca/idioma) */
+  .topbar-left > div{display:none}
+  .search-input{width:150px}
   .search-input:focus{width:150px}
   .btn-new span.pt,.btn-new span.es{display:none}
   .hub-title{font-size:20px}
@@ -159,8 +159,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         </svg>
       </button>
       <div>
-        <div class="topbar-title pt" id="page-title">Ol&#xE1; &#x1F44B;</div>
-        <div class="topbar-title es" id="page-title-es">Hola &#x1F44B;</div>
+        <div class="topbar-title pt" id="page-title">Ol&#xE1;</div>
+        <div class="topbar-title es" id="page-title-es">Hola</div>
         <div class="topbar-subtitle pt" id="page-sub">&#x2014;</div>
         <div class="topbar-subtitle es" id="page-sub-es">&#x2014;</div>
       </div>

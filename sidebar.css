@@ -101,4 +101,7 @@
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(10,26,36,.4)}
   #sidebar-close-btn{display:flex!important}
+  /* com o sidebar aberto, esconder a barra inferior (evita 2 menus competindo/sobrepostos) */
+  body.sb-open .bottom-nav,
+  body.sb-open .mobile-nav{display:none!important}
 }

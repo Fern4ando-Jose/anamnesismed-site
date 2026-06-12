@@ -80,17 +80,24 @@
   root.innerHTML = HTML;
 
   /* ── TOGGLE ── */
+  function _syncBodyState() {
+    var open = document.getElementById('sidebar').classList.contains('open');
+    document.body.classList.toggle('sb-open', open);
+  }
   window.toggleSidebar = function () {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebar-backdrop').classList.toggle('open');
+    _syncBodyState();
   };
   window.openSidebar = function () {
     document.getElementById('sidebar').classList.add('open');
     document.getElementById('sidebar-backdrop').classList.add('open');
+    _syncBodyState();
   };
   window.closeSidebar = function () {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebar-backdrop').classList.remove('open');
+    _syncBodyState();
   };
 
   /* ── NOME INSTANTÂNEO (cache local — elimina o delay até o Supabase resolver) ── */
