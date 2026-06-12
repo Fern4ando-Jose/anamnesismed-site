@@ -47,7 +47,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .hero-title{font-family:var(--serif);font-size:26px;font-weight:700;margin-top:6px}
 .hero-sub{font-size:14px;opacity:.92;margin-top:6px;max-width:760px;line-height:1.5}
 
-/* SECTION NAV — agora com wrap no desktop (sem corte) e scroll suave no mobile */
+/* SECTION NAV — wrap no desktop (sem corte), scroll no mobile */
 .secnav{position:sticky;top:60px;z-index:40;background:var(--bg-card);border-bottom:1px solid var(--line);padding:4px 16px;display:flex;flex-wrap:wrap;gap:2px}
 .secnav::-webkit-scrollbar{height:0}
 .secnav-btn{padding:11px 12px;font-size:13px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:6px;border-radius:6px 6px 0 0}
@@ -89,7 +89,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .ask{background:rgba(6,182,212,.05);border:1px dashed rgba(6,182,212,.4);border-radius:10px;padding:10px 14px;margin:10px 0}
 .ask-lbl{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--primary-dark);margin-bottom:4px}
 
-/* MINI COMPARES (restritivo/obstrutivo, etc) */
+/* MINI COMPARES */
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
 .duo-card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--bg-card)}
 .duo-card h4{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
@@ -116,13 +116,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .hl b{color:var(--ink)}
 
 /* FIGURAS SVG (topografia) */
-.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:6px 0 18px}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:6px 0 16px}
 .fig{border:1px solid var(--line);border-radius:12px;padding:14px 10px;background:#fbfdfe;text-align:center}
-.fig svg{width:100%;height:auto;max-width:230px}
+.fig svg{width:100%;height:auto;max-width:210px}
 .fig-cap{font-size:12.5px;font-weight:700;color:var(--primary-dark);margin-top:6px}
-.fig-legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:-6px 0 14px;font-size:12px;color:var(--muted)}
+.fig-legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:-4px 0 14px;font-size:12px;color:var(--muted)}
 .fig-legend span{display:flex;align-items:center;gap:6px}
-.fig-legend i{width:18px;height:0;border-top:2px solid var(--resp);display:inline-block}
+.fig-legend i{width:18px;height:0;border-top:2px dashed var(--resp);display:inline-block}
 .fig-legend i.solid{border-top:2px solid var(--ink)}
 
 /* MNEMOTECNIA */
@@ -131,7 +131,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .mnemo .def{font-size:13px;color:#33475a;line-height:1.5}
 .mnemo .def b{color:var(--ink)}
 
-/* TABELA SÍNDROMES */
+/* TABELAS */
 .tbl-scroll{overflow-x:auto;margin:8px 0 4px;border:1px solid var(--line);border-radius:12px}
 table.sx{border-collapse:collapse;width:100%;min-width:680px;font-size:12.5px}
 table.sx.mini{min-width:460px}
@@ -195,54 +195,52 @@ table.sx tbody tr:hover td:first-child{background:#eef6f8}
     <div class="hero-eyebrow">🫁 <span class="pt">Referência Clínica · Respiratório</span><span class="es">Referencia Clínica · Respiratorio</span></div>
     <div class="hero-title pt">Aparelho Respiratório — Sintomas e Exame Físico</div>
     <div class="hero-title es">Aparato Respiratorio — Síntomas y Examen Físico</div>
-    <div class="hero-sub pt">Guia completo: semiologia dos sintomas cardinais, mnemônicas de anamnese, topografia com figuras, inspeção, palpação, percussão, ausculta, manobras especiais — e como os achados se combinam nos principais síndromes respiratórios.</div>
-    <div class="hero-sub es">Guía completa: semiología de los síntomas cardinales, mnemotécnicas de anamnesis, topografía con figuras, inspección, palpación, percusión, auscultación, maniobras especiales — y cómo los hallazgos se combinan en los principales síndromes respiratorios.</div>
+    <div class="hero-sub pt">Guia completo: semiologia dos sintomas cardinais, mnemônicas de anamnese, topografia com silhuetas, e o exame físico passo a passo (inspeção, palpação, percussão, ausculta, manobras) — com técnica, achados normais/anormais e síndromes.</div>
+    <div class="hero-sub es">Guía completa: semiología de los síntomas cardinales, mnemotécnicas de anamnesis, topografía con siluetas, y el examen físico paso a paso (inspección, palpación, percusión, auscultación, maniobras) — con técnica, hallazgos normales/anormales y síndromes.</div>
   </div>
 
-  <nav class="secnav" id="secnav"><!-- preenchido por JS --></nav>
-
-  <div class="wrap" id="wrap"><!-- preenchido por JS --></div>
+  <nav class="secnav" id="secnav"></nav>
+  <div class="wrap" id="wrap"></div>
 </div>
 
 <script>
 var L = "es";
 
-/* ─────────── FIGURAS SVG (topografia) — rótulos neutros ES/PT ─────────── */
-var FIG_ANTERIOR = `<svg viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topografia anterior">
-  <path d="M42 46 Q130 14 218 46 L208 276 Q130 300 52 276 Z" fill="#eef9fb" stroke="#0d2d3d" stroke-width="2"/>
-  <path d="M58 58 Q92 50 126 64" fill="none" stroke="#0d2d3d" stroke-width="2"/>
-  <path d="M202 58 Q168 50 134 64" fill="none" stroke="#0d2d3d" stroke-width="2"/>
-  <line x1="130" y1="64" x2="130" y2="276" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>
-  <line x1="86" y1="66" x2="82" y2="270" stroke="#06b6d4" stroke-width="1.2" stroke-dasharray="4 4" opacity=".65"/>
-  <line x1="174" y1="66" x2="178" y2="270" stroke="#06b6d4" stroke-width="1.2" stroke-dasharray="4 4" opacity=".65"/>
-  <line x1="50" y1="158" x2="210" y2="158" stroke="#0d2d3d" stroke-width="1" stroke-dasharray="3 4" opacity=".4"/>
-  <text x="130" y="44" text-anchor="middle" font-size="9.5" fill="#4b6070">Supraclavicular</text>
-  <text x="130" y="108" text-anchor="middle" font-size="9.5" fill="#0d2d3d">Infraclavicular</text>
-  <text x="130" y="138" text-anchor="middle" font-size="9.5" fill="#0d2d3d">Mamaria</text>
-  <text x="130" y="225" text-anchor="middle" font-size="9.5" fill="#0d2d3d">Inframamaria</text>
-  <text x="130" y="292" text-anchor="middle" font-size="8.5" fill="#0e7490">línea medioesternal</text>
-</svg>`;
-var FIG_POSTERIOR = `<svg viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topografia posterior">
-  <path d="M42 46 Q130 16 218 46 L208 276 Q130 300 52 276 Z" fill="#eef9fb" stroke="#0d2d3d" stroke-width="2"/>
-  <line x1="130" y1="46" x2="130" y2="278" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>
-  <path d="M74 74 L116 84 L106 146 Z" fill="#d7eef3" stroke="#0d2d3d" stroke-width="1.5"/>
-  <path d="M186 74 L144 84 L154 146 Z" fill="#d7eef3" stroke="#0d2d3d" stroke-width="1.5"/>
-  <text x="130" y="68" text-anchor="middle" font-size="9.5" fill="#4b6070">Supraescapular</text>
-  <text x="92" y="120" text-anchor="middle" font-size="9" fill="#0d2d3d">Escapular</text>
-  <text x="130" y="120" text-anchor="middle" font-size="9" fill="#0d2d3d">Inter-</text>
-  <text x="130" y="132" text-anchor="middle" font-size="9" fill="#0d2d3d">escapular</text>
-  <text x="130" y="228" text-anchor="middle" font-size="9.5" fill="#0d2d3d">Infraescapular</text>
-  <text x="130" y="292" text-anchor="middle" font-size="8.5" fill="#0e7490">línea vertebral (espinosas)</text>
-</svg>`;
-var FIG_LATERAL = `<svg viewBox="0 0 230 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topografia lateral">
-  <path d="M78 34 Q150 22 172 64 L166 274 Q112 294 80 272 Q60 154 78 34 Z" fill="#eef9fb" stroke="#0d2d3d" stroke-width="2"/>
-  <line x1="100" y1="60" x2="98" y2="268" stroke="#06b6d4" stroke-width="1.2" stroke-dasharray="4 4" opacity=".7"/>
-  <line x1="124" y1="52" x2="122" y2="272" stroke="#06b6d4" stroke-width="1.4" stroke-dasharray="5 4"/>
-  <line x1="148" y1="60" x2="146" y2="268" stroke="#06b6d4" stroke-width="1.2" stroke-dasharray="4 4" opacity=".7"/>
-  <text x="124" y="120" text-anchor="middle" font-size="9.5" fill="#0d2d3d">Axilar</text>
-  <text x="124" y="210" text-anchor="middle" font-size="9.5" fill="#0d2d3d">Infraaxilar</text>
-  <text x="124" y="290" text-anchor="middle" font-size="8.5" fill="#0e7490">líneas axilares ant · media · post</text>
-</svg>`;
+/* ─────────── SILHUETAS SVG (topografia) ─────────── */
+var SIL_BODY = '<circle cx="120" cy="42" r="24" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>'
+  +'<path d="M99 62 C97 72 88 77 78 81 C57 88 48 103 47 122 L60 128 C64 113 75 104 89 101 L85 314 C108 324 132 324 155 314 L151 101 C165 104 176 113 180 128 L193 122 C192 103 183 88 162 81 C152 77 143 72 141 62 C128 67 112 67 99 62 Z" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>';
+var FIG_ANTERIOR = '<svg viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silueta anterior">'
+  + SIL_BODY
+  +'<line x1="120" y1="74" x2="120" y2="300" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>'
+  +'<line x1="99" y1="92" x2="96" y2="296" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".6"/>'
+  +'<line x1="141" y1="92" x2="144" y2="296" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".6"/>'
+  +'<line x1="74" y1="150" x2="166" y2="150" stroke="#0d2d3d" stroke-width="1" stroke-dasharray="3 4" opacity=".35"/>'
+  +'<text x="120" y="86" text-anchor="middle" font-size="9" fill="#4b6070">Supraclavicular</text>'
+  +'<text x="120" y="118" text-anchor="middle" font-size="9" fill="#0d2d3d">Infraclavicular</text>'
+  +'<text x="120" y="142" text-anchor="middle" font-size="9" fill="#0d2d3d">Mamaria</text>'
+  +'<text x="120" y="230" text-anchor="middle" font-size="9" fill="#0d2d3d">Inframamaria</text>'
+  +'<text x="120" y="332" text-anchor="middle" font-size="8" fill="#0e7490">medioesternal · medioclavicular</text>'
+  +'</svg>';
+var FIG_POSTERIOR = '<svg viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silueta posterior">'
+  + SIL_BODY
+  +'<line x1="120" y1="74" x2="120" y2="300" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>'
+  +'<path d="M92 104 L116 110 L108 162 Z" fill="#c2dde6" stroke="#0d2d3d" stroke-width="1.4"/>'
+  +'<path d="M148 104 L124 110 L132 162 Z" fill="#c2dde6" stroke="#0d2d3d" stroke-width="1.4"/>'
+  +'<text x="120" y="96" text-anchor="middle" font-size="9" fill="#4b6070">Supraescapular</text>'
+  +'<text x="120" y="138" text-anchor="middle" font-size="8.5" fill="#0d2d3d">Interescapular</text>'
+  +'<text x="120" y="235" text-anchor="middle" font-size="9" fill="#0d2d3d">Infraescapular</text>'
+  +'<text x="120" y="332" text-anchor="middle" font-size="8" fill="#0e7490">línea vertebral (espinosas)</text>'
+  +'</svg>';
+var FIG_LATERAL = '<svg viewBox="0 0 220 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silueta lateral">'
+  +'<circle cx="104" cy="44" r="23" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>'
+  +'<path d="M92 64 C90 74 84 80 78 84 C62 94 60 120 66 152 L74 314 C100 324 130 320 150 308 C156 220 156 150 152 120 C149 96 140 84 128 80 C120 76 116 72 114 64 C108 68 98 68 92 64 Z" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>'
+  +'<line x1="92" y1="92" x2="90" y2="300" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
+  +'<line x1="112" y1="86" x2="110" y2="306" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 4"/>'
+  +'<line x1="132" y1="92" x2="130" y2="300" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
+  +'<text x="112" y="150" text-anchor="middle" font-size="9" fill="#0d2d3d">Axilar</text>'
+  +'<text x="112" y="240" text-anchor="middle" font-size="9" fill="#0d2d3d">Infraaxilar</text>'
+  +'<text x="110" y="332" text-anchor="middle" font-size="8" fill="#0e7490">axilares ant · media · post</text>'
+  +'</svg>';
 
 /* ─────────── DADOS (bilíngue) ─────────── */
 var SECTIONS = [
@@ -287,8 +285,8 @@ var SECTIONS = [
     id:"topografia", emoji:"📐", icon:"3",
     t:{es:"Topografía torácica", pt:"Topografia torácica"},
     intro:{
-      es:"Reparos anatómicos para localizar los hallazgos. Siempre se comparan áreas simétricas, de arriba hacia abajo. Las líneas en azul son las referencias verticales.",
-      pt:"Reparos anatômicos para localizar os achados. Sempre comparar áreas simétricas, de cima para baixo. As linhas em azul são as referências verticais."},
+      es:"Reparos anatómicos para localizar los hallazgos sobre la silueta del paciente. Siempre se comparan áreas simétricas, de arriba hacia abajo. Las líneas punteadas azules son las referencias verticales.",
+      pt:"Reparos anatômicos para localizar os achados sobre a silhueta do paciente. Sempre comparar áreas simétricas, de cima para baixo. As linhas tracejadas azuis são as referências verticais."},
     extra:"figuras",
     accs:[
       {t:{es:"Cara anterior",pt:"Face anterior"},body:{
@@ -305,24 +303,21 @@ var SECTIONS = [
   {
     id:"inspeccion", emoji:"👁️", icon:"4",
     t:{es:"Inspección", pt:"Inspeção"},
-    intro:{es:"Observación general y especial; tórax estático (forma) y dinámico (movimientos respiratorios).",
-           pt:"Observação geral e especial; tórax estático (forma) e dinâmico (movimentos respiratórios)."},
+    intro:{es:"Observación sistemática del tórax sin tocar al paciente — estática (forma) y dinámica (movimientos).",
+           pt:"Observação sistemática do tórax sem tocar no paciente — estática (forma) e dinâmica (movimentos)."},
     accs:[
-      {t:{es:"a) General",pt:"a) Geral"},body:{
-        es:"<ul><li>Estado de nutrición · cianosis · aleteo nasal</li><li><b>Tiraje</b> alto y/o bajo · uso de músculos accesorios (ECM, escalenos)</li><li>Respiración en balancín · tórax inestable · signo de Hoover</li><li>Facies (p. ej. neumónica) · decúbito que adopta el paciente</li></ul>",
-        pt:"<ul><li>Estado nutricional · cianose · batimento de asa nasal</li><li><b>Tiragem</b> alta e/ou baixa · uso de músculos acessórios (ECM, escalenos)</li><li>Respiração em balancim · tórax instável · sinal de Hoover</li><li>Fácies (ex. pneumônica) · decúbito que o paciente adota</li></ul>"}},
-      {t:{es:"b) Especial (piel y TCS)",pt:"b) Especial (pele e TCS)"},body:{
-        es:"<ul><li>Arañas vasculares · vesículas/costras · cicatrices · fístulas</li><li>Atrofias musculares · circulación venosa colateral</li><li>Edema · ginecomastia uni o bilateral</li></ul>",
-        pt:"<ul><li>Aranhas vasculares · vesículas/crostas · cicatrizes · fístulas</li><li>Atrofias musculares · circulação venosa colateral</li><li>Edema · ginecomastia uni ou bilateral</li></ul>"}},
-      {t:{es:"c) Tórax estático (deformidades)",pt:"c) Tórax estático (deformidades)"},body:{
-        es:"<p><b>Bilaterales:</b> tórax en tonel (EPOC, relación AP:T ~1:1), paralítico, cifoescoliótico, en quilla (pectus carinatum), en embudo (pectus excavatum).</p><p><b>Unilaterales:</b> abovedamiento (derrame, neumotórax) o retracciones (atelectasia, fibrosis).</p>",
-        pt:"<p><b>Bilaterais:</b> tórax em tonel (DPOC, relação AP:T ~1:1), paralítico, cifoescoliótico, em quilha (pectus carinatum), em funil (pectus excavatum).</p><p><b>Unilaterais:</b> abaulamento (derrame, pneumotórax) ou retrações (atelectasia, fibrose).</p>"}},
-      {t:{es:"d) Tórax dinámico — FRATT",pt:"d) Tórax dinâmico — FRATT"},body:{
+      {t:{es:"Técnica y hallazgos (paso a paso)",pt:"Técnica e achados (passo a passo)"},body:{
+        es:"<div class='hl'>🩺 <b>Posición del paciente:</b> sentado al borde de la camilla, espalda expuesta, brazos cruzados adelante para separar las escápulas. Examiná cara anterior, posterior y lateral, comparando siempre derecha vs izquierda.</div><ol class='steps'><li>Tórax expuesto, buena iluminación.</li><li><b>Estática:</b> observá la forma — ¿simétrico? ¿tórax en tonel (EPOC), en quilla, en embudo, cifoescoliótico?</li><li>Evaluá la relación diámetro AP : transverso (normal 1:2; en EPOC ~1:1).</li><li>Buscá cicatrices, deformidades óseas, columna (cifosis, escoliosis), asimetrías.</li><li><b>Dinámica:</b> ritmo, frecuencia (12–20/min), profundidad y simetría de los movimientos.</li><li>Tipo respiratorio: torácico, abdominal o mixto.</li><li>Uso de músculos accesorios (ECM, escalenos, intercostales) → dificultad respiratoria.</li><li>Tiraje intercostal y signo de Hoover (retracción paradójica del reborde costal).</li><li>¿Ambos hemitórax se expanden por igual? Asimetría → patología unilateral (derrame, neumotórax, consolidación).</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>Tórax simétrico, expansión bilateral igual, FR 12–20/min, sin músculos accesorios.</div><div class='find bad'><div class='fl'>Anormal</div>Asimetría, hemitórax inmóvil, tórax en tonel, tiraje, aleteo nasal, cianosis central.</div></div>",
+        pt:"<div class='hl'>🩺 <b>Posição do paciente:</b> sentado à beira da maca, dorso exposto, braços cruzados à frente para afastar as escápulas. Examine face anterior, posterior e lateral, sempre comparando direita vs esquerda.</div><ol class='steps'><li>Tórax exposto, boa iluminação.</li><li><b>Estática:</b> observe a forma — simétrico? tórax em tonel (DPOC), em quilha, em funil, cifoescoliótico?</li><li>Avalie a relação diâmetro AP : transverso (normal 1:2; na DPOC ~1:1).</li><li>Procure cicatrizes, deformidades ósseas, coluna (cifose, escoliose), assimetrias.</li><li><b>Dinâmica:</b> ritmo, frequência (12–20/min), profundidade e simetria dos movimentos.</li><li>Tipo respiratório: torácico, abdominal ou misto.</li><li>Uso de músculos acessórios (ECM, escalenos, intercostais) → dificuldade respiratória.</li><li>Tiragem intercostal e sinal de Hoover (retração paradoxal do rebordo costal).</li><li>Ambos os hemitórax expandem igualmente? Assimetria → patologia unilateral (derrame, pneumotórax, consolidação).</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>Tórax simétrico, expansão bilateral igual, FR 12–20/min, sem músculos acessórios.</div><div class='find bad'><div class='fl'>Anormal</div>Assimetria, hemitórax imóvel, tórax em tonel, tiragem, batimento de asa nasal, cianose central.</div></div>"}},
+      {t:{es:"Formas del tórax (estática)",pt:"Formas do tórax (estática)"},body:{
+        es:"<p><b>Bilaterales:</b> tórax en tonel (EPOC, AP:T ~1:1), paralítico, cifoescoliótico, en quilla (pectus carinatum), en embudo (pectus excavatum).</p><p><b>Unilaterales:</b> abovedamiento (derrame, neumotórax) o retracciones (atelectasia, fibrosis).</p>",
+        pt:"<p><b>Bilaterais:</b> tórax em tonel (DPOC, AP:T ~1:1), paralítico, cifoescoliótico, em quilha (pectus carinatum), em funil (pectus excavatum).</p><p><b>Unilaterais:</b> abaulamento (derrame, pneumotórax) ou retrações (atelectasia, fibrose).</p>"}},
+      {t:{es:"Tórax dinámico — FRATT",pt:"Tórax dinâmico — FRATT"},body:{
         es:"<span class='tag'>F · Frecuencia</span><span class='tag'>R · Ritmo</span><span class='tag'>A · Amplitud</span><span class='tag'>T · Tipo</span><span class='tag'>T · Tiempo</span><ul><li><b>Frecuencia:</b> eupnea 12–20/min · taquipnea · bradipnea · apnea</li><li><b>Ritmo:</b> Cheyne-Stokes (IC, neurológico), Kussmaul (acidosis), Biot (lesión bulbar), suspiroso (ansiedad)</li><li><b>Amplitud:</b> normal, hipopnea, hiperpnea</li><li><b>Tipo:</b> costal/torácico (mujer), abdominal/diafragmático (hombre), mixto</li><li><b>Tiempo:</b> relación inspiración/espiración; espiración prolongada en obstrucción</li></ul>",
         pt:"<span class='tag'>F · Frequência</span><span class='tag'>R · Ritmo</span><span class='tag'>A · Amplitude</span><span class='tag'>T · Tipo</span><span class='tag'>T · Tempo</span><ul><li><b>Frequência:</b> eupneia 12–20/min · taquipneia · bradipneia · apneia</li><li><b>Ritmo:</b> Cheyne-Stokes (IC, neurológico), Kussmaul (acidose), Biot (lesão bulbar), suspiroso (ansiedade)</li><li><b>Amplitude:</b> normal, hipopneia, hiperpneia</li><li><b>Tipo:</b> costal/torácico (mulher), abdominal/diafragmático (homem), misto</li><li><b>Tempo:</b> relação inspiração/expiração; expiração prolongada na obstrução</li></ul>"}},
-      {t:{es:"Técnica y hallazgos (paso a paso)",pt:"Técnica e achados (passo a passo)"},body:{
-        es:"<div class='hl'>🩺 <b>Posición del paciente:</b> sentado al borde de la camilla, espalda expuesta, brazos cruzados adelante para separar las escápulas. Examiná cara anterior, posterior y lateral, comparando siempre derecha vs izquierda.</div><ol class='steps'><li>Tórax expuesto, buena iluminación.</li><li><b>Estática:</b> observá la forma — ¿simétrico? ¿tórax en tonel, en quilla, en embudo, cifoescoliótico?</li><li>Evaluá la relación diámetro AP : transverso (normal 1:2; en EPOC ~1:1).</li><li>Buscá cicatrices, deformidades óseas, asimetrías.</li><li><b>Dinámica:</b> ritmo, frecuencia (12–20/min), profundidad y simetría.</li><li>Tipo respiratorio: torácico, abdominal o mixto.</li><li>Uso de músculos accesorios (ECM, escalenos), tiraje, signo de Hoover.</li><li>¿Ambos hemitórax se expanden por igual? Asimetría → patología unilateral.</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>Tórax simétrico, expansión bilateral igual, FR 12–20/min, sin músculos accesorios.</div><div class='find bad'><div class='fl'>Anormal</div>Asimetría, hemitórax inmóvil, tórax en tonel, tiraje, aleteo nasal, cianosis central.</div></div>",
-        pt:"<div class='hl'>🩺 <b>Posição do paciente:</b> sentado à beira da maca, dorso exposto, braços cruzados à frente para afastar as escápulas. Examine face anterior, posterior e lateral, sempre comparando direita vs esquerda.</div><ol class='steps'><li>Tórax exposto, boa iluminação.</li><li><b>Estática:</b> observe a forma — simétrico? tórax em tonel, em quilha, em funil, cifoescoliótico?</li><li>Avalie a relação diâmetro AP : transverso (normal 1:2; na DPOC ~1:1).</li><li>Procure cicatrizes, deformidades ósseas, assimetrias.</li><li><b>Dinâmica:</b> ritmo, frequência (12–20/min), profundidade e simetria.</li><li>Tipo respiratório: torácico, abdominal ou misto.</li><li>Uso de músculos acessórios (ECM, escalenos), tiragem, sinal de Hoover.</li><li>Ambos os hemitórax expandem igualmente? Assimetria → patologia unilateral.</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>Tórax simétrico, expansão bilateral igual, FR 12–20/min, sem músculos acessórios.</div><div class='find bad'><div class='fl'>Anormal</div>Assimetria, hemitórax imóvel, tórax em tonel, tiragem, batimento de asa nasal, cianose central.</div></div>"}}
+      {t:{es:"General y especial (piel/TCS)",pt:"Geral e especial (pele/TCS)"},body:{
+        es:"<ul><li>Estado de nutrición · cianosis · aleteo nasal · facies · decúbito</li><li>Piel y TCS: arañas vasculares, cicatrices, fístulas, circulación venosa colateral, edema, ginecomastia</li></ul>",
+        pt:"<ul><li>Estado nutricional · cianose · batimento de asa nasal · fácies · decúbito</li><li>Pele e TCS: aranhas vasculares, cicatrizes, fístulas, circulação venosa colateral, edema, ginecomastia</li></ul>"}}
     ],
     extra2:"patrones"
   },
@@ -332,18 +327,15 @@ var SECTIONS = [
     intro:{es:"Sensibilidad, elasticidad, expansión y vibraciones vocales — siempre comparando ambos lados.",
            pt:"Sensibilidade, elasticidade, expansão e vibrações vocais — sempre comparando ambos os lados."},
     accs:[
-      {t:{es:"a) General",pt:"a) Geral"},body:{
-        es:"<ul><li>Alteraciones de la sensibilidad cutánea</li><li><b>Enfisema subcutáneo</b> (crepitación) · frémito pleural · frémito brónquico</li><li>Adenopatías supraclaviculares y axilares · edema · examen de mamas</li></ul>",
-        pt:"<ul><li>Alterações da sensibilidade cutânea</li><li><b>Enfisema subcutâneo</b> (crepitação) · frêmito pleural · frêmito brônquico</li><li>Adenopatias supraclaviculares e axilares · edema · exame das mamas</li></ul>"}},
-      {t:{es:"b) Expansión torácica (técnica)",pt:"b) Expansão torácica (técnica)"},body:{
-        es:"<ul><li><b>Posterior (más informativa):</b> manos planas en la base de la espalda, pulgares juntos en la línea media formando un pliegue; pedir inspiración profunda y observar la separación simétrica (<b>3–5 cm</b>).</li><li><b>Anterior:</b> manos en el 4.º EIC, pulgares al nivel del xifoides.</li><li>Palpar los ápices (fosas supraclaviculares) para asimetría apical (TBC, Pancoast).</li></ul><p>Expansión reducida unilateral → patología del lado que se mueve menos (derrame, neumotórax, condensación, atelectasia).</p>",
-        pt:"<ul><li><b>Posterior (mais informativa):</b> mãos espalmadas na base do dorso, polegares juntos na linha média formando uma prega; pedir inspiração profunda e observar a separação simétrica (<b>3–5 cm</b>).</li><li><b>Anterior:</b> mãos no 4.º EIC, polegares ao nível do xifoide.</li><li>Palpar os ápices (fossas supraclaviculares) para assimetria apical (TB, Pancoast).</li></ul><p>Expansão reduzida unilateral → patologia do lado que se move menos (derrame, pneumotórax, condensação, atelectasia).</p>"}},
-      {t:{es:"c) Vibraciones vocales (VV / frémito)",pt:"c) Vibrações vocais (VV / frêmito)"},body:{
-        es:"<p>Con el borde cubital o la palma, pedir <b>«treinta y tres»</b> y recorrer el tórax comparando lados, de arriba a abajo.</p><ul><li><b>Aumentadas:</b> condensación con bronquio permeable en contacto con la pared (neumonía, cavidades voluminosas)</li><li><b>Disminuidas:</b> atelectasia, enfisema, paquipleuritis, derrame, neumotórax, obesidad marcada</li><li><b>Abolidas:</b> igual a lo anterior, con patología más acentuada</li></ul>",
-        pt:"<p>Com a borda cubital ou a palma, pedir <b>«trinta e três»</b> e percorrer o tórax comparando os lados, de cima para baixo.</p><ul><li><b>Aumentadas:</b> condensação com brônquio pérvio em contato com a parede (pneumonia, cavidades volumosas)</li><li><b>Diminuídas:</b> atelectasia, enfisema, paquipleurite, derrame, pneumotórax, obesidade acentuada</li><li><b>Abolidas:</b> igual ao anterior, com patologia mais acentuada</li></ul>"}},
-      {t:{es:"Técnica y hallazgos (paso a paso)",pt:"Técnica e achados (passo a passo)"},body:{
-        es:"<p><b>Expansión torácica:</b></p><ol class='steps'><li>Manos planas en la base de la espalda, pulgares juntos en la línea media formando un pliegue.</li><li>Pedí inspiración profunda; observá la separación simétrica de los pulgares (3–5 cm).</li><li>Repetí en cara anterior (4.º EIC, pulgares al xifoides) y palpá los ápices.</li></ol><p><b>Frémito vocal táctil (FVT):</b></p><ol class='steps'><li>Borde cubital o palma; pedí «treinta y tres» en voz grave.</li><li>Recorré de arriba a abajo, comparando lados de forma simultánea.</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>FVT simétrico, algo mayor a derecha y en campos superiores.</div><div class='find bad'><div class='fl'>Aumentado</div>Condensación (neumonía): el parénquima sólido transmite mejor.</div><div class='find bad'><div class='fl'>Disminuido / abolido</div>Derrame, neumotórax, enfisema, obesidad, obstrucción bronquial.</div><div class='find info'><div class='fl'>Truco</div>Si dudás, usá palabras bisílabas graves («uno-uno»). No grites al paciente.</div></div>",
-        pt:"<p><b>Expansão torácica:</b></p><ol class='steps'><li>Mãos espalmadas na base do dorso, polegares juntos na linha média formando uma prega.</li><li>Peça inspiração profunda; observe a separação simétrica dos polegares (3–5 cm).</li><li>Repita na face anterior (4.º EIC, polegares no xifoide) e palpe os ápices.</li></ol><p><b>Frêmito tóraco-vocal (FTV):</b></p><ol class='steps'><li>Borda cubital ou palma; peça «trinta e três» em voz grave.</li><li>Percorra de cima para baixo, comparando os lados simultaneamente.</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>FTV simétrico, um pouco maior à direita e nos campos superiores.</div><div class='find bad'><div class='fl'>Aumentado</div>Condensação (pneumonia): o parênquima sólido transmite melhor.</div><div class='find bad'><div class='fl'>Diminuído / abolido</div>Derrame, pneumotórax, enfisema, obesidade, obstrução brônquica.</div><div class='find info'><div class='fl'>Dica</div>Na dúvida, use palavras bissílabas graves («um-um»). Não grite com o paciente.</div></div>"}}
+      {t:{es:"Expansión torácica — técnica",pt:"Expansão torácica — técnica"},body:{
+        es:"<ol class='steps'><li><b>Posterior (más informativa):</b> manos planas en la base de la espalda, pulgares juntos en la línea media formando un pliegue cutáneo.</li><li>Pedí una inspiración profunda y observá el desplazamiento simétrico de los pulgares (separación normal <b>3–5 cm</b>).</li><li><b>Anterior:</b> manos en el 4.º EIC, pulgares al nivel del xifoides; repetí la maniobra.</li><li>Palpá los ápices (fosas supraclaviculares) para asimetría apical (TBC, Pancoast).</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>Expansión simétrica, ≥3 cm bilateralmente.</div><div class='find bad'><div class='fl'>Reducida unilateral</div>Derrame, neumotórax, fibrosis o consolidación del lado que se mueve menos.</div></div>",
+        pt:"<ol class='steps'><li><b>Posterior (mais informativa):</b> mãos espalmadas na base do dorso, polegares juntos na linha média formando uma prega cutânea.</li><li>Peça uma inspiração profunda e observe o deslocamento simétrico dos polegares (separação normal <b>3–5 cm</b>).</li><li><b>Anterior:</b> mãos no 4.º EIC, polegares ao nível do xifoide; repita a manobra.</li><li>Palpe os ápices (fossas supraclaviculares) para assimetria apical (TB, Pancoast).</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>Expansão simétrica, ≥3 cm bilateralmente.</div><div class='find bad'><div class='fl'>Reduzida unilateral</div>Derrame, pneumotórax, fibrose ou consolidação do lado que se move menos.</div></div>"}},
+      {t:{es:"Frémito vocal táctil (FVT) — técnica",pt:"Frêmito tóraco-vocal (FTV) — técnica"},body:{
+        es:"<ol class='steps'><li>Usá el borde cubital de ambas manos o las últimas falanges — son más sensibles a las vibraciones.</li><li>Colocá las manos simétricas en los campos superiores posteriores.</li><li>Pedí al paciente que diga en voz grave <b>«treinta y tres»</b> repetidamente.</li><li>Descendé comparando campo superior → medio → inferior, de forma bilateral y simultánea.</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>FVT simétrico, algo mayor a derecha y en campos superiores.</div><div class='find bad'><div class='fl'>Aumentado</div>Condensación (neumonía): el parénquima sólido transmite mejor.</div><div class='find bad'><div class='fl'>Disminuido / abolido</div>Derrame, neumotórax, enfisema, obesidad, obstrucción bronquial.</div><div class='find info'><div class='fl'>Truco</div>Si dudás, usá palabras bisílabas graves («uno-uno»). No grites al paciente.</div></div>",
+        pt:"<ol class='steps'><li>Use a borda cubital de ambas as mãos ou as últimas falanges — são mais sensíveis às vibrações.</li><li>Coloque as mãos simétricas nos campos superiores posteriores.</li><li>Peça ao paciente que diga em voz grave <b>«trinta e três»</b> repetidamente.</li><li>Desça comparando campo superior → médio → inferior, de forma bilateral e simultânea.</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>FTV simétrico, um pouco maior à direita e nos campos superiores.</div><div class='find bad'><div class='fl'>Aumentado</div>Condensação (pneumonia): o parênquima sólido transmite melhor.</div><div class='find bad'><div class='fl'>Diminuído / abolido</div>Derrame, pneumotórax, enfisema, obesidade, obstrução brônquica.</div><div class='find info'><div class='fl'>Dica</div>Na dúvida, use palavras bissílabas graves («um-um»). Não grite com o paciente.</div></div>"}},
+      {t:{es:"Palpación general",pt:"Palpação geral"},body:{
+        es:"<ul><li>Alteraciones de la sensibilidad cutánea</li><li><b>Enfisema subcutáneo</b> (crepitación) · frémito pleural · frémito brónquico</li><li>Adenopatías supraclaviculares y axilares · edema · examen de mamas</li><li><b>Elasticidad torácica:</b> comprobar su disminución</li></ul>",
+        pt:"<ul><li>Alterações da sensibilidade cutânea</li><li><b>Enfisema subcutâneo</b> (crepitação) · frêmito pleural · frêmito brônquico</li><li>Adenopatias supraclaviculares e axilares · edema · exame das mamas</li><li><b>Elasticidade torácica:</b> verificar a sua diminuição</li></ul>"}}
     ]
   },
   {
@@ -352,41 +344,35 @@ var SECTIONS = [
     intro:{es:"Técnica dígito-digital (dedo plesímetro sobre el espacio intercostal; golpe suave y breve por detrás de la uña). Se percute de arriba a abajo comparando lados.",
            pt:"Técnica dígito-digital (dedo plexímetro sobre o espaço intercostal; golpe suave e breve atrás da unha). Percute-se de cima para baixo comparando os lados."},
     accs:[
-      {t:{es:"3 sonidos fundamentales",pt:"3 sons fundamentais"},body:{
-        es:"<ul><li><b>Sonoridad:</b> pulmón aireado (más pura en infraclavicular). Intensidad fuerte, tono bajo, duración prolongada.</li><li><b>Matidez:</b> pulmón no aireado (neumonía, atelectasia) o líquido interpuesto (derrame). Intensidad escasa, tono alto, duración breve.</li><li><b>Timpanismo:</b> espacio de Traube. Sonido musical, muy intenso, tono intermedio, muy prolongado.</li></ul>",
-        pt:"<ul><li><b>Sonoridade:</b> pulmão aerado (mais pura na infraclavicular). Intensidade forte, tom baixo, duração prolongada.</li><li><b>Macicez:</b> pulmão não aerado (pneumonia, atelectasia) ou líquido interposto (derrame). Intensidade fraca, tom alto, duração breve.</li><li><b>Timpanismo:</b> espaço de Traube. Som musical, muito intenso, tom intermediário, muito prolongado.</li></ul>"}},
-      {t:{es:"2 sonidos importantes",pt:"2 sons importantes"},body:{
-        es:"<ul><li><b>Submatidez:</b> variación de la matidez con mayor sonoridad y tono grave (zonas con menor aireación).</li><li><b>Hipersonoridad:</b> variedad de la sonoridad, más intensa, grave y prolongada (pulmones hiperaireados: enfisema, asma, neumotórax).</li></ul>",
-        pt:"<ul><li><b>Submacicez:</b> variação da macicez com maior sonoridade e tom grave (zonas com menor aeração).</li><li><b>Hipersonoridade:</b> variedade da sonoridade, mais intensa, grave e prolongada (pulmões hiperaerados: enfisema, asma, pneumotórax).</li></ul>"}},
-      {t:{es:"Hallazgos anormales",pt:"Achados anormais"},body:{
-        es:"<ul><li><b>Matidez / submatidez:</b> condensaciones (neumonía, atelectasia, grandes tumores) y derrame pleural.</li><li><b>Hipersonoridad / timpanismo:</b> localizadas (bullas, cavernas superficiales) o neumotórax; generalizadas en enfisema y asma.</li></ul>",
-        pt:"<ul><li><b>Macicez / submacicez:</b> condensações (pneumonia, atelectasia, grandes tumores) e derrame pleural.</li><li><b>Hipersonoridade / timpanismo:</b> localizadas (bolhas, cavernas superficiais) ou pneumotórax; generalizadas no enfisema e na asma.</li></ul>"}},
       {t:{es:"Técnica y tabla de sonidos",pt:"Técnica e tabela de sons"},body:{
-        es:"<ol class='steps'><li>Dedo plesímetro firme sobre el EIC, paralelo a las costillas; levantá los otros dedos.</li><li>Percutí con el dedo percutor sobre la falange media — 2 golpes cortos de muñeca.</li><li>Empezá en los ápices y descendé comparando 2.º, 4.º, 6.º EIC, bilateral.</li><li>Percutí posterior (brazos cruzados), luego anterior y lateral.</li><li><b>Comparativa:</b> mismo nivel en ambos lados; un sonido distinto = patología.</li><li><b>Límite diafragmático:</b> de cefálico a caudal hasta matidez; marcá en espiración e inspiración máxima (excursión 3–5 cm).</li></ol><div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Sonido</th><th>Descripción</th><th>Hallazgo</th></tr></thead><tbody><tr><td>Sonoro</td><td>Grave, hueco, prolongado</td><td>Parénquima normal</td></tr><tr><td>Matidez</td><td>Sordo, corto, agudo</td><td>Consolidación, derrame, masa</td></tr><tr><td>Hipersonoro</td><td>Más grave y hueco</td><td>Enfisema, neumotórax</td></tr><tr><td>Timpánico</td><td>Muy resonante (tambor)</td><td>Neumotórax, gran caverna</td></tr><tr><td>Submatidez</td><td>Intermedio mate–sonoro</td><td>Consolidación incipiente</td></tr></tbody></table></div>",
-        pt:"<ol class='steps'><li>Dedo plexímetro firme sobre o EIC, paralelo às costelas; levante os outros dedos.</li><li>Percuta com o dedo percutor sobre a falange média — 2 golpes curtos de punho.</li><li>Comece nos ápices e desça comparando 2.º, 4.º, 6.º EIC, bilateral.</li><li>Percuta posterior (braços cruzados), depois anterior e lateral.</li><li><b>Comparativa:</b> mesmo nível nos dois lados; som diferente = patologia.</li><li><b>Limite diafragmático:</b> de cefálico a caudal até macicez; marque em expiração e inspiração máxima (excursão 3–5 cm).</li></ol><div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Som</th><th>Descrição</th><th>Achado</th></tr></thead><tbody><tr><td>Sonoridade</td><td>Grave, oco, prolongado</td><td>Parênquima normal</td></tr><tr><td>Macicez</td><td>Surdo, curto, agudo</td><td>Consolidação, derrame, massa</td></tr><tr><td>Hipersonoro</td><td>Mais grave e oco</td><td>Enfisema, pneumotórax</td></tr><tr><td>Timpânico</td><td>Muito ressonante (tambor)</td><td>Pneumotórax, grande caverna</td></tr><tr><td>Submacicez</td><td>Intermediário macicez–sonoridade</td><td>Consolidação incipiente</td></tr></tbody></table></div>"}}
+        es:"<ol class='steps'><li>Dedo plesímetro firme sobre el EIC, paralelo a las costillas; levantá los otros dedos para que no amortigüen.</li><li>Percutí con el dedo percutor sobre la falange media — 2 golpes cortos de muñeca.</li><li>Empezá en los ápices (fosas supraclaviculares) y descendé comparando 2.º, 4.º, 6.º EIC, bilateral.</li><li>Percutí posterior (brazos cruzados), luego anterior y lateral.</li><li><b>Comparativa:</b> mismo nivel en ambos lados; un sonido distinto = patología.</li><li><b>Límite diafragmático:</b> de cefálico a caudal hasta matidez; marcá en espiración e inspiración máxima (excursión 3–5 cm).</li></ol><div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Sonido</th><th>Descripción</th><th>Hallazgo</th></tr></thead><tbody><tr><td>Sonoro</td><td>Grave, hueco, prolongado</td><td>Parénquima normal</td></tr><tr><td>Matidez</td><td>Sordo, corto, agudo</td><td>Consolidación, derrame, masa</td></tr><tr><td>Hipersonoro</td><td>Más grave y hueco</td><td>Enfisema, neumotórax</td></tr><tr><td>Timpánico</td><td>Muy resonante (tambor)</td><td>Neumotórax, gran caverna</td></tr><tr><td>Submatidez</td><td>Intermedio mate–sonoro</td><td>Consolidación incipiente</td></tr></tbody></table></div>",
+        pt:"<ol class='steps'><li>Dedo plexímetro firme sobre o EIC, paralelo às costelas; levante os outros dedos para não amortecer.</li><li>Percuta com o dedo percutor sobre a falange média — 2 golpes curtos de punho.</li><li>Comece nos ápices (fossas supraclaviculares) e desça comparando 2.º, 4.º, 6.º EIC, bilateral.</li><li>Percuta posterior (braços cruzados), depois anterior e lateral.</li><li><b>Comparativa:</b> mesmo nível nos dois lados; som diferente = patologia.</li><li><b>Limite diafragmático:</b> de cefálico a caudal até macicez; marque em expiração e inspiração máxima (excursão 3–5 cm).</li></ol><div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Som</th><th>Descrição</th><th>Achado</th></tr></thead><tbody><tr><td>Sonoridade</td><td>Grave, oco, prolongado</td><td>Parênquima normal</td></tr><tr><td>Macicez</td><td>Surdo, curto, agudo</td><td>Consolidação, derrame, massa</td></tr><tr><td>Hipersonoro</td><td>Mais grave e oco</td><td>Enfisema, pneumotórax</td></tr><tr><td>Timpânico</td><td>Muito ressonante (tambor)</td><td>Pneumotórax, grande caverna</td></tr><tr><td>Submacicez</td><td>Intermediário macicez–sonoridade</td><td>Consolidação incipiente</td></tr></tbody></table></div>"}},
+      {t:{es:"Sonidos fundamentales",pt:"Sons fundamentais"},body:{
+        es:"<ul><li><b>Sonoridad:</b> pulmón aireado (más pura en infraclavicular).</li><li><b>Matidez:</b> pulmón no aireado (neumonía, atelectasia) o líquido (derrame).</li><li><b>Timpanismo:</b> espacio de Traube; sonido musical.</li><li><b>Submatidez:</b> menor aireación.</li><li><b>Hipersonoridad:</b> pulmones hiperaireados (enfisema, asma, neumotórax).</li></ul>",
+        pt:"<ul><li><b>Sonoridade:</b> pulmão aerado (mais pura na infraclavicular).</li><li><b>Macicez:</b> pulmão não aerado (pneumonia, atelectasia) ou líquido (derrame).</li><li><b>Timpanismo:</b> espaço de Traube; som musical.</li><li><b>Submacicez:</b> menor aeração.</li><li><b>Hipersonoridade:</b> pulmões hiperaerados (enfisema, asma, pneumotórax).</li></ul>"}}
     ]
   },
   {
     id:"auscultacion", emoji:"🩺", icon:"7",
     t:{es:"Auscultación", pt:"Ausculta"},
-    intro:{es:"Con estetoscopio, paciente respirando lento y profundo por la boca. Mismo orden que la percusión, comparando áreas simétricas, al menos un ciclo completo por punto.",
-           pt:"Com estetoscópio, paciente respirando lenta e profundamente pela boca. Mesma ordem da percussão, comparando áreas simétricas, ao menos um ciclo completo por ponto."},
+    intro:{es:"Con estetoscopio, paciente respirando lento y profundo por la boca. Mismo orden que la percusión, comparando áreas simétricas.",
+           pt:"Com estetoscópio, paciente respirando lenta e profundamente pela boca. Mesma ordem da percussão, comparando áreas simétricas."},
     accs:[
-      {t:{es:"Ruidos normales",pt:"Sons normais"},body:{
-        es:"<ul><li><b>Soplo laringotraqueal</b> (respiración brónquica): soplante, tono alto, en inspiración y espiración. Sobre tráquea y columna alta. <b>No se ausculta sobre las playas pulmonares.</b></li><li><b>Murmullo vesicular:</b> suave, tono bajo, predomina en inspiración. Mejor en los 2 primeros EIC, axilar e infraescapular.</li><li><b>Respiración broncovesicular:</b> superposición de ambos (bifurcación traqueal y grandes bronquios).</li></ul>",
-        pt:"<ul><li><b>Sopro laringotraqueal</b> (respiração brônquica): soproso, tom alto, em inspiração e expiração. Sobre traqueia e coluna alta. <b>Não se ausculta sobre os campos pulmonares.</b></li><li><b>Murmúrio vesicular:</b> suave, tom baixo, predomina na inspiração. Melhor nos 2 primeiros EIC, axilar e infraescapular.</li><li><b>Respiração broncovesicular:</b> superposição de ambos (bifurcação traqueal e grandes brônquios).</li></ul>"}},
-      {t:{es:"Hallazgos anormales (3 categorías)",pt:"Achados anormais (3 categorias)"},body:{
-        es:"<ul><li><b>1. Cuantitativas del MV:</b> aumento, disminución o abolición.</li><li><b>2. Reemplazo del MV:</b> soplo tubario (condensación), soplo pleurítico (límite del derrame), soplo cavernoso y anfórico (cavidad/neumotórax).</li><li><b>3. Ruidos agregados:</b> ver el detalle abajo.</li></ul>",
-        pt:"<ul><li><b>1. Quantitativas do MV:</b> aumento, diminuição ou abolição.</li><li><b>2. Substituição do MV:</b> sopro tubário (condensação), sopro pleurítico (limite do derrame), sopro cavernoso e anfórico (cavidade/pneumotórax).</li><li><b>3. Ruídos adventícios:</b> ver o detalhe abaixo.</li></ul>"}},
-      {t:{es:"Ruidos agregados (adventicios)",pt:"Ruídos adventícios"},body:{
-        es:"<ul><li><b>Crepitantes finos:</b> discontinuos, al final de la inspiración («Velcro») → fibrosis, neumonía, IC.</li><li><b>Crepitantes gruesos:</b> graves, inicio inspiración y espiración → secreciones, bronquiectasias.</li><li><b>Sibilancias:</b> continuas, agudas, musicales, esp&gt;insp → asma, EPOC.</li><li><b>Roncus:</b> continuos, graves, como ronquido; cambian con la tos → secreciones en bronquios gruesos.</li><li><b>Estridor:</b> monofónico, inspiratorio, audible sin estetoscopio → obstrucción de vía aérea superior.</li><li><b>Frote pleural:</b> crujiente, en inspiración y espiración, no cambia con la tos → pleuritis.</li></ul>",
-        pt:"<ul><li><b>Estertores finos (crepitantes):</b> descontínuos, no fim da inspiração («Velcro») → fibrose, pneumonia, IC.</li><li><b>Estertores grossos:</b> graves, início inspiração e expiração → secreções, bronquiectasias.</li><li><b>Sibilos:</b> contínuos, agudos, musicais, exp&gt;insp → asma, DPOC.</li><li><b>Roncos:</b> contínuos, graves, como ronco; mudam com a tosse → secreções em brônquios grossos.</li><li><b>Estridor:</b> monofônico, inspiratório, audível sem estetoscópio → obstrução de via aérea superior.</li><li><b>Atrito pleural:</b> rangente, em inspiração e expiração, não muda com a tosse → pleurite.</li></ul>"}},
-      {t:{es:"Auscultación de la voz",pt:"Ausculta da voz"},body:{
-        es:"<p>Normal y cuchicheada. Alteraciones: <b>broncofonía</b>, <b>pectoriloquia</b>, <b>pectoriloquia áfona</b> y <b>egofonía</b> (voz de cabra); o disminución/abolición de la voz. Ver técnica en «Maniobras y signos especiales».</p>",
-        pt:"<p>Normal e cochichada. Alterações: <b>broncofonia</b>, <b>pectorilóquia</b>, <b>pectorilóquia áfona</b> e <b>egofonia</b> (voz de cabra); ou diminuição/abolição da voz. Ver técnica em «Manobras e sinais especiais».</p>"}},
       {t:{es:"Técnica (paso a paso)",pt:"Técnica (passo a passo)"},body:{
         es:"<ol class='steps'><li>Membrana para sonidos agudos (respiratorios, sibilancias); campana para graves (crepitantes finos).</li><li>Paciente respira lento y profundo por la boca (avisá que puede marearse).</li><li>Auscultá los mismos puntos que la percusión, comparando bilateral.</li><li>Al menos un ciclo completo (inspiración + espiración) por punto.</li><li>Identificá el MV normal: suave, predomina en inspiración (3:1).</li><li>¿MV conservado, disminuido o aumentado? Buscá ruidos agregados.</li></ol>",
-        pt:"<ol class='steps'><li>Membrana para sons agudos (respiratórios, sibilos); campânula para graves (estertores finos).</li><li>Paciente respira lenta e profundamente pela boca (avise que pode tonturar).</li><li>Ausculte os mesmos pontos da percussão, comparando bilateral.</li><li>Ao menos um ciclo completo (inspiração + expiração) por ponto.</li><li>Identifique o MV normal: suave, predomina na inspiração (3:1).</li><li>MV conservado, diminuído ou aumentado? Procure ruídos adventícios.</li></ol>"}}
+        pt:"<ol class='steps'><li>Membrana para sons agudos (respiratórios, sibilos); campânula para graves (estertores finos).</li><li>Paciente respira lenta e profundamente pela boca (avise que pode tonturar).</li><li>Ausculte os mesmos pontos da percussão, comparando bilateral.</li><li>Ao menos um ciclo completo (inspiração + expiração) por ponto.</li><li>Identifique o MV normal: suave, predomina na inspiração (3:1).</li><li>MV conservado, diminuído ou aumentado? Procure ruídos adventícios.</li></ol>"}},
+      {t:{es:"Ruidos normales",pt:"Sons normais"},body:{
+        es:"<ul><li><b>Soplo laringotraqueal</b> (respiración brónquica): soplante, tono alto, insp y esp. Sobre tráquea y columna alta. <b>No sobre las playas pulmonares.</b></li><li><b>Murmullo vesicular:</b> suave, tono bajo, predomina en inspiración.</li><li><b>Respiración broncovesicular:</b> superposición (bifurcación traqueal y grandes bronquios).</li></ul>",
+        pt:"<ul><li><b>Sopro laringotraqueal</b> (respiração brônquica): soproso, tom alto, insp e exp. Sobre traqueia e coluna alta. <b>Não sobre os campos pulmonares.</b></li><li><b>Murmúrio vesicular:</b> suave, tom baixo, predomina na inspiração.</li><li><b>Respiração broncovesicular:</b> superposição (bifurcação traqueal e grandes brônquios).</li></ul>"}},
+      {t:{es:"Ruidos agregados (adventicios)",pt:"Ruídos adventícios"},body:{
+        es:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Ruido</th><th>Características</th><th>Significado</th></tr></thead><tbody><tr><td>Crepitantes finos</td><td>Discontinuos, final de inspiración («Velcro»)</td><td>Fibrosis, neumonía, IC</td></tr><tr><td>Crepitantes gruesos</td><td>Graves, inicio insp y esp</td><td>Secreciones, bronquiectasias</td></tr><tr><td>Sibilancias</td><td>Continuas, agudas, musicales, esp&gt;insp</td><td>Asma, EPOC</td></tr><tr><td>Roncus</td><td>Continuos, graves; cambian con la tos</td><td>Secreciones en bronquios gruesos</td></tr><tr><td>Estridor</td><td>Inspiratorio, sin estetoscopio</td><td>Obstrucción vía aérea superior</td></tr><tr><td>Frote pleural</td><td>Crujiente, insp y esp; no cambia con la tos</td><td>Pleuritis</td></tr></tbody></table></div>",
+        pt:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Ruído</th><th>Características</th><th>Significado</th></tr></thead><tbody><tr><td>Estertores finos</td><td>Descontínuos, fim da inspiração («Velcro»)</td><td>Fibrose, pneumonia, IC</td></tr><tr><td>Estertores grossos</td><td>Graves, início insp e exp</td><td>Secreções, bronquiectasias</td></tr><tr><td>Sibilos</td><td>Contínuos, agudos, musicais, exp&gt;insp</td><td>Asma, DPOC</td></tr><tr><td>Roncos</td><td>Contínuos, graves; mudam com a tosse</td><td>Secreções em brônquios grossos</td></tr><tr><td>Estridor</td><td>Inspiratório, sem estetoscópio</td><td>Obstrução de via aérea superior</td></tr><tr><td>Atrito pleural</td><td>Rangente, insp e exp; não muda com a tosse</td><td>Pleurite</td></tr></tbody></table></div>"}},
+      {t:{es:"Hallazgos anormales (3 categorías)",pt:"Achados anormais (3 categorias)"},body:{
+        es:"<ul><li><b>1. Cuantitativas del MV:</b> aumento, disminución o abolición.</li><li><b>2. Reemplazo del MV:</b> soplo tubario (condensación), soplo pleurítico (derrame), soplo cavernoso/anfórico (cavidad/neumotórax).</li><li><b>3. Ruidos agregados:</b> ver la tabla anterior.</li></ul>",
+        pt:"<ul><li><b>1. Quantitativas do MV:</b> aumento, diminuição ou abolição.</li><li><b>2. Substituição do MV:</b> sopro tubário (condensação), sopro pleurítico (derrame), sopro cavernoso/anfórico (cavidade/pneumotórax).</li><li><b>3. Ruídos adventícios:</b> ver a tabela anterior.</li></ul>"}},
+      {t:{es:"Auscultación de la voz",pt:"Ausculta da voz"},body:{
+        es:"<p>Normal y cuchicheada. Alteraciones: <b>broncofonía</b>, <b>pectoriloquia</b>, <b>pectoriloquia áfona</b> y <b>egofonía</b> (voz de cabra). Técnica detallada en «Maniobras y signos especiales».</p>",
+        pt:"<p>Normal e cochichada. Alterações: <b>broncofonia</b>, <b>pectorilóquia</b>, <b>pectorilóquia áfona</b> e <b>egofonia</b> (voz de cabra). Técnica detalhada em «Manobras e sinais especiais».</p>"}}
     ]
   },
   {
@@ -395,18 +381,18 @@ var SECTIONS = [
     intro:{es:"Maniobras complementarias que ayudan a confirmar síndromes específicos.",
            pt:"Manobras complementares que ajudam a confirmar síndromes específicos."},
     accs:[
-      {t:{es:"Movilidad diafragmática",pt:"Mobilidade diafragmática"},body:{
-        es:"<p>Se percute de cefálico a caudal hasta el cambio de sonoridad a matidez; se marca el punto en espiración y luego en inspiración máxima. La excursión normal es de <b>3–5 cm</b>.</p><p><b>Disminuida en:</b> enfisema, derrame pleural, parálisis frénica, fibrosis.</p>",
-        pt:"<p>Percute-se de cefálico para caudal até a mudança de sonoridade para macicez; marca-se o ponto em expiração e depois em inspiração máxima. A excursão normal é de <b>3–5 cm</b>.</p><p><b>Diminuída em:</b> enfisema, derrame pleural, paralisia frênica, fibrose.</p>"}},
       {t:{es:"Maniobras de vocalización",pt:"Manobras de vocalização"},body:{
-        es:"<ul><li><b>Broncofonía:</b> el paciente dice «treinta y tres»; en condensación se oye más nítido y fuerte.</li><li><b>Pectoriloquia áfona:</b> susurra «treinta y tres»; se escucha claramente sobre una condensación (signo muy específico).</li><li><b>Egofonía (voz de cabra):</b> la «e» suena como «a» nasal, en el límite superior de un derrame.</li><li><b>Disminución/abolición de la voz:</b> derrame, neumotórax, atelectasia obstructiva.</li></ul>",
-        pt:"<ul><li><b>Broncofonia:</b> o paciente diz «trinta e três»; na condensação ouve-se mais nítido e forte.</li><li><b>Pectorilóquia áfona:</b> sussurra «trinta e três»; ouve-se claramente sobre uma condensação (sinal muito específico).</li><li><b>Egofonia (voz de cabra):</b> o «e» soa como «a» nasal, no limite superior de um derrame.</li><li><b>Diminuição/abolição da voz:</b> derrame, pneumotórax, atelectasia obstrutiva.</li></ul>"}},
+        es:"<ol class='steps'><li><b>Broncofonía:</b> el paciente dice «treinta y tres»; en condensación se oye más nítido y fuerte (positiva en neumonía).</li><li><b>Pectoriloquia áfona:</b> susurra «treinta y tres»; se escucha claramente sobre una condensación (la más específica).</li><li><b>Egofonía (voz de cabra):</b> la «e» prolongada suena como «a» nasal, en el límite superior de un derrame.</li><li>Realizá todas comparando simétricamente los mismos puntos.</li></ol><div class='finds'><div class='find info'><div class='fl'>Condensación (neumonía)</div>FVT ↑ · matidez · broncofonía (+) · pectoriloquia áfona (+) · crepitantes.</div><div class='find bad'><div class='fl'>Derrame pleural</div>FVT abolido · matidez · ruidos abolidos · egofonía en el límite superior.</div></div>",
+        pt:"<ol class='steps'><li><b>Broncofonia:</b> o paciente diz «trinta e três»; na condensação ouve-se mais nítido e forte (positiva na pneumonia).</li><li><b>Pectorilóquia áfona:</b> sussurra «trinta e três»; ouve-se claramente sobre uma condensação (a mais específica).</li><li><b>Egofonia (voz de cabra):</b> o «e» prolongado soa como «a» nasal, no limite superior de um derrame.</li><li>Faça todas comparando simetricamente os mesmos pontos.</li></ol><div class='finds'><div class='find info'><div class='fl'>Condensação (pneumonia)</div>FTV ↑ · macicez · broncofonia (+) · pectorilóquia áfona (+) · estertores.</div><div class='find bad'><div class='fl'>Derrame pleural</div>FTV abolido · macicez · sons abolidos · egofonia no limite superior.</div></div>"}},
+      {t:{es:"Movilidad diafragmática",pt:"Mobilidade diafragmática"},body:{
+        es:"<ol class='steps'><li>Percutí de cefálico a caudal hasta el cambio de sonoridad a matidez; marcá el punto en espiración.</li><li>Pedí inspiración máxima y volvé a percutir; marcá el nuevo punto.</li><li>La excursión normal es de <b>3–5 cm</b>.</li></ol><p><b>Disminuida en:</b> enfisema, derrame pleural, parálisis frénica, fibrosis.</p>",
+        pt:"<ol class='steps'><li>Percuta de cefálico a caudal até a mudança de sonoridade para macicez; marque o ponto em expiração.</li><li>Peça inspiração máxima e percuta novamente; marque o novo ponto.</li><li>A excursão normal é de <b>3–5 cm</b>.</li></ol><p><b>Diminuída em:</b> enfisema, derrame pleural, paralisia frênica, fibrose.</p>"}},
       {t:{es:"Signos especiales",pt:"Sinais especiais"},body:{
-        es:"<ul><li><b>Triángulo de Grocco-Rauchfuss:</b> submatidez paravertebral <b>contralateral</b> en grandes derrames.</li><li><b>Maniobra de Schepelmann:</b> el dolor aumenta al inclinarse hacia el lado afectado → pleuritis; hacia el contrario → neuralgia intercostal.</li><li><b>Istmo de Krönig:</b> banda de sonoridad sobre el vértice; se estrecha en fibrosis apical o TBC.</li><li><b>Prueba de la moneda:</b> sonido metálico (soplo anfórico) en neumotórax.</li><li><b>Posición de la tráquea:</b> se desvía <b>hacia</b> el lado enfermo en atelectasia/fibrosis y <b>al contrario</b> en neumotórax a tensión y gran derrame.</li></ul>",
-        pt:"<ul><li><b>Triângulo de Grocco-Rauchfuss:</b> submacicez paravertebral <b>contralateral</b> em grandes derrames.</li><li><b>Manobra de Schepelmann:</b> a dor aumenta ao inclinar-se para o lado afetado → pleurite; para o contrário → nevralgia intercostal.</li><li><b>Istmo de Krönig:</b> banda de sonoridade sobre o ápice; estreita-se na fibrose apical ou TB.</li><li><b>Prova da moeda:</b> som metálico (sopro anfórico) no pneumotórax.</li><li><b>Posição da traqueia:</b> desvia-se <b>para</b> o lado doente na atelectasia/fibrose e <b>para o contrário</b> no pneumotórax hipertensivo e grande derrame.</li></ul>"}},
+        es:"<ul><li><b>Triángulo de Grocco-Rauchfuss:</b> submatidez paravertebral <b>contralateral</b> en grandes derrames.</li><li><b>Maniobra de Schepelmann:</b> dolor aumenta al inclinarse hacia el lado afectado → pleuritis; hacia el contrario → neuralgia intercostal.</li><li><b>Istmo de Krönig:</b> banda de sonoridad sobre el vértice; se estrecha en fibrosis apical o TBC.</li><li><b>Prueba de la moneda:</b> sonido metálico (soplo anfórico) en neumotórax.</li><li><b>Posición de la tráquea:</b> se desvía <b>hacia</b> el lado enfermo en atelectasia/fibrosis y <b>al contrario</b> en neumotórax a tensión y gran derrame.</li></ul>",
+        pt:"<ul><li><b>Triângulo de Grocco-Rauchfuss:</b> submacicez paravertebral <b>contralateral</b> em grandes derrames.</li><li><b>Manobra de Schepelmann:</b> dor aumenta ao inclinar-se para o lado afetado → pleurite; para o contrário → nevralgia intercostal.</li><li><b>Istmo de Krönig:</b> banda de sonoridade sobre o ápice; estreita-se na fibrose apical ou TB.</li><li><b>Prova da moeda:</b> som metálico (sopro anfórico) no pneumotórax.</li><li><b>Posição da traqueia:</b> desvia-se <b>para</b> o lado doente na atelectasia/fibrose e <b>para o contrário</b> no pneumotórax hipertensivo e grande derrame.</li></ul>"}},
       {t:{es:"Regla de los tres (síntesis)",pt:"Regra dos três (síntese)"},body:{
-        es:"<div class='hl'>🎯 <b>Para diferenciar Condensación vs Derrame vs Neumotórax</b> combiná los hallazgos clave:</div><div class='finds'><div class='find info'><div class='fl'>Condensación (neumonía)</div>FVT ↑ · matidez · crepitantes · broncofonía/pectoriloquia áfona (+) · soplo tubario.</div><div class='find bad'><div class='fl'>Derrame pleural</div>FVT ↓/abolido · matidez franca (curva de Damoiseau) · silencio auscultatorio · egofonía en el límite superior.</div><div class='find warn'><div class='fl'>Neumotórax</div>FVT abolido · hipersonoridad/timpanismo · MV abolido · soplo anfórico · tráquea desviada (si a tensión).</div></div>",
-        pt:"<div class='hl'>🎯 <b>Para diferenciar Condensação vs Derrame vs Pneumotórax</b> combine os achados-chave:</div><div class='finds'><div class='find info'><div class='fl'>Condensação (pneumonia)</div>FTV ↑ · macicez · estertores · broncofonia/pectorilóquia áfona (+) · sopro tubário.</div><div class='find bad'><div class='fl'>Derrame pleural</div>FTV ↓/abolido · macicez franca (curva de Damoiseau) · silêncio auscultatório · egofonia no limite superior.</div><div class='find warn'><div class='fl'>Pneumotórax</div>FTV abolido · hipersonoridade/timpanismo · MV abolido · sopro anfórico · traqueia desviada (se hipertensivo).</div></div>"}}
+        es:"<div class='hl'>🎯 <b>Condensación vs Derrame vs Neumotórax</b> — combiná los hallazgos clave:</div><div class='finds'><div class='find info'><div class='fl'>Condensación (neumonía)</div>FVT ↑ · matidez · crepitantes · broncofonía/pectoriloquia áfona (+) · soplo tubario.</div><div class='find bad'><div class='fl'>Derrame pleural</div>FVT ↓/abolido · matidez franca (curva de Damoiseau) · silencio auscultatorio · egofonía en el límite.</div><div class='find warn'><div class='fl'>Neumotórax</div>FVT abolido · hipersonoridad/timpanismo · MV abolido · soplo anfórico · tráquea desviada (si a tensión).</div></div>",
+        pt:"<div class='hl'>🎯 <b>Condensação vs Derrame vs Pneumotórax</b> — combine os achados-chave:</div><div class='finds'><div class='find info'><div class='fl'>Condensação (pneumonia)</div>FTV ↑ · macicez · estertores · broncofonia/pectorilóquia áfona (+) · sopro tubário.</div><div class='find bad'><div class='fl'>Derrame pleural</div>FTV ↓/abolido · macicez franca (curva de Damoiseau) · silêncio auscultatório · egofonia no limite.</div><div class='find warn'><div class='fl'>Pneumotórax</div>FTV abolido · hipersonoridade/timpanismo · MV abolido · sopro anfórico · traqueia desviada (se hipertensivo).</div></div>"}}
     ]
   },
   {
@@ -463,7 +449,7 @@ var MNEMOS = [
   ]}
 ];
 
-/* Patrones restritivo / obstrutivo (seção inspeção) */
+/* Patrones restritivo / obstrutivo */
 var PATRONES = {
   es:{title:"Patrón ventilatorio: pistas en el tórax dinámico",
     restr:{h:"Restrictivo",items:["Taquipnea con hipopnea","Causas: condensación, atelectasia, intersticiopatías, derrame pleural, neumotórax"]},
@@ -490,7 +476,7 @@ var SX_ROWS = [
   {n:{es:"Cavitario",pt:"Cavitário"}, c:[ C("c-up","Aumentadas","Aumentadas"), C("c-neutral","Variable","Variável"), C("c-neutral","Variable","Variável"), C("c-key","Soplo cavernoso","Sopro cavernoso") ]}
 ];
 
-/* Cards de síndromes (detalhe) */
+/* Cards de síndromes */
 var SX_CARDS = [
   {emoji:"🌬️", t:{es:"Vías aéreas — Obstructivos",pt:"Vias aéreas — Obstrutivos"},
    d:{es:"Disnea, tos, tiraje. Tórax en inspiración permanente, elasticidad y VV disminuidas, descenso del diafragma, sibilancias/roncus, cornaje. Asma bronquial y EPOC (bronquitis crónica + enfisema).",
@@ -536,7 +522,7 @@ function renderFiguras(){
     +'<div class="fig">'+FIG_POSTERIOR+'<div class="fig-cap">'+(L==="es"?"Cara posterior":"Face posterior")+'</div></div>'
     +'<div class="fig">'+FIG_LATERAL+'<div class="fig-cap">'+(L==="es"?"Cara lateral":"Face lateral")+'</div></div>'
     +'</div>'
-    +'<div class="fig-legend"><span><i></i>'+(L==="es"?"líneas de referencia":"linhas de referência")+'</span><span><i class="solid"></i>'+(L==="es"?"contorno / reparos óseos":"contorno / reparos ósseos")+'</span></div>';
+    +'<div class="fig-legend"><span><i></i>'+(L==="es"?"líneas de referencia":"linhas de referência")+'</span><span><i class="solid"></i>'+(L==="es"?"contorno / reparos":"contorno / reparos")+'</span></div>';
 }
 
 function renderMnemo(){
@@ -565,7 +551,7 @@ function renderSec(s){
         +'<div class="acc-body">'+tr(a.body)+'</div></div>';
     });
   }
-  if(s.extra2==="patrones"||s.extra==="patrones"){
+  if(s.extra2==="patrones"){
     var p=PATRONES[L];
     h+='<div class="callout"><b>'+ (L==="es"?"OJO:":"ATENÇÃO:") +'</b> '+(L==="es"
       ? "interpretar bien los movimientos respiratorios permite presuponer el trastorno ventilatorio subyacente."
