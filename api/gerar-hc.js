@@ -7,7 +7,7 @@
  *   ANTHROPIC_API_KEY → chave secreta da Anthropic (sk-ant-...)
  *
  * Entrada (POST JSON):
- *   { lang:'pt'|'es', demografia:{idade,sexo,tempoEvolucao}, motivos:[{ordem,nome,respostas:[{pergunta,resposta}]}] }
+ *   { lang:'pt'|'es', demografia:{idade,sexo,tempoEvolucao}, motivos:[{ordem,nome,respostas:[{pergunta,resposta}]}], relatoLivre:'<texto livre da AEA>' }
  * Saída:
  *   { narrativa: "<texto clínico>" }   ou   { error: "<mensagem>" }
  *
@@ -50,7 +50,7 @@ function buildSystemPrompt(pt) {
   ].join('\n');
 }
 
-function buildUserMessage(pt, demografia, motivos) {
+function buildUserMessage(pt, demografia, motivos, relatoLivre) {
   var L = [];
   L.push(pt ? '## Dados do paciente' : '## Datos del paciente');
   if (demografia) {
@@ -71,10 +71,15 @@ function buildUserMessage(pt, demografia, motivos) {
       if (r && r.pergunta && r.resposta) L.push('- ' + r.pergunta + ': ' + r.resposta);
     });
   });
+  if (relatoLivre && String(relatoLivre).trim()) {
+    L.push('');
+    L.push(pt ? '## Relato livre do profissional (incorpore ao texto)' : '## Relato libre del profesional (incorpóralo al texto)');
+    L.push(String(relatoLivre).trim());
+  }
   L.push('');
   L.push(pt
-    ? 'Redija agora a narrativa da AEA seguindo todas as regras.'
-    : 'Redacta ahora la narrativa de la AEA siguiendo todas las reglas.');
+    ? 'Redija agora a narrativa da AEA integrando os motivos, o tempo de evolução e o relato livre numa única história coerente, seguindo todas as regras.'
+    : 'Redacta ahora la narrativa de la AEA integrando los motivos, el tiempo de evolución y el relato libre en una sola historia coherente, siguiendo todas las reglas.');
   return L.join('\n');
 }
 
@@ -90,9 +95,10 @@ module.exports = async (req, res) => {
   var lang = body.lang === 'es' ? 'es' : 'pt';
   var pt = lang !== 'es';
   var motivos = Array.isArray(body.motivos) ? body.motivos : [];
+  var relatoLivre = typeof body.relatoLivre === 'string' ? body.relatoLivre : '';
 
-  // Precisa de pelo menos um motivo com alguma resposta
-  var temConteudo = motivos.some(function (m) {
+  // Precisa de pelo menos um motivo com alguma resposta OU relato livre preenchido
+  var temConteudo = (relatoLivre.trim().length > 0) || motivos.some(function (m) {
     return m && Array.isArray(m.respostas) && m.respostas.some(function (r) { return r && r.resposta; });
   });
   if (!temConteudo) {
@@ -105,7 +111,7 @@ module.exports = async (req, res) => {
       model: MODEL,
       max_tokens: MAX_TOKENS,
       system: buildSystemPrompt(pt),
-      messages: [{ role: 'user', content: buildUserMessage(pt, body.demografia, motivos) }],
+      messages: [{ role: 'user', content: buildUserMessage(pt, body.demografia, motivos, relatoLivre) }],
     });
 
     var narrativa = (response.content || [])

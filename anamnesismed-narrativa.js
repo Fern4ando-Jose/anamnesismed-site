@@ -652,7 +652,8 @@ function montarPayloadHC(lng){
       sexo:  gE('dp-sexo'),
       tempoEvolucao: (tempoN ? (tempoN + ' ' + tempoU).trim() : '')
     },
-    motivos: motivos
+    motivos: motivos,
+    relatoLivre: gE('aea-texto')   // texto livre da AEA — concatenado para a IA sintetizar junto
   };
 }
 
@@ -660,11 +661,13 @@ function montarPayloadHC(lng){
 // Retorna Promise<{ok, narrativa, fonte:'ia'|'local', erro?}>.
 function gerarHCviaIA(lng){
   var payload = montarPayloadHC(lng);
-  if(!payload.motivos.length){
+  var relato = (payload.relatoLivre||'').trim();
+  if(!payload.motivos.length && !relato){
     return Promise.resolve({ ok:false, fonte:'local', narrativa:'', erro: lng==='es'?'Sin respuestas para generar la HC':'Sem respostas para gerar a HC' });
   }
   function fallback(motivo){
     var local = gerarNarrativaAEACompleta(lng) || '';
+    if(!local && relato) local = relato; // sem motivos respondidos: usa o relato livre como narrativa
     return { ok: !!local, fonte:'local', narrativa: local, erro: motivo };
   }
   return fetch('/api/gerar-hc', {
