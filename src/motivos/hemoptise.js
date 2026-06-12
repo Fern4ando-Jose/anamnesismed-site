@@ -105,13 +105,6 @@ AM.motivo("hemoptise", {
       "q": "Trauma torácico recente?",
       "qEs": "¿Trauma torácico reciente?",
       "type": "yn"
-    },
-    {
-      "q": "O que motivou buscar atendimento hoje?",
-      "qEs": "¿Qué motivó buscar atención hoy?",
-      "type": "input",
-      "ph": "Descreva o que motivou vir hoje",
-      "ph2": "Describa qué motivó venir hoy"
     }
   ],
   "guidePt": {

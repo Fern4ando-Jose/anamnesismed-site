@@ -255,30 +255,6 @@ AM.motivo("dor-toracica", {
       "q": "Dor torácica em \"facada\" no dorso/interescapular, com diferença de pressão arterial entre os braços (suspeita de dissecção aórtica) — sinal de alarme?",
       "qEs": "¿Dolor torácico \"como puñalada\" en dorso/interescapular, con diferencia de presión arterial entre brazos (sospecha de disección aórtica) — signo de alarma?",
       "type": "yn"
-    },
-    {
-      "q": "Evolução do quadro",
-      "qEs": "Evolución del cuadro",
-      "type": "radio",
-      "opts": [
-        "Progressiva (piora contínua)",
-        "Flutuante (piora e melhora)",
-        "Estável (sem mudança)",
-        "Regressiva (melhorando)"
-      ],
-      "optsEs": [
-        "Progresiva (empeoramiento continuo)",
-        "Fluctuante (empeora y mejora)",
-        "Estable (sin cambio)",
-        "Regresiva (mejorando)"
-      ]
-    },
-    {
-      "q": "O que motivou buscar atendimento hoje?",
-      "qEs": "¿Qué motivó buscar atención hoy?",
-      "type": "input",
-      "ph": "Descreva o que motivou vir hoje",
-      "ph2": "Describa qué motivó venir hoy"
     }
   ],
   "guidePt": {
