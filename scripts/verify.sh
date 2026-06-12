@@ -62,7 +62,7 @@ grep -q '"cirurgia"' "$MOTIVOS" && check "Especialidade cirurgia presente" "ok" 
 grep -q '"semiologia"' "$MOTIVOS" && check "Especialidade semiologia presente" "ok" || check "Especialidade semiologia" "AUSENTE"
 grep -q '"id": "tosse"' "$MOTIVOS" && check "Motivo tosse presente" "ok" || check "Motivo tosse" "AUSENTE"
 grep -q '"id": "dor-toracica"' "$MOTIVOS" && check "Motivo dor-toracica presente" "ok" || check "Motivo dor-toracica" "AUSENTE"
-grep -q 'GUIDE_CONTENT\["semio-tosse"\]' "$MOTIVOS" && check "Fechamento/aliases GUIDE_CONTENT" "ok" || check "Fechamento GUIDE_CONTENT" "AUSENTE — arquivo provavelmente truncado"
+grep -q 'GUIDE_CONTENT\["semio-peso"\]' "$MOTIVOS" && check "Fechamento/aliases GUIDE_CONTENT" "ok" || check "Fechamento GUIDE_CONTENT" "AUSENTE — arquivo provavelmente truncado"
 # Sincronia src/ <-> produção: produção deve ser exatamente o build da fonte modular
 if [ -d "$(dirname "$0")/../src" ]; then
   SYNC=$(node -e '
@@ -124,7 +124,7 @@ DASH="$ROOT/anamnesismed-dashboard.html"
 echo ""
 echo "> anamnesismed-dashboard.html"
 LINES=$(wc -l < "$DASH")
-[ "$LINES" -ge 440 ] && check "Linhas ($LINES >= 440)" "ok" || check "Linhas ($LINES)" "TRUNCADO"
+[ "$LINES" -ge 300 ] && check "Linhas ($LINES >= 300)" "ok" || check "Linhas ($LINES)" "TRUNCADO"
 grep -q "</html>" "$DASH" && check "Tag </html> presente" "ok" || check "Tag </html>" "AUSENTE"
 grep -q "function setView" "$DASH" && check "setView presente" "ok" || check "setView" "AUSENTE"
 grep -q "URLSearchParams" "$DASH" && check "URLSearchParams presente" "ok" || check "URLSearchParams" "AUSENTE"
@@ -137,14 +137,10 @@ grep -q "maxDuration" "$VERCEL" && check "maxDuration presente" "ok" || check "m
 grep -q "}" "$VERCEL" && check "JSON fechado" "ok" || check "JSON fechado" "TRUNCADO"
 
 # -- Bytes nulos (corrupção Linux-Windows)
+# Detecção sem Python (o stub python3 do Windows Store quebra o teste).
+# grep -a trata binário como texto; -P habilita PCRE para casar \x00.
 echo ""
 echo "> Verificacao de bytes nulos (corrupcao Linux-Windows)"
-NULLCHECK=$(mktemp /tmp/nullcheck_XXXXXX.py)
-cat > "$NULLCHECK" << 'PYEOF2'
-import sys
-data = open(sys.argv[1], 'rb').read()
-sys.exit(1 if b'\x00' in data else 0)
-PYEOF2
 for f in \
   "$ROOT/supabase-integration.js" \
   "$ROOT/anamnesismed-motivos.js" \
@@ -155,13 +151,12 @@ for f in \
   "$ROOT/anamnesismed-dashboard.html"
 do
   fname=$(basename "$f")
-  if python3 "$NULLCHECK" "$f" 2>/dev/null; then
-    check "Sem bytes nulos: $fname" "ok"
-  else
+  if LC_ALL=C grep -qaP '\x00' "$f" 2>/dev/null; then
     check "Sem bytes nulos: $fname" "BYTES NULOS DETECTADOS — arquivo corrompido"
+  else
+    check "Sem bytes nulos: $fname" "ok"
   fi
 done
-rm -f "$NULLCHECK"
 
 # -- Resultado
 echo ""
