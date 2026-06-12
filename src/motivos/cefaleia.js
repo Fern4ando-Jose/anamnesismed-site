@@ -144,11 +144,6 @@ AM.motivo("cefaleia", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes pessoais ou familiares de enxaqueca/cefaleias?",
-      "qEs": "¿Antecedentes personales o familiares de migraña/cefaleas?",
-      "type": "yn"
-    },
-    {
       "q": "Trauma craniano recente?",
       "qEs": "¿Traumatismo craneal reciente?",
       "type": "yn"
@@ -169,13 +164,6 @@ AM.motivo("cefaleia", {
         "Uso frecuente (≥2x/semana)",
         "Uso casi diario (≥10-15 días/mes — sugiere cefalea por uso excesivo de medicación)"
       ]
-    },
-    {
-      "q": "Quais medicamentos costuma usar (nome/marca)?",
-      "qEs": "¿Qué medicamentos suele usar (nombre/marca)?",
-      "type": "input",
-      "ph": "Ex: dipirona, paracetamol, ibuprofeno, triptano...",
-      "ph2": "Ej: dipirona, paracetamol, ibuprofeno, triptán..."
     },
     {
       "q": "Evolução do quadro",

@@ -17,11 +17,12 @@ function gerarNarrativaAEA_cefaleia(ans, lng){
   var sexoTxt  = sexoRaw === 'M' ? (pt?'sexo masculino':'sexo masculino')
                : sexoRaw === 'F' ? (pt?'sexo feminino':'sexo femenino') : '';
   function v(i){ var a=ans[i]; return (a && a.resp && a.resp!=='—') ? a.resp : null; }
+  // Índices alinhados ao aeaGuide enxuto da cefaleia (antecedentes de enxaqueca e "medicamentos que usa" migraram p/ APP).
   var L=v(0), IRR=v(1), CAR=v(2), EVA=v(3), DUR=v(4), INI=v(5),
       FAT=v(6), PER=v(7), VALS=v(8), NAUS=v(9), FOTO=v(10),
-      AURA=v(11), AUTO=v(12), SNOOP=v(13), HIST=v(14), TRAUMA=v(15),
-      ANALG=v(16), MEDS=v(17),
-      EVOL=v(18), MOTIVOBUSCA=v(19);
+      AURA=v(11), AUTO=v(12), SNOOP=v(13), TRAUMA=v(14),
+      ANALG=v(15),
+      EVOL=v(16), MOTIVOBUSCA=v(17);
   var partes = [], alarmes = [];
   var yes = function(x){ return /^(Sim|Sí)/.test(x||''); };
 
@@ -91,12 +92,6 @@ function gerarNarrativaAEA_cefaleia(ans, lng){
     }
   }
 
-  if(HIST){
-    partes.push(yes(HIST)
-      ? (pt? 'Relata antecedentes pessoais e/ou familiares de enxaqueca/cefaleias recorrentes.' : 'Relata antecedentes personales y/o familiares de migraña/cefaleas recurrentes.')
-      : (pt? 'Nega antecedentes pessoais ou familiares de enxaqueca.' : 'Niega antecedentes personales o familiares de migraña.'));
-  }
-
   if(TRAUMA){
     if(yes(TRAUMA)){
       partes.push(pt
@@ -108,11 +103,8 @@ function gerarNarrativaAEA_cefaleia(ans, lng){
     }
   }
 
-  if(ANALG || MEDS){
-    var fr2 = pt ? 'Quanto ao uso de analgésicos, ' : 'En cuanto al uso de analgésicos, ';
-    if(ANALG) fr2 += ANALG.toLowerCase() + (MEDS ? '; ' : '.');
-    if(MEDS) fr2 += (pt? 'faz uso de '+MEDS+' para alívio do quadro.' : 'utiliza '+MEDS+' para el alivio del cuadro.');
-    partes.push(fr2);
+  if(ANALG){
+    partes.push((pt ? 'Quanto ao uso de analgésicos, ' : 'En cuanto al uso de analgésicos, ') + ANALG.toLowerCase() + '.');
   }
 
   // ── Evolução e motivo de busca ──────────────────────────────
