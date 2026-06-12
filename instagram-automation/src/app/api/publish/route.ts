@@ -16,7 +16,7 @@ interface GeneratedContent {
   tags: string[];
 }
 
-type Slot = "manha" | "noite";
+type Slot = "manha" | "tarde" | "noite";
 
 // ─── Tópicos — rotação semanal ────────────────────────────────────────────────
 // Foco: anamnese, semiologia, raciocínio clínico, ferramentas do AnamnesísMed
@@ -54,7 +54,7 @@ function extractKeyword(topic: string): string {
   ]);
   const word = topic.split(/\s+/).find(w => !STOP.has(w.toLowerCase()))
     ?? topic.split(" ")[0];
-  return word.toUpperCase().replace(/[^A-ZÁÉÍÓÚÜÃÕÂÊÇ]/g, "");
+  return word.toUpperCase().replace(/[^A-ZÁÉÍÓÚÜÃÕÂÊÔÎÛÀÈÌÒÙÇ]/g, "");
 }
 
 function getTopicForSlot(slot: Slot, date: Date): string {
@@ -62,7 +62,7 @@ function getTopicForSlot(slot: Slot, date: Date): string {
   const dayOfYear  = Math.floor((date.getTime() - start.getTime()) / 86400000);
   const weekNum    = Math.floor(dayOfYear / 7);
   const dayOfWeek  = date.getDay();
-  const slotIdx    = slot === "manha" ? 0 : 1;
+  const slotIdx    = slot === "manha" ? 0 : slot === "tarde" ? 1 : 2;
 
   // embaralhamento determinístico por semana
   const arr  = [...TOPICS];
@@ -73,7 +73,7 @@ function getTopicForSlot(slot: Slot, date: Date): string {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 
-  const idx = (dayOfWeek * 2 + slotIdx) % arr.length;
+  const idx = (dayOfWeek * 3 + slotIdx) % arr.length;
   return arr[idx];
 }
 
@@ -82,32 +82,43 @@ function getTopicForSlot(slot: Slot, date: Date): string {
 const SLOT_INSTRUCTIONS: Record<Slot, string> = {
   manha: `Ângulo MANHÃ — motivacional e prático. O médico ou estudante está começando
 o plantão ou o dia de estudos. Entregue um insight clínico rápido e aplicável
-hoje. Tono direto, confiante e encorajador.`,
+HOJE. Tom direto, confiante e encorajador. O gancho deve dar energia ("comece
+o plantão sabendo isto").`,
+
+  tarde: `Ângulo TARDE — pílula prática e objetiva. O leitor tem 30 segundos entre
+atendimentos. Entregue UMA regra de ouro, um passo a passo enxuto ou um erro
+comum a evitar. Tom de "salva-vidas de bolso", escaneável e direto ao ponto.`,
 
   noite: `Ângulo NOITE — reflexivo e profundo. O leitor está terminando o dia.
-Convide-o a pensar sobre raciocínio clínico, sobre o impacto de uma boa
-anamnese na vida do paciente. Tono calmo, instigante, que gera comentários.`,
+Convide-o a pensar sobre raciocínio clínico e o impacto de uma boa anamnese na
+vida do paciente. Tom calmo e instigante, que gera comentários e identificação.`,
 };
 
 // ─── Pesquisa de contexto médico ─────────────────────────────────────────────
 
 async function searchTopic(topic: string): Promise<SearchResult[]> {
-  const res = await fetch("https://api.tavily.com/search", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      api_key: process.env.TAVILY_API_KEY,
-      query: topic + " medicina clínica semiologia",
-      search_depth: "advanced",
-      max_results: 5,
-      include_answer: true,
-    }),
-  });
-  if (!res.ok) throw new Error(`Tavily error: ${res.status}`);
-  const data = await res.json();
-  return (data.results ?? []).map((r: any) => ({
-    title: r.title ?? "", content: r.content ?? "", url: r.url ?? "",
-  }));
+  // Tavily é opcional: sem chave ou em caso de falha, segue sem contexto extra.
+  if (!process.env.TAVILY_API_KEY) return [];
+  try {
+    const res = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        api_key: process.env.TAVILY_API_KEY,
+        query: topic + " medicina clínica semiologia",
+        search_depth: "advanced",
+        max_results: 5,
+        include_answer: true,
+      }),
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.results ?? []).map((r: any) => ({
+      title: r.title ?? "", content: r.content ?? "", url: r.url ?? "",
+    }));
+  } catch {
+    return [];
+  }
 }
 
 // ─── Geração de conteúdo via Claude ──────────────────────────────────────────
@@ -121,34 +132,38 @@ async function generateContent(
     .map((r, i) => `[${i + 1}] ${r.title}\n${r.content}`)
     .join("\n\n");
 
-  const prompt = `Você é o editor do AnamnesísMed — plataforma de anamnese clínica para médicos e estudantes de medicina.
+  const prompt = `Você é o estrategista de conteúdo do AnamnesísMed — plataforma de anamnese clínica para médicos e estudantes de medicina no Brasil. Sua missão: criar um CARROSSEL de Instagram que MAXIMIZE engajamento (saves, compartilhamentos e comentários) para crescer seguidores — sempre dentro de temas médicos sérios e corretos.
 
 Tema: "${topic}"
 ${SLOT_INSTRUCTIONS[slot]}
 
-Contexto pesquisado:
-${context}
+${context ? `Contexto pesquisado:\n${context}\n` : ""}
+PRINCÍPIOS DE ENGAJAMENTO (siga TODOS):
+- GANCHO QUE PARA O SCROLL: o título da capa precisa gerar curiosidade ou tensão em < 2 segundos. Use stakes ("o erro que custa o diagnóstico"), curiosidade ("o que ninguém te ensinou sobre…"), número ("3 sinais que…") ou contraste ("não é o exame — é a pergunta"). NADA genérico.
+- VALOR SALVÁVEL: cada slide entrega 1 informação concreta e aplicável (mnemônico, red flag, score, passo) que o leitor vai querer SALVAR para usar no plantão.
+- COMENTÁRIO FÁCIL: a pergunta final deve ser específica e fácil de responder (experiência pessoal, "qual sua conduta?", concordo/discordo).
+- ESCANEÁVEL: frases curtas, zero enrolação, linguagem de quem está na prática.
 
 Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
 {
-  "postTitle": "título impactante, máx 55 chars, em português",
-  "postBody": "artigo em markdown, mínimo 300 palavras, em português, com aplicação clínica prática",
+  "postTitle": "GANCHO da capa que para o scroll, máx 55 chars, português, sem ponto final",
+  "postBody": "artigo em markdown, mínimo 300 palavras, português, com aplicação clínica prática (vai para o site, não para a legenda)",
   "slides": [
-    "insight clínico 1 — frase impactante, MÁXIMO 85 chars, sobre o tema",
-    "insight clínico 2 — aprofunda ou traz dado/mnemônico relevante, máx 85 chars",
-    "insight clínico 3 — remata com consequência prática, máx 85 chars"
+    "insight 1 — a informação mais valiosa/surpreendente do tema, MÁX 85 chars",
+    "insight 2 — aprofunda com mnemônico, score ou dado memorável, máx 85 chars",
+    "insight 3 — fecha com a consequência prática / o que fazer, máx 85 chars"
   ],
   "accentWords": [
-    "palavra-chave do slide 1 que aparecerá destacada em vermelho (1 palavra)",
-    "palavra-chave do slide 2",
-    "palavra-chave do slide 3"
+    "1 palavra-chave do slide 1 (aparecerá em vermelho)",
+    "1 palavra-chave do slide 2",
+    "1 palavra-chave do slide 3"
   ],
-  "cta": "pergunta ou chamada à ação, 60-100 chars, que gere comentários médicos",
-  "instagramCaption": "legenda IG máx 2200 chars: gancho forte + conteúdo clínico + CTA para link na bio + 5-7 hashtags médicos em português",
-  "tags": ["tag1", "tag2", "tag3", "tag4"]
+  "cta": "pergunta curta e específica que gere comentários de médicos/estudantes, 50-90 chars",
+  "instagramCaption": "legenda 600-1500 chars em português, NESTA ordem: (1) gancho na 1a linha repetindo a tensão da capa; (2) 2-4 parágrafos curtos entregando o valor clínico do tema; (3) CTA explícito: 'Salve este post para o próximo plantão' e 'Marque um colega que precisa ver isto'; (4) a pergunta de engajamento; (5) '→ Anamnese completa no link da bio'; (6) em uma última linha, 6-9 hashtags. Use emojis com parcimônia (1-3).",
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }
 
-Hashtags sugeridas (inclua as relevantes): #medicina #medicinabrasileira #estudantedemedicina #semiologia #anamnese #residenciamédica #plantão #clínicamédica #diagnostico #anamnesismed`;
+Para as hashtags, MISTURE alcance amplo + nicho engajado (escolha as relevantes ao tema): #medicina #medicinabrasileira #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #semiologia #anamnese #clinicamedica #plantao #condutamedica #diagnostico #medstudent #anamnesismed`;
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -264,7 +279,8 @@ export async function GET(req: NextRequest) {
 
   const slotParam    = req.nextUrl.searchParams.get("slot") as Slot | null;
   const topicOverride = req.nextUrl.searchParams.get("topic");
-  const slot: Slot    = slotParam === "noite" ? "noite" : "manha";
+  const slot: Slot    = slotParam === "noite" ? "noite"
+                       : slotParam === "tarde" ? "tarde" : "manha";
 
   const log: Record<string, unknown> = { slot };
 
@@ -319,6 +335,20 @@ export async function GET(req: NextRequest) {
       `${base}/api/og?slide=cta&text=${enc(content.cta)}&num=${totalSlides}&total=${totalSlides}&kw=${enc(kw)}&ed=${ed}`,
     ];
 
+    // Modo PRÉVIA — gera conteúdo + URLs das imagens SEM publicar nem salvar
+    if (req.nextUrl.searchParams.get("preview")) {
+      return NextResponse.json({
+        ok: true, preview: true, topic, slot,
+        title: content.postTitle,
+        slides: content.slides,
+        accentWords: content.accentWords,
+        cta: content.cta,
+        caption: content.instagramCaption,
+        tags: content.tags,
+        slideUrls,
+      });
+    }
+
     // Publicar no Instagram
     let instagramPostId: string | null = null;
     try {
@@ -329,16 +359,21 @@ export async function GET(req: NextRequest) {
       log.instagramError = String(igErr);
     }
 
-    // Salvar no banco
-    await savePost({
-      topic, slot,
-      title: content.postTitle,
-      body: content.postBody,
-      instagramCaption: content.instagramCaption,
-      tags: content.tags,
-      instagramPostId,
-      publishedAt: now,
-    });
+    // Salvar no banco (opcional — não bloqueia a publicação se não houver banco)
+    try {
+      await savePost({
+        topic, slot,
+        title: content.postTitle,
+        body: content.postBody,
+        instagramCaption: content.instagramCaption,
+        tags: content.tags,
+        instagramPostId,
+        publishedAt: now,
+      });
+      log.saved = true;
+    } catch (dbErr) {
+      log.dbError = String(dbErr);
+    }
 
     log.ok = true;
     return NextResponse.json({ ok: true, post: log });

@@ -1,0 +1,42 @@
+name: Instagram posts — AnamnesísMed
+
+# Agendador externo (grátis) que dispara os 3 posts diários do @anamnesismed.
+# Horários em UTC; BRT = UTC-3.
+#   07:00 BRT (10:00 UTC) — manhã  | 12:30 BRT (15:30 UTC) — tarde | 20:00 BRT (23:00 UTC) — noite
+# O endpoint /api/publish gera o conteúdo (Claude) e publica o carrossel.
+
+on:
+  schedule:
+    - cron: "0 10 * * *"   # manhã
+    - cron: "30 15 * * *"  # tarde
+    - cron: "0 23 * * *"   # noite
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "Slot a publicar manualmente"
+        required: true
+        default: "manha"
+        type: choice
+        options: [manha, tarde, noite]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determinar slot a partir do horário do cron
+        id: slot
+        run: |
+          case "${{ github.event.schedule }}" in
+            "0 10 * * *")  SLOT=manha ;;
+            "30 15 * * *") SLOT=tarde ;;
+            "0 23 * * *")  SLOT=noite ;;
+            *)             SLOT="${{ github.event.inputs.slot }}"; SLOT="${SLOT:-manha}" ;;
+          esac
+          echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
+          echo "Publicando slot: $SLOT"
+
+      - name: Publicar no Instagram
+        run: |
+          curl -fsS --max-time 240 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://anamnesismed-ig.vercel.app/api/publish?slot=${{ steps.slot.outputs.slot }}"

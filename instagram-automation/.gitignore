@@ -1,0 +1,19 @@
+# dependencies
+node_modules
+
+# next.js
+.next
+out
+
+# env / secrets — NUNCA commitar
+.env
+.env.local
+.env*.local
+
+# vercel
+.vercel
+
+# logs
+*.log
+
+.vercel
