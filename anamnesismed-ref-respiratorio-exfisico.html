@@ -118,7 +118,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* FIGURAS SVG (topografia) */
 .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:6px 0 16px}
 .fig{border:1px solid var(--line);border-radius:12px;padding:14px 10px;background:#fbfdfe;text-align:center}
-.fig svg{width:100%;height:auto;max-width:210px}
+.fig svg{width:100%;height:auto;max-width:250px}
 .fig-cap{font-size:12.5px;font-weight:700;color:var(--primary-dark);margin-top:6px}
 .fig-legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:-4px 0 14px;font-size:12px;color:var(--muted)}
 .fig-legend span{display:flex;align-items:center;gap:6px}
@@ -195,8 +195,8 @@ table.sx tbody tr:hover td:first-child{background:#eef6f8}
     <div class="hero-eyebrow">🫁 <span class="pt">Referência Clínica · Respiratório</span><span class="es">Referencia Clínica · Respiratorio</span></div>
     <div class="hero-title pt">Aparelho Respiratório — Sintomas e Exame Físico</div>
     <div class="hero-title es">Aparato Respiratorio — Síntomas y Examen Físico</div>
-    <div class="hero-sub pt">Guia completo: semiologia dos sintomas cardinais, mnemônicas de anamnese, topografia com silhuetas, e o exame físico passo a passo (inspeção, palpação, percussão, ausculta, manobras) — com técnica, achados normais/anormais e síndromes.</div>
-    <div class="hero-sub es">Guía completa: semiología de los síntomas cardinales, mnemotécnicas de anamnesis, topografía con siluetas, y el examen físico paso a paso (inspección, palpación, percusión, auscultación, maniobras) — con técnica, hallazgos normales/anormales y síndromes.</div>
+    <div class="hero-sub pt">Guia completo: semiologia dos sintomas cardinais, mnemônicas de anamnese, topografia com esquemas anatômicos, e o exame físico passo a passo (inspeção, palpação, percussão, ausculta, manobras) — com técnica, achados normais/anormais e síndromes.</div>
+    <div class="hero-sub es">Guía completa: semiología de los síntomas cardinales, mnemotécnicas de anamnesis, topografía con esquemas anatómicos, y el examen físico paso a paso (inspección, palpación, percusión, auscultación, maniobras) — con técnica, hallazgos normales/anormales y síndromes.</div>
   </div>
 
   <nav class="secnav" id="secnav"></nav>
@@ -206,40 +206,47 @@ table.sx tbody tr:hover td:first-child{background:#eef6f8}
 <script>
 var L = "es";
 
-/* ─────────── SILHUETAS SVG (topografia) ─────────── */
-var SIL_BODY = '<circle cx="120" cy="42" r="24" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>'
-  +'<path d="M99 62 C97 72 88 77 78 81 C57 88 48 103 47 122 L60 128 C64 113 75 104 89 101 L85 314 C108 324 132 324 155 314 L151 101 C165 104 176 113 180 128 L193 122 C192 103 183 88 162 81 C152 77 143 72 141 62 C128 67 112 67 99 62 Z" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>';
-var FIG_ANTERIOR = '<svg viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silueta anterior">'
-  + SIL_BODY
-  +'<line x1="120" y1="74" x2="120" y2="300" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>'
-  +'<line x1="99" y1="92" x2="96" y2="296" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".6"/>'
-  +'<line x1="141" y1="92" x2="144" y2="296" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".6"/>'
-  +'<line x1="74" y1="150" x2="166" y2="150" stroke="#0d2d3d" stroke-width="1" stroke-dasharray="3 4" opacity=".35"/>'
-  +'<text x="120" y="86" text-anchor="middle" font-size="9" fill="#4b6070">Supraclavicular</text>'
-  +'<text x="120" y="118" text-anchor="middle" font-size="9" fill="#0d2d3d">Infraclavicular</text>'
-  +'<text x="120" y="142" text-anchor="middle" font-size="9" fill="#0d2d3d">Mamaria</text>'
-  +'<text x="120" y="230" text-anchor="middle" font-size="9" fill="#0d2d3d">Inframamaria</text>'
-  +'<text x="120" y="332" text-anchor="middle" font-size="8" fill="#0e7490">medioesternal · medioclavicular</text>'
+/* ─────────── ESQUEMAS ANATÓMICOS DE LÍNEA (topografia) ─────────── */
+var THORAX = '<path d="M118 86 C113 124 113 160 119 192 C123 212 130 224 138 233 L170 214 L202 233 C210 224 217 212 221 192 C227 160 227 124 222 86 C203 78 186 76 170 76 C154 76 137 78 118 86 Z" fill="#eef7fa" stroke="#0d2d3d" stroke-width="2"/>';
+var LEAD = '<g stroke="#94a3b8" stroke-width="1" fill="none">';
+var FIG_ANTERIOR = '<svg viewBox="0 0 340 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema anterior del tórax">'
+  + THORAX
+  +'<path d="M167 80 Q149 74 132 84" fill="none" stroke="#0d2d3d" stroke-width="1.6"/>'
+  +'<path d="M173 80 Q191 74 208 84" fill="none" stroke="#0d2d3d" stroke-width="1.6"/>'
+  +'<line x1="170" y1="80" x2="170" y2="212" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 4"/>'
+  +'<line x1="146" y1="92" x2="149" y2="208" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".65"/>'
+  +'<line x1="194" y1="92" x2="191" y2="208" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".65"/>'
+  + LEAD +'<line x1="106" y1="92" x2="134" y2="92"/><line x1="106" y1="152" x2="142" y2="150"/><line x1="234" y1="118" x2="198" y2="116"/><line x1="234" y1="194" x2="196" y2="192"/></g>'
+  +'<g fill="#06b6d4"><circle cx="134" cy="92" r="2"/><circle cx="142" cy="150" r="2"/><circle cx="198" cy="116" r="2"/><circle cx="196" cy="192" r="2"/></g>'
+  +'<text x="102" y="95" text-anchor="end" font-size="12.5" fill="#334155">Supraclavicular</text>'
+  +'<text x="102" y="155" text-anchor="end" font-size="12.5" fill="#334155">Mamaria</text>'
+  +'<text x="238" y="121" text-anchor="start" font-size="12.5" fill="#334155">Infraclavicular</text>'
+  +'<text x="238" y="197" text-anchor="start" font-size="12.5" fill="#334155">Inframamaria</text>'
+  +'<text x="170" y="254" text-anchor="middle" font-size="11" fill="#0e7490">líneas: medioesternal · medioclavicular</text>'
   +'</svg>';
-var FIG_POSTERIOR = '<svg viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silueta posterior">'
-  + SIL_BODY
-  +'<line x1="120" y1="74" x2="120" y2="300" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>'
-  +'<path d="M92 104 L116 110 L108 162 Z" fill="#c2dde6" stroke="#0d2d3d" stroke-width="1.4"/>'
-  +'<path d="M148 104 L124 110 L132 162 Z" fill="#c2dde6" stroke="#0d2d3d" stroke-width="1.4"/>'
-  +'<text x="120" y="96" text-anchor="middle" font-size="9" fill="#4b6070">Supraescapular</text>'
-  +'<text x="120" y="138" text-anchor="middle" font-size="8.5" fill="#0d2d3d">Interescapular</text>'
-  +'<text x="120" y="235" text-anchor="middle" font-size="9" fill="#0d2d3d">Infraescapular</text>'
-  +'<text x="120" y="332" text-anchor="middle" font-size="8" fill="#0e7490">línea vertebral (espinosas)</text>'
+var FIG_POSTERIOR = '<svg viewBox="0 0 340 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema posterior del tórax">'
+  + THORAX
+  +'<line x1="170" y1="80" x2="170" y2="230" stroke="#06b6d4" stroke-width="1.6" stroke-dasharray="6 4"/>'
+  +'<path d="M134 100 L162 106 L151 150 Z" fill="none" stroke="#0d2d3d" stroke-width="1.5"/>'
+  +'<path d="M206 100 L178 106 L189 150 Z" fill="none" stroke="#0d2d3d" stroke-width="1.5"/>'
+  + LEAD +'<line x1="106" y1="98" x2="140" y2="98"/><line x1="106" y1="206" x2="150" y2="204"/><line x1="234" y1="128" x2="190" y2="126"/><line x1="234" y1="166" x2="172" y2="166"/></g>'
+  +'<g fill="#06b6d4"><circle cx="140" cy="98" r="2"/><circle cx="150" cy="204" r="2"/><circle cx="190" cy="126" r="2"/><circle cx="172" cy="166" r="2"/></g>'
+  +'<text x="102" y="101" text-anchor="end" font-size="12.5" fill="#334155">Supraescapular</text>'
+  +'<text x="102" y="209" text-anchor="end" font-size="12.5" fill="#334155">Infraescapular</text>'
+  +'<text x="238" y="131" text-anchor="start" font-size="12.5" fill="#334155">Escapular</text>'
+  +'<text x="238" y="169" text-anchor="start" font-size="12.5" fill="#334155">Interescapular</text>'
+  +'<text x="170" y="254" text-anchor="middle" font-size="11" fill="#0e7490">línea vertebral (apófisis espinosas)</text>'
   +'</svg>';
-var FIG_LATERAL = '<svg viewBox="0 0 220 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silueta lateral">'
-  +'<circle cx="104" cy="44" r="23" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>'
-  +'<path d="M92 64 C90 74 84 80 78 84 C62 94 60 120 66 152 L74 314 C100 324 130 320 150 308 C156 220 156 150 152 120 C149 96 140 84 128 80 C120 76 116 72 114 64 C108 68 98 68 92 64 Z" fill="#dce8ee" stroke="#0d2d3d" stroke-width="2"/>'
-  +'<line x1="92" y1="92" x2="90" y2="300" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
-  +'<line x1="112" y1="86" x2="110" y2="306" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 4"/>'
-  +'<line x1="132" y1="92" x2="130" y2="300" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
-  +'<text x="112" y="150" text-anchor="middle" font-size="9" fill="#0d2d3d">Axilar</text>'
-  +'<text x="112" y="240" text-anchor="middle" font-size="9" fill="#0d2d3d">Infraaxilar</text>'
-  +'<text x="110" y="332" text-anchor="middle" font-size="8" fill="#0e7490">axilares ant · media · post</text>'
+var FIG_LATERAL = '<svg viewBox="0 0 300 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema lateral del tórax">'
+  +'<path d="M150 80 C120 84 106 120 110 166 C113 206 126 230 150 238 C172 230 186 206 188 166 C190 124 184 92 170 84 C164 81 157 80 150 80 Z" fill="#eef7fa" stroke="#0d2d3d" stroke-width="2"/>'
+  +'<line x1="132" y1="96" x2="131" y2="226" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
+  +'<line x1="150" y1="90" x2="149" y2="232" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="6 4"/>'
+  +'<line x1="168" y1="96" x2="167" y2="226" stroke="#06b6d4" stroke-width="1.1" stroke-dasharray="4 4" opacity=".7"/>'
+  + LEAD +'<line x1="92" y1="138" x2="124" y2="138"/><line x1="92" y1="206" x2="128" y2="204"/></g>'
+  +'<g fill="#06b6d4"><circle cx="124" cy="138" r="2"/><circle cx="128" cy="204" r="2"/></g>'
+  +'<text x="88" y="141" text-anchor="end" font-size="12.5" fill="#334155">Axilar</text>'
+  +'<text x="88" y="207" text-anchor="end" font-size="12.5" fill="#334155">Infraaxilar</text>'
+  +'<text x="150" y="254" text-anchor="middle" font-size="11" fill="#0e7490">axilares: anterior · media · posterior</text>'
   +'</svg>';
 
 /* ─────────── DADOS (bilíngue) ─────────── */
@@ -285,8 +292,8 @@ var SECTIONS = [
     id:"topografia", emoji:"📐", icon:"3",
     t:{es:"Topografía torácica", pt:"Topografia torácica"},
     intro:{
-      es:"Reparos anatómicos para localizar los hallazgos sobre la silueta del paciente. Siempre se comparan áreas simétricas, de arriba hacia abajo. Las líneas punteadas azules son las referencias verticales.",
-      pt:"Reparos anatômicos para localizar os achados sobre a silhueta do paciente. Sempre comparar áreas simétricas, de cima para baixo. As linhas tracejadas azuis são as referências verticais."},
+      es:"Reparos anatómicos para localizar los hallazgos sobre el esquema del tórax. Siempre se comparan áreas simétricas, de arriba hacia abajo. Las líneas punteadas azules son las referencias verticales.",
+      pt:"Reparos anatômicos para localizar os achados sobre o esquema do tórax. Sempre comparar áreas simétricas, de cima para baixo. As linhas tracejadas azuis são as referências verticais."},
     extra:"figuras",
     accs:[
       {t:{es:"Cara anterior",pt:"Face anterior"},body:{
