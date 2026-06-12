@@ -100,7 +100,7 @@
     '🚽':'toilet','🚻':'toilet','⛔':'ban','⚠️':'alert','🚨':'alert','🤕':'alert',
     '👁️':'eye','👁':'eye','📐':'ruler','🥁':'drum','🫃':'abdomen','💊':'pill',
     '📄':'file','📝':'file','📋':'clipboard','🎯':'target','🏠':'home',
-    '👂':'ear','👃':'nose','🦷':'tooth','🫘':'kidney','🫱':'hand','🦿':'bone',
+    '👂':'ear','👃':'nose','🦷':'tooth','🫘':'kidney','🫱':'hand','🦿':'bone','🩻':'abdomen',
     '💭':'cloud','🔬':'microscope','⚗️':'flask','⚗':'flask','🫀':'heart',
     '🔘':'_fallback','◎':'home','☰':'clipboard','⊕':'plus','◯':'_fallback'
   };

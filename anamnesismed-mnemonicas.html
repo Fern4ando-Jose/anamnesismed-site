@@ -6,6 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<script src="am-icons.js"></script>
 <title>Mnemônicas & Manobras — AnamnesisMed</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -355,7 +356,7 @@ var filterState = 'all';
 function buildFilters(){
   var html = '<div class="filter-chip active" data-f="all" onclick="setFilter(this,\'all\')"><span class="pt">Todos os temas</span><span class="es">Todos los temas</span></div>';
   THEMES.forEach(function(t){
-    html += '<div class="filter-chip" data-f="'+t.id+'" onclick="setFilter(this,\''+t.id+'\')">'+t.icon+' <span class="pt">'+t.name+'</span><span class="es">'+t.nameEs+'</span></div>';
+    html += '<div class="filter-chip" data-f="'+t.id+'" onclick="setFilter(this,\''+t.id+'\')">'+(window.amIcon?amIcon(t.icon,15):t.icon)+' <span class="pt">'+t.name+'</span><span class="es">'+t.nameEs+'</span></div>';
   });
   document.getElementById('filters').innerHTML = html;
 }
@@ -427,7 +428,7 @@ function renderAll(){
     if(!themeMatchesQuery(theme, q)) return;
     any = true;
     html += '<div class="theme-section">';
-    html += '<div class="theme-head"><div class="theme-icon">'+theme.icon+'</div><div class="theme-title">'+(LANG==='es'?theme.nameEs:theme.name)+'</div></div>';
+    html += '<div class="theme-head"><div class="theme-icon">'+(window.amIcon?amIcon(theme.icon,22):theme.icon)+'</div><div class="theme-title">'+(LANG==='es'?theme.nameEs:theme.name)+'</div></div>';
     var mn = buildMnemonicsHTML(theme.mnemonics);
     var mb = buildManobrasHTML(theme.manobras, theme.id);
     if(mn){
@@ -447,7 +448,6 @@ function renderAll(){
 buildFilters();
 renderAll();
 </script>
-<script src="am-icons.js"></script>
 <script src="sidebar.js"></script>
 </body>
 </html>
