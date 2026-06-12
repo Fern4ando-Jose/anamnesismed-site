@@ -292,28 +292,6 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%);padding-bottom:70px}
-  .sidebar.open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.3)}
-  .sb-overlay.open{display:block}
-  .main{margin-left:0}
-  .hamburger{display:block}
-  .motivo-grid{grid-template-columns:1fr 1fr}
-  .index-screen,.hc-sections{padding:14px 14px 100px}
-  .hc-header{padding:12px 14px 0}
-  .guide-tabs{padding:0 14px}
-  .guide-page{padding:16px 14px 60px}
-  .bottom-nav{display:block}
-  .sign-grid{grid-template-columns:1fr}
-  .ecto-grid{grid-template-columns:1fr}
-  .f-row-3,.f-row-4{grid-template-columns:1fr 1fr}
-}
-@media(max-width:500px){
-  .motivo-grid{grid-template-columns:1fr}
-  .f-row-2{grid-template-columns:1fr}
-  .acc-findings{grid-template-columns:1fr}
-}
 /* ── FLOATING ACTION BUTTON ── */
 .fab-wrap{
   position:fixed;bottom:80px;right:18px;z-index:250;
@@ -339,8 +317,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .fab-item{display:flex;align-items:center;gap:8px}
 
 /* ── MOBILE RESPONSIVENESS ── */
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%)}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);padding-bottom:70px}
   .sidebar.open{transform:translateX(0);box-shadow:4px 0 40px rgba(0,0,0,.3)}
   .sb-overlay.open{display:block}
   .main{margin-left:0}
