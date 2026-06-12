@@ -176,58 +176,6 @@ AM.motivo("tosse", {
       "type": "yn"
     },
     {
-      "q": "Tabagismo — carga tabágica",
-      "qEs": "Tabaquismo — carga tabáquica",
-      "type": "input",
-      "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-      "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-    },
-    {
-      "q": "Uso de IECA (captopril, enalapril, lisinopril)?",
-      "qEs": "¿Uso de IECA (captopril, enalapril, lisinopril)?",
-      "type": "yn"
-    },
-    {
-      "q": "Antecedentes respiratórios",
-      "qEs": "Antecedentes respiratorios",
-      "type": "multi",
-      "opts": [
-        "Asma",
-        "DPOC",
-        "Tuberculose prévia",
-        "Bronquiectasia",
-        "Nenhum antecedente relevante"
-      ],
-      "optsEs": [
-        "Asma",
-        "EPOC",
-        "Tuberculosis previa",
-        "Bronquiectasia",
-        "Sin antecedente relevante"
-      ]
-    },
-    {
-      "q": "Exposição ocupacional ou ambiental",
-      "qEs": "Exposición ocupacional o ambiental",
-      "type": "multi",
-      "opts": [
-        "Poeiras (madeira, farinha, cimento)",
-        "Fumaças e gases tóxicos",
-        "Animais/penas/pelos",
-        "Fibras minerais (amianto, sílica)",
-        "Fungos/mofo em ambiente fechado",
-        "Sem exposição identificada"
-      ],
-      "optsEs": [
-        "Polvos (madera, harina, cemento)",
-        "Humos y gases tóxicos",
-        "Animales/plumas/pelaje",
-        "Fibras minerales (amianto, sílice)",
-        "Hongos/moho en ambientes cerrados",
-        "Sin exposición identificada"
-      ]
-    },
-    {
       "q": "Perda de peso não intencional?",
       "qEs": "¿Pérdida de peso no intencional?",
       "type": "yn"
@@ -235,16 +183,6 @@ AM.motivo("tosse", {
     {
       "q": "Sudorese noturna?",
       "qEs": "¿Sudoración nocturna?",
-      "type": "yn"
-    },
-    {
-      "q": "Situação vacinal (influenza, pneumocócica, coqueluche)?",
-      "qEs": "¿Estado vacunal (influenza, neumocócica, tos ferina)?",
-      "type": "yn"
-    },
-    {
-      "q": "Contato com pessoa doente ou caso suspeito de TB?",
-      "qEs": "¿Contacto con persona enferma o caso sospechoso de TB?",
       "type": "yn"
     },
     {

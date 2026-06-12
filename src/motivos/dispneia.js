@@ -146,37 +146,6 @@ AM.motivo("dispneia", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes cardíacos (ICC, valvopatia, IAM) ou pulmonares (asma, DPOC, fibrose)?",
-      "qEs": "¿Antecedentes cardíacos (ICC, valvulopatía, IAM) o pulmonares (asma, EPOC, fibrosis)?",
-      "type": "yn"
-    },
-    {
-      "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-      "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-      "type": "input",
-      "ph": "Anos-maço",
-      "ph2": "Años-paquete"
-    },
-    {
-      "q": "Exposições ocupacionais ou alérgenos (poeiras, fumaças, animais, mofo)?",
-      "qEs": "¿Exposiciones ocupacionales o alérgenos (polvos, humos, animales, moho)?",
-      "type": "yn"
-    },
-    {
-      "q": "Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?",
-      "qEs": "¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?",
-      "type": "input",
-      "ph": "Descreva episódios anteriores e tratamento",
-      "ph2": "Describa episodios anteriores y tratamiento"
-    },
-    {
-      "q": "Uso de medicamentos (broncodilatadores, diuréticos, anti-hipertensivos, IECA)?",
-      "qEs": "¿Uso de medicamentos (broncodilatadores, diuréticos, antihipertensivos, IECA)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

@@ -257,23 +257,6 @@ AM.motivo("dor-toracica", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes cardiovasculares (IAM, angina, revascularização, arritmias)?",
-      "qEs": "¿Antecedentes cardiovasculares (IAM, angina, revascularización, arritmias)?",
-      "type": "yn"
-    },
-    {
-      "q": "Fatores de risco cardiovascular (HAS, diabetes, dislipidemia, tabagismo, obesidade, história familiar)?",
-      "qEs": "¿Factores de riesgo cardiovascular (HTA, diabetes, dislipidemia, tabaquismo, obesidad, antecedentes familiares)?",
-      "type": "yn"
-    },
-    {
-      "q": "Uso de medicamentos (anticoagulantes, antiagregantes, anti-hipertensivos, estatinas)?",
-      "qEs": "¿Uso de medicamentos (anticoagulantes, antiagregantes, antihipertensivos, estatinas)?",
-      "type": "input",
-      "ph": "Liste os medicamentos em uso",
-      "ph2": "Liste los medicamentos en uso"
-    },
-    {
       "q": "Evolução do quadro",
       "qEs": "Evolución del cuadro",
       "type": "radio",

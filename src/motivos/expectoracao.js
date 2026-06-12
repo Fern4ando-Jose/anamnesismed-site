@@ -124,36 +124,6 @@ AM.motivo("expectoracao", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes respiratórios relevantes",
-      "qEs": "Antecedentes respiratorios relevantes",
-      "type": "multi",
-      "opts": [
-        "Bronquiectasia",
-        "DPOC / Bronquite crônica",
-        "Asma",
-        "Tuberculose prévia",
-        "Abscesso pulmonar",
-        "Fibrose cística",
-        "Nenhum antecedente relevante"
-      ],
-      "optsEs": [
-        "Bronquiectasia",
-        "EPOC / Bronquitis crónica",
-        "Asma",
-        "Tuberculosis previa",
-        "Absceso pulmonar",
-        "Fibrosis quística",
-        "Sin antecedente relevante"
-      ]
-    },
-    {
-      "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-      "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-      "type": "input",
-      "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-      "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-    },
-    {
       "q": "Perda de peso não intencional ou sudorese noturna?",
       "qEs": "¿Pérdida de peso no intencional o sudoración nocturna?",
       "type": "yn"

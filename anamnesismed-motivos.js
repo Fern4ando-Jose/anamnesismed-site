@@ -228,23 +228,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes cardiovasculares (IAM, angina, revascularização, arritmias)?",
-              "qEs": "¿Antecedentes cardiovasculares (IAM, angina, revascularización, arritmias)?",
-              "type": "yn"
-            },
-            {
-              "q": "Fatores de risco cardiovascular (HAS, diabetes, dislipidemia, tabagismo, obesidade, história familiar)?",
-              "qEs": "¿Factores de riesgo cardiovascular (HTA, diabetes, dislipidemia, tabaquismo, obesidad, antecedentes familiares)?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos (anticoagulantes, antiagregantes, anti-hipertensivos, estatinas)?",
-              "qEs": "¿Uso de medicamentos (anticoagulantes, antiagregantes, antihipertensivos, estatinas)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
-            },
-            {
               "q": "Evolução do quadro",
               "qEs": "Evolución del cuadro",
               "type": "radio",
@@ -448,37 +431,6 @@ const MOTIVOS = {
               "q": "Febre associada?",
               "qEs": "¿Fiebre asociada?",
               "type": "yn"
-            },
-            {
-              "q": "Antecedentes cardíacos (ICC, valvopatia, IAM) ou pulmonares (asma, DPOC, fibrose)?",
-              "qEs": "¿Antecedentes cardíacos (ICC, valvulopatía, IAM) o pulmonares (asma, EPOC, fibrosis)?",
-              "type": "yn"
-            },
-            {
-              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço",
-              "ph2": "Años-paquete"
-            },
-            {
-              "q": "Exposições ocupacionais ou alérgenos (poeiras, fumaças, animais, mofo)?",
-              "qEs": "¿Exposiciones ocupacionales o alérgenos (polvos, humos, animales, moho)?",
-              "type": "yn"
-            },
-            {
-              "q": "Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?",
-              "qEs": "¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?",
-              "type": "input",
-              "ph": "Descreva episódios anteriores e tratamento",
-              "ph2": "Describa episodios anteriores y tratamiento"
-            },
-            {
-              "q": "Uso de medicamentos (broncodilatadores, diuréticos, anti-hipertensivos, IECA)?",
-              "qEs": "¿Uso de medicamentos (broncodilatadores, diuréticos, antihipertensivos, IECA)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -1811,58 +1763,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Tabagismo — carga tabágica",
-              "qEs": "Tabaquismo — carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-            },
-            {
-              "q": "Uso de IECA (captopril, enalapril, lisinopril)?",
-              "qEs": "¿Uso de IECA (captopril, enalapril, lisinopril)?",
-              "type": "yn"
-            },
-            {
-              "q": "Antecedentes respiratórios",
-              "qEs": "Antecedentes respiratorios",
-              "type": "multi",
-              "opts": [
-                "Asma",
-                "DPOC",
-                "Tuberculose prévia",
-                "Bronquiectasia",
-                "Nenhum antecedente relevante"
-              ],
-              "optsEs": [
-                "Asma",
-                "EPOC",
-                "Tuberculosis previa",
-                "Bronquiectasia",
-                "Sin antecedente relevante"
-              ]
-            },
-            {
-              "q": "Exposição ocupacional ou ambiental",
-              "qEs": "Exposición ocupacional o ambiental",
-              "type": "multi",
-              "opts": [
-                "Poeiras (madeira, farinha, cimento)",
-                "Fumaças e gases tóxicos",
-                "Animais/penas/pelos",
-                "Fibras minerais (amianto, sílica)",
-                "Fungos/mofo em ambiente fechado",
-                "Sem exposição identificada"
-              ],
-              "optsEs": [
-                "Polvos (madera, harina, cemento)",
-                "Humos y gases tóxicos",
-                "Animales/plumas/pelaje",
-                "Fibras minerales (amianto, sílice)",
-                "Hongos/moho en ambientes cerrados",
-                "Sin exposición identificada"
-              ]
-            },
-            {
               "q": "Perda de peso não intencional?",
               "qEs": "¿Pérdida de peso no intencional?",
               "type": "yn"
@@ -1870,16 +1770,6 @@ const MOTIVOS = {
             {
               "q": "Sudorese noturna?",
               "qEs": "¿Sudoración nocturna?",
-              "type": "yn"
-            },
-            {
-              "q": "Situação vacinal (influenza, pneumocócica, coqueluche)?",
-              "qEs": "¿Estado vacunal (influenza, neumocócica, tos ferina)?",
-              "type": "yn"
-            },
-            {
-              "q": "Contato com pessoa doente ou caso suspeito de TB?",
-              "qEs": "¿Contacto con persona enferma o caso sospechoso de TB?",
               "type": "yn"
             },
             {
@@ -3247,37 +3137,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes cardíacos (ICC, valvopatia, IAM) ou pulmonares (asma, DPOC, fibrose)?",
-              "qEs": "¿Antecedentes cardíacos (ICC, valvulopatía, IAM) o pulmonares (asma, EPOC, fibrosis)?",
-              "type": "yn"
-            },
-            {
-              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço",
-              "ph2": "Años-paquete"
-            },
-            {
-              "q": "Exposições ocupacionais ou alérgenos (poeiras, fumaças, animais, mofo)?",
-              "qEs": "¿Exposiciones ocupacionales o alérgenos (polvos, humos, animales, moho)?",
-              "type": "yn"
-            },
-            {
-              "q": "Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?",
-              "qEs": "¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?",
-              "type": "input",
-              "ph": "Descreva episódios anteriores e tratamento",
-              "ph2": "Describa episodios anteriores y tratamiento"
-            },
-            {
-              "q": "Uso de medicamentos (broncodilatadores, diuréticos, anti-hipertensivos, IECA)?",
-              "qEs": "¿Uso de medicamentos (broncodilatadores, diuréticos, antihipertensivos, IECA)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
-            },
-            {
               "q": "Evolução do quadro",
               "qEs": "Evolución del cuadro",
               "type": "radio",
@@ -3481,58 +3340,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Tabagismo — carga tabágica",
-              "qEs": "Tabaquismo — carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-            },
-            {
-              "q": "Uso de IECA (captopril, enalapril, lisinopril)?",
-              "qEs": "¿Uso de IECA (captopril, enalapril, lisinopril)?",
-              "type": "yn"
-            },
-            {
-              "q": "Antecedentes respiratórios",
-              "qEs": "Antecedentes respiratorios",
-              "type": "multi",
-              "opts": [
-                "Asma",
-                "DPOC",
-                "Tuberculose prévia",
-                "Bronquiectasia",
-                "Nenhum antecedente relevante"
-              ],
-              "optsEs": [
-                "Asma",
-                "EPOC",
-                "Tuberculosis previa",
-                "Bronquiectasia",
-                "Sin antecedente relevante"
-              ]
-            },
-            {
-              "q": "Exposição ocupacional ou ambiental",
-              "qEs": "Exposición ocupacional o ambiental",
-              "type": "multi",
-              "opts": [
-                "Poeiras (madeira, farinha, cimento)",
-                "Fumaças e gases tóxicos",
-                "Animais/penas/pelos",
-                "Fibras minerais (amianto, sílica)",
-                "Fungos/mofo em ambiente fechado",
-                "Sem exposição identificada"
-              ],
-              "optsEs": [
-                "Polvos (madera, harina, cemento)",
-                "Humos y gases tóxicos",
-                "Animales/plumas/pelaje",
-                "Fibras minerales (amianto, sílice)",
-                "Hongos/moho en ambientes cerrados",
-                "Sin exposición identificada"
-              ]
-            },
-            {
               "q": "Perda de peso não intencional?",
               "qEs": "¿Pérdida de peso no intencional?",
               "type": "yn"
@@ -3540,16 +3347,6 @@ const MOTIVOS = {
             {
               "q": "Sudorese noturna?",
               "qEs": "¿Sudoración nocturna?",
-              "type": "yn"
-            },
-            {
-              "q": "Situação vacinal (influenza, pneumocócica, coqueluche)?",
-              "qEs": "¿Estado vacunal (influenza, neumocócica, tos ferina)?",
-              "type": "yn"
-            },
-            {
-              "q": "Contato com pessoa doente ou caso suspeito de TB?",
-              "qEs": "¿Contacto con persona enferma o caso sospechoso de TB?",
               "type": "yn"
             },
             {
@@ -6078,58 +5875,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Tabagismo — carga tabágica",
-              "qEs": "Tabaquismo — carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-            },
-            {
-              "q": "Uso de IECA (captopril, enalapril, lisinopril)?",
-              "qEs": "¿Uso de IECA (captopril, enalapril, lisinopril)?",
-              "type": "yn"
-            },
-            {
-              "q": "Antecedentes respiratórios",
-              "qEs": "Antecedentes respiratorios",
-              "type": "multi",
-              "opts": [
-                "Asma",
-                "DPOC",
-                "Tuberculose prévia",
-                "Bronquiectasia",
-                "Nenhum antecedente relevante"
-              ],
-              "optsEs": [
-                "Asma",
-                "EPOC",
-                "Tuberculosis previa",
-                "Bronquiectasia",
-                "Sin antecedente relevante"
-              ]
-            },
-            {
-              "q": "Exposição ocupacional ou ambiental",
-              "qEs": "Exposición ocupacional o ambiental",
-              "type": "multi",
-              "opts": [
-                "Poeiras (madeira, farinha, cimento)",
-                "Fumaças e gases tóxicos",
-                "Animais/penas/pelos",
-                "Fibras minerais (amianto, sílica)",
-                "Fungos/mofo em ambiente fechado",
-                "Sem exposição identificada"
-              ],
-              "optsEs": [
-                "Polvos (madera, harina, cemento)",
-                "Humos y gases tóxicos",
-                "Animales/plumas/pelaje",
-                "Fibras minerales (amianto, sílice)",
-                "Hongos/moho en ambientes cerrados",
-                "Sin exposición identificada"
-              ]
-            },
-            {
               "q": "Perda de peso não intencional?",
               "qEs": "¿Pérdida de peso no intencional?",
               "type": "yn"
@@ -6137,16 +5882,6 @@ const MOTIVOS = {
             {
               "q": "Sudorese noturna?",
               "qEs": "¿Sudoración nocturna?",
-              "type": "yn"
-            },
-            {
-              "q": "Situação vacinal (influenza, pneumocócica, coqueluche)?",
-              "qEs": "¿Estado vacunal (influenza, neumocócica, tos ferina)?",
-              "type": "yn"
-            },
-            {
-              "q": "Contato com pessoa doente ou caso suspeito de TB?",
-              "qEs": "¿Contacto con persona enferma o caso sospechoso de TB?",
               "type": "yn"
             },
             {
@@ -6304,36 +6039,6 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes respiratórios relevantes",
-              "qEs": "Antecedentes respiratorios relevantes",
-              "type": "multi",
-              "opts": [
-                "Bronquiectasia",
-                "DPOC / Bronquite crônica",
-                "Asma",
-                "Tuberculose prévia",
-                "Abscesso pulmonar",
-                "Fibrose cística",
-                "Nenhum antecedente relevante"
-              ],
-              "optsEs": [
-                "Bronquiectasia",
-                "EPOC / Bronquitis crónica",
-                "Asma",
-                "Tuberculosis previa",
-                "Absceso pulmonar",
-                "Fibrosis quística",
-                "Sin antecedente relevante"
-              ]
-            },
-            {
-              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-            },
-            {
               "q": "Perda de peso não intencional ou sudorese noturna?",
               "qEs": "¿Pérdida de peso no intencional o sudoración nocturna?",
               "type": "yn"
@@ -6470,55 +6175,9 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
-              "q": "Antecedentes relevantes",
-              "qEs": "Antecedentes relevantes",
-              "type": "multi",
-              "opts": [
-                "Tuberculose prévia ou contato TB",
-                "Neoplasia pulmonar (diagnóstico ou suspeita)",
-                "Bronquiectasia",
-                "Estenose mitral / cardiopatia",
-                "Tromboembolismo pulmonar (TEP)",
-                "Insuficiência cardíaca",
-                "Bronquite crônica / DPOC",
-                "Coagulopatia / uso de anticoagulante",
-                "Nenhum antecedente relevante"
-              ],
-              "optsEs": [
-                "Tuberculosis previa o contacto TB",
-                "Neoplasia pulmonar (diagnóstico o sospecha)",
-                "Bronquiectasia",
-                "Estenosis mitral / cardiopatía",
-                "Tromboembolismo pulmonar (TEP)",
-                "Insuficiencia cardíaca",
-                "Bronquitis crónica / EPOC",
-                "Coagulopatía / uso de anticoagulante",
-                "Sin antecedente relevante"
-              ]
-            },
-            {
-              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-              "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-            },
-            {
-              "q": "Uso de anticoagulantes ou antiagregantes?",
-              "qEs": "¿Uso de anticoagulantes o antiagregantes?",
-              "type": "yn"
-            },
-            {
               "q": "Trauma torácico recente?",
               "qEs": "¿Trauma torácico reciente?",
               "type": "yn"
-            },
-            {
-              "q": "Episódios anteriores de hemoptise — frequência?",
-              "qEs": "¿Episodios previos de hemoptisis — frecuencia?",
-              "type": "input",
-              "ph": "Descreva frequência e volume de episódios anteriores",
-              "ph2": "Describa frecuencia y volumen de episodios anteriores"
             },
             {
               "q": "O que motivou buscar atendimento hoje?",
@@ -6675,37 +6334,6 @@ const MOTIVOS = {
               "q": "Febre associada?",
               "qEs": "¿Fiebre asociada?",
               "type": "yn"
-            },
-            {
-              "q": "Antecedentes cardíacos (ICC, valvopatia, IAM) ou pulmonares (asma, DPOC, fibrose)?",
-              "qEs": "¿Antecedentes cardíacos (ICC, valvulopatía, IAM) o pulmonares (asma, EPOC, fibrosis)?",
-              "type": "yn"
-            },
-            {
-              "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-              "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-              "type": "input",
-              "ph": "Anos-maço",
-              "ph2": "Años-paquete"
-            },
-            {
-              "q": "Exposições ocupacionais ou alérgenos (poeiras, fumaças, animais, mofo)?",
-              "qEs": "¿Exposiciones ocupacionales o alérgenos (polvos, humos, animales, moho)?",
-              "type": "yn"
-            },
-            {
-              "q": "Episódios semelhantes prévios? Como evoluíram e qual tratamento foi feito?",
-              "qEs": "¿Episodios similares previos? ¿Cómo evolucionaron y qué tratamiento se realizó?",
-              "type": "input",
-              "ph": "Descreva episódios anteriores e tratamento",
-              "ph2": "Describa episodios anteriores y tratamiento"
-            },
-            {
-              "q": "Uso de medicamentos (broncodilatadores, diuréticos, anti-hipertensivos, IECA)?",
-              "qEs": "¿Uso de medicamentos (broncodilatadores, diuréticos, antihipertensivos, IECA)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",
@@ -6958,23 +6586,6 @@ const MOTIVOS = {
               "q": "Dor torácica em \"facada\" no dorso/interescapular, com diferença de pressão arterial entre os braços (suspeita de dissecção aórtica) — sinal de alarme?",
               "qEs": "¿Dolor torácico \"como puñalada\" en dorso/interescapular, con diferencia de presión arterial entre brazos (sospecha de disección aórtica) — signo de alarma?",
               "type": "yn"
-            },
-            {
-              "q": "Antecedentes cardiovasculares (IAM, angina, revascularização, arritmias)?",
-              "qEs": "¿Antecedentes cardiovasculares (IAM, angina, revascularización, arritmias)?",
-              "type": "yn"
-            },
-            {
-              "q": "Fatores de risco cardiovascular (HAS, diabetes, dislipidemia, tabagismo, obesidade, história familiar)?",
-              "qEs": "¿Factores de riesgo cardiovascular (HTA, diabetes, dislipidemia, tabaquismo, obesidad, antecedentes familiares)?",
-              "type": "yn"
-            },
-            {
-              "q": "Uso de medicamentos (anticoagulantes, antiagregantes, anti-hipertensivos, estatinas)?",
-              "qEs": "¿Uso de medicamentos (anticoagulantes, antiagregantes, antihipertensivos, estatinas)?",
-              "type": "input",
-              "ph": "Liste os medicamentos em uso",
-              "ph2": "Liste los medicamentos en uso"
             },
             {
               "q": "Evolução do quadro",

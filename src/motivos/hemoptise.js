@@ -102,55 +102,9 @@ AM.motivo("hemoptise", {
       "type": "yn"
     },
     {
-      "q": "Antecedentes relevantes",
-      "qEs": "Antecedentes relevantes",
-      "type": "multi",
-      "opts": [
-        "Tuberculose prévia ou contato TB",
-        "Neoplasia pulmonar (diagnóstico ou suspeita)",
-        "Bronquiectasia",
-        "Estenose mitral / cardiopatia",
-        "Tromboembolismo pulmonar (TEP)",
-        "Insuficiência cardíaca",
-        "Bronquite crônica / DPOC",
-        "Coagulopatia / uso de anticoagulante",
-        "Nenhum antecedente relevante"
-      ],
-      "optsEs": [
-        "Tuberculosis previa o contacto TB",
-        "Neoplasia pulmonar (diagnóstico o sospecha)",
-        "Bronquiectasia",
-        "Estenosis mitral / cardiopatía",
-        "Tromboembolismo pulmonar (TEP)",
-        "Insuficiencia cardíaca",
-        "Bronquitis crónica / EPOC",
-        "Coagulopatía / uso de anticoagulante",
-        "Sin antecedente relevante"
-      ]
-    },
-    {
-      "q": "Tabagismo (atual ou prévio)? Carga tabágica",
-      "qEs": "¿Tabaquismo (actual o previo)? Carga tabáquica",
-      "type": "input",
-      "ph": "Anos-maço (ex: 20 cigarros/dia × 10 anos = 10 maços-ano)",
-      "ph2": "Paquetes-año (ej: 20 cigarrillos/día × 10 años = 10 paquetes-año)"
-    },
-    {
-      "q": "Uso de anticoagulantes ou antiagregantes?",
-      "qEs": "¿Uso de anticoagulantes o antiagregantes?",
-      "type": "yn"
-    },
-    {
       "q": "Trauma torácico recente?",
       "qEs": "¿Trauma torácico reciente?",
       "type": "yn"
-    },
-    {
-      "q": "Episódios anteriores de hemoptise — frequência?",
-      "qEs": "¿Episodios previos de hemoptisis — frecuencia?",
-      "type": "input",
-      "ph": "Descreva frequência e volume de episódios anteriores",
-      "ph2": "Describa frecuencia y volumen de episodios anteriores"
     },
     {
       "q": "O que motivou buscar atendimento hoje?",
