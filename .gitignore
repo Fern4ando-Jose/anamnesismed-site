@@ -52,3 +52,9 @@ desktop.ini
 *.tmp
 *.bak
 tmp/
+
+# ── Material local / estudo / backups (NÃO vai para produção online) ───────────
+.claude/
+Antigos/
+Material de Estudo/
+HCs/
