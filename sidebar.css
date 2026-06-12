@@ -28,6 +28,9 @@
 
 .sidebar-nav{flex:1;padding:10px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;min-height:0;scrollbar-width:none}
 .sidebar-nav::-webkit-scrollbar{display:none}
+/* itens "acessado por último" ficam aninhados em #nav-recent (não são filhos diretos
+   do .sidebar-nav, então não herdam o gap) — replicamos o mesmo espaçamento aqui */
+#nav-recent{display:flex;flex-direction:column;gap:4px}
 .nav-section-label{
   font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;
   text-transform:uppercase;color:#4f6b72;padding:12px 6px 5px
