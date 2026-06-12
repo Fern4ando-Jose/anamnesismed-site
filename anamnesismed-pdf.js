@@ -68,9 +68,10 @@ function exportPDF(){
   w.document.write('h3{font-size:11px;font-weight:700;color:#0e7490;text-transform:uppercase;letter-spacing:1px;margin:12px 0 4px}');
   w.document.write('.header{border-bottom:2px solid #0e7490;padding-bottom:10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-start}');
   w.document.write('.logo{font-size:16px;font-weight:700;color:#0d2d3d}.logo span{color:#0e7490}');
-  w.document.write('table.dados{width:100%;border-collapse:collapse;margin-bottom:14px}');
-  w.document.write('table.dados td{border:1px solid #ddd;padding:5px 8px;font-size:11px;vertical-align:top}');
-  w.document.write('table.dados td:first-child{font-weight:700;background:#f0f4f8;width:30%;color:#0d2d3d}');
+  w.document.write('table.dados{width:100%;border-collapse:collapse;margin-bottom:14px;table-layout:fixed}');
+  w.document.write('table.dados td{border:1px solid #ddd;padding:5px 8px;font-size:11px;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word}');
+  w.document.write('table.dados td:nth-child(1),table.dados td:nth-child(3){font-weight:700;background:#f0f4f8;color:#0d2d3d;width:17%}');
+  w.document.write('table.dados td:nth-child(2),table.dados td:nth-child(4){width:33%}');
   w.document.write('p{margin-bottom:6px;line-height:1.6}');
   w.document.write('.field{margin-bottom:8px}.field-label{font-weight:700;font-size:10px;text-transform:uppercase;color:#4b6070;display:block;margin-bottom:2px}');
   w.document.write('.footer{border-top:1px solid #ddd;margin-top:24px;padding-top:8px;font-size:10px;color:#4b6070;display:flex;justify-content:space-between}');
