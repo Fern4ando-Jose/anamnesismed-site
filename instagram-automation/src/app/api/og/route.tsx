@@ -3,9 +3,10 @@ import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
-// ─── Dimensões (1:1 quadrado, padrão Instagram feed) ─────────────────────────
+// ─── Dimensões (4:5 retrato, padrão atual do feed/grade do Instagram) ────────
+// 4:5 evita o corte lateral que o IG aplica em imagens 1:1 e ocupa mais tela.
 const W = 1080;
-const H = 1080;
+const H = 1350;
 
 // ─── Paleta AnamnesísMed ──────────────────────────────────────────────────────
 const INK    = "#0a0c10";
@@ -358,13 +359,19 @@ export async function GET(req: NextRequest) {
                   Marque um colega
                 </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{
                   display: "flex", background: RED, color: WHITE,
-                  fontFamily: "DMSans", fontSize: 15, fontWeight: 700,
-                  padding: "14px 30px", borderRadius: 8, letterSpacing: "0.3px",
+                  fontFamily: "DMSans", fontSize: 16, fontWeight: 700,
+                  padding: "15px 30px", borderRadius: 8, letterSpacing: "0.3px",
                 }}>
-                  Anamnese completa no link da bio
+                  Siga @anamnesismed
+                </div>
+                <div style={{
+                  display: "flex", fontFamily: "DMSans", fontSize: 14,
+                  color: "rgba(255,255,255,0.5)",
+                }}>
+                  Link da bio
                 </div>
               </div>
             </div>

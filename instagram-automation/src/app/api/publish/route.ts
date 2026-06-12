@@ -151,15 +151,17 @@ Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
   "slides": [
     "insight 1 — a informação mais valiosa/surpreendente do tema, MÁX 85 chars",
     "insight 2 — aprofunda com mnemônico, score ou dado memorável, máx 85 chars",
-    "insight 3 — fecha com a consequência prática / o que fazer, máx 85 chars"
+    "insight 3 — um erro comum a evitar OU um detalhe que muda a conduta, máx 85 chars",
+    "insight 4 — fecha com a consequência prática / o que fazer agora, máx 85 chars"
   ],
   "accentWords": [
     "1 palavra-chave do slide 1 (aparecerá em vermelho)",
     "1 palavra-chave do slide 2",
-    "1 palavra-chave do slide 3"
+    "1 palavra-chave do slide 3",
+    "1 palavra-chave do slide 4"
   ],
   "cta": "pergunta curta e específica que gere comentários de médicos/estudantes, 50-90 chars",
-  "instagramCaption": "legenda 600-1500 chars em português, NESTA ordem: (1) gancho na 1a linha repetindo a tensão da capa; (2) 2-4 parágrafos curtos entregando o valor clínico do tema; (3) CTA explícito: 'Salve este post para o próximo plantão' e 'Marque um colega que precisa ver isto'; (4) a pergunta de engajamento; (5) '→ Anamnese completa no link da bio'; (6) em uma última linha, 6-9 hashtags. Use emojis com parcimônia (1-3).",
+  "instagramCaption": "legenda 700-1600 chars em português, NESTA ordem: (1) gancho na 1a linha repetindo a tensão da capa; (2) 3-4 parágrafos curtos entregando o valor clínico do tema; (3) CTA de crescimento: 'Salve para o próximo plantão', 'Marque um colega' e 'Siga @anamnesismed para dominar a anamnese'; (4) a pergunta de engajamento; (5) '→ Anamnese completa no link da bio'; (6) em uma última linha, 6-9 hashtags. Use emojis com parcimônia (1-3).",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }
 
