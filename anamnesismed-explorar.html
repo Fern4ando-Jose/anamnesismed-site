@@ -263,14 +263,14 @@ var ESPECIALIDADES = [
     descPt:"Abdome agudo, hérnias e trauma", descEs:"Abdomen agudo, hernias y trauma",
     c:"#f59e0b", cbg:"rgba(245,158,11,.12)" }
 ];
-// Motivos do Respiratório (não há chave própria em MOTIVOS — espelha especialidades.html)
-var RESP_IDS = ["tosse","expectoracao","hemoptise","dispneia","dor-toracica"];
+// NOTA: ESPECIALIDADES acima são apenas metadados de apresentação (nome, descrição,
+// cor, ícone). A lista de motivos por categoria e as contagens vêm do global MOTIVOS
+// (anamnesismed-motivos.js, gerado de src/) — não duplicar motivos aqui. Ver regra #7.
 
 var currentLang = "es";
 
 // ── CONTAGEM DINÂMICA DE MOTIVOS POR ESPECIALIDADE ────────────────────────────
 function countMotivos(espId){
-  if(espId === "respiratorio") return RESP_IDS.length;
   try{
     var data = (typeof MOTIVOS !== "undefined" && MOTIVOS[espId]) ? MOTIVOS[espId] : [];
     return data.reduce(function(s,cat){ return s + ((cat.items||[]).length); }, 0);
@@ -278,7 +278,7 @@ function countMotivos(espId){
 }
 
 // ── ÍNDICE DE BUSCA (achatamento de MOTIVOS) ──────────────────────────────────
-var SPEC_LABEL = { semiologia:{pt:"Semiologia",es:"Semiología"}, clinica:{pt:"Clínica",es:"Clínica"}, cirurgia:{pt:"Cirurgia",es:"Cirugía"} };
+var SPEC_LABEL = { semiologia:{pt:"Semiologia",es:"Semiología"}, respiratorio:{pt:"Respiratório",es:"Respiratorio"}, clinica:{pt:"Clínica",es:"Clínica"}, cirurgia:{pt:"Cirurgia",es:"Cirugía"} };
 function buildSearchIndex(){
   var idx = [];
   if(typeof MOTIVOS === "undefined") return idx;

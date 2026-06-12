@@ -3,6 +3,7 @@ const MOTIVOS = {
   "clinica": [
     {
       "cat": "Cardiorrespiratório / Cardiovascular",
+      "catEs": "Cardiorrespiratorio / Cardiovascular",
       "items": [
         {
           "id": "dor-toracica",
@@ -513,6 +514,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Neurológico",
+      "catEs": "Neurológico",
       "items": [
         {
           "id": "cefaleia",
@@ -867,6 +869,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Infeccioso / Geral",
+      "catEs": "Infeccioso / General",
       "items": [
         {
           "id": "febre",
@@ -1077,6 +1080,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Gastrointestinal",
+      "catEs": "Gastrointestinal",
       "items": [
         {
           "id": "dor-abdominal",
@@ -1441,6 +1445,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Outros",
+      "catEs": "Otros",
       "items": [
         {
           "id": "edema",
@@ -2110,6 +2115,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Gastrointestinal — Outros",
+      "catEs": "Gastrointestinal — Otros",
       "items": [
         {
           "id": "nauseas-vomitos",
@@ -2346,6 +2352,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Cardiovascular — Outros",
+      "catEs": "Cardiovascular — Otros",
       "items": [
         {
           "id": "palpitacoes",
@@ -2468,6 +2475,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Geniturinário",
+      "catEs": "Genitourinario",
       "items": [
         {
           "id": "sintomas-urinarios",
@@ -2573,6 +2581,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Osteoarticular",
+      "catEs": "Osteoarticular",
       "items": [
         {
           "id": "lombalgia",
@@ -5199,6 +5208,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Hemorragia Digestiva",
+      "catEs": "Hemorragia Digestiva",
       "items": [
         {
           "id": "hemorragia-digestiva-alta",
@@ -5748,6 +5758,7 @@ const MOTIVOS = {
     },
     {
       "cat": "Trauma",
+      "catEs": "Trauma",
       "items": [
         {
           "id": "trauma-abdominal",

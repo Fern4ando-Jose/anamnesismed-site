@@ -19,6 +19,7 @@ AM.especialidade("cirurgia", [
   },
   {
     "cat": "Hemorragia Digestiva",
+    "catEs": "Hemorragia Digestiva",
     "items": [
       "hemorragia-digestiva-alta",
       "hemorragia-digestiva-baixa"
@@ -34,6 +35,7 @@ AM.especialidade("cirurgia", [
   },
   {
     "cat": "Trauma",
+    "catEs": "Trauma",
     "items": [
       "trauma-abdominal"
     ]

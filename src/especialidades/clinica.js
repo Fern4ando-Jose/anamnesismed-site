@@ -2,6 +2,7 @@
 AM.especialidade("clinica", [
   {
     "cat": "Cardiorrespiratório / Cardiovascular",
+    "catEs": "Cardiorrespiratorio / Cardiovascular",
     "items": [
       "dor-toracica",
       "dispneia"
@@ -9,6 +10,7 @@ AM.especialidade("clinica", [
   },
   {
     "cat": "Neurológico",
+    "catEs": "Neurológico",
     "items": [
       "cefaleia",
       "convulsao-sincope"
@@ -16,12 +18,14 @@ AM.especialidade("clinica", [
   },
   {
     "cat": "Infeccioso / Geral",
+    "catEs": "Infeccioso / General",
     "items": [
       "febre"
     ]
   },
   {
     "cat": "Gastrointestinal",
+    "catEs": "Gastrointestinal",
     "items": [
       "dor-abdominal",
       "ictericia"
@@ -29,6 +33,7 @@ AM.especialidade("clinica", [
   },
   {
     "cat": "Outros",
+    "catEs": "Otros",
     "items": [
       "edema",
       "tosse",
@@ -38,6 +43,7 @@ AM.especialidade("clinica", [
   },
   {
     "cat": "Gastrointestinal — Outros",
+    "catEs": "Gastrointestinal — Otros",
     "items": [
       "nauseas-vomitos",
       "diarreia"
@@ -45,18 +51,21 @@ AM.especialidade("clinica", [
   },
   {
     "cat": "Cardiovascular — Outros",
+    "catEs": "Cardiovascular — Otros",
     "items": [
       "palpitacoes"
     ]
   },
   {
     "cat": "Geniturinário",
+    "catEs": "Genitourinario",
     "items": [
       "sintomas-urinarios"
     ]
   },
   {
     "cat": "Osteoarticular",
+    "catEs": "Osteoarticular",
     "items": [
       "lombalgia",
       "artralgia"
