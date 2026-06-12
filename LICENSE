@@ -1,0 +1,74 @@
+LICENÇA DE SOFTWARE PROPRIETÁRIO — AnamnesísMed
+
+Copyright (c) 2026 Fernando José. Todos os direitos reservados.
+
+PROPRIETARY SOFTWARE LICENSE — All Rights Reserved.
+
+================================================================================
+PORTUGUÊS
+================================================================================
+
+Este software, incluindo, sem limitação, todo o código-fonte, conteúdo clínico,
+estruturas de dados, geradores de texto, interfaces, layouts, textos, imagens e
+demais materiais contidos neste repositório ("Software"), é de propriedade
+exclusiva de Fernando José ("Titular") e está protegido pelas leis de direitos
+autorais e por tratados internacionais.
+
+1. CONCESSÃO
+   Nenhuma licença, direito ou permissão é concedida sobre o Software, salvo
+   autorização prévia, expressa e por escrito do Titular.
+
+2. PROIBIÇÕES
+   É expressamente PROIBIDO, no todo ou em parte, sem autorização escrita do
+   Titular:
+     a) copiar, reproduzir ou duplicar o Software;
+     b) distribuir, sublicenciar, vender, alugar ou disponibilizar o Software a
+        terceiros;
+     c) modificar, adaptar, traduzir ou criar obras derivadas;
+     d) realizar engenharia reversa, descompilar ou desmontar, exceto na estrita
+        medida permitida por lei imperativa;
+     e) remover ou alterar avisos de direitos autorais, marcas ou esta licença;
+     f) utilizar o Software para construir produto ou serviço concorrente.
+
+3. AUSÊNCIA DE CÓDIGO ABERTO
+   O fato de este repositório poder estar publicamente acessível (por exemplo,
+   por necessidade de integração com GitHub, Vercel ou Cloudflare) NÃO o torna
+   software livre ou de código aberto, e NÃO concede qualquer direito de uso,
+   cópia ou redistribuição.
+
+4. MARCA
+   O nome "AnamnesísMed", o domínio, o logotipo e a identidade visual são de
+   titularidade exclusiva do Titular e não são licenciados por este documento.
+
+5. ISENÇÃO DE GARANTIA
+   O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE
+   QUALQUER NATUREZA. O TITULAR NÃO SE RESPONSABILIZA POR QUAISQUER DANOS
+   DECORRENTES DO USO NÃO AUTORIZADO.
+
+6. FORO E LEI APLICÁVEL
+   Esta licença é regida pelas leis da República Federativa do Brasil.
+
+Para solicitar autorização de uso, contate o Titular: fernando-jose@outlook.com.br
+
+================================================================================
+ENGLISH
+================================================================================
+
+This software, including without limitation all source code, clinical content,
+data structures, text generators, interfaces, layouts, text, images, and other
+materials contained in this repository (the "Software"), is the exclusive
+property of Fernando José (the "Owner") and is protected by copyright laws and
+international treaties.
+
+No license, right, or permission to use, copy, modify, distribute, sublicense,
+sell, or create derivative works of the Software is granted, except by the prior,
+express, written authorization of the Owner.
+
+The public accessibility of this repository (e.g., as required for integration
+with GitHub, Vercel, or Cloudflare) does NOT make this Software free or open
+source and does NOT grant any right to use, copy, or redistribute it.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. The Owner shall
+not be liable for any damages arising from unauthorized use.
+
+To request authorization, contact: fernando-jose@outlook.com.br

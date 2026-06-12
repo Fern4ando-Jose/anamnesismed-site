@@ -1,0 +1,54 @@
+# ── Segredos e variáveis de ambiente ──────────────────────────────────────────
+# NUNCA versionar credenciais. Use variáveis de ambiente na Vercel/Cloudflare.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+secrets.json
+service-account*.json
+**/serviceAccount*.json
+
+# Tokens / credenciais comuns
+*credentials*
+*secret*
+.aws/
+.netrc
+
+# ── Dependências ──────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+
+# ── Build / cache de frameworks ───────────────────────────────────────────────
+.next/
+out/
+dist/
+build/
+.vercel/
+.turbo/
+.cache/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Sistema operacional / editor ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+
+# ── Temporários ───────────────────────────────────────────────────────────────
+*.tmp
+*.bak
+tmp/
