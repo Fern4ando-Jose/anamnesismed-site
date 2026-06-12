@@ -162,6 +162,19 @@ function exportPDF(){
      txt: function(){return 'a) '+mMC+(document.getElementById('mc-b').value?'\nb) '+document.getElementById('mc-b').value:'')+(document.getElementById('mc-c').value?'\nc) '+document.getElementById('mc-c').value:'');}},
     {n:'3', tPt:'AEA — Antecedentes da Enfermidade Atual', tEs:'AEA — Antecedentes de la Enfermedad Actual',
      txt: function(){
+      // PRIORIDADE: narrativa gerada/revisada pela IA (campo aea-narrativa).
+      // Se o médico gerou a HC com IA e revisou, ela é a fonte da verdade da seção.
+      var iaEl = document.getElementById('aea-narrativa');
+      var iaNarr = iaEl ? (iaEl.value||'').trim() : '';
+      if(iaNarr){
+        var pIA = [iaNarr];
+        if(mAEA && mAEA !== '—'){
+          var rlIA = mAEA.trim().replace(/\s*\.\s*$/,'');
+          if(rlIA){ rlIA = rlIA.charAt(0).toLowerCase()+rlIA.slice(1);
+            pIA.push((lang==='es'?'Relata además que ':'Relata ainda que ')+rlIA+'.'); }
+        }
+        return pIA.join(' ');
+      }
       // A AEA é montada como UMA narrativa cronológica corrida:
       // motivo1 + motivo2 + motivo3 + relato livre do médico, com a frase de fecho
       // ("Procura esta unidade de saúde…") reposicionada para o FINAL de tudo.

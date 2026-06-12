@@ -18,6 +18,9 @@
   "functions": {
     "api/stripe-webhook.js": {
       "maxDuration": 10
+    },
+    "api/gerar-hc.js": {
+      "maxDuration": 30
     }
   }
 }

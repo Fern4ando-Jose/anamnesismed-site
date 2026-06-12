@@ -802,6 +802,19 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div id="aea-mc2-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
             <div id="aea-mc3-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
 
+            <div class="f-row" style="margin-top:8px">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+                <button type="button" class="conduta-btn conduta-btn-primary" id="btn-ia-hc" onclick="hcGerarComIA()" style="margin:0;padding:8px 16px;font-size:12px">
+                  <span data-am-icon="sparkles" data-am-size="16"></span>
+                  <span class="pt">Gerar HC com IA</span><span class="es">Generar HC con IA</span>
+                </button>
+                <span id="ia-hc-status" style="font-size:11px;color:var(--muted);line-height:1.3"></span>
+              </div>
+              <label class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
+              <label class="f-label es">Narrativa de la HC (revise antes de exportar)</label>
+              <textarea class="f-input" id="aea-narrativa" rows="6" placeholder="Clique em “Gerar HC com IA” para redigir a narrativa a partir das respostas do guia. Você pode editar antes de exportar." data-ph-pt="Clique em “Gerar HC com IA” para redigir a narrativa a partir das respostas do guia. Você pode editar antes de exportar." data-ph-es="Haga clic en “Generar HC con IA” para redactar la narrativa a partir de las respuestas de la guía. Puede editarla antes de exportar."></textarea>
+            </div>
+
             <div class="f-row">
               <label class="f-label pt">Relato livre (AEA em texto)</label>
               <label class="f-label es">Relato libre (AEA en texto)</label>
@@ -1656,10 +1669,11 @@ function newHC(){
   document.getElementById('hc-progress').style.width = '0%';
   // Reset key text fields
   ['dp-nome','dp-ci','dp-idade','dp-ocup','dp-proc','dp-res','dp-tel','dp-acomp-nome','dp-acomp-vinculo','dp-aportado',
-   'mc-a','mc-b','mc-c','aea-texto',
+   'mc-a','mc-b','mc-c','aea-texto','aea-narrativa',
    'area-desc','app-cirurg','app-trauma','app-intern','app-outras','adm-texto',
    'sum-achados','sum-sindromes','sum-hipoteses','plan-exames','plan-trat','plan-conduta','plan-obs'
   ].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var iaStatus = document.getElementById('ia-hc-status'); if(iaStatus) iaStatus.textContent='';
   // Reset radio selections
   document.querySelectorAll('.f-radio.sel, .f-radio.sel-danger').forEach(function(r){r.classList.remove('sel','sel-danger')});
   document.querySelectorAll('.f-check.on').forEach(function(c){c.classList.remove('on')});
@@ -2322,6 +2336,38 @@ function showToast(lang,msg){
   t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
   document.body.appendChild(t);
   setTimeout(function(){t.remove()},2500);
+}
+
+// ── GERAR HC COM IA ───────────────────────────────────
+// Chama gerarHCviaIA() (anamnesismed-narrativa.js): fala com /api/gerar-hc e,
+// se a API falhar, cai automaticamente no motor local. Preenche o preview editável.
+function hcGerarComIA(){
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var btn = document.getElementById('btn-ia-hc');
+  var status = document.getElementById('ia-hc-status');
+  var out = document.getElementById('aea-narrativa');
+  if(!out || typeof gerarHCviaIA !== 'function') return;
+  if(btn) btn.disabled = true;
+  if(status) status.textContent = (lang==='es'?'Generando…':'Gerando…');
+  gerarHCviaIA(lang).then(function(res){
+    if(btn) btn.disabled = false;
+    if(res.ok && res.narrativa){
+      out.value = res.narrativa;
+      if(typeof markHCDirty==='function') markHCDirty();
+      if(status){
+        status.textContent = res.fonte==='ia'
+          ? (lang==='es'?'Listo (IA) — revise antes de exportar':'Pronto (IA) — revise antes de exportar')
+          : (lang==='es'?'Generado localmente (IA no disponible)':'Gerado localmente (IA indisponível)');
+      }
+    } else {
+      if(status) status.textContent = res.erro || (lang==='es'?'No fue posible generar':'Não foi possível gerar');
+      showToast('pt', res.erro || 'Não foi possível gerar a HC');
+      showToast('es', res.erro || 'No fue posible generar la HC');
+    }
+  }).catch(function(e){
+    if(btn) btn.disabled = false;
+    if(status) status.textContent = (lang==='es'?'Error inesperado':'Erro inesperado');
+  });
 }
 
 // ── PDF EXPORT ────────────────────────────────────────

@@ -566,8 +566,10 @@ function gerarNarrativaAEA_tosse(ans, lng){
 }
 var AEA_NARRATIVE_GEN = { 'cefaleia': gerarNarrativaAEA_cefaleia, 'tosse': gerarNarrativaAEA_tosse };
 
-function gerarNarrativaAEA(mObj, lng, idPfx, opts){
-  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length) return null;
+// Coleta as respostas do guia AEA de um motivo a partir do DOM.
+// Reutilizada tanto pelo motor de regex quanto pela geração via IA — fonte única.
+function coletarRespostasAEA(mObj, lng, idPfx){
+  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length) return [];
   idPfx = idPfx || 'aea-g-';
   var ansArr = [];
   mObj.aeaGuide.forEach(function(q,i){
@@ -579,8 +581,98 @@ function gerarNarrativaAEA(mObj, lng, idPfx, opts){
     else if(q.type==='input') resp = fieldVal(id) || '—';
     ansArr.push({qText:(lng==='es'?(q.qEs||q.q):q.q), type:q.type, resp:resp, ph:(lng==='es'?(q.ph2||q.ph||''):(q.ph||''))});
   });
+  return ansArr;
+}
+
+function gerarNarrativaAEA(mObj, lng, idPfx, opts){
+  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length) return null;
+  var ansArr = coletarRespostasAEA(mObj, lng, idPfx);
   var hasAny = ansArr.some(function(a){ return a.resp && a.resp!=='—'; });
   if(!hasAny) return null;
   var gen = AEA_NARRATIVE_GEN[mObj.id];
   return gen ? gen(ansArr, lng) : gerarNarrativaAEA_generica(ansArr, lng, mObj, opts);
+}
+
+// ── MOTOR LOCAL COMPLETO (fallback): monta a narrativa dos 3 motivos com fecho no fim ──
+// Mesma lógica de montagem usada no PDF (seção 3), exposta aqui para reuso.
+function gerarNarrativaAEACompleta(lng){
+  function _g(mObj,pfx,cont){
+    return (mObj && mObj.aeaGuide && mObj.aeaGuide.length)
+      ? (gerarNarrativaAEA(mObj, lng, pfx, cont?{continuation:true}:undefined)||'') : '';
+  }
+  function _splitFecho(n){
+    if(!n) return {body:'',fecho:''};
+    var rx = (lng==='es') ? /\s*([^.]*acude a esta unidad de salud para evaluación médica\.)\s*$/i
+                          : /\s*([^.]*procura esta unidade de saúde para avaliação médica\.)\s*$/i;
+    var m = n.match(rx);
+    return m ? {body:n.slice(0,m.index).trim(), fecho:m[1].trim()} : {body:n, fecho:''};
+  }
+  var m1 = (typeof currentMotivo  !== 'undefined') ? currentMotivo  : null;
+  var m2 = (typeof currentMotivo2 !== 'undefined') ? currentMotivo2 : null;
+  var m3 = (typeof currentMotivo3 !== 'undefined') ? currentMotivo3 : null;
+  var sp = _splitFecho(_g(m1,'aea-g-',false));
+  var parts = [];
+  if(sp.body) parts.push(sp.body);
+  var n2 = _g(m2,'aea-g2-',true); if(n2) parts.push(n2);
+  var n3 = _g(m3,'aea-g3-',true); if(n3) parts.push(n3);
+  if(sp.fecho) parts.push(sp.fecho);
+  return parts.join(' ');
+}
+
+// ── MONTA O PAYLOAD enviado à API (/api/gerar-hc) ──
+function montarPayloadHC(lng){
+  function gE(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+  var pares = [
+    {m:(typeof currentMotivo  !== 'undefined') ? currentMotivo  : null, pfx:'aea-g-'},
+    {m:(typeof currentMotivo2 !== 'undefined') ? currentMotivo2 : null, pfx:'aea-g2-'},
+    {m:(typeof currentMotivo3 !== 'undefined') ? currentMotivo3 : null, pfx:'aea-g3-'}
+  ];
+  var motivos = [];
+  pares.forEach(function(p, idx){
+    if(!p.m || !p.m.aeaGuide || !p.m.aeaGuide.length) return;
+    var ans = coletarRespostasAEA(p.m, lng, p.pfx).filter(function(a){
+      return a.resp && a.resp !== '—' && String(a.resp).trim() !== '';
+    }).map(function(a){
+      return { pergunta: (a.qText||'').replace(/\s+/g,' ').trim(), resposta: String(a.resp).trim() };
+    });
+    if(!ans.length) return;
+    motivos.push({ ordem: idx+1, nome: (lng==='es'?(p.m.nameEs||p.m.name):p.m.name)||'', respostas: ans });
+  });
+  var tempoN = gE('mc-tempo-n'), tempoU = gE('mc-tempo-u');
+  return {
+    lang: lng,
+    demografia: {
+      idade: gE('dp-idade'),
+      sexo:  gE('dp-sexo'),
+      tempoEvolucao: (tempoN ? (tempoN + ' ' + tempoU).trim() : '')
+    },
+    motivos: motivos
+  };
+}
+
+// ── GERA A HC VIA IA (com fallback automático para o motor local) ──
+// Retorna Promise<{ok, narrativa, fonte:'ia'|'local', erro?}>.
+function gerarHCviaIA(lng){
+  var payload = montarPayloadHC(lng);
+  if(!payload.motivos.length){
+    return Promise.resolve({ ok:false, fonte:'local', narrativa:'', erro: lng==='es'?'Sin respuestas para generar la HC':'Sem respostas para gerar a HC' });
+  }
+  function fallback(motivo){
+    var local = gerarNarrativaAEACompleta(lng) || '';
+    return { ok: !!local, fonte:'local', narrativa: local, erro: motivo };
+  }
+  return fetch('/api/gerar-hc', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r){
+    return r.json().then(function(j){ return { status:r.status, j:j }; });
+  }).then(function(res){
+    if(res.status===200 && res.j && res.j.narrativa){
+      return { ok:true, fonte:'ia', narrativa: res.j.narrativa.trim() };
+    }
+    return fallback((res.j && res.j.error) || ('HTTP '+res.status));
+  }).catch(function(err){
+    return fallback((err && err.message) || 'rede');
+  });
 }
