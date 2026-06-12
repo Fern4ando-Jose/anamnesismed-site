@@ -750,10 +750,24 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="es">2.º motivo con AEA guiada activa</small>
               </div>
             </div>
-            <div class="f-row">
+            <div class="f-row" style="position:relative">
               <label class="f-label pt">c) Terceira queixa (se houver)</label>
               <label class="f-label es">c) Tercera queja (si hubiera)</label>
-              <input class="f-input" type="text" id="mc-c" placeholder="">
+              <input class="f-input" type="text" id="mc-c"
+                data-ph-pt="Digite ou selecione o 3º motivo..."
+                data-ph-es="Escriba o seleccione el 3.º motivo..."
+                placeholder="Digite ou selecione o 3º motivo..."
+                autocomplete="off" oninput="mccSearch(this.value)">
+              <div id="mc-c-suggestions" style="display:none;position:absolute;z-index:500;background:var(--bg-card);border:1.5px solid var(--secondary);border-radius:10px;max-height:220px;overflow-y:auto;box-shadow:0 8px 32px rgba(13,45,61,.15);width:100%;top:calc(100% + 2px);left:0"></div>
+              <div id="mc-c-badge" style="display:none;margin-top:6px">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.25);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--secondary)">
+                  <span id="mc-c-badge-icon">🩺</span>
+                  <span id="mc-c-badge-name"></span>
+                  <span style="cursor:pointer;opacity:.6;font-size:16px;font-weight:300" onclick="clearMotivo3()">×</span>
+                </div>
+                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="pt">3º motivo com AEA guiada ativa</small>
+                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="es">3.º motivo con AEA guiada activa</small>
+              </div>
             </div>
             <div class="f-row">
               <label class="f-label pt">Tempo de evolução da queixa principal</label>
@@ -790,6 +804,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <!-- Guided AEA injected by JS based on motivo -->
             <div id="aea-guided-content"></div>
             <div id="aea-mc2-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
+            <div id="aea-mc3-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
 
             <div class="f-row">
               <label class="f-label pt">Relato livre (AEA em texto)</label>
@@ -1630,6 +1645,11 @@ function newHC(){
   document.getElementById('mc-b-suggestions').style.display = 'none';
   var mc2s = document.getElementById('aea-mc2-section');
   if(mc2s){mc2s.style.display='none';mc2s.innerHTML='';}
+  currentMotivo3 = null;
+  document.getElementById('mc-c-badge').style.display = 'none';
+  document.getElementById('mc-c-suggestions').style.display = 'none';
+  var mc3s = document.getElementById('aea-mc3-section');
+  if(mc3s){mc3s.style.display='none';mc3s.innerHTML='';}
   // Reset HC header
   document.getElementById('hc-icon').textContent = '📋';
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
@@ -1807,6 +1827,48 @@ function selectMotivo2FromMC(id){
   if(aeaPanel && !aeaPanel.classList.contains('open')) aeaPanel.classList.add('open');
 }
 
+// ── 3º MOTIVO (mc-c) — espelha o 2º motivo, prefixo aea-g3- ──
+function clearMotivo3(){
+  currentMotivo3 = null;
+  var inp = document.getElementById('mc-c'); if(inp) inp.value = '';
+  document.getElementById('mc-c-badge').style.display = 'none';
+  var sect = document.getElementById('aea-mc3-section');
+  if(sect){sect.style.display='none';sect.innerHTML='';}
+}
+
+function mccSearch(val){
+  var sug = document.getElementById('mc-c-suggestions');
+  if(!val || val.length < 1){ sug.style.display='none'; return; }
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var term = val.toLowerCase().trim();
+  var matches = getAllMotivos().filter(function(m){
+    var nm = (lang==='es'?(m.nameEs||m.name):m.name).toLowerCase();
+    return nm.includes(term);
+  }).slice(0,7);
+  if(!matches.length){ sug.style.display='none'; return; }
+  sug.innerHTML = matches.map(function(m){
+    var nm = lang==='es'?(m.nameEs||m.name):m.name;
+    return '<div onclick="selectMotivo3FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="font-size:17px;flex-shrink:0">'+m.icon+'</span>'+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+nm+'</div>'+'</div>';
+  }).join('');
+  sug.style.display = 'block';
+}
+
+function selectMotivo3FromMC(id){
+  document.getElementById('mc-c-suggestions').style.display='none';
+  var mObj = findMotivo(id);
+  if(!mObj) return;
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  var nm = lang==='es'?(mObj.nameEs||mObj.name):mObj.name;
+  document.getElementById('mc-c').value = nm;
+  document.getElementById('mc-c-badge').style.display = 'block';
+  document.getElementById('mc-c-badge-icon').textContent = mObj.icon;
+  document.getElementById('mc-c-badge-name').textContent = nm;
+  currentMotivo3 = mObj;
+  renderAEAGuide3(mObj);
+  var aeaPanel = document.getElementById('panel-aea');
+  if(aeaPanel && !aeaPanel.classList.contains('open')) aeaPanel.classList.add('open');
+}
+
 
 // Close suggestions when clicking outside
 document.addEventListener('click', function(e){
@@ -1818,11 +1880,16 @@ document.addEventListener('click', function(e){
     var sug2 = document.getElementById('mc-b-suggestions');
     if(sug2) sug2.style.display='none';
   }
+  if(!e.target.closest('#mc-c-suggestions') && e.target.id !== 'mc-c'){
+    var sug3 = document.getElementById('mc-c-suggestions');
+    if(sug3) sug3.style.display='none';
+  }
 });
 
 // ── CURRENT STATE ─────────────────────────────────────
 var currentMotivo = null;
 var currentMotivo2 = null;
+var currentMotivo3 = null;
 var currentSpec = 'clinica';
 
 // ── HC DIRTY / UNSAVED-CHANGES GUARD ─────────────────
@@ -1959,6 +2026,14 @@ function renderAEAGuide2(mObj){
   if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){sect.style.display='none';sect.innerHTML='';return;}
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
   sect.innerHTML = buildAEAGuideHTML(mObj, 'aea-g2-', lang, 'color:var(--secondary)');
+  sect.style.display = 'block';
+}
+
+function renderAEAGuide3(mObj){
+  var sect = document.getElementById('aea-mc3-section');
+  if(!mObj || !mObj.aeaGuide || !mObj.aeaGuide.length){sect.style.display='none';sect.innerHTML='';return;}
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  sect.innerHTML = buildAEAGuideHTML(mObj, 'aea-g3-', lang, 'color:var(--secondary)');
   sect.style.display = 'block';
 }
 
@@ -2219,6 +2294,7 @@ function saveHC(){
   var data = {
     motivo: currentMotivo ? currentMotivo.id : '',
     motivo2: currentMotivo2 ? currentMotivo2.id : null,
+    motivo3: currentMotivo3 ? currentMotivo3.id : null,
     nome: document.getElementById('dp-nome').value,
     ts: new Date().toISOString(),
     campos: snap.campos,
@@ -2343,6 +2419,9 @@ function showToast(lang,msg){
             // inputs de texto (EVA, medicamentos), que o bloco antigo perdia.
             if (rec.dados.motivo2 && typeof selectMotivo2FromMC === 'function') {
               selectMotivo2FromMC(rec.dados.motivo2);
+            }
+            if (rec.dados.motivo3 && typeof selectMotivo3FromMC === 'function') {
+              selectMotivo3FromMC(rec.dados.motivo3);
             }
             restoreFormSnapshot(rec.dados);
           } else if (rec.dados.nome) {
