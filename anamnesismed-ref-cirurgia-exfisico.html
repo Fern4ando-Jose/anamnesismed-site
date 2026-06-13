@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<title>AnamnesísMed — Cirugía General: Examen del Abdomen y Abdomen Agudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f4f2fb;--bg-card:#ffffff;
+  --ink:#2e1065;--primary:#7c3aed;--primary-dark:#6d28d9;
+  --secondary:#8b5cf6;--accent:#f59e0b;
+  --muted:#5b5170;--line:rgba(46,16,101,0.10);--line-md:rgba(46,16,101,0.16);
+  --resp:#8b5cf6;--resp-bg:rgba(139,92,246,.10);
+  --up:#16a34a;--up-bg:rgba(22,163,74,.10);
+  --down:#dc2626;--down-bg:rgba(220,38,38,.09);
+  --neutral:#64748b;--neutral-bg:rgba(100,116,139,.10);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --sidebar-w:240px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:var(--bg-card);border-bottom:1px solid var(--line);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
+.hamburger:hover{background:var(--bg)}
+.topbar-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;padding:5px 8px;border-radius:6px;transition:background .15s,color .15s;white-space:nowrap;flex-shrink:0}
+.topbar-back:hover{background:var(--bg);color:var(--ink)}
+.topbar-sep{color:var(--line-md);font-size:16px;flex-shrink:0}
+.topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang-toggle{display:flex;background:rgba(46,16,101,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line);flex-shrink:0}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;padding:26px 32px}
+.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.85;display:flex;align-items:center;gap:8px}
+.hero-title{font-family:var(--serif);font-size:26px;font-weight:700;margin-top:6px}
+.hero-sub{font-size:14px;opacity:.92;margin-top:6px;max-width:760px;line-height:1.5}
+
+/* SECTION NAV */
+.secnav{position:sticky;top:60px;z-index:40;background:var(--bg-card);border-bottom:1px solid var(--line);padding:4px 16px;display:flex;flex-wrap:wrap;gap:2px}
+.secnav::-webkit-scrollbar{height:0}
+.secnav-btn{padding:11px 12px;font-size:13px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:6px;border-radius:6px 6px 0 0}
+.secnav-btn:hover{color:var(--ink);background:rgba(139,92,246,.05)}
+.secnav-btn.active{color:var(--resp);border-bottom-color:var(--resp)}
+
+/* CONTENT */
+.wrap{flex:1;padding:26px 32px 70px;max-width:1000px;width:100%}
+.sec{display:none}
+.sec.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sec-h{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.sec-h .emoji{font-size:22px}
+.sec-intro{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+
+/* ACCORDION CARDS */
+.acc{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.acc-head{display:flex;align-items:center;gap:11px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .15s}
+.acc-head:hover{background:rgba(139,92,246,.04)}
+.acc-icon{width:34px;height:34px;border-radius:9px;background:var(--resp-bg);color:var(--resp);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;font-weight:700}
+.acc-title{font-size:15px;font-weight:700;flex:1;color:var(--ink)}
+.acc-chev{color:var(--muted);transition:transform .2s;flex-shrink:0}
+.acc.open .acc-chev{transform:rotate(90deg)}
+.acc-body{display:none;padding:0 16px 16px 16px;font-size:13.5px;line-height:1.65;color:var(--ink)}
+.acc.open .acc-body{display:block}
+.acc-body p{margin:8px 0;color:#3b3450}
+.acc-body ul{margin:8px 0 8px 4px;list-style:none}
+.acc-body li{position:relative;padding-left:18px;margin:5px 0;color:#3b3450}
+.acc-body li::before{content:'';position:absolute;left:4px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--resp)}
+.acc-body b{color:var(--ink)}
+.acc-body em{font-style:italic;color:var(--primary-dark)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin:2px 4px 2px 0;background:var(--resp-bg);color:var(--primary-dark)}
+
+/* INFO BOX */
+.callout{border-left:4px solid var(--accent);background:rgba(245,158,11,.08);border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.6}
+.callout b{color:#b45309}
+
+/* PERGUNTAS-GUIA */
+.ask{background:rgba(139,92,246,.05);border:1px dashed rgba(139,92,246,.4);border-radius:10px;padding:10px 14px;margin:10px 0}
+.ask-lbl{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--primary-dark);margin-bottom:4px}
+
+/* MINI COMPARES */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.duo-card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--bg-card)}
+.duo-card h4{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.duo-card.restr h4{color:#7c3aed}
+.duo-card.obstr h4{color:#ea580c}
+.duo-card ul{list-style:none}
+.duo-card li{position:relative;padding-left:16px;margin:5px 0;font-size:13px;color:#3b3450}
+.duo-card li::before{content:'';position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5}
+
+/* TÉCNICA PASSO A PASSO + ACHADOS */
+.steps{counter-reset:st;list-style:none;margin:10px 0 6px}
+.steps li{counter-increment:st;position:relative;padding:8px 0 8px 32px;border-bottom:1px solid var(--line);font-size:13px;color:#3b3450;line-height:1.55}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(st,decimal-leading-zero);position:absolute;left:0;top:9px;font-size:10px;font-weight:700;color:var(--resp);font-family:monospace}
+.steps li b{color:var(--ink)}
+.finds{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.find{border-left:3px solid var(--neutral);background:rgba(46,16,101,.03);border-radius:0 8px 8px 0;padding:10px 12px;font-size:12.5px;line-height:1.5;color:#3b3450}
+.find .fl{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.find.ok{border-color:var(--up)}.find.ok .fl{color:var(--up)}
+.find.bad{border-color:var(--down)}.find.bad .fl{color:var(--down)}
+.find.warn{border-color:var(--accent)}.find.warn .fl{color:#b45309}
+.find.info{border-color:var(--resp)}.find.info .fl{color:var(--primary-dark)}
+.hl{background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(124,58,237,.05));border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.65;color:#3b3450}
+.hl b{color:var(--ink)}
+
+/* MNEMOTECNIA */
+.mnemo{display:grid;grid-template-columns:30px 1fr;gap:6px 12px;margin:8px 0}
+.mnemo .ltr{font-family:var(--serif);font-weight:700;color:var(--resp);font-size:16px;text-align:center}
+.mnemo .def{font-size:13px;color:#3b3450;line-height:1.5}
+.mnemo .def b{color:var(--ink)}
+
+/* TABELAS */
+.tbl-scroll{overflow-x:auto;margin:8px 0 4px;border:1px solid var(--line);border-radius:12px}
+table.sx{border-collapse:collapse;width:100%;min-width:680px;font-size:12.5px}
+table.sx.mini{min-width:460px}
+table.sx th,table.sx td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line)}
+table.sx thead th{background:var(--ink);color:#fff;font-weight:700;font-size:11.5px;position:sticky;top:0}
+table.sx tbody tr:hover{background:rgba(139,92,246,.05)}
+table.sx td:first-child,table.sx th:first-child{position:sticky;left:0;background:var(--bg-card);font-weight:700;color:var(--ink);box-shadow:1px 0 0 var(--line)}
+table.sx thead th:first-child{background:var(--ink)}
+table.sx tbody tr:hover td:first-child{background:#f1edfb}
+.cell{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:700;font-size:11.5px;white-space:nowrap}
+.c-up{background:var(--up-bg);color:var(--up)}
+.c-down{background:var(--down-bg);color:var(--down)}
+.c-neutral{background:var(--neutral-bg);color:var(--neutral)}
+.c-key{background:rgba(124,58,237,.12);color:var(--primary-dark)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0;font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* SÍNDROME CARDS */
+.sx-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:8px}
+.sx-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg-card)}
+.sx-card h4{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.sx-card p{font-size:12.5px;color:#3b3450;line-height:1.55;margin:4px 0}
+
+@media(max-width:768px){
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .topbar{padding:0 14px}
+  .topbar-back span{display:none}
+  .topbar-back::before{content:'←'}
+  .hero{padding:18px 16px}.hero-title{font-size:20px}
+  .wrap{padding:18px 14px 80px}
+  .secnav{top:60px;padding:0 8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .duo{grid-template-columns:1fr}
+  .finds{grid-template-columns:1fr}
+}
+</style>
+<link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<div id="sidebar-root"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/></svg>
+      </button>
+      <a href="anamnesismed-especialidades.html?esp=cirurgia" class="topbar-back"><span class="pt">← Cirurgia Geral</span><span class="es">← Cirugía General</span></a>
+      <span class="topbar-sep">›</span>
+      <span class="topbar-title pt">Exame do Abdome e Abdome Agudo</span>
+      <span class="topbar-title es">Examen del Abdomen y Abdomen Agudo</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-eyebrow">🔪 <span class="pt">Referência Clínica · Cirurgia Geral</span><span class="es">Referencia Clínica · Cirugía General</span></div>
+    <div class="hero-title pt">Cirurgia Geral — Exame do Abdome e Abdome Agudo</div>
+    <div class="hero-title es">Cirugía General — Examen del Abdomen y Abdomen Agudo</div>
+    <div class="hero-sub pt">Guia completo: semiologia da dor abdominal cirúrgica, mnemônicas e escore de Alvarado, topografia, exame do abdome passo a passo (inspeção, ausculta, percussão, palpação), sinais peritoneais e especiais, hérnias, avaliação pré-operatória e as 5 síndromes do abdome agudo.</div>
+    <div class="hero-sub es">Guía completa: semiología del dolor abdominal quirúrgico, mnemotécnicas y score de Alvarado, topografía, examen del abdomen paso a paso (inspección, auscultación, percusión, palpación), signos peritoneales y especiales, hernias, evaluación preoperatoria y los 5 síndromes del abdomen agudo.</div>
+  </div>
+
+  <nav class="secnav" id="secnav"></nav>
+  <div class="wrap" id="wrap"></div>
+</div>
+
+<script>
+var L = "es";
+
+/* ─────────── DADOS (bilíngue) ─────────── */
+var SECTIONS = [
+  {
+    id:"sintomas", emoji:"🗣️", icon:"1",
+    t:{es:"Síntomas / Motivos quirúrgicos", pt:"Sintomas / Motivos cirúrgicos"},
+    intro:{
+      es:"Semiología de los síntomas que llevan al cirujano: dolor abdominal, vómitos, detención del tránsito, distensión, hemorragia digestiva, masa/tumoración e ictericia obstructiva. La caracterización del dolor es la clave del razonamiento del abdomen agudo.",
+      pt:"Semiologia dos sintomas que levam ao cirurgião: dor abdominal, vômitos, parada de eliminação, distensão, hemorragia digestiva, massa/abaulamento e icterícia obstrutiva. A caracterização da dor é a chave do raciocínio do abdome agudo."},
+    accs:[
+      {t:{es:"Dolor abdominal — visceral, parietal y referido",pt:"Dor abdominal — visceral, parietal e referida"},body:{
+        es:"<ul><li><b>Visceral:</b> mal localizado, en la línea media (según el origen embrionario), sordo, tipo cólico; por distensión/isquemia de vísceras huecas o cápsulas. El paciente se mueve buscando alivio.</li><li><b>Parietal/somático:</b> bien localizado, intenso, constante; por irritación del peritoneo parietal. <b>Empeora con el movimiento, la tos y la descompresión</b> → el paciente queda inmóvil.</li><li><b>Referido:</b> percibido a distancia (escapular en patología biliar, hombro por irritación frénica, dorso en pancreatitis).</li></ul><div class='callout'><b>Migración del dolor</b> (visceral → parietal) es muy orientadora: epigástrico/periumbilical que migra a FID en la apendicitis.</div><div class='ask'><div class='ask-lbl'>¿Qué preguntar? (ALICIA)</div><ul><li>Aparición, Localización, Irradiación, Carácter, Intensidad, Atenuantes/agravantes y acompañantes.</li></ul></div>",
+        pt:"<ul><li><b>Visceral:</b> mal localizada, na linha média (conforme a origem embrionária), surda, tipo cólica; por distensão/isquemia de vísceras ocas ou cápsulas. O paciente se mexe buscando alívio.</li><li><b>Parietal/somática:</b> bem localizada, intensa, constante; por irritação do peritônio parietal. <b>Piora com o movimento, a tosse e a descompressão</b> → o paciente fica imóvel.</li><li><b>Referida:</b> percebida à distância (escapular na patologia biliar, ombro por irritação frênica, dorso na pancreatite).</li></ul><div class='callout'><b>Migração da dor</b> (visceral → parietal) é muito orientadora: epigástrica/periumbilical que migra para a FID na apendicite.</div><div class='ask'><div class='ask-lbl'>O que perguntar? (ALICIA)</div><ul><li>Aparecimento, Localização, Irradiação, Caráter, Intensidade, Atenuantes/agravantes e acompanhantes.</li></ul></div>"}},
+      {t:{es:"Vómitos y detención del tránsito",pt:"Vômitos e parada de eliminação"},body:{
+        es:"<p>Tétrada clásica de la <b>obstrucción intestinal</b>: dolor cólico, distensión, vómitos y detención de la eliminación de gases y heces.</p><ul><li><b>Vómito:</b> precoz y biliar (obstrucción alta) o tardío y <b>fecaloide</b> (obstrucción baja).</li><li><b>Detención de gases y heces:</b> obstrucción completa; orden inverso al de la altura.</li><li>Diferenciar de la <b>náusea/vómito refleja</b> de la irritación peritoneal.</li></ul>",
+        pt:"<p>Tétrade clássica da <b>obstrução intestinal</b>: dor em cólica, distensão, vômitos e parada de eliminação de gases e fezes.</p><ul><li><b>Vômito:</b> precoce e bilioso (obstrução alta) ou tardio e <b>fecaloide</b> (obstrução baixa).</li><li><b>Parada de eliminação de gases e fezes:</b> obstrução completa; ordem inversa à da altura.</li><li>Diferenciar do <b>vômito reflexo</b> da irritação peritoneal.</li></ul>"}},
+      {t:{es:"Distensión y masa / tumoración",pt:"Distensão e massa / abaulamento"},body:{
+        es:"<ul><li><b>Distensión:</b> por gas (obstrucción, íleo), líquido (ascitis), masa o embarazo. Regla de las «6 F»: <em>fat, fluid, flatus, feces, fetus, fatal tumor</em>.</li><li><b>Masa/tumoración:</b> caracterizar localización, tamaño, consistencia, movilidad, pulsatilidad y dolor.</li><li><b>Tumoración que aparece con el esfuerzo:</b> sospechar <b>hernia</b> (ver «Maniobras»).</li></ul>",
+        pt:"<ul><li><b>Distensão:</b> por gás (obstrução, íleo), líquido (ascite), massa ou gravidez. Regra dos «6 F»: <em>fat, fluid, flatus, feces, fetus, fatal tumor</em>.</li><li><b>Massa/abaulamento:</b> caracterizar localização, tamanho, consistência, mobilidade, pulsatilidade e dor.</li><li><b>Abaulamento que surge ao esforço:</b> suspeitar de <b>hérnia</b> (ver «Manobras»).</li></ul>"}},
+      {t:{es:"Hemorragia digestiva",pt:"Hemorragia digestiva"},body:{
+        es:"<ul><li><b>Hematemesis:</b> vómito de sangre (alta, proximal al ángulo de Treitz).</li><li><b>Melena:</b> heces negras, brillantes y fétidas (sangre digerida; alta o de intestino delgado).</li><li><b>Hematoquecia / rectorragia:</b> sangre roja por el ano (baja; o alta masiva).</li><li>Evaluar repercusión hemodinámica: palidez, taquicardia, hipotensión, signos de shock.</li></ul>",
+        pt:"<ul><li><b>Hematêmese:</b> vômito de sangue (alta, proximal ao ângulo de Treitz).</li><li><b>Melena:</b> fezes pretas, brilhantes e fétidas (sangue digerido; alta ou de intestino delgado).</li><li><b>Hematoquezia / enterorragia:</b> sangue vermelho pelo ânus (baixa; ou alta maciça).</li><li>Avaliar repercussão hemodinâmica: palidez, taquicardia, hipotensão, sinais de choque.</li></ul>"}},
+      {t:{es:"Ictericia obstructiva",pt:"Icterícia obstrutiva"},body:{
+        es:"<p>Síndrome coledociano: ictericia + <b>coluria</b> + <b>acolia/hipocolia</b> + prurito. Orienta a obstrucción de la vía biliar (litiasis, tumor periampular).</p><div class='callout'><b>Ley de Courvoisier:</b> vesícula palpable e <b>indolora</b> en un paciente ictérico sugiere obstrucción maligna (no litiásica).</div>",
+        pt:"<p>Síndrome coledociana: icterícia + <b>colúria</b> + <b>acolia/hipocolia</b> + prurido. Orienta para obstrução da via biliar (litíase, tumor periampular).</p><div class='callout'><b>Lei de Courvoisier:</b> vesícula palpável e <b>indolor</b> num paciente ictérico sugere obstrução maligna (não litiásica).</div>"}}
+    ]
+  },
+  {
+    id:"mnemotecnicas", emoji:"🧠", icon:"2",
+    t:{es:"Mnemotécnicas y scores", pt:"Mnemônicas e escores"},
+    intro:{es:"Para caracterizar el dolor, estructurar la sospecha de apendicitis y no olvidar la tétrada obstructiva.",
+           pt:"Para caracterizar a dor, estruturar a suspeita de apendicite e não esquecer a tétrade obstrutiva."},
+    extra:"mnemo"
+  },
+  {
+    id:"topografia", emoji:"📐", icon:"3",
+    t:{es:"Topografía abdominal", pt:"Topografia abdominal"},
+    intro:{es:"Localizar el dolor y los hallazgos sobre las regiones abdominales orienta el órgano comprometido. Se usan los 9 cuadrantes (3×3) o, de forma simplificada, 4 cuadrantes.",
+           pt:"Localizar a dor e os achados sobre as regiões abdominais orienta o órgão comprometido. Usam-se os 9 quadrantes (3×3) ou, de forma simplificada, 4 quadrantes."},
+    accs:[
+      {t:{es:"Las 9 regiones y los 4 cuadrantes",pt:"As 9 regiões e os 4 quadrantes"},body:{
+        es:"<ul><li><b>Superior:</b> hipocondrio derecho · epigastrio · hipocondrio izquierdo.</li><li><b>Medio:</b> flanco derecho · región umbilical (mesogastrio) · flanco izquierdo.</li><li><b>Inferior:</b> fosa ilíaca derecha · hipogastrio · fosa ilíaca izquierda.</li><li><b>4 cuadrantes:</b> trazados por las líneas medial vertical y horizontal umbilical (CSD, CSI, CID, CII).</li></ul>",
+        pt:"<ul><li><b>Superior:</b> hipocôndrio direito · epigástrio · hipocôndrio esquerdo.</li><li><b>Médio:</b> flanco direito · região umbilical (mesogástrio) · flanco esquerdo.</li><li><b>Inferior:</b> fossa ilíaca direita · hipogástrio · fossa ilíaca esquerda.</li><li><b>4 quadrantes:</b> traçados pelas linhas medial vertical e horizontal umbilical (QSD, QSE, QID, QIE).</li></ul>"}},
+      {t:{es:"Dolor por región → órgano sospechado",pt:"Dor por região → órgão suspeito"},body:{
+        es:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Región</th><th>Sospecha principal</th></tr></thead><tbody><tr><td>Hipocondrio derecho</td><td>Vesícula/vía biliar, hígado, ángulo hepático</td></tr><tr><td>Epigastrio</td><td>Estómago, duodeno, páncreas, IAM inferior</td></tr><tr><td>Hipocondrio izquierdo</td><td>Bazo, cola del páncreas, ángulo esplénico</td></tr><tr><td>Periumbilical</td><td>Intestino delgado, apendicitis inicial, aorta</td></tr><tr><td>Fosa ilíaca derecha</td><td>Apéndice, ciego, anexo, hernia, ureter</td></tr><tr><td>Fosa ilíaca izquierda</td><td>Sigmoides (diverticulitis), anexo, ureter</td></tr><tr><td>Hipogastrio</td><td>Vejiga, útero, recto-sigmoides</td></tr></tbody></table></div>",
+        pt:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Região</th><th>Suspeita principal</th></tr></thead><tbody><tr><td>Hipocôndrio direito</td><td>Vesícula/via biliar, fígado, ângulo hepático</td></tr><tr><td>Epigástrio</td><td>Estômago, duodeno, pâncreas, IAM inferior</td></tr><tr><td>Hipocôndrio esquerdo</td><td>Baço, cauda do pâncreas, ângulo esplênico</td></tr><tr><td>Periumbilical</td><td>Intestino delgado, apendicite inicial, aorta</td></tr><tr><td>Fossa ilíaca direita</td><td>Apêndice, ceco, anexo, hérnia, ureter</td></tr><tr><td>Fossa ilíaca esquerda</td><td>Sigmoide (diverticulite), anexo, ureter</td></tr><tr><td>Hipogástrio</td><td>Bexiga, útero, reto-sigmoide</td></tr></tbody></table></div>"}}
+    ]
+  },
+  {
+    id:"inspeccion", emoji:"👁️", icon:"4",
+    t:{es:"Inspección", pt:"Inspeção"},
+    intro:{es:"Paciente en decúbito dorsal, abdomen expuesto desde el apéndice xifoides al pubis, buena iluminación tangencial. Observación estática y dinámica.",
+           pt:"Paciente em decúbito dorsal, abdome exposto do apêndice xifoide ao púbis, boa iluminação tangencial. Observação estática e dinâmica."},
+    accs:[
+      {t:{es:"Forma, simetría y cicatrices",pt:"Forma, simetria e cicatrizes"},body:{
+        es:"<ol class='steps'><li><b>Forma:</b> plano, globoso, excavado (en batea) o distendido. Distensión simétrica (ascitis, íleo) o asimétrica (masa, asa).</li><li><b>Cicatrices quirúrgicas:</b> mapean cirugías previas → riesgo de bridas/adherencias (causa N.º 1 de obstrucción).</li><li><b>Abultamientos / hernias:</b> umbilical, incisional, inguinal; aumentan con Valsalva.</li><li><b>Ombligo:</b> evertido (ascitis a tensión), nódulo (de la Hermana María José → carcinomatosis).</li></ol>",
+        pt:"<ol class='steps'><li><b>Forma:</b> plano, globoso, escavado (em ventre de batráquio) ou distendido. Distensão simétrica (ascite, íleo) ou assimétrica (massa, alça).</li><li><b>Cicatrizes cirúrgicas:</b> mapeiam cirurgias prévias → risco de bridas/aderências (causa N.º 1 de obstrução).</li><li><b>Abaulamentos / hérnias:</b> umbilical, incisional, inguinal; aumentam com Valsalva.</li><li><b>Cicatriz umbilical:</b> evertida (ascite tensa), nódulo (da Irmã Maria José → carcinomatose).</li></ol>"}},
+      {t:{es:"Dinámica: peristaltismo, pulsaciones, respiración",pt:"Dinâmica: peristaltismo, pulsações, respiração"},body:{
+        es:"<ul><li><b>Peristaltismo de lucha</b> (ondas visibles): obstrucción mecánica en pacientes delgados.</li><li><b>Pulsación epigástrica</b> amplia: aneurisma de aorta abdominal.</li><li><b>Respiración:</b> el abdomen «en tabla» que no se mueve con la respiración sugiere peritonitis difusa.</li><li><b>Circulación colateral</b> (cabeza de medusa): hipertensión portal.</li></ul>",
+        pt:"<ul><li><b>Peristaltismo de luta</b> (ondas visíveis): obstrução mecânica em pacientes magros.</li><li><b>Pulsação epigástrica</b> ampla: aneurisma de aorta abdominal.</li><li><b>Respiração:</b> o abdome «em tábua» que não se move com a respiração sugere peritonite difusa.</li><li><b>Circulação colateral</b> (cabeça de medusa): hipertensão portal.</li></ul>"}},
+      {t:{es:"Equimosis de alarma",pt:"Equimoses de alarme"},body:{
+        es:"<div class='finds'><div class='find bad'><div class='fl'>Signo de Cullen</div>Equimosis periumbilical → hemorragia retroperitoneal/intraperitoneal (pancreatitis grave, embarazo ectópico roto).</div><div class='find bad'><div class='fl'>Signo de Grey-Turner</div>Equimosis en los flancos → mismo mecanismo. Aparecen 24–72 h después.</div></div>",
+        pt:"<div class='finds'><div class='find bad'><div class='fl'>Sinal de Cullen</div>Equimose periumbilical → hemorragia retroperitoneal/intraperitoneal (pancreatite grave, gravidez ectópica rota).</div><div class='find bad'><div class='fl'>Sinal de Grey-Turner</div>Equimose nos flancos → mesmo mecanismo. Surgem 24–72 h depois.</div></div>"}}
+    ]
+  },
+  {
+    id:"auscultacion", emoji:"🩺", icon:"5",
+    t:{es:"Auscultación", pt:"Ausculta"},
+    intro:{es:"En el abdomen, la auscultación se hace ANTES de percutir y palpar, porque la manipulación altera el peristaltismo. Membrana del estetoscopio, al menos 1–2 minutos antes de concluir «ausencia».",
+           pt:"No abdome, a ausculta é feita ANTES de percutir e palpar, porque a manipulação altera o peristaltismo. Membrana do estetoscópio, ao menos 1–2 minutos antes de concluir «ausência»."},
+    accs:[
+      {t:{es:"Ruidos hidroaéreos (RHA)",pt:"Ruídos hidroaéreos (RHA)"},body:{
+        es:"<div class='finds'><div class='find ok'><div class='fl'>Normal</div>5–34 por minuto, intensidad y tono variables.</div><div class='find warn'><div class='fl'>Aumentados / de lucha</div>Fase inicial de la obstrucción mecánica; <b>timbre metálico</b> y en salvas (lucha contra el obstáculo).</div><div class='find bad'><div class='fl'>Disminuidos / ausentes</div>Íleo paralítico y peritonitis (silencio abdominal). En la obstrucción tardía, el intestino se «fatiga» y enmudece.</div></div>",
+        pt:"<div class='finds'><div class='find ok'><div class='fl'>Normal</div>5–34 por minuto, intensidade e tom variáveis.</div><div class='find warn'><div class='fl'>Aumentados / de luta</div>Fase inicial da obstrução mecânica; <b>timbre metálico</b> e em salvas (luta contra o obstáculo).</div><div class='find bad'><div class='fl'>Diminuídos / ausentes</div>Íleo paralítico e peritonite (silêncio abdominal). Na obstrução tardia, o intestino se «fatiga» e emudece.</div></div>"}},
+      {t:{es:"Soplos y frotes",pt:"Sopros e atritos"},body:{
+        es:"<ul><li><b>Soplo aórtico/abdominal:</b> aneurisma de aorta, estenosis de la arteria renal o mesentérica.</li><li><b>Frote hepático/esplénico:</b> perihepatitis, infarto esplénico, tumor.</li></ul>",
+        pt:"<ul><li><b>Sopro aórtico/abdominal:</b> aneurisma de aorta, estenose da artéria renal ou mesentérica.</li><li><b>Atrito hepático/esplênico:</b> peri-hepatite, infarto esplênico, tumor.</li></ul>"}}
+    ]
+  },
+  {
+    id:"percusion", emoji:"🥁", icon:"6",
+    t:{es:"Percusión", pt:"Percussão"},
+    intro:{es:"Técnica dígito-digital, recorriendo los cuadrantes. Diferencia gas (timpanismo) de sólido o líquido (matidez) y delimita vísceras.",
+           pt:"Técnica dígito-digital, percorrendo os quadrantes. Diferencia gás (timpanismo) de sólido ou líquido (macicez) e delimita vísceras."},
+    accs:[
+      {t:{es:"Timpanismo, matidez y neumoperitoneo",pt:"Timpanismo, macicez e pneumoperitônio"},body:{
+        es:"<ul><li><b>Timpanismo</b> generalizado: distensión gaseosa (obstrucción, íleo).</li><li><b>Matidez:</b> masa, globo vesical, útero, hígado/bazo aumentados.</li><li><b>Signo de Jobert:</b> <b>desaparición de la matidez hepática</b> (timpanismo sobre el hígado) → neumoperitoneo por víscera perforada.</li></ul>",
+        pt:"<ul><li><b>Timpanismo</b> generalizado: distensão gasosa (obstrução, íleo).</li><li><b>Macicez:</b> massa, bexigoma, útero, fígado/baço aumentados.</li><li><b>Sinal de Jobert:</b> <b>desaparecimento da macicez hepática</b> (timpanismo sobre o fígado) → pneumoperitônio por víscera perfurada.</li></ul>"}},
+      {t:{es:"Investigación de ascitis",pt:"Pesquisa de ascite"},body:{
+        es:"<ol class='steps'><li><b>Matidez desplazable:</b> percutí del centro (timpánico) a los flancos (mate); girá al paciente y la línea de matidez se desplaza con el líquido.</li><li><b>Signo de la oleada (témpano):</b> un ayudante apoya el borde de la mano en la línea media; un golpe en un flanco transmite una onda al otro.</li><li>Semicírculos de Skoda: límite cóncavo hacia arriba.</li></ol>",
+        pt:"<ol class='steps'><li><b>Macicez móvel:</b> percuta do centro (timpânico) aos flancos (maciço); vire o paciente e a linha de macicez se desloca com o líquido.</li><li><b>Sinal do piparote (onda líquida):</b> um auxiliar apoia a borda da mão na linha média; um peteleco num flanco transmite uma onda ao outro.</li><li>Semicírculos de Skoda: limite côncavo para cima.</li></ol>"}},
+      {t:{es:"Puñopercusión",pt:"Punho-percussão"},body:{
+        es:"<ul><li><b>Signo de Giordano / puñopercusión lumbar:</b> golpe con el borde cubital sobre las fosas lumbares; el dolor sugiere patología renal (pielonefritis, cólico renoureteral).</li><li><b>Puñopercusión hepática:</b> dolor en hepatitis, colecistitis, absceso.</li></ul>",
+        pt:"<ul><li><b>Sinal de Giordano / punho-percussão lombar:</b> golpe com a borda cubital sobre as lojas renais; a dor sugere patologia renal (pielonefrite, cólica renoureteral).</li><li><b>Punho-percussão hepática:</b> dor na hepatite, colecistite, abscesso.</li></ul>"}}
+    ]
+  },
+  {
+    id:"palpacion", emoji:"✋", icon:"7",
+    t:{es:"Palpación", pt:"Palpação"},
+    intro:{es:"El paso más informativo. Manos tibias, paciente con rodillas flexionadas para relajar la pared. Empezá lejos del punto doloroso, superficial y luego profunda, observando la cara del paciente.",
+           pt:"O passo mais informativo. Mãos aquecidas, paciente com joelhos fletidos para relaxar a parede. Comece longe do ponto doloroso, superficial e depois profunda, observando o rosto do paciente."},
+    accs:[
+      {t:{es:"Defensa, contractura y rebote (Blumberg)",pt:"Defesa, contratura e descompressão (Blumberg)"},body:{
+        es:"<ul><li><b>Defensa voluntaria:</b> contracción que el paciente puede relajar (ansiedad, manos frías).</li><li><b>Defensa involuntaria / contractura:</b> rigidez persistente → irritación peritoneal. El máximo es el <b>«vientre en tabla»</b> de la peritonitis difusa.</li><li><b>Signo de Blumberg (rebote):</b> presión profunda y lenta + descompresión brusca; dolor a la descompresión = irritación peritoneal localizada.</li></ul><div class='callout'><b>Cuidado:</b> el rebote es doloroso e incómodo; alternativas más amables son la <b>prueba de la tos</b> y la percusión suave, igualmente útiles para detectar peritonismo.</div>",
+        pt:"<ul><li><b>Defesa voluntária:</b> contração que o paciente consegue relaxar (ansiedade, mãos frias).</li><li><b>Defesa involuntária / contratura:</b> rigidez persistente → irritação peritoneal. O máximo é o <b>«abdome em tábua»</b> da peritonite difusa.</li><li><b>Sinal de Blumberg (descompressão brusca):</b> pressão profunda e lenta + descompressão súbita; dor à descompressão = irritação peritoneal localizada.</li></ul><div class='callout'><b>Atenção:</b> a descompressão é dolorosa e desconfortável; alternativas mais gentis são o <b>teste da tosse</b> e a percussão suave, igualmente úteis para detectar peritonismo.</div>"}},
+      {t:{es:"Signos de apendicitis",pt:"Sinais de apendicite"},body:{
+        es:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Signo</th><th>Maniobra</th></tr></thead><tbody><tr><td>Punto de McBurney</td><td>Dolor a la palpación en la unión 1/3 externo–2/3 internos de la línea espina ilíaca ASD–ombligo</td></tr><tr><td>Blumberg</td><td>Dolor a la descompresión en FID</td></tr><tr><td>Rovsing</td><td>Palpar la FII despierta dolor en la FID</td></tr><tr><td>Psoas</td><td>Dolor al extender (o flexionar contra resistencia) la cadera derecha → apéndice retrocecal</td></tr><tr><td>Obturador</td><td>Dolor a la rotación interna de la cadera derecha flexionada → apéndice pélvico</td></tr><tr><td>Dunphy</td><td>Dolor en FID que aumenta con la tos</td></tr></tbody></table></div>",
+        pt:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Sinal</th><th>Manobra</th></tr></thead><tbody><tr><td>Ponto de McBurney</td><td>Dor à palpação na junção 1/3 externo–2/3 internos da linha espinha ilíaca ASD–umbigo</td></tr><tr><td>Blumberg</td><td>Dor à descompressão brusca na FID</td></tr><tr><td>Rovsing</td><td>Palpar a FIE desperta dor na FID</td></tr><tr><td>Psoas</td><td>Dor ao estender (ou fletir contra resistência) o quadril direito → apêndice retrocecal</td></tr><tr><td>Obturador</td><td>Dor à rotação interna do quadril direito fletido → apêndice pélvico</td></tr><tr><td>Dunphy</td><td>Dor na FID que aumenta com a tosse</td></tr></tbody></table></div>"}},
+      {t:{es:"Signo de Murphy y vesícula",pt:"Sinal de Murphy e vesícula"},body:{
+        es:"<ol class='steps'><li>Apoyá los dedos bajo el reborde costal derecho, en la línea medioclavicular (punto cístico).</li><li>Pedí una inspiración profunda: la vesícula desciende y choca con los dedos.</li><li><b>Murphy positivo:</b> el paciente <b>detiene bruscamente la inspiración</b> por el dolor → colecistitis aguda.</li></ol>",
+        pt:"<ol class='steps'><li>Apoie os dedos sob o rebordo costal direito, na linha hemiclavicular (ponto cístico).</li><li>Peça uma inspiração profunda: a vesícula desce e choca-se com os dedos.</li><li><b>Murphy positivo:</b> o paciente <b>interrompe bruscamente a inspiração</b> pela dor → colecistite aguda.</li></ol>"}},
+      {t:{es:"Masas y visceromegalias",pt:"Massas e visceromegalias"},body:{
+        es:"<ul><li><b>Hígado:</b> palpá el borde en inspiración profunda desde la FID ascendiendo; describí consistencia, borde y superficie. Hepatometría con percusión.</li><li><b>Bazo:</b> normalmente no palpable; en decúbito lateral derecho aparece en la esplenomegalia (Schuster).</li><li><b>Masa pulsátil y expansiva</b> periumbilical: aneurisma de aorta — no palpar enérgicamente.</li><li>De toda masa: localización, tamaño, forma, consistencia, movilidad y dolor.</li></ul>",
+        pt:"<ul><li><b>Fígado:</b> palpe a borda em inspiração profunda desde a FID ascendendo; descreva consistência, borda e superfície. Hepatimetria com percussão.</li><li><b>Baço:</b> normalmente não palpável; em decúbito lateral direito surge na esplenomegalia (Schuster).</li><li><b>Massa pulsátil e expansiva</b> periumbilical: aneurisma de aorta — não palpar energicamente.</li><li>De toda massa: localização, tamanho, forma, consistência, mobilidade e dor.</li></ul>"}}
+    ]
+  },
+  {
+    id:"maniobras", emoji:"🎯", icon:"8",
+    t:{es:"Maniobras especiales y hernias", pt:"Manobras especiais e hérnias"},
+    intro:{es:"Examen de las hernias, tacto rectal y síntesis de los signos peritoneales — completan la evaluación quirúrgica.",
+           pt:"Exame das hérnias, toque retal e síntese dos sinais peritoneais — completam a avaliação cirúrgica."},
+    accs:[
+      {t:{es:"Examen de hernias — técnica",pt:"Exame de hérnias — técnica"},body:{
+        es:"<ol class='steps'><li>Examiná al paciente <b>de pie</b> y luego en decúbito; primero inspección.</li><li>Pedí que <b>tosa o haga Valsalva</b>: la tumoración protruye y aumenta.</li><li>Introducí el dedo invaginando el escroto hacia el <b>orificio inguinal</b>; valorá si el impulso golpea la punta (indirecta) o la cara lateral del dedo (directa).</li><li>Definí si es <b>reductible</b>, irreductible/<b>encarcelada</b> o <b>estrangulada</b> (dolor, signos inflamatorios, compromiso vascular).</li></ol><div class='finds'><div class='find info'><div class='fl'>Inguinal vs femoral</div>Inguinal: <b>sobre</b> el ligamento inguinal. Femoral: <b>debajo</b> y medial al pulso femoral (más frecuente en mujeres, mayor riesgo de estrangulación).</div><div class='find warn'><div class='fl'>Clasificación de Nyhus</div>Tipos I–IV de la región inguinofemoral según el orificio y la pared posterior.</div></div>",
+        pt:"<ol class='steps'><li>Examine o paciente <b>de pé</b> e depois em decúbito; primeiro a inspeção.</li><li>Peça que <b>tussa ou faça Valsalva</b>: a tumoração protrui e aumenta.</li><li>Introduza o dedo invaginando o escroto em direção ao <b>orifício inguinal</b>; avalie se o impulso bate na ponta (indireta) ou na face lateral do dedo (direta).</li><li>Defina se é <b>redutível</b>, irredutível/<b>encarcerada</b> ou <b>estrangulada</b> (dor, sinais inflamatórios, comprometimento vascular).</li></ol><div class='finds'><div class='find info'><div class='fl'>Inguinal vs femoral</div>Inguinal: <b>acima</b> do ligamento inguinal. Femoral: <b>abaixo</b> e medial ao pulso femoral (mais frequente em mulheres, maior risco de estrangulamento).</div><div class='find warn'><div class='fl'>Classificação de Nyhus</div>Tipos I–IV da região inguinofemoral conforme o orifício e a parede posterior.</div></div>"}},
+      {t:{es:"Tacto rectal",pt:"Toque retal"},body:{
+        es:"<ul><li>Tono del esfínter, ampolla (vacía/ocupada), masas, características de las heces.</li><li><b>Sangre / melena</b> en el guante: hemorragia digestiva.</li><li><b>Dolor del fondo de saco de Douglas</b> («grito de Douglas»): irritación peritoneal pélvica (apendicitis pélvica, absceso).</li><li>Próstata (tamaño, consistencia, nódulos) en el varón.</li></ul>",
+        pt:"<ul><li>Tônus do esfíncter, ampola (vazia/ocupada), massas, características das fezes.</li><li><b>Sangue / melena</b> na luva: hemorragia digestiva.</li><li><b>Dor do fundo de saco de Douglas</b> («grito de Douglas»): irritação peritoneal pélvica (apendicite pélvica, abscesso).</li><li>Próstata (tamanho, consistência, nódulos) no homem.</li></ul>"}},
+      {t:{es:"Síntesis de los signos peritoneales",pt:"Síntese dos sinais peritoneais"},body:{
+        es:"<div class='hl'>🎯 <b>Irritación peritoneal</b> — combiná: dolor a la descompresión (Blumberg), defensa/contractura involuntaria, dolor con la tos y al percutir, abdomen inmóvil con la respiración. Su presencia obliga a descartar abdomen agudo quirúrgico.</div>",
+        pt:"<div class='hl'>🎯 <b>Irritação peritoneal</b> — combine: dor à descompressão (Blumberg), defesa/contratura involuntária, dor com a tosse e à percussão, abdome imóvel com a respiração. A sua presença obriga a descartar abdome agudo cirúrgico.</div>"}}
+    ]
+  },
+  {
+    id:"sindromes", emoji:"🧩", icon:"9",
+    t:{es:"Síndromes del abdomen agudo", pt:"Síndromes do abdome agudo"},
+    intro:{es:"El abdomen agudo se clasifica en 5 síndromes quirúrgicos. La tabla resume el patrón de dolor, el hallazgo dominante y los ejemplos; abajo, la evaluación preoperatoria y la indicación quirúrgica.",
+           pt:"O abdome agudo classifica-se em 5 síndromes cirúrgicas. A tabela resume o padrão de dor, o achado dominante e os exemplos; abaixo, a avaliação pré-operatória e a indicação cirúrgica."},
+    accs:[
+      {t:{es:"Evaluación preoperatoria (riesgo ASA)",pt:"Avaliação pré-operatória (risco ASA)"},body:{
+        es:"<p>La clasificación <b>ASA</b> de la American Society of Anesthesiologists estima el riesgo según el estado físico:</p><div class='tbl-scroll'><table class='sx mini'><thead><tr><th>ASA</th><th>Estado físico</th></tr></thead><tbody><tr><td>I</td><td>Sano</td></tr><tr><td>II</td><td>Enfermedad sistémica leve y controlada</td></tr><tr><td>III</td><td>Enfermedad sistémica grave (no incapacitante)</td></tr><tr><td>IV</td><td>Enfermedad grave que amenaza la vida</td></tr><tr><td>V</td><td>Moribundo, no sobrevive sin la cirugía</td></tr><tr><td>VI</td><td>Muerte encefálica (donante)</td></tr></tbody></table></div><p>El sufijo <b>«E»</b> indica emergencia. En cirugía electiva de bajo riesgo en ASA I–II, una buena anamnesis y un examen físico minucioso bastan para la evaluación.</p>",
+        pt:"<p>A classificação <b>ASA</b> da American Society of Anesthesiologists estima o risco conforme o estado físico:</p><div class='tbl-scroll'><table class='sx mini'><thead><tr><th>ASA</th><th>Estado físico</th></tr></thead><tbody><tr><td>I</td><td>Hígido (saudável)</td></tr><tr><td>II</td><td>Doença sistêmica leve e controlada</td></tr><tr><td>III</td><td>Doença sistêmica grave (não incapacitante)</td></tr><tr><td>IV</td><td>Doença grave que ameaça a vida</td></tr><tr><td>V</td><td>Moribundo, não sobrevive sem a cirurgia</td></tr><tr><td>VI</td><td>Morte encefálica (doador)</td></tr></tbody></table></div><p>O sufixo <b>«E»</b> indica emergência. Em cirurgia eletiva de baixo risco em ASA I–II, uma boa anamnese e um exame físico minucioso bastam para a avaliação.</p>"}},
+      {t:{es:"Signos de gravedad e indicación quirúrgica",pt:"Sinais de gravidade e indicação cirúrgica"},body:{
+        es:"<ul><li><b>Peritonitis difusa</b> (vientre en tabla, Blumberg generalizado).</li><li><b>Neumoperitoneo</b> (Jobert) → víscera perforada.</li><li><b>Inestabilidad hemodinámica</b> con abdomen agudo (hemorrágico, isquémico).</li><li>Obstrucción con signos de <b>estrangulación</b> (dolor continuo, fiebre, leucocitosis, acidosis).</li><li><b>Dolor desproporcionado</b> al examen → isquemia mesentérica (no demorar).</li></ul>",
+        pt:"<ul><li><b>Peritonite difusa</b> (abdome em tábua, Blumberg generalizado).</li><li><b>Pneumoperitônio</b> (Jobert) → víscera perfurada.</li><li><b>Instabilidade hemodinâmica</b> com abdome agudo (hemorrágico, isquêmico).</li><li>Obstrução com sinais de <b>estrangulamento</b> (dor contínua, febre, leucocitose, acidose).</li><li><b>Dor desproporcional</b> ao exame → isquemia mesentérica (não retardar).</li></ul>"}}
+    ],
+    extra:"sindromes"
+  }
+];
+
+/* Mnemotécnicas e escores */
+var MNEMOS = [
+  {kw:"ALICIA", forr:{es:"Dolor abdominal",pt:"Dor abdominal"}, rows:[
+    ["A",{es:"<b>Aparición</b> — súbita (perforación, isquemia) o gradual",pt:"<b>Aparecimento</b> — súbita (perfuração, isquemia) ou gradual"}],
+    ["L",{es:"<b>Localización</b> e migración",pt:"<b>Localização</b> e migração"}],
+    ["I",{es:"<b>Irradiación</b> — dorso, escápula, hombro, ingle",pt:"<b>Irradiação</b> — dorso, escápula, ombro, virilha"}],
+    ["C",{es:"<b>Carácter</b> — cólico, urente, constante, punzante",pt:"<b>Caráter</b> — cólica, queimação, constante, em pontada"}],
+    ["I",{es:"<b>Intensidad</b> — 0 a 10",pt:"<b>Intensidade</b> — 0 a 10"}],
+    ["A",{es:"<b>Atenuantes/agravantes</b> y síntomas asociados",pt:"<b>Atenuantes/agravantes</b> e sintomas associados"}]
+  ]},
+  {kw:"MANTRELS", forr:{es:"Apendicitis — score de Alvarado",pt:"Apendicite — escore de Alvarado"}, rows:[
+    ["M",{es:"<b>Migración</b> del dolor a la FID (1)",pt:"<b>Migração</b> da dor para a FID (1)"}],
+    ["A",{es:"<b>Anorexia</b> (1)",pt:"<b>Anorexia</b> (1)"}],
+    ["N",{es:"<b>Náuseas</b>/vómitos (1)",pt:"<b>Náuseas</b>/vômitos (1)"}],
+    ["T",{es:"<b>Tenderness</b> — dolor a la palpación en FID (2)",pt:"<b>Tenderness</b> — dor à palpação na FID (2)"}],
+    ["R",{es:"<b>Rebote</b> — descompresión dolorosa (1)",pt:"<b>Rebote</b> — descompressão dolorosa (1)"}],
+    ["E",{es:"<b>Elevación</b> de la temperatura ≥37,3 °C (1)",pt:"<b>Elevação</b> da temperatura ≥37,3 °C (1)"}],
+    ["L",{es:"<b>Leucocitosis</b> ≥10.000 (2)",pt:"<b>Leucocitose</b> ≥10.000 (2)"}],
+    ["S",{es:"<b>Shift</b> — desviación a la izquierda (1). Total ≥7 → alta probabilidad",pt:"<b>Shift</b> — desvio à esquerda (1). Total ≥7 → alta probabilidade"}]
+  ]},
+  {kw:"DDVP", forr:{es:"Tétrada de la obstrucción",pt:"Tétrade da obstrução"}, rows:[
+    ["D",{es:"<b>Dolor</b> cólico",pt:"<b>Dor</b> em cólica"}],
+    ["D",{es:"<b>Distensión</b> abdominal",pt:"<b>Distensão</b> abdominal"}],
+    ["V",{es:"<b>Vómitos</b> (biliares o fecaloides)",pt:"<b>Vômitos</b> (biliosos ou fecaloides)"}],
+    ["P",{es:"<b>Parada</b> de eliminación de gases y heces",pt:"<b>Parada</b> de eliminação de gases e fezes"}]
+  ]}
+];
+
+/* Tabela comparativa das síndromes do abdome agudo */
+var SX_COLS = {
+  es:["Síndrome","Dolor / inicio","Hallazgo dominante","Ejemplos"],
+  pt:["Síndrome","Dor / início","Achado dominante","Exemplos"]
+};
+function C(cls,es,pt){return {cls:cls,es:es,pt:pt};}
+var SX_ROWS = [
+  {n:{es:"Inflamatorio",pt:"Inflamatório"}, c:[ C("c-neutral","Progresivo, localizado","Progressiva, localizada"), C("c-key","Dolor + Blumberg localizado + fiebre","Dor + Blumberg localizado + febre"), C("c-neutral","Apendicitis, colecistitis, diverticulitis, pancreatitis","Apendicite, colecistite, diverticulite, pancreatite") ]},
+  {n:{es:"Perforativo",pt:"Perfurativo"}, c:[ C("c-down","Súbito, intenso (puñalada)","Súbita, intensa (punhalada)"), C("c-key","Vientre en tabla + Jobert (neumoperitoneo)","Abdome em tábua + Jobert (pneumoperitônio)"), C("c-neutral","Úlcera perforada, perforación de divertículo/tumor","Úlcera perfurada, perfuração de divertículo/tumor") ]},
+  {n:{es:"Obstructivo",pt:"Obstrutivo"}, c:[ C("c-neutral","Cólico, en salvas","Em cólica, em salvas"), C("c-key","Distensión + RHA metálicos→ausentes + tétrada","Distensão + RHA metálicos→ausentes + tétrade"), C("c-neutral","Bridas/adherencias, hernias, tumor, vólvulo","Bridas/aderências, hérnias, tumor, volvo") ]},
+  {n:{es:"Hemorrágico",pt:"Hemorrágico"}, c:[ C("c-down","Súbito + shock","Súbita + choque"), C("c-key","Palidez, hipotensión, Cullen/Grey-Turner","Palidez, hipotensão, Cullen/Grey-Turner"), C("c-neutral","Aneurisma roto, embarazo ectópico, trauma de bazo/hígado","Aneurisma roto, gravidez ectópica, trauma de baço/fígado") ]},
+  {n:{es:"Vascular / isquémico",pt:"Vascular / isquêmico"}, c:[ C("c-down","Intenso, desproporcionado","Intensa, desproporcional"), C("c-key","Dolor intenso con examen pobre + acidosis","Dor intensa com exame pobre + acidose"), C("c-neutral","Isquemia/trombosis mesentérica, embolia","Isquemia/trombose mesentérica, embolia") ]}
+];
+
+/* Cards de síndromes */
+var SX_CARDS = [
+  {emoji:"🔥", t:{es:"Inflamatorio / infeccioso",pt:"Inflamatório / infeccioso"},
+   d:{es:"El más frecuente. Dolor progresivo que se localiza, fiebre y signos peritoneales localizados. Apendicitis (el N.º 1), colecistitis, diverticulitis, pancreatitis, EPI.",
+      pt:"O mais frequente. Dor progressiva que se localiza, febre e sinais peritoneais localizados. Apendicite (o N.º 1), colecistite, diverticulite, pancreatite, DIP."}},
+  {emoji:"💥", t:{es:"Perforativo",pt:"Perfurativo"},
+   d:{es:"Dolor súbito «en puñalada», vientre en tabla y signo de Jobert por neumoperitoneo. Úlcera péptica perforada, perforación de divertículo o tumor.",
+      pt:"Dor súbita «em punhalada», abdome em tábua e sinal de Jobert por pneumoperitônio. Úlcera péptica perfurada, perfuração de divertículo ou tumor."}},
+  {emoji:"🚧", t:{es:"Obstructivo",pt:"Obstrutivo"},
+   d:{es:"Tétrada: dolor cólico, distensión, vómitos y detención de gases/heces. RHA de lucha metálicos que luego se abolen. Bridas (N.º 1), hernias, tumores, vólvulo.",
+      pt:"Tétrade: dor em cólica, distensão, vômitos e parada de gases/fezes. RHA de luta metálicos que depois se abolem. Bridas (N.º 1), hérnias, tumores, volvo."}},
+  {emoji:"🩸", t:{es:"Hemorrágico",pt:"Hemorrágico"},
+   d:{es:"Dolor con shock hipovolémico: palidez, taquicardia, hipotensión. Cullen/Grey-Turner, masa pulsátil. Aneurisma de aorta roto, embarazo ectópico roto, trauma.",
+      pt:"Dor com choque hipovolêmico: palidez, taquicardia, hipotensão. Cullen/Grey-Turner, massa pulsátil. Aneurisma de aorta roto, gravidez ectópica rota, trauma."}},
+  {emoji:"🧊", t:{es:"Vascular / isquémico",pt:"Vascular / isquêmico"},
+   d:{es:"Dolor intenso y desproporcionado a un examen inicialmente pobre, en pacientes con FA o aterosclerosis. Isquemia mesentérica — alta mortalidad si se demora.",
+      pt:"Dor intensa e desproporcional a um exame inicialmente pobre, em pacientes com FA ou aterosclerose. Isquemia mesentérica — alta mortalidade se retardada."}}
+];
+
+/* ─────────── RENDER ─────────── */
+function tr(o){ return (o && (o[L]!=null)) ? o[L] : (o? (o.pt||o.es||"") : ""); }
+
+function renderNav(){
+  document.getElementById("secnav").innerHTML = SECTIONS.map(function(s,i){
+    return '<button class="secnav-btn'+(i===0?' active':'')+'" data-sec="'+s.id+'" onclick="goSec(\''+s.id+'\')">'+s.emoji+' <span>'+tr(s.t)+'</span></button>';
+  }).join("");
+}
+
+function renderMnemo(){
+  return MNEMOS.map(function(m){
+    var rows = m.rows.map(function(r){
+      return '<div class="ltr">'+r[0]+'</div><div class="def">'+tr(r[1])+'</div>';
+    }).join("");
+    return '<div class="acc open"><div class="acc-head" onclick="this.parentNode.classList.toggle(\'open\')">'
+      +'<span class="acc-icon">'+m.kw.charAt(0)+'</span><span class="acc-title">'+m.kw+'</span>'
+      +'<span class="tag">'+tr(m.forr)+'</span>'
+      +'<svg class="acc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>'
+      +'<div class="acc-body"><div class="mnemo">'+rows+'</div></div></div>';
+  }).join("");
+}
+
+function renderSec(s){
+  var h='<div class="sec-h"><span class="emoji">'+s.emoji+'</span>'+tr(s.t)+'</div>';
+  h+='<div class="sec-intro">'+tr(s.intro)+'</div>';
+  if(s.extra==="mnemo")   h+=renderMnemo();
+  if(s.accs){
+    s.accs.forEach(function(a,idx){
+      h+='<div class="acc'+(idx===0?' open':'')+'"><div class="acc-head" onclick="this.parentNode.classList.toggle(\'open\')">'
+        +'<span class="acc-icon">'+(idx+1)+'</span><span class="acc-title">'+tr(a.t)+'</span>'
+        +'<svg class="acc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>'
+        +'<div class="acc-body">'+tr(a.body)+'</div></div>';
+    });
+  }
+  if(s.extra==="sindromes"){
+    h+=renderTable();
+    h+='<div class="sx-cards">'+SX_CARDS.map(function(c){
+      return '<div class="sx-card"><h4>'+c.emoji+' '+tr(c.t)+'</h4><p>'+tr(c.d)+'</p></div>';
+    }).join("")+'</div>';
+  }
+  return '<div class="sec active" id="sec-'+s.id+'">'+h+'</div>';
+}
+
+function renderTable(){
+  var cols=SX_COLS[L];
+  var head='<thead><tr>'+cols.map(function(c){return '<th>'+c+'</th>';}).join("")+'</tr></thead>';
+  var body='<tbody>'+SX_ROWS.map(function(r){
+    return '<tr><td>'+tr(r.n)+'</td>'+r.c.map(function(cell){
+      return '<td><span class="cell '+cell.cls+'">'+tr(cell)+'</span></td>';
+    }).join("")+'</tr>';
+  }).join("")+'</tbody>';
+  var legend='<div class="legend">'
+    +'<span><i class="dot" style="background:var(--down)"></i>'+(L==="es"?"Súbito / grave":"Súbito / grave")+'</span>'
+    +'<span><i class="dot" style="background:var(--neutral)"></i>'+(L==="es"?"Variable":"Variável")+'</span>'
+    +'<span><i class="dot" style="background:var(--primary)"></i>'+(L==="es"?"Hallazgo clave":"Achado-chave")+'</span></div>';
+  return legend+'<div class="tbl-scroll"><table class="sx">'+head+body+'</table></div>';
+}
+
+function renderAll(){
+  document.getElementById("wrap").innerHTML = SECTIONS.map(renderSec).join("");
+  goSec(window.__active || SECTIONS[0].id, true);
+}
+
+function goSec(id, keep){
+  window.__active = id;
+  document.querySelectorAll(".sec").forEach(function(s){ s.classList.toggle("active", s.id==="sec-"+id); });
+  document.querySelectorAll(".secnav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-sec")===id); });
+  if(!keep) { try{ history.replaceState(null,"","#"+id); }catch(e){} document.querySelector(".wrap").scrollTop=0; window.scrollTo(0,0); }
+}
+
+function setLang(lang){
+  L=lang;
+  document.documentElement.setAttribute("data-lang",lang);
+  document.getElementById("btn-es").classList.toggle("active",lang==="es");
+  document.getElementById("btn-pt").classList.toggle("active",lang==="pt");
+  renderNav(); renderAll();
+  try{ localStorage.setItem("am-lang",lang); }catch(e){}
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  try{ var s=localStorage.getItem("am-lang"); if(s==="pt"||s==="es") L=s; }catch(e){}
+  document.documentElement.setAttribute("data-lang",L);
+  document.getElementById("btn-es").classList.toggle("active",L==="es");
+  document.getElementById("btn-pt").classList.toggle("active",L==="pt");
+  var hash=(location.hash||"").replace("#","");
+  if(hash && SECTIONS.some(function(s){return s.id===hash;})) window.__active=hash;
+  renderNav(); renderAll();
+});
+</script>
+<script src="supabase-integration.js" defer></script>
+<script src="am-icons.js"></script>
+<script src="sidebar.js"></script>
+</body>
+</html>
