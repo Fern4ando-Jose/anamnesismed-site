@@ -711,7 +711,7 @@ async function uiLoadRecentHCs(limit, preHcs) {
         <span class="hc-status ${st.cls} es">${st.es}</span>
         <span class="hc-status ${st.cls} pt">${st.pt}</span>
         <button class="hc-btn hc-btn-edit" onclick="event.stopPropagation();window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" title="Editar" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span class="pt">Editar</span><span class="es">Editar</span></button>
-        <button class="hc-btn hc-btn-del" onclick="event.stopPropagation();hcDelete('${hc.id}').then(()=>uiLoadRecentHCs())" title="Eliminar / Excluir" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
+        <button class="hc-btn hc-btn-del" onclick="event.stopPropagation();hcDelete('${hc.id}').then(()=>{window.__hcsAll=null;uiLoadRecentHCs(window.currentDashView==='hcs'?100:5);})" title="Eliminar / Excluir" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
       </div>
     </div>`;
   }).join('');
@@ -1069,7 +1069,8 @@ function showSaveFeedback() {
       hcListAll(100),
       window.pdfExportList ? window.pdfExportList() : Promise.resolve([])
     ]);
-    uiLoadRecentHCs(5, hcsAll);
+    window.__hcsAll = hcsAll; // cache reusado pelo setView (evita refetch ao trocar de view)
+    uiLoadRecentHCs(window.currentDashView === 'hcs' ? 100 : 5, hcsAll);
     uiLoadStats(hcsAll, pdfAll);
     uiLoadRecentActivity(6, hcsAll, pdfAll);
 

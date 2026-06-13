@@ -345,7 +345,9 @@ function setView(v){
   if(titleEs) titleEs.textContent = isHcs ? 'Mis HCs' : 'HCs recientes';
   var head = document.getElementById('recent-hcs-head');
   if(head){ head.querySelectorAll('.view-all').forEach(function(a){ a.style.display = isHcs ? 'none' : ''; }); }
-  if(window.uiLoadRecentHCs) window.uiLoadRecentHCs(isHcs ? 100 : 5);
+  // Reaproveita a lista já carregada no init (window.__hcsAll) — evita refazer a query
+  // do Supabase a cada troca de view (era a causa do delay ao entrar em "Minhas HCs").
+  if(window.uiLoadRecentHCs) window.uiLoadRecentHCs(isHcs ? 100 : 5, window.__hcsAll || null);
   if(isHcs) window.scrollTo({top:0, behavior:'smooth'});
 }
 (function(){
