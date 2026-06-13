@@ -264,6 +264,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .aea-q{margin-bottom:12px}
 .aea-q:last-child{margin-bottom:0}
 .aea-q-lbl{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:5px}
+/* Red flag: pergunta de sinal de alarme — sempre visível, destaque sóbrio */
+.aea-q-flag{border-left:3px solid var(--mc-danger,#d92d20);padding-left:9px}
+.aea-flag-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mc-danger,#d92d20);background:rgba(217,45,32,.08);border-radius:4px;padding:2px 6px;margin-bottom:4px}
 
 /* RAS */
 .ras-system{border:1.5px solid var(--line);border-radius:9px;margin-bottom:7px;overflow:hidden}
@@ -2041,6 +2044,7 @@ function renderAEAGuide(mObj){
   if(!g || !g.aeaGuide || !g.aeaGuide.length){cont.innerHTML='';return;}
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
   cont.innerHTML = buildAEAGuideHTML(g, 'aea-g-', lang);
+  if(window.aeaApplyConditions) aeaApplyConditions('aea-g-');
 }
 
 function renderAEAGuide2(mObj){
@@ -2050,6 +2054,7 @@ function renderAEAGuide2(mObj){
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
   sect.innerHTML = buildAEAGuideHTML(g, 'aea-g2-', lang, 'color:var(--secondary)');
   sect.style.display = 'block';
+  if(window.aeaApplyConditions) aeaApplyConditions('aea-g2-');
 }
 
 function renderAEAGuide3(mObj){
@@ -2059,6 +2064,7 @@ function renderAEAGuide3(mObj){
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
   sect.innerHTML = buildAEAGuideHTML(g, 'aea-g3-', lang, 'color:var(--secondary)');
   sect.style.display = 'block';
+  if(window.aeaApplyConditions) aeaApplyConditions('aea-g3-');
 }
 
 function ynBtnSel(el,groupId,val){
@@ -2066,6 +2072,7 @@ function ynBtnSel(el,groupId,val){
   var was = el.classList.contains(val);
   parent.querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('sim','nao')});
   if(!was) el.classList.add(val);   // toggle: clicar de novo desmarca
+  _aeaCond(groupId);
 }
 
 // ── RAS ───────────────────────────────────────────────
@@ -2116,12 +2123,20 @@ function togglePanel(id){
 }
 
 // ── FORM INTERACTIONS ─────────────────────────────────
+// Reavalia a lógica condicional (showIf) do bloco AEA ao qual o grupo pertence.
+// Deriva o prefixo (aea-g- / aea-g2- / aea-g3-) tirando o índice numérico final.
+function _aeaCond(groupId){
+  if(!window.aeaApplyConditions || !groupId) return;
+  var p = groupId.replace(/\d+$/,'');
+  if(/^aea-g\d*-$/.test(p)) aeaApplyConditions(p);
+}
 function selectRadio(el, groupId){
   var parent = document.getElementById(groupId);
   if(!parent) return;
   var was = el.classList.contains('sel');
   parent.querySelectorAll('.f-radio').forEach(function(r){r.classList.remove('sel','sel-danger')});
   if(!was) el.classList.add('sel');   // clicar de novo no mesmo desmarca (toggle)
+  _aeaCond(groupId);
   updateProgress();
 }
 
@@ -2131,6 +2146,7 @@ function selectMultiChip(el, groupId){
   var parent = document.getElementById(groupId);
   if(!parent) return;
   el.classList.toggle('sel');
+  _aeaCond(groupId);
   updateProgress();
 }
 

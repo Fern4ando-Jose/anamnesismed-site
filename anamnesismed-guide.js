@@ -13,7 +13,15 @@ function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
   html += '<div class="aea-guided-title es" style="'+ts+'">Preguntas guiadas — '+(mObj.nameEs||mObj.name)+'</div>';
   mObj.aeaGuide.forEach(function(q,i){
     var id = idPfx+i;
-    html += '<div class="aea-q">';
+    // Wrapper com âncoras p/ a lógica condicional (showIf) e marcação de red flag.
+    // IMPORTANTE: renderizamos TODAS as perguntas (índices estáveis p/ coletarRespostasAEA);
+    // o showIf apenas ESCONDE/limpa — nunca reordena.
+    var attrs = ' id="'+idPfx+'aeaq-'+i+'" data-qidx="'+i+'" data-qtype="'+q.type+'"';
+    if(q.key) attrs += ' data-qkey="'+q.key+'"';
+    var hidden = '';
+    if(q.showIf){ attrs += " data-showif='"+JSON.stringify(q.showIf)+"'"; hidden = ' style="display:none"'; }
+    html += '<div class="aea-q'+(q.redFlag?' aea-q-flag':'')+'"'+attrs+hidden+'>';
+    if(q.redFlag) html += '<span class="aea-flag-badge pt">Sinal de alarme</span><span class="aea-flag-badge es">Signo de alarma</span>';
     html += '<div class="aea-q-lbl pt">'+q.q+'</div>';
     html += '<div class="aea-q-lbl es">'+(q.qEs||q.q)+'</div>';
     if(q.type==='radio'){
@@ -45,6 +53,102 @@ function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
   html += '</div>';
   return html;
 }
+
+// ── AEA: LÓGICA CONDICIONAL (showIf) + RED FLAGS ───────────────
+// Mostra/esconde perguntas conforme respostas já dadas, sem reordenar (índices
+// estáveis p/ coletarRespostasAEA). Perguntas escondidas têm a resposta LIMPA,
+// para a narrativa/PDF não coletarem algo que o usuário não vê.
+// Referência por `key` + índice de opção (language-independent: não compara texto).
+//
+// Esquema de showIf (no src/motivos/*.js, por pergunta):
+//   showIf: {key:'loc', opt:[0,1]}            // radio/multi: opção selecionada ∈ [0,1]
+//   showIf: {key:'pleur', yn:'sim'}           // yn: 'sim' | 'nao'
+//   showIf: {key:'dum', filled:true}          // input preenchido
+//   showIf: [cond, cond]                      // AND (todas)
+//   showIf: {any:[cond, cond]}                // OR (qualquer)
+function _aeaRadioIdx(gid){
+  var p=document.getElementById(gid); if(!p) return -1;
+  var opts=p.querySelectorAll('.f-radio');
+  for(var i=0;i<opts.length;i++) if(opts[i].classList.contains('sel')) return i;
+  return -1;
+}
+function _aeaMultiIdx(gid){
+  var p=document.getElementById(gid), out=[]; if(!p) return out;
+  var opts=p.querySelectorAll('.f-radio');
+  for(var i=0;i<opts.length;i++) if(opts[i].classList.contains('sel')) out.push(i);
+  return out;
+}
+function _aeaYnVal(gid){
+  var btns=document.querySelectorAll('.yn-btn');
+  for(var i=0;i<btns.length;i++){
+    var m=(btns[i].getAttribute('onclick')||'').match(/\(this,\s*'([^']+)'/);
+    if(m && m[1]===gid){
+      if(btns[i].classList.contains('sim')) return 'sim';
+      if(btns[i].classList.contains('nao')) return 'nao';
+    }
+  }
+  return '';
+}
+function _aeaInputVal(gid){ var e=document.getElementById(gid); return e?(e.value||'').trim():''; }
+
+function _aeaClearAnswer(w, prefix){
+  var gid=prefix+w.getAttribute('data-qidx'), type=w.getAttribute('data-qtype');
+  if(type==='radio'||type==='multi'){
+    var p=document.getElementById(gid);
+    if(p) p.querySelectorAll('.f-radio').forEach(function(r){r.classList.remove('sel','sel-danger');});
+  } else if(type==='yn'){
+    document.querySelectorAll('.yn-btn').forEach(function(b){
+      var m=(b.getAttribute('onclick')||'').match(/\(this,\s*'([^']+)'/);
+      if(m && m[1]===gid) b.classList.remove('sim','nao','ex','yn-on');
+    });
+  } else if(type==='input'){
+    var e=document.getElementById(gid); if(e) e.value='';
+  }
+}
+
+function aeaApplyConditions(prefix){
+  if(!prefix) return;
+  var wraps=document.querySelectorAll('[id^="'+prefix+'aeaq-"]');
+  if(!wraps.length) return;
+  var byKey={};
+  wraps.forEach(function(w){
+    var k=w.getAttribute('data-qkey');
+    if(k) byKey[k]={idx:w.getAttribute('data-qidx'), type:w.getAttribute('data-qtype')};
+  });
+  function condMet(c){
+    var ref=byKey[c.key]; if(!ref) return false;
+    var gid=prefix+ref.idx;
+    if('yn' in c)     return _aeaYnVal(gid)===c.yn;
+    if('filled' in c) return !!_aeaInputVal(gid)===!!c.filled;
+    if(c.opt){
+      if(ref.type==='multi'){ var idxs=_aeaMultiIdx(gid); return c.opt.some(function(o){return idxs.indexOf(o)>=0;}); }
+      return c.opt.indexOf(_aeaRadioIdx(gid))>=0;
+    }
+    return false;
+  }
+  function met(s){
+    if(!s) return true;
+    if(Array.isArray(s)) return s.every(condMet);   // AND
+    if(s.any) return s.any.some(condMet);            // OR
+    return condMet(s);
+  }
+  // Várias passadas: revelar uma pergunta-discriminadora pode habilitar dependentes.
+  for(var pass=0; pass<4; pass++){
+    var changed=false;
+    wraps.forEach(function(w){
+      var raw=w.getAttribute('data-showif'); if(!raw) return;
+      var s; try{ s=JSON.parse(raw); }catch(e){ return; }
+      var show=met(s), isHidden=(w.style.display==='none');
+      if(show && isHidden){ w.style.display=''; changed=true; }
+      else if(!show){
+        if(!isHidden){ w.style.display='none'; changed=true; }
+        _aeaClearAnswer(w, prefix);   // defensivo: oculta nunca guarda resposta (consistência p/ narrativa, PDF e restore)
+      }
+    });
+    if(!changed) break;
+  }
+}
+if(typeof window!=='undefined'){ window.aeaApplyConditions = aeaApplyConditions; }
 
 // ── GUIDE CONTENT BUILDERS ────────────────────────────
 // Helper bilíngue: emite os dois idiomas em spans .pt/.es (o CSS [data-lang]

@@ -274,6 +274,7 @@ const MOTIVOS = {
               "q": "Localização da dor",
               "qEs": "Localización del dolor",
               "type": "radio",
+              "key": "loc",
               "opts": [
                 "Retroesternal",
                 "Precordial",
@@ -312,6 +313,7 @@ const MOTIVOS = {
               "q": "Tipo/caráter da dor",
               "qEs": "Tipo/carácter del dolor",
               "type": "radio",
+              "key": "tipo",
               "opts": [
                 "Em aperto/opressão",
                 "Em queimação",
@@ -368,6 +370,24 @@ const MOTIVOS = {
               "q": "Relação com esforço",
               "qEs": "Relación con esfuerzo",
               "type": "radio",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      4
+                    ]
+                  }
+                ]
+              },
               "opts": [
                 "Piora com esforço",
                 "Melhora com esforço",
@@ -384,12 +404,47 @@ const MOTIVOS = {
             {
               "q": "Relação com a respiração ou tosse (dor pleurítica)?",
               "qEs": "¿Relación con la respiración o la tos (dolor pleurítico)?",
-              "type": "yn"
+              "type": "yn",
+              "key": "pleur",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      2
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      2
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Relação com posição ou alimentação",
               "qEs": "Relación con la posición o la alimentación",
               "type": "radio",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1,
+                      3
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      1
+                    ]
+                  }
+                ]
+              },
               "opts": [
                 "Piora ao deitar-se",
                 "Melhora ao sentar-se/inclinar para frente",
@@ -408,7 +463,25 @@ const MOTIVOS = {
             {
               "q": "Alivia com nitroglicerina?",
               "qEs": "¿Alivia con nitroglicerina?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      4
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Evolução desde o início (piorando, estável, melhorando)?",
@@ -424,42 +497,128 @@ const MOTIVOS = {
             {
               "q": "Palpitações associadas?",
               "qEs": "¿Palpitaciones asociadas?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      4
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Dispneia associada?",
               "qEs": "¿Disnea asociada?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             },
             {
               "q": "Sudorese fria associada?",
               "qEs": "¿Sudoración fría asociada?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             },
             {
               "q": "Náuseas ou vômitos associados?",
               "qEs": "¿Náuseas o vómitos asociados?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1,
+                      3
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      1,
+                      4
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Síncope ou pré-síncope associada?",
               "qEs": "¿Síncope o presíncope asociado?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             },
             {
               "q": "Febre?",
               "qEs": "¿Fiebre?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      2
+                    ]
+                  },
+                  {
+                    "key": "pleur",
+                    "yn": "sim"
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      2
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Tosse associada?",
               "qEs": "¿Tos asociada?",
-              "type": "yn"
+              "type": "yn",
+              "key": "tosse",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      2
+                    ]
+                  },
+                  {
+                    "key": "pleur",
+                    "yn": "sim"
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      2
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Tosse — seca ou produtiva?",
               "qEs": "Tos — ¿seca o productiva?",
               "type": "radio",
+              "showIf": {
+                "key": "tosse",
+                "yn": "sim"
+              },
               "opts": [
                 "Seca (não produtiva)",
                 "Produtiva — com escarro"
@@ -472,17 +631,34 @@ const MOTIVOS = {
             {
               "q": "Há expectoração?",
               "qEs": "¿Hay expectoración?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "key": "tosse",
+                "yn": "sim"
+              }
             },
             {
               "q": "Hemoptise?",
               "qEs": "¿Hemoptisis?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "tosse",
+                    "yn": "sim"
+                  },
+                  {
+                    "key": "pleur",
+                    "yn": "sim"
+                  }
+                ]
+              }
             },
             {
               "q": "Dor torácica em \"facada\" no dorso/interescapular, com diferença de pressão arterial entre os braços (suspeita de dissecção aórtica) — sinal de alarme?",
               "qEs": "¿Dolor torácico \"como puñalada\" en dorso/interescapular, con diferencia de presión arterial entre brazos (sospecha de disección aórtica) — signo de alarma?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             }
           ],
           "rasHighlight": [
@@ -6395,6 +6571,7 @@ const MOTIVOS = {
               "q": "Localização da dor",
               "qEs": "Localización del dolor",
               "type": "radio",
+              "key": "loc",
               "opts": [
                 "Retroesternal",
                 "Precordial",
@@ -6433,6 +6610,7 @@ const MOTIVOS = {
               "q": "Tipo/caráter da dor",
               "qEs": "Tipo/carácter del dolor",
               "type": "radio",
+              "key": "tipo",
               "opts": [
                 "Em aperto/opressão",
                 "Em queimação",
@@ -6489,6 +6667,24 @@ const MOTIVOS = {
               "q": "Relação com esforço",
               "qEs": "Relación con esfuerzo",
               "type": "radio",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      4
+                    ]
+                  }
+                ]
+              },
               "opts": [
                 "Piora com esforço",
                 "Melhora com esforço",
@@ -6505,12 +6701,47 @@ const MOTIVOS = {
             {
               "q": "Relação com a respiração ou tosse (dor pleurítica)?",
               "qEs": "¿Relación con la respiración o la tos (dolor pleurítico)?",
-              "type": "yn"
+              "type": "yn",
+              "key": "pleur",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      2
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      2
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Relação com posição ou alimentação",
               "qEs": "Relación con la posición o la alimentación",
               "type": "radio",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1,
+                      3
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      1
+                    ]
+                  }
+                ]
+              },
               "opts": [
                 "Piora ao deitar-se",
                 "Melhora ao sentar-se/inclinar para frente",
@@ -6529,7 +6760,25 @@ const MOTIVOS = {
             {
               "q": "Alivia com nitroglicerina?",
               "qEs": "¿Alivia con nitroglicerina?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      4
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Evolução desde o início (piorando, estável, melhorando)?",
@@ -6545,42 +6794,128 @@ const MOTIVOS = {
             {
               "q": "Palpitações associadas?",
               "qEs": "¿Palpitaciones asociadas?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      4
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Dispneia associada?",
               "qEs": "¿Disnea asociada?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             },
             {
               "q": "Sudorese fria associada?",
               "qEs": "¿Sudoración fría asociada?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             },
             {
               "q": "Náuseas ou vômitos associados?",
               "qEs": "¿Náuseas o vómitos asociados?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      0,
+                      1,
+                      3
+                    ]
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      0,
+                      1,
+                      4
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Síncope ou pré-síncope associada?",
               "qEs": "¿Síncope o presíncope asociado?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             },
             {
               "q": "Febre?",
               "qEs": "¿Fiebre?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      2
+                    ]
+                  },
+                  {
+                    "key": "pleur",
+                    "yn": "sim"
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      2
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Tosse associada?",
               "qEs": "¿Tos asociada?",
-              "type": "yn"
+              "type": "yn",
+              "key": "tosse",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "loc",
+                    "opt": [
+                      2
+                    ]
+                  },
+                  {
+                    "key": "pleur",
+                    "yn": "sim"
+                  },
+                  {
+                    "key": "tipo",
+                    "opt": [
+                      2
+                    ]
+                  }
+                ]
+              }
             },
             {
               "q": "Tosse — seca ou produtiva?",
               "qEs": "Tos — ¿seca o productiva?",
               "type": "radio",
+              "showIf": {
+                "key": "tosse",
+                "yn": "sim"
+              },
               "opts": [
                 "Seca (não produtiva)",
                 "Produtiva — com escarro"
@@ -6593,17 +6928,34 @@ const MOTIVOS = {
             {
               "q": "Há expectoração?",
               "qEs": "¿Hay expectoración?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "key": "tosse",
+                "yn": "sim"
+              }
             },
             {
               "q": "Hemoptise?",
               "qEs": "¿Hemoptisis?",
-              "type": "yn"
+              "type": "yn",
+              "showIf": {
+                "any": [
+                  {
+                    "key": "tosse",
+                    "yn": "sim"
+                  },
+                  {
+                    "key": "pleur",
+                    "yn": "sim"
+                  }
+                ]
+              }
             },
             {
               "q": "Dor torácica em \"facada\" no dorso/interescapular, com diferença de pressão arterial entre os braços (suspeita de dissecção aórtica) — sinal de alarme?",
               "qEs": "¿Dolor torácico \"como puñalada\" en dorso/interescapular, con diferencia de presión arterial entre brazos (sospecha de disección aórtica) — signo de alarma?",
-              "type": "yn"
+              "type": "yn",
+              "redFlag": true
             }
           ],
           "rasHighlight": [
