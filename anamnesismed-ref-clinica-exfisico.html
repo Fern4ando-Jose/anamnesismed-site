@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<title>AnamnesísMed — Clínica Médica: Examen Físico General</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;
+  --ink:#1e1b4b;--primary:#4f46e5;--primary-dark:#4338ca;
+  --secondary:#6366f1;--accent:#f59e0b;
+  --muted:#54607a;--line:rgba(30,27,75,0.10);--line-md:rgba(30,27,75,0.16);
+  --resp:#6366f1;--resp-bg:rgba(99,102,241,.10);
+  --up:#16a34a;--up-bg:rgba(22,163,74,.10);
+  --down:#dc2626;--down-bg:rgba(220,38,38,.09);
+  --neutral:#64748b;--neutral-bg:rgba(100,116,139,.10);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --sidebar-w:240px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:var(--bg-card);border-bottom:1px solid var(--line);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
+.hamburger:hover{background:var(--bg)}
+.topbar-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;padding:5px 8px;border-radius:6px;transition:background .15s,color .15s;white-space:nowrap;flex-shrink:0}
+.topbar-back:hover{background:var(--bg);color:var(--ink)}
+.topbar-sep{color:var(--line-md);font-size:16px;flex-shrink:0}
+.topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang-toggle{display:flex;background:rgba(30,27,75,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line);flex-shrink:0}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:26px 32px}
+.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.85;display:flex;align-items:center;gap:8px}
+.hero-title{font-family:var(--serif);font-size:26px;font-weight:700;margin-top:6px}
+.hero-sub{font-size:14px;opacity:.92;margin-top:6px;max-width:760px;line-height:1.5}
+
+/* SECTION NAV — wrap no desktop (sem corte), scroll no mobile */
+.secnav{position:sticky;top:60px;z-index:40;background:var(--bg-card);border-bottom:1px solid var(--line);padding:4px 16px;display:flex;flex-wrap:wrap;gap:2px}
+.secnav::-webkit-scrollbar{height:0}
+.secnav-btn{padding:11px 12px;font-size:13px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:6px;border-radius:6px 6px 0 0}
+.secnav-btn:hover{color:var(--ink);background:rgba(99,102,241,.05)}
+.secnav-btn.active{color:var(--resp);border-bottom-color:var(--resp)}
+
+/* CONTENT */
+.wrap{flex:1;padding:26px 32px 70px;max-width:1000px;width:100%}
+.sec{display:none}
+.sec.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sec-h{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.sec-h .emoji{font-size:22px}
+.sec-intro{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+
+/* ACCORDION CARDS */
+.acc{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.acc-head{display:flex;align-items:center;gap:11px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .15s}
+.acc-head:hover{background:rgba(99,102,241,.04)}
+.acc-icon{width:34px;height:34px;border-radius:9px;background:var(--resp-bg);color:var(--resp);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;font-weight:700}
+.acc-title{font-size:15px;font-weight:700;flex:1;color:var(--ink)}
+.acc-chev{color:var(--muted);transition:transform .2s;flex-shrink:0}
+.acc.open .acc-chev{transform:rotate(90deg)}
+.acc-body{display:none;padding:0 16px 16px 16px;font-size:13.5px;line-height:1.65;color:var(--ink)}
+.acc.open .acc-body{display:block}
+.acc-body p{margin:8px 0;color:#33405a}
+.acc-body ul{margin:8px 0 8px 4px;list-style:none}
+.acc-body li{position:relative;padding-left:18px;margin:5px 0;color:#33405a}
+.acc-body li::before{content:'';position:absolute;left:4px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--resp)}
+.acc-body b{color:var(--ink)}
+.acc-body em{font-style:italic;color:var(--primary-dark)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin:2px 4px 2px 0;background:var(--resp-bg);color:var(--primary-dark)}
+
+/* INFO BOX */
+.callout{border-left:4px solid var(--accent);background:rgba(245,158,11,.08);border-radius:0 10px 10px 0;padding:12px 16px;margin:14px 0;font-size:13px;line-height:1.6}
+.callout b{color:#b45309}
+
+/* PERGUNTAS-GUIA */
+.ask{background:rgba(99,102,241,.05);border:1px dashed rgba(99,102,241,.4);border-radius:10px;padding:10px 14px;margin:10px 0}
+.ask-lbl{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--primary-dark);margin-bottom:4px}
+
+/* MINI COMPARES */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.duo-card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--bg-card)}
+.duo-card h4{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.duo-card.restr h4{color:#7c3aed}
+.duo-card.obstr h4{color:#ea580c}
+.duo-card ul{list-style:none}
+.duo-card li{position:relative;padding-left:16px;margin:5px 0;font-size:13px;color:#33405a}
+.duo-card li::before{content:'';position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5}
+
+/* TÉCNICA PASSO A PASSO + ACHADOS */
+.steps{counter-reset:st;list-style:none;margin:10px 0 6px}
+.steps li{counter-increment:st;position:relative;padding:8px 0 8px 32px;border-bottom:1px solid var(--line);font-size:13px;color:#33405a;line-height:1.55}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(st,decimal-leading-zero);position:absolute;left:0;top:9px;font-size:10px;font-weight:700;color:var(--resp);font-family:monospace}
+.steps li b{color:var(--ink)}
+.finds{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.find{border-left:3px solid var(--neutral);background:rgba(30,27,75,.03);border-radius:0 8px 8px 0;padding:10px 12px;font-size:12.5px;line-height:1.5;color:#33405a}
+.find .fl{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.find.ok{border-color:var(--up)}.find.ok .fl{color:var(--up)}
+.find.bad{border-color:var(--down)}.find.bad .fl{color:var(--down)}
+.find.warn{border-color:var(--accent)}.find.warn .fl{color:#b45309}
+.find.info{border-color:var(--resp)}.find.info .fl{color:var(--primary-dark)}
+.hl{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(79,70,229,.05));border:1px solid rgba(99,102,241,.25);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.65;color:#33405a}
+.hl b{color:var(--ink)}
+
+/* MNEMOTECNIA */
+.mnemo{display:grid;grid-template-columns:30px 1fr;gap:6px 12px;margin:8px 0}
+.mnemo .ltr{font-family:var(--serif);font-weight:700;color:var(--resp);font-size:16px;text-align:center}
+.mnemo .def{font-size:13px;color:#33405a;line-height:1.5}
+.mnemo .def b{color:var(--ink)}
+
+/* TABELAS */
+.tbl-scroll{overflow-x:auto;margin:8px 0 4px;border:1px solid var(--line);border-radius:12px}
+table.sx{border-collapse:collapse;width:100%;min-width:680px;font-size:12.5px}
+table.sx.mini{min-width:460px}
+table.sx th,table.sx td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line)}
+table.sx thead th{background:var(--ink);color:#fff;font-weight:700;font-size:11.5px;position:sticky;top:0}
+table.sx tbody tr:hover{background:rgba(99,102,241,.05)}
+table.sx td:first-child,table.sx th:first-child{position:sticky;left:0;background:var(--bg-card);font-weight:700;color:var(--ink);box-shadow:1px 0 0 var(--line)}
+table.sx thead th:first-child{background:var(--ink)}
+table.sx tbody tr:hover td:first-child{background:#eef0fb}
+.cell{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:700;font-size:11.5px;white-space:nowrap}
+.c-up{background:var(--up-bg);color:var(--up)}
+.c-down{background:var(--down-bg);color:var(--down)}
+.c-neutral{background:var(--neutral-bg);color:var(--neutral)}
+.c-key{background:rgba(79,70,229,.12);color:var(--primary-dark)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0;font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* SÍNDROME CARDS */
+.sx-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:8px}
+.sx-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg-card)}
+.sx-card h4{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.sx-card p{font-size:12.5px;color:#33405a;line-height:1.55;margin:4px 0}
+
+@media(max-width:768px){
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .topbar{padding:0 14px}
+  .topbar-back span{display:none}
+  .topbar-back::before{content:'←'}
+  .hero{padding:18px 16px}.hero-title{font-size:20px}
+  .wrap{padding:18px 14px 80px}
+  .secnav{top:60px;padding:0 8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .duo{grid-template-columns:1fr}
+  .finds{grid-template-columns:1fr}
+}
+</style>
+<link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<div id="sidebar-root"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/></svg>
+      </button>
+      <a href="anamnesismed-especialidades.html?esp=clinica" class="topbar-back"><span class="pt">← Clínica Médica</span><span class="es">← Clínica Médica</span></a>
+      <span class="topbar-sep">›</span>
+      <span class="topbar-title pt">Exame Físico Geral</span>
+      <span class="topbar-title es">Examen Físico General</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-eyebrow">🏥 <span class="pt">Referência Clínica · Clínica Médica</span><span class="es">Referencia Clínica · Clínica Médica</span></div>
+    <div class="hero-title pt">Clínica Médica — Exame Físico Geral</div>
+    <div class="hero-title es">Clínica Médica — Examen Físico General</div>
+    <div class="hero-sub pt">Guia completo do exame físico geral: sintomas constitucionais, mnemônicas de anamnese, sinais vitais, ectoscopia, pele e fâneros, linfonodos, edema, cabeça e pescoço — com técnica, achados normais/anormais e as grandes síndromes clínicas.</div>
+    <div class="hero-sub es">Guía completa del examen físico general: síntomas constitucionales, mnemotécnicas de anamnesis, signos vitales, ectoscopia, piel y faneras, ganglios, edema, cabeza y cuello — con técnica, hallazgos normales/anormales y los grandes síndromes clínicos.</div>
+  </div>
+
+  <nav class="secnav" id="secnav"></nav>
+  <div class="wrap" id="wrap"></div>
+</div>
+
+<script>
+var L = "es";
+
+/* ─────────── DADOS (bilíngue) ─────────── */
+var SECTIONS = [
+  {
+    id:"sintomas", emoji:"🗣️", icon:"1",
+    t:{es:"Síntomas constitucionales", pt:"Sintomas constitucionais"},
+    intro:{
+      es:"Semiología de los síntomas generales o constitucionales: orientan a enfermedad sistémica (infecciosa, neoplásica, endocrina, inflamatoria). Usá las mnemotécnicas de la sección siguiente para interrogar cada uno sin omitir atributos.",
+      pt:"Semiologia dos sintomas gerais ou constitucionais: orientam para doença sistêmica (infecciosa, neoplásica, endócrina, inflamatória). Use as mnemônicas da seção seguinte para interrogar cada um sem omitir atributos."},
+    accs:[
+      {t:{es:"Astenia, adinamia y fatiga",pt:"Astenia, adinamia e fadiga"},body:{
+        es:"<p><b>Astenia:</b> sensación de falta de fuerza o energía. <b>Adinamia:</b> dificultad para iniciar o mantener el movimiento. <b>Fatiga:</b> agotamiento tras el esfuerzo.</p><div class='ask'><div class='ask-lbl'>¿Qué preguntar?</div><ul><li>¿Desde cuándo? ¿Es constante o aparece con el esfuerzo? ¿Mejora con el reposo?</li><li>¿Predomina a la mañana (orgánica/depresión) o vespertina (funcional)?</li><li>¿Se acompaña de pérdida de peso, fiebre, sudoración o disnea?</li></ul></div><p><b>Orienta a:</b> anemia, hipotiroidismo, diabetes, insuficiencia cardíaca o renal, infección crónica, neoplasia, depresión.</p>",
+        pt:"<p><b>Astenia:</b> sensação de falta de força ou energia. <b>Adinamia:</b> dificuldade de iniciar ou manter o movimento. <b>Fadiga:</b> esgotamento após o esforço.</p><div class='ask'><div class='ask-lbl'>O que perguntar?</div><ul><li>Desde quando? É constante ou surge ao esforço? Melhora com o repouso?</li><li>Predomina de manhã (orgânica/depressão) ou vespertina (funcional)?</li><li>Vem com perda de peso, febre, sudorese ou dispneia?</li></ul></div><p><b>Orienta para:</b> anemia, hipotireoidismo, diabetes, insuficiência cardíaca ou renal, infecção crônica, neoplasia, depressão.</p>"}},
+      {t:{es:"Fiebre",pt:"Febre"},body:{
+        es:"<p><b>Definición:</b> elevación de la temperatura corporal por reajuste del centro termorregulador (≥37,8 °C axilar). Distinguir de hipertermia (sin reajuste del set-point).</p><div class='ask'><div class='ask-lbl'>¿Qué preguntar? (IDET)</div><ul><li><b>Inicio</b> (súbito/insidioso), <b>Duración</b>, <b>Evolución/patrón</b>, <b>Temperatura</b> máxima.</li><li>¿Escalofríos, sudoración, tiritona? ¿Horario predominante?</li><li>Síntomas localizadores (tos, disuria, dolor) y epidemiología (viajes, contactos).</li></ul></div><p><b>Patrones:</b> continua, remitente, intermitente, héctica, recurrente. <b>FOD:</b> fiebre &gt;38,3 °C, &gt;3 semanas, sin diagnóstico tras estudio inicial.</p>",
+        pt:"<p><b>Definição:</b> elevação da temperatura corporal por reajuste do centro termorregulador (≥37,8 °C axilar). Distinguir de hipertermia (sem reajuste do set-point).</p><div class='ask'><div class='ask-lbl'>O que perguntar? (IDET)</div><ul><li><b>Início</b> (súbito/insidioso), <b>Duração</b>, <b>Evolução/padrão</b>, <b>Temperatura</b> máxima.</li><li>Calafrios, sudorese, tremores? Horário predominante?</li><li>Sintomas localizadores (tosse, disúria, dor) e epidemiologia (viagens, contatos).</li></ul></div><p><b>Padrões:</b> contínua, remitente, intermitente, héctica, recorrente. <b>FOI:</b> febre &gt;38,3 °C, &gt;3 semanas, sem diagnóstico após investigação inicial.</p>"}},
+      {t:{es:"Pérdida de peso y anorexia",pt:"Perda de peso e anorexia"},body:{
+        es:"<p><b>Significativa:</b> pérdida &gt;5 % del peso habitual en 6–12 meses, no intencional. Cuantificar siempre en kg y en %.</p><div class='ask'><div class='ask-lbl'>Claves diagnósticas</div><ul><li><b>Con apetito conservado o aumentado:</b> hipertiroidismo, diabetes, malabsorción, parasitosis.</li><li><b>Con anorexia:</b> neoplasia, infección crónica, depresión, uremia, insuficiencia cardíaca.</li></ul></div><div class='callout'><b>Banderas rojas:</b> pérdida rápida, anorexia, astenia, fiebre o sudoración nocturna → descartar neoplasia, TBC, VIH.</div>",
+        pt:"<p><b>Significativa:</b> perda &gt;5 % do peso habitual em 6–12 meses, não intencional. Quantificar sempre em kg e em %.</p><div class='ask'><div class='ask-lbl'>Pistas diagnósticas</div><ul><li><b>Com apetite preservado ou aumentado:</b> hipertireoidismo, diabetes, má-absorção, parasitoses.</li><li><b>Com anorexia:</b> neoplasia, infecção crônica, depressão, uremia, insuficiência cardíaca.</li></ul></div><div class='callout'><b>Sinais de alarme:</b> perda rápida, anorexia, astenia, febre ou sudorese noturna → descartar neoplasia, TB, HIV.</div>"}},
+      {t:{es:"Sudoración nocturna",pt:"Sudorese noturna"},body:{
+        es:"<p>Diaforesis que empapa la ropa de cama, sin relación con la temperatura ambiente. Síntoma <b>B</b> (junto con fiebre y pérdida de peso) en linfomas.</p><ul><li><b>Causas:</b> TBC, linfomas y leucemias, endocarditis, abscesos, VIH, hipertiroidismo, menopausia, hipoglucemia nocturna.</li></ul>",
+        pt:"<p>Diaforese que encharca a roupa de cama, sem relação com a temperatura ambiente. Sintoma <b>B</b> (junto com febre e perda de peso) nos linfomas.</p><ul><li><b>Causas:</b> TB, linfomas e leucemias, endocardite, abscessos, HIV, hipertireoidismo, menopausa, hipoglicemia noturna.</li></ul>"}},
+      {t:{es:"Prurito",pt:"Prurido"},body:{
+        es:"<p>Picazón que provoca rascado. Importa porque puede ser <b>marcador de enfermedad sistémica</b> en ausencia de lesión cutánea primaria.</p><ul><li><b>Sin lesión primaria:</b> colestasis, uremia, hipo/hipertiroidismo, linfoma (Hodgkin), policitemia vera, diabetes, fármacos.</li><li><b>Con lesión cutánea:</b> dermatitis, urticaria, escabiosis, psoriasis.</li></ul>",
+        pt:"<p>Coceira que provoca o ato de coçar. Importa porque pode ser <b>marcador de doença sistêmica</b> na ausência de lesão cutânea primária.</p><ul><li><b>Sem lesão primária:</b> colestase, uremia, hipo/hipertireoidismo, linfoma (Hodgkin), policitemia vera, diabetes, fármacos.</li><li><b>Com lesão cutânea:</b> dermatite, urticária, escabiose, psoríase.</li></ul>"}}
+    ]
+  },
+  {
+    id:"mnemotecnicas", emoji:"🧠", icon:"2",
+    t:{es:"Mnemotécnicas", pt:"Mnemônicas"},
+    intro:{es:"Herramientas para una anamnesis completa: caracterizar el síntoma, no olvidar antecedentes ni la revisión por sistemas.",
+           pt:"Ferramentas para uma anamnese completa: caracterizar o sintoma, não esquecer antecedentes nem a revisão por sistemas."},
+    extra:"mnemo"
+  },
+  {
+    id:"signosvitales", emoji:"🌡️", icon:"3",
+    t:{es:"Signos vitales", pt:"Sinais vitais"},
+    intro:{es:"Primer paso objetivo de todo examen. Medilos en condiciones estándar y compará con los rangos de normalidad del adulto.",
+           pt:"Primeiro passo objetivo de todo exame. Meça em condições padronizadas e compare com as faixas de normalidade do adulto."},
+    accs:[
+      {t:{es:"Técnica y valores normales",pt:"Técnica e valores normais"},body:{
+        es:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Signo</th><th>Normal (adulto)</th><th>Alteración</th></tr></thead><tbody><tr><td>FC</td><td>60–100 lpm</td><td>Taquicardia &gt;100 · Bradicardia &lt;60</td></tr><tr><td>FR</td><td>12–20 rpm</td><td>Taquipnea &gt;20 · Bradipnea &lt;12</td></tr><tr><td>PA</td><td>&lt;120/80 mmHg</td><td>HTA ≥140/90 · Hipotensión &lt;90/60</td></tr><tr><td>Tª axilar</td><td>36–37,3 °C</td><td>Fiebre ≥37,8 · Hipotermia &lt;35</td></tr><tr><td>SatO₂</td><td>≥95 %</td><td>Hipoxemia &lt;90 %</td></tr><tr><td>Dolor</td><td>0/10</td><td>Escala EVA 0–10</td></tr></tbody></table></div><p>El dolor es el <b>«5.º signo vital»</b>. Registrá siempre brazo, posición y tamaño del manguito en la PA.</p>",
+        pt:"<div class='tbl-scroll'><table class='sx mini'><thead><tr><th>Sinal</th><th>Normal (adulto)</th><th>Alteração</th></tr></thead><tbody><tr><td>FC</td><td>60–100 bpm</td><td>Taquicardia &gt;100 · Bradicardia &lt;60</td></tr><tr><td>FR</td><td>12–20 irpm</td><td>Taquipneia &gt;20 · Bradipneia &lt;12</td></tr><tr><td>PA</td><td>&lt;120/80 mmHg</td><td>HAS ≥140/90 · Hipotensão &lt;90/60</td></tr><tr><td>Tax</td><td>36–37,3 °C</td><td>Febre ≥37,8 · Hipotermia &lt;35</td></tr><tr><td>SatO₂</td><td>≥95 %</td><td>Hipoxemia &lt;90 %</td></tr><tr><td>Dor</td><td>0/10</td><td>Escala EVA 0–10</td></tr></tbody></table></div><p>A dor é o <b>«5.º sinal vital»</b>. Registre sempre braço, posição e tamanho do manguito na PA.</p>"}},
+      {t:{es:"Pulso arterial — caracteres",pt:"Pulso arterial — caracteres"},body:{
+        es:"<ul><li><b>Frecuencia:</b> normal, taqui- o bradicardia.</li><li><b>Ritmo:</b> regular o irregular (fibrilación auricular, extrasístoles).</li><li><b>Amplitud:</b> normal, <b>parvus</b> (débil: shock, estenosis aórtica) o <b>magnus</b> (amplio: insuficiencia aórtica → pulso de Corrigan).</li><li><b>Otros:</b> pulso paradójico (taponamiento), alternante (IC), bisferiens.</li></ul>",
+        pt:"<ul><li><b>Frequência:</b> normal, taqui- ou bradicardia.</li><li><b>Ritmo:</b> regular ou irregular (fibrilação atrial, extrassístoles).</li><li><b>Amplitude:</b> normal, <b>parvus</b> (débil: choque, estenose aórtica) ou <b>magnus</b> (amplo: insuficiência aórtica → pulso de Corrigan).</li><li><b>Outros:</b> pulso paradoxal (tamponamento), alternante (IC), bisferiens.</li></ul>"}},
+      {t:{es:"Presión arterial — errores frecuentes",pt:"Pressão arterial — erros frequentes"},body:{
+        es:"<ol class='steps'><li>Paciente sentado, en reposo 5 min, sin cafeína/tabaco previos.</li><li>Brazo a la altura del corazón, manguito adecuado (uno pequeño sobrestima la PA).</li><li>Inflá 20–30 mmHg por encima de la desaparición del pulso radial.</li><li>Desinflá 2–3 mmHg/s; primer ruido de Korotkoff = sistólica, desaparición = diastólica.</li><li>Medí en ambos brazos la primera vez (diferencia &gt;10 mmHg = patológica).</li></ol>",
+        pt:"<ol class='steps'><li>Paciente sentado, em repouso 5 min, sem cafeína/tabaco prévios.</li><li>Braço na altura do coração, manguito adequado (um pequeno superestima a PA).</li><li>Insufle 20–30 mmHg acima do desaparecimento do pulso radial.</li><li>Desinsufle 2–3 mmHg/s; primeiro ruído de Korotkoff = sistólica, desaparecimento = diastólica.</li><li>Meça nos dois braços na primeira vez (diferença &gt;10 mmHg = patológica).</li></ol>"}}
+    ]
+  },
+  {
+    id:"ectoscopia", emoji:"👁️", icon:"4",
+    t:{es:"Ectoscopia / Inspección general", pt:"Ectoscopia / Inspeção geral"},
+    intro:{es:"La «impresión general» del paciente apenas entra a la consulta: estado general, conciencia, biotipo, actitud, facies, marcha y habla. Orienta la gravedad antes de tocar al paciente.",
+           pt:"A «impressão geral» do paciente assim que entra na consulta: estado geral, consciência, biotipo, atitude, fácies, marcha e fala. Orienta a gravidade antes de tocar no paciente."},
+    accs:[
+      {t:{es:"Estado general y conciencia",pt:"Estado geral e consciência"},body:{
+        es:"<ul><li><b>Estado general:</b> bueno / regular / malo (impresión global de gravedad).</li><li><b>Nivel de conciencia:</b> alerta · somnoliento · obnubilado · estuporoso · coma. Gradar con <b>Glasgow</b> (ocular 4 + verbal 5 + motor 6 = 15).</li><li><b>Orientación:</b> en tiempo, espacio y persona.</li><li><b>Colaboración, contacto y biotipo</b> (normo-, brévi- o longilíneo).</li></ul>",
+        pt:"<ul><li><b>Estado geral:</b> bom / regular / mau (impressão global de gravidade).</li><li><b>Nível de consciência:</b> alerta · sonolento · obnubilado · torporoso · coma. Graduar com <b>Glasgow</b> (ocular 4 + verbal 5 + motor 6 = 15).</li><li><b>Orientação:</b> no tempo, espaço e pessoa.</li><li><b>Colaboração, contato e biotipo</b> (normo-, brevi- ou longilíneo).</li></ul>"}},
+      {t:{es:"Actitud y decúbito",pt:"Atitude e decúbito"},body:{
+        es:"<ul><li><b>Activo libre:</b> el paciente adopta cualquier posición.</li><li><b>Pasivo:</b> no puede modificar su postura (gravedad, parálisis).</li><li><b>Forzado:</b> alivia un síntoma — ortopnea (IC), genupectoral/«plegaria mahometana» (pericarditis), en gatillo (meningitis), opistótonos (tétanos), antiálgico.</li></ul>",
+        pt:"<ul><li><b>Ativo livre:</b> o paciente adota qualquer posição.</li><li><b>Passivo:</b> não consegue modificar a postura (gravidade, paralisia).</li><li><b>Forçado:</b> alivia um sintoma — ortopneia (IC), genupeitoral/«prece maometana» (pericardite), em gatilho (meningite), opistótono (tétano), antálgico.</li></ul>"}},
+      {t:{es:"Facies características",pt:"Fácies características"},body:{
+        es:"<ul><li><b>Hipocrática:</b> ojos hundidos, nariz afilada, palidez terrosa (gravedad, peritonitis).</li><li><b>Mixedematosa:</b> hinchada, pálida, inexpresiva (hipotiroidismo).</li><li><b>Basedowiana:</b> exoftalmos, mirada brillante (hipertiroidismo).</li><li><b>Cushingoide:</b> cara de luna llena, rubicunda.</li><li><b>Acromegálica · Parkinsoniana (en máscara) · Lúpica (alas de mariposa) · Mitral (cianosis malar).</b></li></ul>",
+        pt:"<ul><li><b>Hipocrática:</b> olhos fundos, nariz afilado, palidez terrosa (gravidade, peritonite).</li><li><b>Mixedematosa:</b> inchada, pálida, inexpressiva (hipotireoidismo).</li><li><b>Basedowiana:</b> exoftalmia, olhar brilhante (hipertireoidismo).</li><li><b>Cushingoide:</b> rosto em lua cheia, rubicundo.</li><li><b>Acromegálica · Parkinsoniana (em máscara) · Lúpica (asa de borboleta) · Mitral (cianose malar).</b></li></ul>"}},
+      {t:{es:"Marcha y habla",pt:"Marcha e fala"},body:{
+        es:"<ul><li><b>Marcha:</b> hemipléjica (en guadaña), parkinsoniana (festinante), atáxica (ebria/talonante), espástica (en tijera), de pato (miopática), antiálgica.</li><li><b>Habla y voz:</b> disartria, disfonía, afasia; fluidez y coherencia.</li><li><b>Aliento:</b> cetónico (cetoacidosis), urémico, hepático (fetor hepaticus), alcohólico.</li></ul>",
+        pt:"<ul><li><b>Marcha:</b> hemiplégica (ceifante), parkinsoniana (festinante), atáxica (ébria/talonante), espástica (em tesoura), anserina/de pato (miopática), antálgica.</li><li><b>Fala e voz:</b> disartria, disfonia, afasia; fluência e coerência.</li><li><b>Hálito:</b> cetônico (cetoacidose), urêmico, hepático (fetor hepaticus), alcoólico.</li></ul>"}}
+    ]
+  },
+  {
+    id:"piel", emoji:"🎨", icon:"5",
+    t:{es:"Piel, mucosas y faneras", pt:"Pele, mucosas e fâneros"},
+    intro:{es:"La piel refleja la perfusión, la oxigenación, el estado nutricional y muchas enfermedades sistémicas. Evaluá con buena luz, comparando zonas.",
+           pt:"A pele reflete a perfusão, a oxigenação, o estado nutricional e muitas doenças sistêmicas. Avalie com boa luz, comparando zonas."},
+    accs:[
+      {t:{es:"Coloración",pt:"Coloração"},body:{
+        es:"<ul><li><b>Palidez:</b> generalizada (anemia, shock) o localizada (isquemia). Confirmá en conjuntivas, palmas y mucosa oral.</li><li><b>Cianosis:</b> central (labios/lengua → hipoxemia, cardiopatía) o periférica (acra → bajo gasto, frío).</li><li><b>Ictericia:</b> tinte amarillo en esclera y mucosas (bilirrubina &gt;2–3 mg/dL); evaluar con luz natural.</li><li><b>Rubicundez</b> (poliglobulia, fiebre) · <b>melanodermia</b> (Addison, hemocromatosis).</li></ul>",
+        pt:"<ul><li><b>Palidez:</b> generalizada (anemia, choque) ou localizada (isquemia). Confirme em conjuntivas, palmas e mucosa oral.</li><li><b>Cianose:</b> central (lábios/língua → hipoxemia, cardiopatia) ou periférica (acral → baixo débito, frio).</li><li><b>Icterícia:</b> tom amarelo na esclera e mucosas (bilirrubina &gt;2–3 mg/dL); avaliar com luz natural.</li><li><b>Rubicundez</b> (poliglobulia, febre) · <b>melanodermia</b> (Addison, hemocromatose).</li></ul>"}},
+      {t:{es:"Hidratación y perfusión",pt:"Hidratação e perfusão"},body:{
+        es:"<ol class='steps'><li><b>Turgor/pliegue cutáneo:</b> pellizcá la piel del antebrazo o esternón; si tarda en volver = deshidratación.</li><li><b>Mucosas:</b> secas en deshidratación.</li><li><b>Relleno capilar (TEC):</b> presioná el lecho ungueal 5 s; normal &lt;2 s. Prolongado = mala perfusión/shock.</li><li>Signos de deshidratación: ojos hundidos, oliguria, taquicardia, hipotensión.</li></ol>",
+        pt:"<ol class='steps'><li><b>Turgor/prega cutânea:</b> belisque a pele do antebraço ou esterno; se demora a voltar = desidratação.</li><li><b>Mucosas:</b> secas na desidratação.</li><li><b>Enchimento capilar (TEC):</b> pressione o leito ungueal 5 s; normal &lt;2 s. Prolongado = má perfusão/choque.</li><li>Sinais de desidratação: olhos fundos, oligúria, taquicardia, hipotensão.</li></ol>"}},
+      {t:{es:"Lesiones elementales",pt:"Lesões elementares"},body:{
+        es:"<ul><li><b>Planas:</b> mácula (mancha sin relieve), petequia, equimosis, telangiectasia.</li><li><b>Sólidas elevadas:</b> pápula, placa, nódulo, tumor, roncha (habón).</li><li><b>De contenido líquido:</b> vesícula, ampolla (bulla), pústula.</li><li><b>Soluciones de continuidad:</b> erosión, úlcera, fisura, escara.</li><li>Buscá: arañas vasculares y eritema palmar (hepatopatía), púrpura, xantomas.</li></ul>",
+        pt:"<ul><li><b>Planas:</b> mácula (mancha sem relevo), petéquia, equimose, telangiectasia.</li><li><b>Sólidas elevadas:</b> pápula, placa, nódulo, tumor, urtica (vergão).</li><li><b>De conteúdo líquido:</b> vesícula, bolha, pústula.</li><li><b>Soluções de continuidade:</b> erosão, úlcera, fissura, escara.</li><li>Procure: aranhas vasculares e eritema palmar (hepatopatia), púrpura, xantomas.</li></ul>"}},
+      {t:{es:"Uñas y faneras",pt:"Unhas e fâneros"},body:{
+        es:"<ul><li><b>Acropaquia (dedos en palillo de tambor):</b> EPID, cardiopatías cianóticas, cáncer de pulmón, hepatopatía.</li><li><b>Coiloniquia</b> (uñas en cuchara): ferropenia. <b>Líneas de Beau:</b> enfermedad sistémica grave.</li><li><b>Cabello:</b> alopecia, sequedad (hipotiroidismo). <b>Vello:</b> distribución (hipogonadismo, hirsutismo).</li></ul>",
+        pt:"<ul><li><b>Baqueteamento digital (dedos em baqueta de tambor):</b> DPID, cardiopatias cianóticas, câncer de pulmão, hepatopatia.</li><li><b>Coiloníquia</b> (unhas em colher): ferropenia. <b>Linhas de Beau:</b> doença sistêmica grave.</li><li><b>Cabelo:</b> alopecia, ressecamento (hipotireoidismo). <b>Pelos:</b> distribuição (hipogonadismo, hirsutismo).</li></ul>"}}
+    ]
+  },
+  {
+    id:"linfonodos", emoji:"🫧", icon:"6",
+    t:{es:"Ganglios linfáticos", pt:"Linfonodos"},
+    intro:{es:"La palpación ganglionar sistemática detecta enfermedad infecciosa, inflamatoria o neoplásica. Explorá todas las cadenas comparando ambos lados.",
+           pt:"A palpação ganglionar sistemática detecta doença infecciosa, inflamatória ou neoplásica. Explore todas as cadeias comparando os dois lados."},
+    accs:[
+      {t:{es:"Técnica y cadenas",pt:"Técnica e cadeias"},body:{
+        es:"<ol class='steps'><li>Yema de 2–3 dedos, movimientos circulares suaves sobre el plano profundo.</li><li><b>Cabeza y cuello:</b> occipital, retroauricular, preauricular, submandibular, submentoniano, cervical (cadena yugular), supraclavicular.</li><li><b>Axilas:</b> con el brazo del paciente relajado sobre tu antebrazo.</li><li><b>Ingles:</b> cadenas horizontal y vertical.</li><li>Describí: localización, tamaño, número, consistencia, movilidad, sensibilidad y signos inflamatorios.</li></ol><div class='callout'><b>Ganglio de Virchow</b> (supraclavicular izquierdo) y <b>de Troisier</b>: sospecha de neoplasia abdominal (gástrica).</div>",
+        pt:"<ol class='steps'><li>Polpa de 2–3 dedos, movimentos circulares suaves sobre o plano profundo.</li><li><b>Cabeça e pescoço:</b> occipital, retroauricular, pré-auricular, submandibular, submentoniano, cervical (cadeia jugular), supraclavicular.</li><li><b>Axilas:</b> com o braço do paciente relaxado sobre o seu antebraço.</li><li><b>Inguinais:</b> cadeias horizontal e vertical.</li><li>Descreva: localização, tamanho, número, consistência, mobilidade, sensibilidade e sinais inflamatórios.</li></ol><div class='callout'><b>Linfonodo de Virchow</b> (supraclavicular esquerdo) e <b>de Troisier</b>: suspeita de neoplasia abdominal (gástrica).</div>"}},
+      {t:{es:"Benigno vs maligno",pt:"Benigno vs maligno"},body:{
+        es:"<div class='finds'><div class='find ok'><div class='fl'>Reactivo / inflamatorio</div>Pequeño (&lt;1 cm), blando, móvil, doloroso, signos de flogosis. Suele ser infeccioso y autolimitado.</div><div class='find bad'><div class='fl'>Sospechoso de malignidad</div>Duro/pétreo, fijo (adherido a planos), indoloro, &gt;2 cm, crecimiento progresivo, conglomerado.</div></div><p><b>Adenopatía generalizada:</b> ≥2 regiones no contiguas → virosis (VIH, VEB, CMV), TBC, sífilis, linfoma, LES, sarcoidosis, fármacos.</p>",
+        pt:"<div class='finds'><div class='find ok'><div class='fl'>Reativo / inflamatório</div>Pequeno (&lt;1 cm), fibroelástico, móvel, doloroso, sinais flogísticos. Em geral infeccioso e autolimitado.</div><div class='find bad'><div class='fl'>Suspeito de malignidade</div>Endurecido/pétreo, fixo (aderido a planos), indolor, &gt;2 cm, crescimento progressivo, coalescente.</div></div><p><b>Adenomegalia generalizada:</b> ≥2 regiões não contíguas → viroses (HIV, EBV, CMV), TB, sífilis, linfoma, LES, sarcoidose, fármacos.</p>"}}
+    ]
+  },
+  {
+    id:"edema", emoji:"💧", icon:"7",
+    t:{es:"Edema", pt:"Edema"},
+    intro:{es:"Acumulación de líquido en el intersticio. Caracterizarlo (localización, simetría, signo de la fóvea) orienta directamente a la causa.",
+           pt:"Acúmulo de líquido no interstício. Caracterizá-lo (localização, simetria, sinal do cacifo) orienta diretamente para a causa."},
+    accs:[
+      {t:{es:"Técnica — signo de la fóvea (godet)",pt:"Técnica — sinal do cacifo (godet)"},body:{
+        es:"<ol class='steps'><li>Presioná con el pulgar sobre una prominencia ósea (maléolo, pretibial, sacro en el encamado) durante ~5 s.</li><li>Retirá y observá si queda una depresión (fóvea) y cuánto tarda en recuperarse.</li><li><b>Graduación:</b> +1 (leve, ~2 mm) · +2 (~4 mm) · +3 (~6 mm) · +4 (profundo, &gt;8 mm).</li><li>Definí: localización, simetría, temperatura, color, dolor y si <b>deja o no fóvea</b>.</li></ol><div class='finds'><div class='find info'><div class='fl'>Con fóvea (blando)</div>IC, síndrome nefrótico, cirrosis, hipoproteinemia, fármacos.</div><div class='find warn'><div class='fl'>Sin fóvea (duro)</div>Linfedema, mixedema (hipotiroidismo).</div></div>",
+        pt:"<ol class='steps'><li>Pressione com o polegar sobre uma proeminência óssea (maléolo, pré-tibial, sacro no acamado) por ~5 s.</li><li>Retire e observe se fica uma depressão (cacifo) e quanto demora a recuperar.</li><li><b>Graduação:</b> +1 (leve, ~2 mm) · +2 (~4 mm) · +3 (~6 mm) · +4 (profundo, &gt;8 mm).</li><li>Defina: localização, simetria, temperatura, cor, dor e se <b>deixa ou não cacifo</b>.</li></ol><div class='finds'><div class='find info'><div class='fl'>Com cacifo (mole)</div>IC, síndrome nefrótica, cirrose, hipoproteinemia, fármacos.</div><div class='find warn'><div class='fl'>Sem cacifo (duro)</div>Linfedema, mixedema (hipotireoidismo).</div></div>"}},
+      {t:{es:"Localizado vs generalizado",pt:"Localizado vs generalizado"},body:{
+        es:"<div class='duo'><div class='duo-card restr'><h4>📍 Localizado / asimétrico</h4><ul><li>TVP (unilateral, doloroso, caliente)</li><li>Celulitis / erisipela (rubor, calor)</li><li>Linfedema · obstrucción venosa</li><li>Insuficiencia venosa crónica</li></ul></div><div class='duo-card obstr'><h4>🌐 Generalizado / simétrico</h4><ul><li>Cardíaco: vespertino, en MMII, ascendente</li><li>Renal: matutino, palpebral/facial</li><li>Hepático: con ascitis y circulación colateral</li><li>Nutricional: hipoproteinemia</li></ul></div></div><p><b>Anasarca:</b> edema generalizado masivo con derrames en cavidades (ascitis, derrame pleural).</p>",
+        pt:"<div class='duo'><div class='duo-card restr'><h4>📍 Localizado / assimétrico</h4><ul><li>TVP (unilateral, doloroso, quente)</li><li>Celulite / erisipela (rubor, calor)</li><li>Linfedema · obstrução venosa</li><li>Insuficiência venosa crônica</li></ul></div><div class='duo-card obstr'><h4>🌐 Generalizado / simétrico</h4><ul><li>Cardíaco: vespertino, em MMII, ascendente</li><li>Renal: matutino, palpebral/facial</li><li>Hepático: com ascite e circulação colateral</li><li>Nutricional: hipoproteinemia</li></ul></div></div><p><b>Anasarca:</b> edema generalizado maciço com derrames cavitários (ascite, derrame pleural).</p>"}}
+    ]
+  },
+  {
+    id:"cabezacuello", emoji:"🦴", icon:"8",
+    t:{es:"Cabeza y cuello", pt:"Cabeça e pescoço"},
+    intro:{es:"Segmento de alto rendimiento: ojos, tiroides, ingurgitación yugular y pulsos. Pequeños hallazgos con gran valor diagnóstico.",
+           pt:"Segmento de alto rendimento: olhos, tireoide, turgência jugular e pulsos. Pequenos achados com grande valor diagnóstico."},
+    accs:[
+      {t:{es:"Cara, ojos y boca",pt:"Face, olhos e boca"},body:{
+        es:"<ul><li><b>Ojos:</b> conjuntivas (palidez = anemia), escleras (ictericia), exoftalmos, edema palpebral, arco corneal, ptosis.</li><li><b>Boca:</b> hidratación de mucosas, lengua (depapilada en déficits, saburral), dientes y encías (gingivorragia), faringe.</li><li><b>Cuello:</b> simetría, movilidad, rigidez de nuca (irritación meníngea).</li></ul>",
+        pt:"<ul><li><b>Olhos:</b> conjuntivas (palidez = anemia), escleras (icterícia), exoftalmia, edema palpebral, arco corneano, ptose.</li><li><b>Boca:</b> hidratação das mucosas, língua (despapilada em carências, saburrosa), dentes e gengivas (gengivorragia), faringe.</li><li><b>Pescoço:</b> simetria, mobilidade, rigidez de nuca (irritação meníngea).</li></ul>"}},
+      {t:{es:"Tiroides — palpación",pt:"Tireoide — palpação"},body:{
+        es:"<ol class='steps'><li>Abordaje posterior: yemas a ambos lados de la tráquea, bajo el cartílago cricoides.</li><li>Pedí al paciente que <b>trague</b> (ofrecé agua): la glándula asciende bajo tus dedos.</li><li>Evaluá tamaño, simetría, consistencia, nódulos, movilidad y dolor.</li><li>Auscultá soplo si hay bocio (hipertiroidismo).</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>No visible ni palpable, o lóbulos pequeños, lisos e indoloros.</div><div class='find bad'><div class='fl'>Anormal</div>Bocio difuso (Graves), nódulo único (sospecha), dolor (tiroiditis), adherido (malignidad).</div></div>",
+        pt:"<ol class='steps'><li>Abordagem posterior: polpas dos dedos dos dois lados da traqueia, abaixo da cartilagem cricoide.</li><li>Peça ao paciente que <b>engula</b> (ofereça água): a glândula sobe sob os seus dedos.</li><li>Avalie tamanho, simetria, consistência, nódulos, mobilidade e dor.</li><li>Ausculte sopro se houver bócio (hipertireoidismo).</li></ol><div class='finds'><div class='find ok'><div class='fl'>Normal</div>Não visível nem palpável, ou lobos pequenos, lisos e indolores.</div><div class='find bad'><div class='fl'>Anormal</div>Bócio difuso (Graves), nódulo único (suspeita), dor (tireoidite), aderido (malignidade).</div></div>"}},
+      {t:{es:"Ingurgitación yugular y pulsos",pt:"Turgência jugular e pulsos"},body:{
+        es:"<ul><li><b>Presión venosa yugular (PVY):</b> paciente a 45°, cabeza girada a la izquierda; observá la columna de la yugular interna derecha. Ingurgitada = aumento de presión de aurícula derecha (IC derecha, taponamiento, pericarditis constrictiva).</li><li><b>Reflujo hepatoyugular:</b> presión sostenida en hipocondrio derecho → aumento de la ingurgitación en IC.</li><li><b>Pulsos carotídeos:</b> palpá uno a la vez (nunca ambos); evaluá amplitud y simetría. Auscultá soplos.</li><li><b>Pulsos periféricos:</b> radial, braquial, femoral, poplíteo, tibial posterior, pedio — simetría y amplitud (0 a ++++).</li></ul>",
+        pt:"<ul><li><b>Pressão venosa jugular (PVJ):</b> paciente a 45°, cabeça virada à esquerda; observe a coluna da jugular interna direita. Turgida = aumento da pressão do átrio direito (IC direita, tamponamento, pericardite constritiva).</li><li><b>Refluxo hepatojugular:</b> pressão sustentada no hipocôndrio direito → aumento da turgência na IC.</li><li><b>Pulsos carotídeos:</b> palpe um de cada vez (nunca ambos); avalie amplitude e simetria. Ausculte sopros.</li><li><b>Pulsos periféricos:</b> radial, braquial, femoral, poplíteo, tibial posterior, pedioso — simetria e amplitude (0 a ++++).</li></ul>"}}
+    ]
+  },
+  {
+    id:"sindromes", emoji:"🧩", icon:"9",
+    t:{es:"Síndromes clínicos generales", pt:"Síndromes clínicas gerais"},
+    intro:{es:"Cómo se combinan los hallazgos del examen general en grandes síndromes. La tabla resume el hallazgo dominante y las causas frecuentes.",
+           pt:"Como os achados do exame geral se combinam em grandes síndromes. A tabela resume o achado dominante e as causas frequentes."},
+    extra:"sindromes"
+  }
+];
+
+/* Mnemotécnicas */
+var MNEMOS = [
+  {kw:"ALICIA", forr:{es:"Cualquier síntoma — sobre todo dolor",pt:"Qualquer sintoma — sobretudo dor"}, rows:[
+    ["A",{es:"<b>Aparición</b> — ¿cuándo y cómo empezó?",pt:"<b>Aparecimento</b> — quando e como começou?"}],
+    ["L",{es:"<b>Localización</b> — ¿dónde exactamente?",pt:"<b>Localização</b> — onde exatamente?"}],
+    ["I",{es:"<b>Irradiación</b> — ¿se extiende?",pt:"<b>Irradiação</b> — estende-se?"}],
+    ["C",{es:"<b>Carácter</b> — opresivo, urente, cólico…",pt:"<b>Caráter</b> — opressivo, queimação, cólica…"}],
+    ["I",{es:"<b>Intensidad</b> — 0 a 10",pt:"<b>Intensidade</b> — 0 a 10"}],
+    ["A",{es:"<b>Atenuantes/agravantes</b> y síntomas asociados",pt:"<b>Atenuantes/agravantes</b> e sintomas associados"}]
+  ]},
+  {kw:"SACRAFH", forr:{es:"Antecedentes (estructura de la anamnesis)",pt:"Antecedentes (estrutura da anamnese)"}, rows:[
+    ["S",{es:"<b>Sintomático</b> — enfermedad actual",pt:"<b>Sintomático</b> — doença atual"}],
+    ["A",{es:"<b>Alergias</b> — medicamentos, alimentos",pt:"<b>Alergias</b> — medicamentos, alimentos"}],
+    ["C",{es:"<b>Comorbilidades</b> — HTA, DM, antecedentes patológicos",pt:"<b>Comorbidades</b> — HAS, DM, antecedentes patológicos"}],
+    ["R",{es:"<b>Remedios</b> — medicación en uso",pt:"<b>Remédios</b> — medicação em uso"}],
+    ["A",{es:"<b>Antecedentes</b> quirúrgicos y transfusionales",pt:"<b>Antecedentes</b> cirúrgicos e transfusionais"}],
+    ["F",{es:"<b>Familiares</b> — enfermedades hereditarias",pt:"<b>Familiares</b> — doenças hereditárias"}],
+    ["H",{es:"<b>Hábitos</b> — tabaco, alcohol, drogas, dieta",pt:"<b>Hábitos</b> — tabaco, álcool, drogas, dieta"}]
+  ]},
+  {kw:"IDET", forr:{es:"Fiebre",pt:"Febre"}, rows:[
+    ["I",{es:"<b>Inicio</b> — súbito o insidioso",pt:"<b>Início</b> — súbito ou insidioso"}],
+    ["D",{es:"<b>Duración</b> — días, intermitente",pt:"<b>Duração</b> — dias, intermitente"}],
+    ["E",{es:"<b>Evolución/patrón</b> — continua, remitente…",pt:"<b>Evolução/padrão</b> — contínua, remitente…"}],
+    ["T",{es:"<b>Temperatura</b> máx · escalofríos/diaforesis",pt:"<b>Temperatura</b> máx · calafrios/sudorese"}]
+  ]},
+  {kw:"VINDICATE", forr:{es:"Diagnóstico diferencial sistémico",pt:"Diagnóstico diferencial sistêmico"}, rows:[
+    ["V",{es:"<b>Vascular</b>",pt:"<b>Vascular</b>"}],
+    ["I",{es:"<b>Infeccioso/Inflamatorio</b>",pt:"<b>Infeccioso/Inflamatório</b>"}],
+    ["N",{es:"<b>Neoplásico</b>",pt:"<b>Neoplásico</b>"}],
+    ["D",{es:"<b>Degenerativo/Drogas</b>",pt:"<b>Degenerativo/Drogas</b>"}],
+    ["I",{es:"<b>Idiopático/Iatrogénico</b>",pt:"<b>Idiopático/Iatrogênico</b>"}],
+    ["C",{es:"<b>Congénito</b>",pt:"<b>Congênito</b>"}],
+    ["A",{es:"<b>Autoinmune/Alérgico</b>",pt:"<b>Autoimune/Alérgico</b>"}],
+    ["T",{es:"<b>Traumático/Tóxico</b>",pt:"<b>Traumático/Tóxico</b>"}],
+    ["E",{es:"<b>Endocrino/Metabólico</b>",pt:"<b>Endócrino/Metabólico</b>"}]
+  ]}
+];
+
+/* Tabela comparativa dos síndromes gerais */
+var SX_COLS = {
+  es:["Síndrome","Hallazgo dominante","Causas frecuentes"],
+  pt:["Síndrome","Achado dominante","Causas frequentes"]
+};
+function C(cls,es,pt){return {cls:cls,es:es,pt:pt};}
+var SX_ROWS = [
+  {n:{es:"Febril",pt:"Febril"}, c:[ C("c-up","Fiebre + taquicardia","Febre + taquicardia"), C("c-neutral","Infección, neoplasia, autoinmune, fármacos","Infecção, neoplasia, autoimune, fármacos") ]},
+  {n:{es:"Consuntivo / caquexia",pt:"Consumptiva / caquexia"}, c:[ C("c-down","Pérdida de peso + astenia + anorexia","Perda de peso + astenia + anorexia"), C("c-neutral","Neoplasia, TBC, VIH, EPOC, IC avanzada","Neoplasia, TB, HIV, DPOC, IC avançada") ]},
+  {n:{es:"Anémico",pt:"Anêmica"}, c:[ C("c-down","Palidez cutáneo-mucosa + astenia + disnea","Palidez cutâneo-mucosa + astenia + dispneia"), C("c-neutral","Ferropenia, sangrado, hemólisis, enf. crónica","Ferropenia, sangramento, hemólise, doença crônica") ]},
+  {n:{es:"Ictérico",pt:"Ictérica"}, c:[ C("c-key","Ictericia (esclera/mucosas) + coluria","Icterícia (esclera/mucosas) + colúria"), C("c-neutral","Hemólisis, hepatitis, colestasis, obstrucción biliar","Hemólise, hepatite, colestase, obstrução biliar") ]},
+  {n:{es:"Edematígeno",pt:"Edemigênica"}, c:[ C("c-key","Edema con fóvea + aumento de peso","Edema com cacifo + ganho de peso"), C("c-neutral","IC, sx nefrótico, cirrosis, hipoproteinemia","IC, sx nefrótica, cirrose, hipoproteinemia") ]},
+  {n:{es:"Respuesta inflamatoria / sepsis",pt:"Resposta inflamatória / sepse"}, c:[ C("c-up","Fiebre, taquicardia, taquipnea + foco","Febre, taquicardia, taquipneia + foco"), C("c-neutral","Infección grave con disfunción orgánica (qSOFA)","Infecção grave com disfunção orgânica (qSOFA)") ]},
+  {n:{es:"Adenomegálico",pt:"Adenomegálica"}, c:[ C("c-key","Adenopatías + síntomas B","Adenomegalias + sintomas B"), C("c-neutral","Linfoma, leucemia, VIH, TBC, mononucleosis","Linfoma, leucemia, HIV, TB, mononucleose") ]}
+];
+
+/* Cards de síndromes */
+var SX_CARDS = [
+  {emoji:"🌡️", t:{es:"Síndrome febril",pt:"Síndrome febril"},
+   d:{es:"Fiebre con taquicardia, malestar, mialgias y postración. Buscar el foco (respiratorio, urinario, abdominal, SNC, piel) y signos de gravedad. Si no hay foco y dura semanas: FOD.",
+      pt:"Febre com taquicardia, mal-estar, mialgias e prostração. Buscar o foco (respiratório, urinário, abdominal, SNC, pele) e sinais de gravidade. Se não há foco e dura semanas: FOI."}},
+  {emoji:"📉", t:{es:"Síndrome consuntivo",pt:"Síndrome consumptiva"},
+   d:{es:"Pérdida de peso involuntaria + astenia + anorexia + sarcopenia. Alta sospecha de neoplasia, infección crónica (TBC/VIH) o enfermedad orgánica avanzada.",
+      pt:"Perda de peso involuntária + astenia + anorexia + sarcopenia. Alta suspeita de neoplasia, infecção crônica (TB/HIV) ou doença orgânica avançada."}},
+  {emoji:"🩸", t:{es:"Síndrome anémico",pt:"Síndrome anêmica"},
+   d:{es:"Palidez cutáneo-mucosa, astenia, disnea de esfuerzo, taquicardia, soplo sistólico funcional. Investigar sangrado, déficits y enfermedad crónica.",
+      pt:"Palidez cutâneo-mucosa, astenia, dispneia aos esforços, taquicardia, sopro sistólico funcional. Investigar sangramento, carências e doença crônica."}},
+  {emoji:"💛", t:{es:"Síndrome ictérico",pt:"Síndrome ictérica"},
+   d:{es:"Ictericia + coluria ± acolia y prurito. Diferenciar prehepática (hemólisis), hepática (hepatitis) y posthepática (obstrucción biliar).",
+      pt:"Icterícia + colúria ± acolia e prurido. Diferenciar pré-hepática (hemólise), hepática (hepatite) e pós-hepática (obstrução biliar)."}},
+  {emoji:"💧", t:{es:"Síndrome edematígeno",pt:"Síndrome edemigênica"},
+   d:{es:"Edema con fóvea, aumento de peso y, en casos graves, anasarca. Distinguir el origen cardíaco, renal, hepático y nutricional por el patrón y los acompañantes.",
+      pt:"Edema com cacifo, ganho de peso e, em casos graves, anasarca. Distinguir a origem cardíaca, renal, hepática e nutricional pelo padrão e acompanhantes."}},
+  {emoji:"🛡️", t:{es:"Síndrome de respuesta inflamatoria",pt:"Síndrome de resposta inflamatória"},
+   d:{es:"Fiebre/hipotermia, taquicardia, taquipnea, leucocitosis. Con sospecha de infección + disfunción orgánica → sepsis (evaluar qSOFA: FR≥22, PAS≤100, alteración mental).",
+      pt:"Febre/hipotermia, taquicardia, taquipneia, leucocitose. Com suspeita de infecção + disfunção orgânica → sepse (avaliar qSOFA: FR≥22, PAS≤100, alteração mental)."}}
+];
+
+/* ─────────── RENDER ─────────── */
+function tr(o){ return (o && (o[L]!=null)) ? o[L] : (o? (o.pt||o.es||"") : ""); }
+
+function renderNav(){
+  document.getElementById("secnav").innerHTML = SECTIONS.map(function(s,i){
+    return '<button class="secnav-btn'+(i===0?' active':'')+'" data-sec="'+s.id+'" onclick="goSec(\''+s.id+'\')">'+s.emoji+' <span>'+tr(s.t)+'</span></button>';
+  }).join("");
+}
+
+function renderMnemo(){
+  return MNEMOS.map(function(m){
+    var rows = m.rows.map(function(r){
+      return '<div class="ltr">'+r[0]+'</div><div class="def">'+tr(r[1])+'</div>';
+    }).join("");
+    return '<div class="acc open"><div class="acc-head" onclick="this.parentNode.classList.toggle(\'open\')">'
+      +'<span class="acc-icon">'+m.kw.charAt(0)+'</span><span class="acc-title">'+m.kw+'</span>'
+      +'<span class="tag">'+tr(m.forr)+'</span>'
+      +'<svg class="acc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>'
+      +'<div class="acc-body"><div class="mnemo">'+rows+'</div></div></div>';
+  }).join("");
+}
+
+function renderSec(s){
+  var h='<div class="sec-h"><span class="emoji">'+s.emoji+'</span>'+tr(s.t)+'</div>';
+  h+='<div class="sec-intro">'+tr(s.intro)+'</div>';
+  if(s.extra==="mnemo")   h+=renderMnemo();
+  if(s.accs){
+    s.accs.forEach(function(a,idx){
+      h+='<div class="acc'+(idx===0?' open':'')+'"><div class="acc-head" onclick="this.parentNode.classList.toggle(\'open\')">'
+        +'<span class="acc-icon">'+(idx+1)+'</span><span class="acc-title">'+tr(a.t)+'</span>'
+        +'<svg class="acc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>'
+        +'<div class="acc-body">'+tr(a.body)+'</div></div>';
+    });
+  }
+  if(s.extra==="sindromes"){
+    h+=renderTable();
+    h+='<div class="sx-cards">'+SX_CARDS.map(function(c){
+      return '<div class="sx-card"><h4>'+c.emoji+' '+tr(c.t)+'</h4><p>'+tr(c.d)+'</p></div>';
+    }).join("")+'</div>';
+  }
+  return '<div class="sec active" id="sec-'+s.id+'">'+h+'</div>';
+}
+
+function renderTable(){
+  var cols=SX_COLS[L];
+  var head='<thead><tr>'+cols.map(function(c){return '<th>'+c+'</th>';}).join("")+'</tr></thead>';
+  var body='<tbody>'+SX_ROWS.map(function(r){
+    return '<tr><td>'+tr(r.n)+'</td>'+r.c.map(function(cell){
+      return '<td><span class="cell '+cell.cls+'">'+tr(cell)+'</span></td>';
+    }).join("")+'</tr>';
+  }).join("")+'</tbody>';
+  var legend='<div class="legend">'
+    +'<span><i class="dot" style="background:var(--up)"></i>'+(L==="es"?"Aumentado":"Aumentado")+'</span>'
+    +'<span><i class="dot" style="background:var(--down)"></i>'+(L==="es"?"Disminuido / déficit":"Diminuído / déficit")+'</span>'
+    +'<span><i class="dot" style="background:var(--neutral)"></i>'+(L==="es"?"Variable":"Variável")+'</span>'
+    +'<span><i class="dot" style="background:var(--primary)"></i>'+(L==="es"?"Hallazgo clave":"Achado-chave")+'</span></div>';
+  return legend+'<div class="tbl-scroll"><table class="sx">'+head+body+'</table></div>';
+}
+
+function renderAll(){
+  document.getElementById("wrap").innerHTML = SECTIONS.map(renderSec).join("");
+  goSec(window.__active || SECTIONS[0].id, true);
+}
+
+function goSec(id, keep){
+  window.__active = id;
+  document.querySelectorAll(".sec").forEach(function(s){ s.classList.toggle("active", s.id==="sec-"+id); });
+  document.querySelectorAll(".secnav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-sec")===id); });
+  if(!keep) { try{ history.replaceState(null,"","#"+id); }catch(e){} document.querySelector(".wrap").scrollTop=0; window.scrollTo(0,0); }
+}
+
+function setLang(lang){
+  L=lang;
+  document.documentElement.setAttribute("data-lang",lang);
+  document.getElementById("btn-es").classList.toggle("active",lang==="es");
+  document.getElementById("btn-pt").classList.toggle("active",lang==="pt");
+  renderNav(); renderAll();
+  try{ localStorage.setItem("am-lang",lang); }catch(e){}
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  try{ var s=localStorage.getItem("am-lang"); if(s==="pt"||s==="es") L=s; }catch(e){}
+  document.documentElement.setAttribute("data-lang",L);
+  document.getElementById("btn-es").classList.toggle("active",L==="es");
+  document.getElementById("btn-pt").classList.toggle("active",L==="pt");
+  var hash=(location.hash||"").replace("#","");
+  if(hash && SECTIONS.some(function(s){return s.id===hash;})) window.__active=hash;
+  renderNav(); renderAll();
+});
+</script>
+<script src="supabase-integration.js" defer></script>
+<script src="am-icons.js"></script>
+<script src="sidebar.js"></script>
+</body>
+</html>
