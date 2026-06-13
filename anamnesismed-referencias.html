@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<title>AnamnesísMed — Referencias Clínicas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;
+  --ink:#1e1b4b;--primary:#4f46e5;--primary-dark:#4338ca;
+  --muted:#54607a;--line:rgba(30,27,75,0.10);--line-md:rgba(30,27,75,0.16);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --sidebar-w:240px
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:var(--bg-card);border-bottom:1px solid var(--line);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
+.hamburger:hover{background:var(--bg)}
+.topbar-back{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;padding:5px 8px;border-radius:6px;transition:background .15s,color .15s;white-space:nowrap;flex-shrink:0}
+.topbar-back:hover{background:var(--bg);color:var(--ink)}
+.topbar-sep{color:var(--line-md);font-size:16px;flex-shrink:0}
+.topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang-toggle{display:flex;background:rgba(30,27,75,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line);flex-shrink:0}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:30px 32px}
+.hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.85;display:flex;align-items:center;gap:8px}
+.hero-title{font-family:var(--serif);font-size:28px;font-weight:700;margin-top:6px}
+.hero-sub{font-size:14px;opacity:.92;margin-top:8px;max-width:720px;line-height:1.5}
+
+/* CONTENT */
+.wrap{flex:1;padding:28px 32px 70px;max-width:1060px;width:100%}
+.sec-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:6px 0 14px;display:flex;align-items:center;gap:10px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--line)}
+.sec-label.mt{margin-top:30px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:16px}
+
+.ref-card{position:relative;display:flex;flex-direction:column;gap:0;background:var(--bg-card);border:1px solid var(--line);border-radius:16px;padding:20px;text-decoration:none;color:inherit;transition:transform .16s,box-shadow .16s,border-color .16s;overflow:hidden}
+.ref-card .ic{width:50px;height:50px;border-radius:13px;background:var(--cbg);color:var(--c);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.ref-card h3{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.ref-card p{font-size:13px;color:var(--muted);line-height:1.5}
+.ref-card .meta{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--c)}
+
+/* LIVE card */
+.ref-card.live{cursor:pointer}
+.ref-card.live:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(30,27,75,.28);border-color:var(--c)}
+.ref-card.live .meta .arrow{transition:transform .16s}
+.ref-card.live:hover .meta .arrow{transform:translateX(3px)}
+.ref-card .live-badge{position:absolute;top:16px;right:16px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(22,163,74,.12);color:#16a34a}
+
+/* SOON card */
+.ref-card.soon{opacity:.72}
+.ref-card.soon .ic{filter:grayscale(.15)}
+.soon-badge{align-self:flex-start;margin-top:14px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(100,116,139,.14);color:#64748b}
+
+@media(max-width:768px){
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .topbar{padding:0 14px}
+  .topbar-back span{display:none}
+  .topbar-back::before{content:'←'}
+  .hero{padding:22px 16px}.hero-title{font-size:22px}
+  .wrap{padding:20px 14px 84px}
+}
+</style>
+<link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<div id="sidebar-root"></div>
+
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/></svg>
+      </button>
+      <a href="anamnesismed-explorar.html" class="topbar-back"><span class="pt">← Explorar</span><span class="es">← Explorar</span></a>
+      <span class="topbar-sep">›</span>
+      <span class="topbar-title pt">Referências Clínicas</span>
+      <span class="topbar-title es">Referencias Clínicas</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-eyebrow">📚 <span class="pt">Material de estudo</span><span class="es">Material de estudio</span></div>
+    <div class="hero-title pt">Referências Clínicas</div>
+    <div class="hero-title es">Referencias Clínicas</div>
+    <div class="hero-sub pt">Guias de sintomas e exame físico por especialidade — bilíngue, com mnemônicas, técnica passo a passo, achados normais/anormais e síndromes. Mesmo padrão em todas as especialidades.</div>
+    <div class="hero-sub es">Guías de síntomas y examen físico por especialidad — bilingüe, con mnemotécnicas, técnica paso a paso, hallazgos normales/anormales y síndromes. Mismo formato en todas las especialidades.</div>
+  </div>
+
+  <div class="wrap" id="wrap"></div>
+</div>
+
+<script>
+var L = "es";
+
+/* Referências por especialidade. status:"live" → clicável; "soon" → Próximamente. */
+var REFS = [
+  { id:"respiratorio", icon:"lung",        c:"#06b6d4", url:"anamnesismed-ref-respiratorio-exfisico.html", status:"live",
+    namePt:"Respiratório",      nameEs:"Respiratorio",
+    descPt:"Sintomas e exame físico do tórax: inspeção, palpação, percussão, ausculta e síndromes respiratórios.",
+    descEs:"Síntomas y examen físico del tórax: inspección, palpación, percusión, auscultación y síndromes respiratorios." },
+  { id:"clinica",      icon:"stethoscope", c:"#6366f1", url:"anamnesismed-ref-clinica-exfisico.html", status:"live",
+    namePt:"Clínica Médica",    nameEs:"Clínica Médica",
+    descPt:"Exame físico geral: sinais vitais, ectoscopia, pele e fâneros, linfonodos, edema e síndromes clínicas.",
+    descEs:"Examen físico general: signos vitales, ectoscopia, piel y faneras, ganglios, edema y síndromes clínicos." },
+  { id:"cirurgia",     icon:"scalpel",     c:"#8b5cf6", status:"soon",
+    namePt:"Cirurgia Geral",    nameEs:"Cirugía General",
+    descPt:"Abdome agudo, hérnias, exame do abdome e avaliação pré-operatória.",
+    descEs:"Abdomen agudo, hernias, examen del abdomen y evaluación preoperatoria." },
+  { id:"semiologia",   icon:"book",        c:"#3b82f6", status:"soon",
+    namePt:"Semiologia",        nameEs:"Semiología",
+    descPt:"Bases da anamnese e do exame físico — fundamentos transversais a todas as especialidades.",
+    descEs:"Bases de la anamnesis y el examen físico — fundamentos transversales a todas las especialidades." },
+  { id:"cardiologia",  icon:"heartpulse",  c:"#ef4444", status:"soon",
+    namePt:"Cardiologia",       nameEs:"Cardiología",
+    descPt:"Pulsos, pressão venosa, ausculta cardíaca, sopros e as grandes síndromes cardiovasculares.",
+    descEs:"Pulsos, presión venosa, auscultación cardíaca, soplos y los grandes síndromes cardiovasculares." },
+  { id:"neurologia",   icon:"brain",       c:"#f59e0b", status:"soon",
+    namePt:"Neurologia",        nameEs:"Neurología",
+    descPt:"Exame neurológico: consciência, pares cranianos, força, reflexos, sensibilidade e marcha.",
+    descEs:"Examen neurológico: conciencia, pares craneales, fuerza, reflejos, sensibilidad y marcha." },
+  { id:"gastro",       icon:"abdomen",     c:"#14b8a6", status:"soon",
+    namePt:"Gastroenterologia", nameEs:"Gastroenterología",
+    descPt:"Exame do abdome, sinais peritoneais, hepatoesplenomegalia, ascite e síndromes digestivas.",
+    descEs:"Examen del abdomen, signos peritoneales, hepatoesplenomegalia, ascitis y síndromes digestivos." },
+  { id:"pediatria",    icon:"user",        c:"#ec4899", status:"soon",
+    namePt:"Pediatria",         nameEs:"Pediatría",
+    descPt:"Particularidades do exame da criança, crescimento, desenvolvimento e sinais de alarme.",
+    descEs:"Particularidades del examen del niño, crecimiento, desarrollo y signos de alarma." },
+  { id:"emergencias",  icon:"zap",         c:"#f97316", status:"soon",
+    namePt:"Emergências / Trauma", nameEs:"Emergencias / Trauma",
+    descPt:"Abordagem inicial: ABCDE, avaliação primária e secundária, e o paciente grave.",
+    descEs:"Abordaje inicial: ABCDE, evaluación primaria y secundaria, y el paciente grave." },
+  { id:"endocrino",    icon:"activity",    c:"#10b981", status:"soon",
+    namePt:"Endocrinologia",    nameEs:"Endocrinología",
+    descPt:"Tireoide, diabetes, síndromes hormonais e os achados de exame físico associados.",
+    descEs:"Tiroides, diabetes, síndromes hormonales y los hallazgos de examen físico asociados." },
+  { id:"nefrologia",   icon:"kidney",      c:"#0ea5e9", status:"soon",
+    namePt:"Nefrologia",        nameEs:"Nefrología",
+    descPt:"Avaliação do edema, estado volêmico, síndromes nefrótica e nefrítica.",
+    descEs:"Evaluación del edema, estado volémico, síndromes nefrótico y nefrítico." },
+  { id:"infectologia", icon:"microscope",  c:"#84cc16", status:"soon",
+    namePt:"Infectologia",      nameEs:"Infectología",
+    descPt:"Febre, síndromes infecciosas, sinais de sepse e abordagem do paciente febril.",
+    descEs:"Fiebre, síndromes infecciosos, signos de sepsis y abordaje del paciente febril." }
+];
+
+function ic(name,size){ return window.amIcon ? amIcon(name,size) : '<span data-am-icon="'+name+'" data-am-size="'+size+'"></span>'; }
+
+function render(){
+  var live = REFS.filter(function(r){return r.status==="live";});
+  var soon = REFS.filter(function(r){return r.status==="soon";});
+
+  function card(r){
+    var name = L==="es"?r.nameEs:r.namePt;
+    var desc = L==="es"?r.descEs:r.descPt;
+    var style = 'style="--c:'+r.c+';--cbg:'+hexA(r.c,.12)+'"';
+    if(r.status==="live"){
+      var go = L==="es"?"Abrir guía":"Abrir guia";
+      return '<a class="ref-card live" '+style+' href="'+r.url+'">'
+        +'<span class="live-badge">'+(L==="es"?"Disponible":"Disponível")+'</span>'
+        +'<div class="ic">'+ic(r.icon,26)+'</div>'
+        +'<h3>'+name+'</h3><p>'+desc+'</p>'
+        +'<div class="meta">'+go+' <span class="arrow">→</span></div></a>';
+    }
+    return '<div class="ref-card soon" '+style+'>'
+      +'<div class="ic">'+ic(r.icon,26)+'</div>'
+      +'<h3>'+name+'</h3><p>'+desc+'</p>'
+      +'<span class="soon-badge">'+(L==="es"?"Próximamente":"Em breve")+'</span></div>';
+  }
+
+  var html = '<div class="sec-label"><span>'+(L==="es"?"Disponibles":"Disponíveis")+'</span></div>'
+    + '<div class="grid">'+live.map(card).join("")+'</div>'
+    + '<div class="sec-label mt"><span>'+(L==="es"?"Próximamente":"Em breve")+'</span></div>'
+    + '<div class="grid">'+soon.map(card).join("")+'</div>';
+  document.getElementById("wrap").innerHTML = html;
+  if(window.amHydrateIcons) amHydrateIcons(document.getElementById("wrap"));
+}
+
+/* hex (#rrggbb) → rgba string */
+function hexA(hex,a){
+  var h=hex.replace('#','');
+  var r=parseInt(h.substring(0,2),16), g=parseInt(h.substring(2,4),16), b=parseInt(h.substring(4,6),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+
+function setLang(lang){
+  L=lang;
+  document.documentElement.setAttribute("data-lang",lang);
+  document.getElementById("btn-es").classList.toggle("active",lang==="es");
+  document.getElementById("btn-pt").classList.toggle("active",lang==="pt");
+  render();
+  try{ localStorage.setItem("am-lang",lang); }catch(e){}
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  try{ var s=localStorage.getItem("am-lang"); if(s==="pt"||s==="es") L=s; }catch(e){}
+  document.documentElement.setAttribute("data-lang",L);
+  document.getElementById("btn-es").classList.toggle("active",L==="es");
+  document.getElementById("btn-pt").classList.toggle("active",L==="pt");
+  render();
+});
+</script>
+<script src="supabase-integration.js" defer></script>
+<script src="am-icons.js"></script>
+<script src="sidebar.js"></script>
+</body>
+</html>

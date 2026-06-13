@@ -113,6 +113,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .tool-tile-name{font-size:16px;font-weight:700}
 .tool-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
 .soon-badge{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--c);background:var(--cbg);padding:4px 11px;border-radius:20px}
+.tool-tile.live{border-style:solid;border-color:var(--line);opacity:1;text-decoration:none;cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s}
+.tool-tile.live:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(30,27,75,.26);border-color:var(--c)}
+.tool-tile .go{align-self:flex-start;font-size:12.5px;font-weight:700;color:var(--c);display:flex;align-items:center;gap:6px}
+.tool-tile.live .go .arrow{transition:transform .16s}
+.tool-tile.live:hover .go .arrow{transform:translateX(3px)}
 
 /* ── MOBILE NAV ── */
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--line);z-index:200;padding-bottom:env(safe-area-inset-bottom)}
@@ -202,15 +207,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     <div class="sec-label pt">Mais recursos</div>
     <div class="sec-label es">Más recursos</div>
     <div class="tools-grid">
-      <div class="tool-tile" style="--c:#8b5cf6;--cbg:rgba(139,92,246,.12)">
+      <a href="anamnesismed-referencias.html" class="tool-tile live" style="--c:#8b5cf6;--cbg:rgba(139,92,246,.12)">
         <div class="tool-tile-icon" data-am-icon="book" data-am-size="26"></div>
         <div class="tool-tile-name pt">Referências Clínicas</div>
         <div class="tool-tile-name es">Referencias Clínicas</div>
-        <div class="tool-tile-desc pt">Resumos, guias clínicos e casos práticos por especialidade.</div>
-        <div class="tool-tile-desc es">Resúmenes, guías clínicas y casos prácticos por especialidad.</div>
-        <span class="soon-badge pt">Em breve</span>
-        <span class="soon-badge es">Próximamente</span>
-      </div>
+        <div class="tool-tile-desc pt">Guias de sintomas e exame físico por especialidade.</div>
+        <div class="tool-tile-desc es">Guías de síntomas y examen físico por especialidad.</div>
+        <span class="go pt">Ver referências <span class="arrow">→</span></span>
+        <span class="go es">Ver referencias <span class="arrow">→</span></span>
+      </a>
       <div class="tool-tile" style="--c:#10b981;--cbg:rgba(16,185,129,.12)">
         <div class="tool-tile-icon" data-am-icon="sparkles" data-am-size="26"></div>
         <div class="tool-tile-name pt">Assistente com IA</div>
