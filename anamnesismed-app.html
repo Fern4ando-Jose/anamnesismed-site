@@ -803,6 +803,12 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div id="aea-mc3-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
 
             <div class="f-row" style="margin-top:8px">
+              <label class="f-label pt">Relato livre (AEA em texto)</label>
+              <label class="f-label es">Relato libre (AEA en texto)</label>
+              <textarea class="f-input" id="aea-texto" rows="4" placeholder="Descreva a história da doença atual..." data-ph-pt="Descreva a história da doença atual..." data-ph-es="Describa la historia de la enfermedad actual..."></textarea>
+            </div>
+
+            <div class="f-row">
               <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
                 <button type="button" class="conduta-btn conduta-btn-primary" id="btn-ia-hc" onclick="hcGerarComIA()" style="margin:0;padding:8px 16px;font-size:12px">
                   <span data-am-icon="sparkles" data-am-size="16"></span>
@@ -813,12 +819,6 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <label class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
               <label class="f-label es">Narrativa de la HC (revise antes de exportar)</label>
               <textarea class="f-input" id="aea-narrativa" rows="6" placeholder="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-pt="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-es="Haga clic en “Generar HC” para redactar la narrativa a partir de los motivos, tiempo de evolución y relato libre. Puede editarla antes de exportar."></textarea>
-            </div>
-
-            <div class="f-row">
-              <label class="f-label pt">Relato livre (AEA em texto)</label>
-              <label class="f-label es">Relato libre (AEA en texto)</label>
-              <textarea class="f-input" id="aea-texto" rows="4" placeholder="Descreva a história da doença atual..." data-ph-pt="Descreva a história da doença atual..." data-ph-es="Describa la historia de la enfermedad actual..."></textarea>
             </div>
           </div>
         </div>
@@ -1598,9 +1598,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     <button class="fab-btn fab-secondary" onclick="saveHC()" title="Salvar">💾</button>
   </div>
   <div class="fab-item">
-    <span class="fab-label pt">Nova HC</span>
-    <span class="fab-label es">Nueva HC</span>
-    <button class="fab-btn fab-primary" onclick="newHC()" title="Nova HC">+</button>
+    <span class="fab-label pt">Referências do motivo</span>
+    <span class="fab-label es">Referencias del motivo</span>
+    <button class="fab-btn fab-primary" onclick="openRefMotivo()" title="Referências clínicas"><span data-am-icon="book" data-am-size="22"></span></button>
   </div>
 </div>
 
@@ -2381,6 +2381,19 @@ function hcGerarComIA(){
     if(btn) btn.disabled = false;
     if(status) status.textContent = (lang==='es'?'Error inesperado':'Erro inesperado');
   });
+}
+
+// Botão flutuante 📖: abre a Referência Clínica da especialidade atual em nova aba
+// (não perde a HC em andamento). Sem página específica → cai no hub de referências.
+function openRefMotivo(){
+  var REF = {
+    respiratorio: 'anamnesismed-ref-respiratorio-exfisico.html',
+    clinica:      'anamnesismed-ref-clinica-exfisico.html',
+    cirurgia:     'anamnesismed-ref-cirurgia-exfisico.html'
+  };
+  var spec = window.currentSpec || '';
+  var url = REF[spec] || 'anamnesismed-referencias.html';
+  window.open(url, '_blank', 'noopener');
 }
 
 // ── PDF EXPORT ────────────────────────────────────────
