@@ -122,6 +122,9 @@ export async function GET(req: NextRequest) {
   const total  = parseInt(searchParams.get("total") ?? "5");
   const handle = searchParams.get("handle") ?? "@anamnesismed";
   const followLabel = searchParams.get("follow") ?? `Siga ${handle}`;
+  const badges   = (searchParams.get("badges") ?? "Salvar,Compartilhar,Marque um colega")
+    .split(",").filter(Boolean);
+  const bioLabel = searchParams.get("bio") ?? "Link na bio";
 
   // Carregar fontes em paralelo
   const [serifBold, serifRegular, sansReg] = await Promise.all([
@@ -384,7 +387,7 @@ export async function GET(req: NextRequest) {
             {/* Engajamento + CTA */}
             <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                {["Salvar", "Compartilhar", "Marque um colega"].map((label, i) => (
+                {badges.map((label, i) => (
                   <div key={i} style={{
                     display: "flex", fontFamily: "DMSans", fontSize: 14, fontWeight: 700,
                     color: "rgba(255,255,255,0.92)", letterSpacing: "1.5px", textTransform: "uppercase",
@@ -406,7 +409,7 @@ export async function GET(req: NextRequest) {
                   display: "flex", fontFamily: "DMSans", fontSize: 14,
                   color: "rgba(255,255,255,0.5)", letterSpacing: "0.5px",
                 }}>
-                  Link na bio
+                  {bioLabel}
                 </div>
               </div>
             </div>

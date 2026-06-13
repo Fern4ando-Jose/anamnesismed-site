@@ -425,6 +425,10 @@ export async function GET(req: NextRequest) {
     const enc  = (s: string) => encodeURIComponent(s.slice(0, 120));
     const hq   = `&handle=${enc(handle)}`; // handle da conta no rodapé das imagens
     const followLabel = lang === "es" ? `Sigue ${handle}` : `Siga ${handle}`;
+    const ctaBadges   = lang === "es" ? "Guardar,Compartir,Etiqueta a un colega"
+                                      : "Salvar,Compartilhar,Marque um colega";
+    const ctaBio      = lang === "es" ? "Link en bio" : "Link na bio";
+    const ctaExtra    = `&follow=${enc(followLabel)}&badges=${enc(ctaBadges)}&bio=${enc(ctaBio)}`;
 
     const totalSlides = 2 + content.slides.length; // capa + insights + cta
 
@@ -437,7 +441,7 @@ export async function GET(req: NextRequest) {
         `${base}/api/og?slide=insight&text=${enc(text)}&accent=${enc(content.accentWords[i] ?? "")}&num=${i + 2}&total=${totalSlides}&kw=${enc(kw)}&ed=${ed}${hq}`
       ),
       // Slide CTA final
-      `${base}/api/og?slide=cta&text=${enc(content.cta)}&num=${totalSlides}&total=${totalSlides}&kw=${enc(kw)}&ed=${ed}${hq}&follow=${enc(followLabel)}`,
+      `${base}/api/og?slide=cta&text=${enc(content.cta)}&num=${totalSlides}&total=${totalSlides}&kw=${enc(kw)}&ed=${ed}${hq}${ctaExtra}`,
     ];
 
     // Modo PRÉVIA — gera conteúdo + URLs das imagens SEM publicar nem salvar
