@@ -185,8 +185,8 @@ table.sx tbody tr:hover td:first-child{background:#eef0fb}
     <div class="hero-eyebrow">🏥 <span class="pt">Referência Clínica · Clínica Médica</span><span class="es">Referencia Clínica · Clínica Médica</span></div>
     <div class="hero-title pt">Clínica Médica — Exame Físico Geral</div>
     <div class="hero-title es">Clínica Médica — Examen Físico General</div>
-    <div class="hero-sub pt">Guia completo do exame físico geral: sintomas constitucionais, mnemônicas de anamnese, sinais vitais, ectoscopia, pele e fâneros, linfonodos, edema, cabeça e pescoço — com técnica, achados normais/anormais e as grandes síndromes clínicas.</div>
-    <div class="hero-sub es">Guía completa del examen físico general: síntomas constitucionales, mnemotécnicas de anamnesis, signos vitales, ectoscopia, piel y faneras, ganglios, edema, cabeza y cuello — con técnica, hallazgos normales/anormales y los grandes síndromes clínicos.</div>
+    <div class="hero-sub pt">Guia completo do exame físico geral: sintomas constitucionais, mnemônicas de anamnese, sinais vitais, ectoscopia, pele e fâneros, linfonodos, cabeça e pescoço — com técnica, achados normais/anormais e as grandes síndromes clínicas.</div>
+    <div class="hero-sub es">Guía completa del examen físico general: síntomas constitucionales, mnemotécnicas de anamnesis, signos vitales, ectoscopia, piel y faneras, ganglios, cabeza y cuello — con técnica, hallazgos normales/anormales y los grandes síndromes clínicos.</div>
   </div>
 
   <nav class="secnav" id="secnav"></nav>
@@ -298,20 +298,6 @@ var SECTIONS = [
       {t:{es:"Benigno vs maligno",pt:"Benigno vs maligno"},body:{
         es:"<div class='finds'><div class='find ok'><div class='fl'>Reactivo / inflamatorio</div>Pequeño (&lt;1 cm), blando, móvil, doloroso, signos de flogosis. Suele ser infeccioso y autolimitado.</div><div class='find bad'><div class='fl'>Sospechoso de malignidad</div>Duro/pétreo, fijo (adherido a planos), indoloro, &gt;2 cm, crecimiento progresivo, conglomerado.</div></div><p><b>Adenopatía generalizada:</b> ≥2 regiones no contiguas → virosis (VIH, VEB, CMV), TBC, sífilis, linfoma, LES, sarcoidosis, fármacos.</p>",
         pt:"<div class='finds'><div class='find ok'><div class='fl'>Reativo / inflamatório</div>Pequeno (&lt;1 cm), fibroelástico, móvel, doloroso, sinais flogísticos. Em geral infeccioso e autolimitado.</div><div class='find bad'><div class='fl'>Suspeito de malignidade</div>Endurecido/pétreo, fixo (aderido a planos), indolor, &gt;2 cm, crescimento progressivo, coalescente.</div></div><p><b>Adenomegalia generalizada:</b> ≥2 regiões não contíguas → viroses (HIV, EBV, CMV), TB, sífilis, linfoma, LES, sarcoidose, fármacos.</p>"}}
-    ]
-  },
-  {
-    id:"edema", emoji:"💧", icon:"7",
-    t:{es:"Edema", pt:"Edema"},
-    intro:{es:"Acumulación de líquido en el intersticio. Caracterizarlo (localización, simetría, signo de la fóvea) orienta directamente a la causa.",
-           pt:"Acúmulo de líquido no interstício. Caracterizá-lo (localização, simetria, sinal do cacifo) orienta diretamente para a causa."},
-    accs:[
-      {t:{es:"Técnica — signo de la fóvea (godet)",pt:"Técnica — sinal do cacifo (godet)"},body:{
-        es:"<ol class='steps'><li>Presioná con el pulgar sobre una prominencia ósea (maléolo, pretibial, sacro en el encamado) durante ~5 s.</li><li>Retirá y observá si queda una depresión (fóvea) y cuánto tarda en recuperarse.</li><li><b>Graduación:</b> +1 (leve, ~2 mm) · +2 (~4 mm) · +3 (~6 mm) · +4 (profundo, &gt;8 mm).</li><li>Definí: localización, simetría, temperatura, color, dolor y si <b>deja o no fóvea</b>.</li></ol><div class='finds'><div class='find info'><div class='fl'>Con fóvea (blando)</div>IC, síndrome nefrótico, cirrosis, hipoproteinemia, fármacos.</div><div class='find warn'><div class='fl'>Sin fóvea (duro)</div>Linfedema, mixedema (hipotiroidismo).</div></div>",
-        pt:"<ol class='steps'><li>Pressione com o polegar sobre uma proeminência óssea (maléolo, pré-tibial, sacro no acamado) por ~5 s.</li><li>Retire e observe se fica uma depressão (cacifo) e quanto demora a recuperar.</li><li><b>Graduação:</b> +1 (leve, ~2 mm) · +2 (~4 mm) · +3 (~6 mm) · +4 (profundo, &gt;8 mm).</li><li>Defina: localização, simetria, temperatura, cor, dor e se <b>deixa ou não cacifo</b>.</li></ol><div class='finds'><div class='find info'><div class='fl'>Com cacifo (mole)</div>IC, síndrome nefrótica, cirrose, hipoproteinemia, fármacos.</div><div class='find warn'><div class='fl'>Sem cacifo (duro)</div>Linfedema, mixedema (hipotireoidismo).</div></div>"}},
-      {t:{es:"Localizado vs generalizado",pt:"Localizado vs generalizado"},body:{
-        es:"<div class='duo'><div class='duo-card restr'><h4>📍 Localizado / asimétrico</h4><ul><li>TVP (unilateral, doloroso, caliente)</li><li>Celulitis / erisipela (rubor, calor)</li><li>Linfedema · obstrucción venosa</li><li>Insuficiencia venosa crónica</li></ul></div><div class='duo-card obstr'><h4>🌐 Generalizado / simétrico</h4><ul><li>Cardíaco: vespertino, en MMII, ascendente</li><li>Renal: matutino, palpebral/facial</li><li>Hepático: con ascitis y circulación colateral</li><li>Nutricional: hipoproteinemia</li></ul></div></div><p><b>Anasarca:</b> edema generalizado masivo con derrames en cavidades (ascitis, derrame pleural).</p>",
-        pt:"<div class='duo'><div class='duo-card restr'><h4>📍 Localizado / assimétrico</h4><ul><li>TVP (unilateral, doloroso, quente)</li><li>Celulite / erisipela (rubor, calor)</li><li>Linfedema · obstrução venosa</li><li>Insuficiência venosa crônica</li></ul></div><div class='duo-card obstr'><h4>🌐 Generalizado / simétrico</h4><ul><li>Cardíaco: vespertino, em MMII, ascendente</li><li>Renal: matutino, palpebral/facial</li><li>Hepático: com ascite e circulação colateral</li><li>Nutricional: hipoproteinemia</li></ul></div></div><p><b>Anasarca:</b> edema generalizado maciço com derrames cavitários (ascite, derrame pleural).</p>"}}
     ]
   },
   {
