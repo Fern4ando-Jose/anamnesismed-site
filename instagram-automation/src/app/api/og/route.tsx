@@ -125,6 +125,7 @@ export async function GET(req: NextRequest) {
   const badges   = (searchParams.get("badges") ?? "Salvar,Compartilhar,Marque um colega")
     .split(",").filter(Boolean);
   const bioLabel = searchParams.get("bio") ?? "Link na bio";
+  const img    = searchParams.get("img") ?? ""; // ilustração de IA (só capa)
 
   // Carregar fontes em paralelo
   const [serifBold, serifRegular, sansReg] = await Promise.all([
@@ -157,6 +158,24 @@ export async function GET(req: NextRequest) {
             backgroundColor: INK,
           }}
         >
+          {/* Ilustração de IA full-bleed + scrim (só quando ?img= vem).
+              Sem img, a capa fica idêntica à de hoje (fundo escuro). */}
+          {img ? (
+            <>
+              <img
+                src={img}
+                width={W}
+                height={H}
+                style={{ position: "absolute", top: 0, left: 0, width: W, height: H, objectFit: "cover" }}
+              />
+              {/* Scrim: escurece topo e base p/ título/keyword/ARRASTE ficarem legíveis */}
+              <div style={{
+                position: "absolute", top: 0, left: 0, width: W, height: H, display: "flex",
+                backgroundImage: "linear-gradient(180deg, rgba(10,12,16,0.66) 0%, rgba(10,12,16,0.18) 42%, rgba(10,12,16,0.90) 100%)",
+              }} />
+            </>
+          ) : null}
+
           {/* Watermark gigante da keyword (profundidade tipográfica) */}
           <div style={{
             position: "absolute", bottom: -88, right: -40,

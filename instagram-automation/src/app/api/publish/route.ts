@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { generateIllustration } from "@/lib/illustration";
 
 export const maxDuration = 300;
 
@@ -19,59 +20,98 @@ interface GeneratedContent {
 type Slot = "manha" | "tarde" | "noite";
 type Lang = "pt" | "es";
 
-// ─── Tópicos — rotação semanal ────────────────────────────────────────────────
-// Foco: anamnese, semiologia, raciocínio clínico, ferramentas do AnamnesísMed
-// Multilíngue: a conta @anamnesismed publica em PT; @anamnesismed.es em ES
-// (definido por POST_LANG no deploy, ou ?lang=es para teste).
+// ─── Casos clínicos — formato "Qual o diagnóstico?" ───────────────────────────
+// Cada item é um CASO (apresentação + diagnóstico oculto). O prompt monta um
+// carrossel interativo que SÓ revela o diagnóstico no último slide e na legenda.
+// PT e ES compartilham o mesmo índice → mesmo caso, mesma imagem de capa (SUBJECTS)
+// e mesma etiqueta de especialidade (CASE_SYS). Mexeu num caso? Ajuste as 3 listas
+// na MESMA posição. Idioma definido por POST_LANG (ou ?lang=es para teste).
 
 const TOPICS_BY_LANG: Record<Lang, string[]> = {
   pt: [
-    "Mnemônico SOCRATES para avaliação da dor",
-    "Dispneia: abordagem sistemática e diagnóstico diferencial",
-    "Score HEART para dor torácica na emergência",
-    "Anamnese da febre: quando investigar mais",
-    "Perda de peso involuntária: bandeiras vermelhas",
-    "Cefaleia em trovão: emergência neurológica",
-    "CURB-65 e decisão de internação na pneumonia",
-    "Síncope: avaliação clínica e estratificação de risco",
-    "FINDRISC e rastreio de diabetes tipo 2",
-    "Anamnese psicossocial — o que os livros não ensinam",
-    "Semiologia do abdome: da queixa ao diagnóstico",
-    "Edema de membros inferiores: causas e investigação",
-    "Palpitações: abordagem na consulta",
-    "Anamnese geriátrica e síndrome da fragilidade",
-    "Mnemônico OPQRST para urgências clínicas",
-    "Icterícia: diagnóstico diferencial e semiologia",
-    "Dor lombar: bandeiras vermelhas e amarelas",
-    "Anamnese cardiorrespiratória completa",
-    "Score Well's para TVP e embolia pulmonar",
-    "Hemograma alterado: correlação clínica",
-    "HAS: anamnese e avaliação de risco cardiovascular",
+    "Homem de 60 anos com dor torácica opressiva irradiando para a mandíbula, sudorese fria e náusea. (Diagnóstico, revelar só no slide final: infarto agudo do miocárdio.)",
+    "Mulher de 30 anos com dispneia súbita e dor pleurítica após voo longo, taquicardia e SpO2 baixa. (Diagnóstico, revelar só no fim: tromboembolismo pulmonar.)",
+    "Homem de 22 anos com cefaleia súbita 'a pior da vida' e rigidez de nuca. (Diagnóstico, revelar só no fim: hemorragia subaracnóidea.)",
+    "Homem de 72 anos com dor abdominal súbita intensa e abdome em tábua. (Diagnóstico, revelar só no fim: úlcera péptica perfurada, abdome agudo perfurativo.)",
+    "Mulher de 24 anos com poliúria, polidipsia, perda de peso e hálito cetônico. (Diagnóstico, revelar só no fim: cetoacidose diabética.)",
+    "Homem de 58 anos com icterícia indolor, perda de peso e vesícula palpável (sinal de Courvoisier). (Diagnóstico, revelar só no fim: câncer de cabeça de pâncreas.)",
+    "Criança de 5 anos com febre há 5 dias, conjuntivite, língua em framboesa e descamação das mãos. (Diagnóstico, revelar só no fim: doença de Kawasaki.)",
+    "Mulher de 38 anos com palpitações, perda de peso, tremor e exoftalmia. (Diagnóstico, revelar só no fim: hipertireoidismo, doença de Graves.)",
+    "Homem de 55 anos tabagista com claudicação intermitente, pé frio e pulsos distais ausentes. (Diagnóstico, revelar só no fim: doença arterial periférica.)",
+    "Homem de 80 anos com confusão mental aguda e flutuante e disúria. (Diagnóstico, revelar só no fim: delirium secundário a infecção urinária.)",
+    "Mulher de 26 anos com dor periumbilical que migrou para a fossa ilíaca direita, com Blumberg e febre baixa. (Diagnóstico, revelar só no fim: apendicite aguda.)",
+    "Homem de 50 anos etilista com hematêmese volumosa e ascite. (Diagnóstico, revelar só no fim: hemorragia por varizes esofágicas.)",
+    "Atleta de 19 anos com síncope durante esforço e sopro sistólico que aumenta com a manobra de Valsalva. (Diagnóstico, revelar só no fim: cardiomiopatia hipertrófica.)",
+    "Mulher de 65 anos com dispneia aos esforços, ortopneia e edema de membros inferiores. (Diagnóstico, revelar só no fim: insuficiência cardíaca.)",
+    "Homem de 28 anos com lombalgia noturna e rigidez matinal por mais de 1 hora que melhora com exercício. (Diagnóstico, revelar só no fim: espondilite anquilosante.)",
+    "Lactente não vacinado com crises de tosse paroxística seguidas de guincho inspiratório. (Diagnóstico, revelar só no fim: coqueluche.)",
+    "Mulher de 27 anos com fadiga, artralgia e rash malar fotossensível. (Diagnóstico, revelar só no fim: lúpus eritematoso sistêmico.)",
+    "Homem de 67 anos com tremor de repouso assimétrico, bradicinesia e rigidez em roda denteada. (Diagnóstico, revelar só no fim: doença de Parkinson.)",
+    "Homem de 45 anos com dor epigástrica, melena e uso crônico de anti-inflamatórios. (Diagnóstico, revelar só no fim: úlcera péptica sangrante.)",
+    "Homem de 40 anos usuário de drogas injetáveis com febre, sopro cardíaco novo e lesões de Janeway. (Diagnóstico, revelar só no fim: endocardite infecciosa.)",
+    "Mulher de 70 anos com cefaleia temporal, claudicação de mandíbula e VHS muito elevado. (Diagnóstico, revelar só no fim: arterite de células gigantes, temporal.)",
   ],
   es: [
-    "Mnemotecnia SOCRATES para evaluar el dolor",
-    "Disnea: abordaje sistemático y diagnóstico diferencial",
-    "Score HEART para dolor torácico en urgencias",
-    "Anamnesis de la fiebre: cuándo investigar más",
-    "Pérdida de peso involuntaria: señales de alarma",
-    "Cefalea en trueno: emergencia neurológica",
-    "CURB-65 y decisión de ingreso en la neumonía",
-    "Síncope: evaluación clínica y estratificación del riesgo",
-    "FINDRISC y cribado de diabetes tipo 2",
-    "Anamnesis psicosocial: lo que los libros no enseñan",
-    "Semiología del abdomen: del síntoma al diagnóstico",
-    "Edema de miembros inferiores: causas e investigación",
-    "Palpitaciones: abordaje en la consulta",
-    "Anamnesis geriátrica y síndrome de fragilidad",
-    "Mnemotecnia OPQRST para urgencias clínicas",
-    "Ictericia: diagnóstico diferencial y semiología",
-    "Lumbalgia: señales de alarma rojas y amarillas",
-    "Anamnesis cardiorrespiratoria completa",
-    "Score de Wells para TVP y embolia pulmonar",
-    "Hemograma alterado: correlación clínica",
-    "HTA: anamnesis y evaluación del riesgo cardiovascular",
+    "Hombre de 60 años con dolor torácico opresivo irradiado a la mandíbula, sudoración fría y náuseas. (Diagnóstico, revelar solo en la última diapositiva: infarto agudo de miocardio.)",
+    "Mujer de 30 años con disnea súbita y dolor pleurítico tras un vuelo largo, taquicardia y SpO2 baja. (Diagnóstico, revelar solo al final: tromboembolismo pulmonar.)",
+    "Hombre de 22 años con cefalea súbita 'la peor de su vida' y rigidez de nuca. (Diagnóstico, revelar solo al final: hemorragia subaracnoidea.)",
+    "Hombre de 72 años con dolor abdominal súbito intenso y abdomen en tabla. (Diagnóstico, revelar solo al final: úlcera péptica perforada, abdomen agudo perforativo.)",
+    "Mujer de 24 años con poliuria, polidipsia, pérdida de peso y aliento cetónico. (Diagnóstico, revelar solo al final: cetoacidosis diabética.)",
+    "Hombre de 58 años con ictericia indolora, pérdida de peso y vesícula palpable (signo de Courvoisier). (Diagnóstico, revelar solo al final: cáncer de cabeza de páncreas.)",
+    "Niño de 5 años con fiebre de 5 días, conjuntivitis, lengua en fresa y descamación de manos. (Diagnóstico, revelar solo al final: enfermedad de Kawasaki.)",
+    "Mujer de 38 años con palpitaciones, pérdida de peso, temblor y exoftalmos. (Diagnóstico, revelar solo al final: hipertiroidismo, enfermedad de Graves.)",
+    "Hombre de 55 años fumador con claudicación intermitente, pie frío y pulsos distales ausentes. (Diagnóstico, revelar solo al final: enfermedad arterial periférica.)",
+    "Hombre de 80 años con confusión aguda fluctuante y disuria. (Diagnóstico, revelar solo al final: delirium secundario a infección urinaria.)",
+    "Mujer de 26 años con dolor periumbilical que migró a la fosa ilíaca derecha, con Blumberg y febrícula. (Diagnóstico, revelar solo al final: apendicitis aguda.)",
+    "Hombre de 50 años alcohólico con hematemesis abundante y ascitis. (Diagnóstico, revelar solo al final: hemorragia por varices esofágicas.)",
+    "Atleta de 19 años con síncope de esfuerzo y soplo sistólico que aumenta con la maniobra de Valsalva. (Diagnóstico, revelar solo al final: miocardiopatía hipertrófica.)",
+    "Mujer de 65 años con disnea de esfuerzo, ortopnea y edema de miembros inferiores. (Diagnóstico, revelar solo al final: insuficiencia cardíaca.)",
+    "Hombre de 28 años con lumbalgia nocturna y rigidez matinal de más de 1 hora que mejora con el ejercicio. (Diagnóstico, revelar solo al final: espondilitis anquilosante.)",
+    "Lactante no vacunado con accesos de tos paroxística seguidos de gallo inspiratorio. (Diagnóstico, revelar solo al final: tos ferina.)",
+    "Mujer de 27 años con fatiga, artralgia y rash malar fotosensible. (Diagnóstico, revelar solo al final: lupus eritematoso sistémico.)",
+    "Hombre de 67 años con temblor de reposo asimétrico, bradicinesia y rigidez en rueda dentada. (Diagnóstico, revelar solo al final: enfermedad de Parkinson.)",
+    "Hombre de 45 años con dolor epigástrico, melena y uso crónico de antiinflamatorios. (Diagnóstico, revelar solo al final: úlcera péptica sangrante.)",
+    "Hombre de 40 años usuario de drogas inyectables con fiebre, soplo nuevo y lesiones de Janeway. (Diagnóstico, revelar solo al final: endocarditis infecciosa.)",
+    "Mujer de 70 años con cefalea temporal, claudicación mandibular y VSG muy elevada. (Diagnóstico, revelar solo al final: arteritis de células gigantes, temporal.)",
   ],
 };
+
+// ─── Metáfora visual da capa por caso (alinhada por ÍNDICE) ────────────────────
+// Subjects em inglês (Flux responde melhor). Atmosféricas e metafóricas: sugerem
+// o sistema/cena, mas NÃO entregam o diagnóstico (é "Qual o diagnóstico?").
+const SUBJECTS: string[] = [
+  "a sculptural anatomical heart model on a dark surface beside a single jagged ECG tracing",
+  "a glass anatomical model of the lungs with one bronchial branch abruptly clouded and blocked",
+  "a cracked classical marble bust of a head with a sudden lightning fissure across the skull",
+  "an antique anatomical chart of the abdomen on aged paper with a stark red mark over the stomach",
+  "a still life of a water glass, a draining hourglass and faint sugar crystals with a sweet vapor",
+  "a dim still life of an anatomical torso model turning amber with a shadowed pancreas highlighted",
+  "a child's empty bed with a thermometer and a single small red origami crane, tender",
+  "an antique pocket watch spinning fast beside a butterfly-shaped thyroid silhouette, restless",
+  "a cold dim corridor with a single boot beside a narrowing pipe losing its flow",
+  "an elderly portrait painting dissolving into drifting fog and scattered clock hands",
+  "an antique abdominal anatomy chart with a single glowing red point at the lower right",
+  "a cracked dark wine vessel overflowing beside a shadowed anatomical liver model",
+  "an empty stadium track at dusk with a single fallen medal and a thick-walled heart model",
+  "an anatomical heart model half submerged in slowly rising dark water, heavy",
+  "an anatomical spine model gradually fusing into a rigid bamboo stalk in dawn light",
+  "a small empty crib with trembling lines in the air and a single fragile feather",
+  "a porcelain mask with a butterfly-shaped crack across the cheeks under soft sunlight",
+  "a still life of bronze sculpted hands caught mid-tremor, motion frozen into stillness",
+  "an anatomical stomach model with a single smoldering ember glowing inside and a dark drop",
+  "an anatomical heart-valve model with delicate growths and tiny embers drifting nearby",
+  "a classical marble head in profile with one temple artery glowing inflamed red",
+];
+
+// ─── Etiqueta de especialidade por caso (capa: rótulo + watermark) ─────────────
+// Alinhada por índice. Usada como "kw" (rótulo vermelho + watermark de 3 letras).
+const CASE_SYS: string[] = [
+  "CARDIOLOGIA", "PNEUMOLOGIA", "NEUROLOGIA", "CIRURGIA", "ENDOCRINOLOGIA",
+  "ONCOLOGIA", "PEDIATRIA", "ENDOCRINOLOGIA", "VASCULAR", "GERIATRIA",
+  "CIRURGIA", "GASTRO", "CARDIOLOGIA", "CARDIOLOGIA", "REUMATOLOGIA",
+  "INFECTOLOGIA", "REUMATOLOGIA", "NEUROLOGIA", "GASTRO", "INFECTOLOGIA",
+  "REUMATOLOGIA",
+];
 
 // ─── Keyword curta para os slides ─────────────────────────────────────────────
 
@@ -174,27 +214,28 @@ function buildPrompt(lang: Lang, topic: string, context: string, slot: Slot, han
   const slotInstr = SLOT_INSTRUCTIONS_BY_LANG[lang][slot];
 
   if (lang === "es") {
-    return `Eres el estratega de contenido de AnamnesísMed — plataforma de anamnesis clínica para médicos y estudiantes de medicina de habla hispana. Tu misión: crear un CARRUSEL de Instagram que MAXIMICE el engagement (guardados, compartidos y comentarios) para ganar seguidores — siempre dentro de temas médicos serios y correctos.
+    return `Eres el editor clínico de AnamnesísMed — plataforma de anamnesis para médicos y estudiantes de habla hispana. Crea un CARRUSEL de Instagram en formato "¿CUÁL ES EL DIAGNÓSTICO?": un caso clínico interactivo que atrapa la atención, hace PENSAR al lector y comentar su sospecha, y solo revela el diagnóstico al final. Contenido serio y correcto.
 
-Tema: "${topic}"
+Caso (con el diagnóstico entre paréntesis — NO lo reveles antes del final): "${topic}"
 ${slotInstr}
 
 ${context ? `Contexto investigado:\n${context}\n` : ""}
-PRINCIPIOS DE ENGAGEMENT (sigue TODOS):
-- GANCHO QUE FRENA EL SCROLL: el título de la portada debe generar curiosidad o tensión en < 2 segundos. Usa stakes ("el error que cuesta el diagnóstico"), curiosidad ("lo que nadie te enseñó sobre…"), número ("3 signos que…") o contraste ("no es la prueba — es la pregunta"). NADA genérico.
-- VALOR PARA GUARDAR: cada diapositiva entrega 1 dato concreto y aplicable (mnemotecnia, señal de alarma, score, paso) que el lector querrá GUARDAR para la guardia.
-- COMENTARIO FÁCIL: la pregunta final debe ser específica y fácil de responder (experiencia personal, "¿cuál es tu conducta?", de acuerdo/en desacuerdo).
-- ESCANEABLE: frases cortas, sin relleno, lenguaje de quien está en la práctica.
+REGLAS DEL FORMATO (sigue TODAS):
+- NO reveles el diagnóstico en la portada ni en las diapositivas 1 a 4 — solo en el campo "cta" y en el pie de foto. Construye suspenso.
+- Portada: presenta el caso de forma intrigante y termina con "¿Cuál es el diagnóstico?".
+- Las diapositivas entregan el caso por etapas (historia → examen → pista decisiva) e invitan a la sospecha.
+- Clínica correcta y específica (datos, signos y hallazgos reales del caso). Lenguaje de quien está en la práctica, frases cortas.
+- COMENTARIO FÁCIL: pide la sospecha del lector antes de la revelación.
 
 Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
 {
-  "postTitle": "GANCHO de portada que frena el scroll, máx 55 caracteres, español, sin punto final",
-  "postBody": "artículo en markdown, mínimo 300 palabras, español, con aplicación clínica práctica (va al sitio, no al pie de foto)",
+  "postTitle": "portada: resume el caso en 1 frase intrigante y termina con '¿Cuál es el diagnóstico?', máx 80 caracteres, español, SIN revelar la respuesta",
+  "postBody": "artículo en markdown, mínimo 300 palabras, español: discusión del caso, razonamiento diagnóstico, diagnóstico diferencial y conducta (va al sitio)",
   "slides": [
-    "insight 1 — el dato más valioso/sorprendente del tema, MÁX 85 caracteres",
-    "insight 2 — profundiza con mnemotecnia, score o dato memorable, máx 85 caracteres",
-    "insight 3 — un error común a evitar O un detalle que cambia la conducta, máx 85 caracteres",
-    "insight 4 — cierra con la consecuencia práctica / qué hacer ahora, máx 85 caracteres"
+    "HISTORIA — presentación, edad, motivo de consulta y factores de riesgo, máx 90 caracteres",
+    "EXAMEN FÍSICO — los signos clave hallados, máx 90 caracteres",
+    "PISTA DECISIVA — el hallazgo/prueba que orienta al diagnóstico (sin nombrarlo), máx 90 caracteres",
+    "¿Tu sospecha? Piensa el diagnóstico más probable y coméntalo 👇 (respuesta en la próxima), máx 90 caracteres"
   ],
   "accentWords": [
     "1 palabra clave de la diapositiva 1 (aparecerá en rojo)",
@@ -202,35 +243,36 @@ Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
     "1 palabra clave de la diapositiva 3",
     "1 palabra clave de la diapositiva 4"
   ],
-  "cta": "pregunta corta y específica que genere comentarios de médicos/estudiantes, 50-90 caracteres",
-  "instagramCaption": "pie de foto 700-1600 caracteres en español, EN ESTE orden: (1) gancho en la 1a línea repitiendo la tensión de la portada; (2) 3-4 párrafos cortos entregando el valor clínico del tema; (3) CTA de crecimiento: 'Guarda para tu próxima guardia', 'Etiqueta a un colega' y 'Sigue ${handle} para dominar la anamnesis'; (4) la pregunta de engagement; (5) '→ Anamnesis completa en el link de la bio'; (6) en una última línea, 6-9 hashtags. Usa emojis con moderación (1-3).",
+  "cta": "REVELACIÓN: empieza con 'Diagnóstico:' y nombra la respuesta de forma clara y corta, 30-80 caracteres",
+  "instagramCaption": "pie de foto 700-1600 caracteres en español, EN ESTE orden: (1) recuenta el caso en 2-3 líneas; (2) 'Comenta tu diagnóstico antes de ver la respuesta 👇'; (3) revela el diagnóstico + 2 perlas clínicas (la pista que lo confirma y 1 conducta inicial); (4) CTA: 'Guarda para estudiar', 'Etiqueta a un colega' y 'Sigue ${handle} para más casos'; (5) '→ Anamnesis completa en el link de la bio'; (6) última línea con 6-9 hashtags. Emojis con moderación (1-3).",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }
 
-Para los hashtags, MEZCLA alcance amplio + nicho comprometido (elige los relevantes al tema): #medicina #medicinainterna #estudiantedemedicina #futuromedico #residentesmedicos #semiologia #anamnesis #urgencias #MIR #ENARM #saludpublica #diagnostico #medtwitter #anamnesismed`;
+Para los hashtags, MEZCLA alcance amplio + nicho: #medicina #medicinainterna #estudiantedemedicina #futuromedico #residentesmedicos #casoclinico #cualeseldiagnostico #semiologia #urgencias #MIR #ENARM #diagnostico #medtwitter #anamnesismed`;
   }
 
-  return `Você é o estrategista de conteúdo do AnamnesísMed — plataforma de anamnese clínica para médicos e estudantes de medicina no Brasil. Sua missão: criar um CARROSSEL de Instagram que MAXIMIZE engajamento (saves, compartilhamentos e comentários) para crescer seguidores — sempre dentro de temas médicos sérios e corretos.
+  return `Você é o editor clínico do AnamnesísMed — plataforma de anamnese para médicos e estudantes no Brasil. Crie um CARROSSEL de Instagram no formato "QUAL O DIAGNÓSTICO?": um caso clínico interativo que prende a atenção, faz o leitor PENSAR e COMENTAR o palpite, e só revela o diagnóstico no fim. Conteúdo sério e correto.
 
-Tema: "${topic}"
+Caso (com o diagnóstico entre parênteses — NÃO revele antes do fim): "${topic}"
 ${slotInstr}
 
 ${context ? `Contexto pesquisado:\n${context}\n` : ""}
-PRINCÍPIOS DE ENGAJAMENTO (siga TODOS):
-- GANCHO QUE PARA O SCROLL: o título da capa precisa gerar curiosidade ou tensão em < 2 segundos. Use stakes ("o erro que custa o diagnóstico"), curiosidade ("o que ninguém te ensinou sobre…"), número ("3 sinais que…") ou contraste ("não é o exame — é a pergunta"). NADA genérico.
-- VALOR SALVÁVEL: cada slide entrega 1 informação concreta e aplicável (mnemônico, red flag, score, passo) que o leitor vai querer SALVAR para usar no plantão.
-- COMENTÁRIO FÁCIL: a pergunta final deve ser específica e fácil de responder (experiência pessoal, "qual sua conduta?", concordo/discordo).
-- ESCANEÁVEL: frases curtas, zero enrolação, linguagem de quem está na prática.
+REGRAS DO FORMATO (siga TODAS):
+- NÃO revele o diagnóstico na capa nem nos slides 1 a 4 — só no campo "cta" e na legenda. Construa suspense.
+- Capa: apresente o caso de forma intrigante e termine com "Qual o diagnóstico?".
+- Os slides entregam o caso em etapas (história → exame → pista decisiva) e convidam ao palpite.
+- Clínica correta e específica (dados, sinais e achados reais do caso). Linguagem de quem está na prática, frases curtas.
+- COMENTÁRIO FÁCIL: peça o palpite do leitor antes da revelação.
 
 Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
 {
-  "postTitle": "GANCHO da capa que para o scroll, máx 55 chars, português, sem ponto final",
-  "postBody": "artigo em markdown, mínimo 300 palavras, português, com aplicação clínica prática (vai para o site, não para a legenda)",
+  "postTitle": "capa: resuma o caso em 1 frase intrigante e termine com 'Qual o diagnóstico?', máx 80 chars, português, SEM revelar a resposta",
+  "postBody": "artigo em markdown, mínimo 300 palavras, português: discussão do caso, raciocínio diagnóstico, diagnóstico diferencial e conduta (vai para o site)",
   "slides": [
-    "insight 1 — a informação mais valiosa/surpreendente do tema, MÁX 85 chars",
-    "insight 2 — aprofunda com mnemônico, score ou dado memorável, máx 85 chars",
-    "insight 3 — um erro comum a evitar OU um detalhe que muda a conduta, máx 85 chars",
-    "insight 4 — fecha com a consequência prática / o que fazer agora, máx 85 chars"
+    "HISTÓRIA — apresentação, idade, queixa e fatores de risco do caso, máx 90 chars",
+    "EXAME FÍSICO — os sinais-chave encontrados, máx 90 chars",
+    "PISTA DECISIVA — o achado/exame que aponta o diagnóstico (sem nomeá-lo), máx 90 chars",
+    "Seu palpite? Pense no diagnóstico mais provável e comente 👇 (resposta no próximo slide), máx 90 chars"
   ],
   "accentWords": [
     "1 palavra-chave do slide 1 (aparecerá em vermelho)",
@@ -238,12 +280,12 @@ Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
     "1 palavra-chave do slide 3",
     "1 palavra-chave do slide 4"
   ],
-  "cta": "pergunta curta e específica que gere comentários de médicos/estudantes, 50-90 chars",
-  "instagramCaption": "legenda 700-1600 chars em português, NESTA ordem: (1) gancho na 1a linha repetindo a tensão da capa; (2) 3-4 parágrafos curtos entregando o valor clínico do tema; (3) CTA de crescimento: 'Salve para o próximo plantão', 'Marque um colega' e 'Siga ${handle} para dominar a anamnese'; (4) a pergunta de engajamento; (5) '→ Anamnese completa no link da bio'; (6) em uma última linha, 6-9 hashtags. Use emojis com parcimônia (1-3).",
+  "cta": "REVELAÇÃO: comece com 'Diagnóstico:' e nomeie a resposta de forma clara e curta, 30-80 chars",
+  "instagramCaption": "legenda 700-1600 chars em português, NESTA ordem: (1) reconte o caso em 2-3 linhas; (2) 'Comente seu diagnóstico antes de ver a resposta 👇'; (3) revele o diagnóstico + 2 pérolas clínicas (a pista que fecha o diagnóstico e 1 conduta inicial); (4) CTA: 'Salve para estudar', 'Marque um colega' e 'Siga ${handle} para mais casos'; (5) '→ Anamnese completa no link da bio'; (6) em uma última linha, 6-9 hashtags. Use emojis com parcimônia (1-3).",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }
 
-Para as hashtags, MISTURE alcance amplo + nicho engajado (escolha as relevantes ao tema): #medicina #medicinabrasileira #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #semiologia #anamnese #clinicamedica #plantao #condutamedica #diagnostico #medstudent #anamnesismed`;
+Para as hashtags, MISTURE alcance amplo + nicho: #medicina #medicinabrasileira #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #casoclinico #qualodiagnostico #semiologia #clinicamedica #diagnostico #medstudent #anamnesismed`;
 }
 
 // ─── Geração de conteúdo via Claude ──────────────────────────────────────────
@@ -420,7 +462,12 @@ export async function GET(req: NextRequest) {
     } catch { /* fallback silencioso */ }
 
     const ed   = String(editionNum).padStart(3, "0");
-    const kw   = extractKeyword(topic, lang);
+    // Índice canônico do caso (mesma posição em TOPICS_BY_LANG, SUBJECTS e CASE_SYS).
+    const topicIdx = TOPICS_BY_LANG[lang].indexOf(topic);
+    const subject  = topicIdx >= 0 ? (SUBJECTS[topicIdx] ?? "") : "";
+    // Etiqueta de especialidade na capa (rótulo + watermark); fallback p/ keyword.
+    const kw   = topicIdx >= 0 ? (CASE_SYS[topicIdx] ?? extractKeyword(topic, lang))
+                               : extractKeyword(topic, lang);
     const base = process.env.PRODUCTION_URL ?? "https://anamnesismed-ig.vercel.app";
     const enc  = (s: string) => encodeURIComponent(s.slice(0, 120));
     const hq   = `&handle=${enc(handle)}`; // handle da conta no rodapé das imagens
@@ -430,12 +477,17 @@ export async function GET(req: NextRequest) {
     const ctaBio      = lang === "es" ? "Link en bio" : "Link na bio";
     const ctaExtra    = `&follow=${enc(followLabel)}&badges=${enc(ctaBadges)}&bio=${enc(ctaBio)}`;
 
+    // Ilustração por IA (fal/Flux) só na CAPA. Falha → og usa o fundo escuro atual.
+    const ill = await generateIllustration(subject);
+    log.illustration = ill.url ? "ia" : `fallback: ${ill.error ?? "?"}`;
+    const imgParam = ill.url ? `&img=${encodeURIComponent(ill.url)}` : "";
+
     const totalSlides = 2 + content.slides.length; // capa + insights + cta
 
     // Construir URLs de cada slide (geradas pelo /api/og)
     const slideUrls: string[] = [
-      // Slide 1 — capa
-      `${base}/api/og?slide=cover&slot=${slot}&title=${enc(content.postTitle)}&kw=${enc(kw)}&ed=${ed}${hq}`,
+      // Slide 1 — capa (recebe a ilustração de IA)
+      `${base}/api/og?slide=cover&slot=${slot}&title=${enc(content.postTitle)}&kw=${enc(kw)}&ed=${ed}${hq}${imgParam}`,
       // Slides de insight
       ...content.slides.map((text, i) =>
         `${base}/api/og?slide=insight&text=${enc(text)}&accent=${enc(content.accentWords[i] ?? "")}&num=${i + 2}&total=${totalSlides}&kw=${enc(kw)}&ed=${ed}${hq}`
