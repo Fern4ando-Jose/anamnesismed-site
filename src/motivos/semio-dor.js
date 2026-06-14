@@ -155,6 +155,12 @@ AM.motivo("semio-dor", {
         "Palidez",
         "Alteración intestinal"
       ]
+    },
+    {
+      "q": "Sinais de alarme associados (perda de peso, sudorese noturna, dor que desperta do sono ou déficit neurológico)?",
+      "qEs": "¿Signos de alarma asociados (pérdida de peso, sudoración nocturna, dolor que despierta del sueño o déficit neurológico)?",
+      "type": "yn",
+      "redFlag": true
     }
   ],
   "aeaGuideCir": [

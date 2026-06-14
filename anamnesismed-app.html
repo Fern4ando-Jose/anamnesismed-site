@@ -101,14 +101,24 @@ html.deep-hc #screen-index{display:none!important}
 .hc-header{background:var(--bg-card);border-bottom:1px solid var(--line);padding:14px 24px 0;flex-shrink:0}
 .hc-header-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .hc-motivo-icon{font-size:22px;width:44px;height:44px;border-radius:10px;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hc-header-info{flex:1;min-width:0}
 .hc-motivo-name{font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.3px;color:var(--ink)}
 .hc-motivo-spec{font-size:11px;color:var(--muted);margin-top:2px}
+.hc-motivo-patient{font-size:12.5px;color:var(--ink);margin-top:6px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;line-height:1.3}
+.hc-motivo-patient.empty{color:var(--muted);font-style:italic;font-size:12px}
+.hc-pm-dot{color:var(--line-md)}
+.hc-pm-name{font-weight:700}
 .hc-progress{height:2px;background:var(--cream);margin:0 -24px;position:relative}
 .hc-progress-fill{height:100%;background:var(--primary);transition:width .4s var(--ease);width:0%}
 
 /* Clinical guide tabs (Mnemônicas, Manobras, etc.) */
 .guide-tabs{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--bg-card);border-bottom:2px solid var(--line);padding:0 24px;flex-shrink:0;gap:2px}
 .guide-tabs::-webkit-scrollbar{display:none}
+/* #1 — pista visual de que há mais abas para o lado: degradê na borda direita
+   quando a barra transborda (classe .has-more aplicada por JS) + "nudge" único. */
+.guide-tabs.has-more{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 30px),transparent)}
+@keyframes tabsNudge{0%{transform:translateX(0)}35%{transform:translateX(-16px)}70%{transform:translateX(0)}100%{transform:translateX(0)}}
+.guide-tab.tabs-nudge{animation:tabsNudge .9s ease-in-out}
 .guide-tab{flex:0 0 auto;padding:9px 14px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;user-select:none;transition:all .15s;display:flex;align-items:center;gap:5px}
 .guide-tab:hover{color:var(--ink)}
 .guide-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
@@ -349,7 +359,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .index-screen,.hc-sections{padding:12px 14px 100px}
   .hc-header{padding:12px 14px 0}
   .guide-tabs{padding:0 8px}
-  .guide-tab{padding:8px 11px;font-size:11px}
+  .guide-tab{padding:11px 14px;font-size:12.5px}
+  .guide-tab-icon{font-size:15px}
   /* mantém os rótulos visíveis no mobile (a barra rola na horizontal) — só ícone confunde */
   .guide-page{padding:16px 14px 60px}
   .guide-page > div{padding:14px 14px 80px}
@@ -475,9 +486,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     <div class="hc-header">
       <div class="hc-header-top">
         <div class="hc-motivo-icon" id="hc-icon" data-am-icon="stethoscope" data-am-size="24"></div>
-        <div>
+        <div class="hc-header-info">
           <div class="hc-motivo-name" id="hc-name">—</div>
           <div class="hc-motivo-spec" id="hc-spec"></div>
+          <div class="hc-motivo-patient" id="hc-patient"></div>
         </div>
         <div style="margin-left:auto;display:flex;gap:8px">
           <button class="conduta-btn conduta-btn-pdf" onclick="exportPDF()" style="padding:7px 14px;font-size:12px">
@@ -1617,7 +1629,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
-    <div class="bnav-item active" id="bnav-inicio" onclick="if(confirmDiscardHC()){hcDirty=false;showScreen('index');}">
+    <div class="bnav-item active" id="bnav-inicio" onclick="goAppInicio()">
       <span class="bnav-icon" data-am-icon="home" data-am-size="22"></span>
       <span class="pt">Início</span><span class="es">Inicio</span>
     </div>
@@ -1652,11 +1664,42 @@ function setLang(l){
   if(typeof currentSpec !== 'undefined' && document.getElementById('motivo-content')){
     renderMotivoGrid(currentSpec);
   }
+  if(typeof updateHcPatientMeta==='function') updateHcPatientMeta();
 }
 
 // ── SIDEBAR ───────────────────────────────────────────
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
 function goToDashboard(view){ if(!confirmDiscardHC()) return; window.location.href='anamnesismed-dashboard.html'+(view?'?view='+view:'');}
+// #8 — "Início" no app: dentro de uma HC volta para a seleção de motivos; quando já
+// está na seleção (nada a voltar dentro do app), vai para o Início real (dashboard).
+// Antes, na tela de seleção o botão chamava showScreen('index') e não fazia nada
+// ("voltar ao início não funciona uma vez dentro de Clínica Médica").
+function goAppInicio(){
+  if(!confirmDiscardHC()) return;
+  hcDirty=false;
+  var idx=document.getElementById('screen-index');
+  if(idx && idx.classList.contains('active')){ window.location.href='anamnesismed-dashboard.html'; }
+  else { showScreen('index'); }
+}
+
+// #1 — Sinaliza que a barra de abas do guia (Formulário · Mnemônicas · Manobras · …)
+// tem mais abas para o lado: aplica degradê na borda direita (.has-more) quando
+// transborda e dá um "nudge" único (rola e volta + pisca a próxima aba) para que,
+// no celular, fique claro que dá pra deslizar e há mais abas a clicar.
+function hintGuideTabs(){
+  var tabs=document.getElementById('guide-tabs');
+  if(!tabs) return;
+  var overflow = (tabs.scrollWidth - tabs.clientWidth) > 16;
+  tabs.classList.toggle('has-more', overflow);
+  if(!overflow) return;
+  try{
+    tabs.scrollTo({left:54, behavior:'smooth'});
+    setTimeout(function(){ tabs.scrollTo({left:0, behavior:'smooth'}); }, 520);
+  }catch(e){ tabs.scrollLeft=54; setTimeout(function(){ tabs.scrollLeft=0; }, 520); }
+  var t=tabs.querySelector('.guide-tab:not(.active)');
+  if(t){ t.classList.remove('tabs-nudge'); void t.offsetWidth; t.classList.add('tabs-nudge'); }
+}
+if(typeof window!=='undefined') window.hintGuideTabs=hintGuideTabs;
 function encerrarSessao(){ if(!confirmDiscardHC()) return; if(window.authLogout) window.authLogout(); else window.location.href = 'anamnesismed-auth.html'; }
 function newHC(){
   if(!confirmDiscardHC()) return;
@@ -1712,6 +1755,8 @@ function newHC(){
   // Show HC screen (not index)
   showScreen('hc');
   showGuide('form', document.querySelector('.guide-tab'));
+  updateHcPatientMeta();
+  setTimeout(hintGuideTabs, 80);
   window.scrollTo(0,0);
 }
 
@@ -2027,8 +2072,39 @@ function openHC(id){
   showScreen('hc');
   showGuide('form', document.querySelector('.guide-tab'));
   updateProgress();
+  updateHcPatientMeta();
+  setTimeout(hintGuideTabs, 80);
   window.scrollTo(0,0);
 }
+
+// #9 — Preenche o cabeçalho da HC com a identificação do paciente (nome • idade • sexo),
+// atualizada ao vivo conforme os Dados Pessoais. Evita o cabeçalho "vazio" e deixa
+// sempre visível de quem é a HC. Quando ainda não há dados, mostra uma dica discreta.
+function updateHcPatientMeta(){
+  var el = document.getElementById('hc-patient'); if(!el) return;
+  var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  function gv(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+  var nome = gv('dp-nome'), idade = gv('dp-idade'), sexoRaw = gv('dp-sexo');
+  var sexo = sexoRaw==='M' ? (lang==='pt'?'Masculino':'Masculino')
+           : sexoRaw==='F' ? (lang==='pt'?'Feminino':'Femenino') : '';
+  var parts = [];
+  if(nome){  var s=document.createElement('span'); s.className='hc-pm-name'; s.textContent=nome; parts.push(s); }
+  if(idade){ var a=document.createElement('span'); a.textContent=idade+(lang==='pt'?' anos':' años'); parts.push(a); }
+  if(sexo){  var x=document.createElement('span'); x.textContent=sexo; parts.push(x); }
+  el.innerHTML='';
+  if(parts.length){
+    el.classList.remove('empty');
+    parts.forEach(function(p,i){
+      if(i){ var d=document.createElement('span'); d.className='hc-pm-dot'; d.textContent='•'; el.appendChild(d); }
+      el.appendChild(p);
+    });
+  } else {
+    el.classList.add('empty');
+    el.textContent = lang==='pt' ? 'Identifique o paciente em Dados Pessoais'
+                                 : 'Identifica al paciente en Datos Personales';
+  }
+}
+if(typeof window!=='undefined') window.updateHcPatientMeta = updateHcPatientMeta;
 
 function findMotivo(id){
   for(var sp in MOTIVOS){
@@ -2406,8 +2482,11 @@ function hcGerarComIA(){
   });
 }
 
-// Botão flutuante 📖: abre a Referência Clínica da especialidade atual em nova aba
-// (não perde a HC em andamento). Sem página específica → cai no hub de referências.
+// Botão flutuante 📖: abre a Referência Clínica do motivo de consulta atual em nova aba
+// (não perde a HC em andamento). Ancora direto na seção mais relevante ao motivo —
+// por padrão "sintomas" (semiologia dos sintomas cardinais / motivos de consulta), que
+// é a referência clínica do motivo. Mapa opcional motivo→seção para casos específicos.
+// Sem página de referência para a especialidade → cai no hub de referências.
 function openRefMotivo(){
   var REF = {
     respiratorio: 'anamnesismed-ref-respiratorio-exfisico.html',
@@ -2415,8 +2494,12 @@ function openRefMotivo(){
     cirurgia:     'anamnesismed-ref-cirurgia-exfisico.html'
   };
   var spec = window.currentSpec || '';
-  var url = REF[spec] || 'anamnesismed-referencias.html';
-  window.open(url, '_blank', 'noopener');
+  var base = REF[spec];
+  if(!base){ window.open('anamnesismed-referencias.html', '_blank', 'noopener'); return; }
+  // "sintomas" (semiologia dos sintomas cardinais / motivos de consulta) existe nas três
+  // páginas de referência e é a seção que descreve o motivo de consulta. A página abre
+  // ancorada nela; a navegação por seções permanece disponível.
+  window.open(base + '#sintomas', '_blank', 'noopener');
 }
 
 // ── PDF EXPORT ────────────────────────────────────────
@@ -2432,8 +2515,8 @@ function openRefMotivo(){
   // Marca a HC como "com alterações não salvas" a partir de qualquer interação no formulário
   var hcScreen = document.getElementById('screen-hc');
   if(hcScreen){
-    hcScreen.addEventListener('input', markHCDirty);
-    hcScreen.addEventListener('change', markHCDirty);
+    hcScreen.addEventListener('input', function(){ markHCDirty(); updateHcPatientMeta(); });
+    hcScreen.addEventListener('change', function(){ markHCDirty(); updateHcPatientMeta(); });
     hcScreen.addEventListener('click', function(e){
       if(e.target.closest('.f-radio,.yn-btn,.f-eva-btn,.opt-pill,.f-check,.opt-chip')) markHCDirty();
     });

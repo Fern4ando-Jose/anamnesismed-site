@@ -46,6 +46,21 @@ AM.motivo("semio-cianose", {
       "type": "yn"
     },
     {
+      "q": "Dor torácica associada?",
+      "qEs": "¿Dolor torácico asociado?",
+      "type": "yn"
+    },
+    {
+      "q": "Tosse ou expectoração?",
+      "qEs": "¿Tos o expectoración?",
+      "type": "yn"
+    },
+    {
+      "q": "Edema de membros inferiores?",
+      "qEs": "¿Edema de miembros inferiores?",
+      "type": "yn"
+    },
+    {
       "q": "Saturação de O₂ medida?",
       "qEs": "¿Saturación de O₂ medida?",
       "type": "input",

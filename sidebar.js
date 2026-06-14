@@ -43,7 +43,7 @@
     '    <div class="nav-section-label pt" style="margin-top:4px">Ferramentas</div>',
     '    <div class="nav-section-label es" style="margin-top:4px">Herramientas</div>',
     '    <a href="anamnesismed-mnemonicas.html" class="nav-item" id="nav-mnemonicas">',
-    '      <span class="nav-icon">' + amIcon('puzzle', 18) + '</span>',
+    '      <span class="nav-icon">' + amIcon('brain', 18) + '</span>',
     '      <span class="pt">Mnem&#xF4;nicas</span><span class="es">Mnemot&#xE9;cnicas</span>',
     '    </a>',
     '    <a href="anamnesismed-config.html" class="nav-item" id="nav-config">',
@@ -121,7 +121,7 @@
     'esp-clinica':     { pt: 'Clínica Médica',es: 'Clínica Médica',icon: 'hospital', url: 'anamnesismed-especialidades.html?esp=clinica' },
     'esp-cirurgia':    { pt: 'Cirurgia Geral',         es: 'Cirugía General',   icon: 'scalpel', url: 'anamnesismed-especialidades.html?esp=cirurgia' },
     'explorar':        { pt: 'Especialidades',         es: 'Especialidades',        icon: 'compass', url: 'anamnesismed-explorar.html' },
-    'mnemonicas':      { pt: 'Mnemônicas',        es: 'Mnemotécnicas',    icon: 'puzzle', url: 'anamnesismed-mnemonicas.html' },
+    'mnemonicas':      { pt: 'Mnemônicas',        es: 'Mnemotécnicas',    icon: 'brain', url: 'anamnesismed-mnemonicas.html' },
     'config':          { pt: 'Configurações',es: 'Configuración',    icon: 'settings',  url: 'anamnesismed-config.html' },
     'app':             { pt: 'Nova HC',                es: 'Nueva HC',              icon: 'stethoscope', url: 'anamnesismed-app.html?novo=1' },
     'ref-resp-exfisico':{ pt: 'Exame Físico (Resp.)', es: 'Examen Físico (Resp.)', icon: 'book', url: 'anamnesismed-ref-respiratorio-exfisico.html#topografia' }

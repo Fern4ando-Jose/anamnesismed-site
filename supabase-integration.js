@@ -106,6 +106,7 @@ async function authSaveProfile(data) {
   const { error } = await sb.from('profiles').upsert(payload);
 
   if (error) console.error('Profile save error:', error);
+  _profileCache = null; // invalida cache após gravar (ver profileGet)
 }
 
 /**
@@ -140,20 +141,37 @@ async function authGetUser() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Buscar perfil completo do usuário logado
+ * Buscar perfil completo do usuário logado.
+ * #7 — Memoizado por carregamento de página: no init de dashboard/app/config o perfil
+ * era buscado 3x em sequência (guardCheckAccess + uiUpdateUserInfo + onboarding),
+ * cada uma um round-trip ao Supabase → atraso perceptível. Agora a 1ª busca é
+ * compartilhada (cache + promessa em voo) e as seguintes retornam na hora.
+ * authSaveProfile() invalida o cache (_profileCache=null).
  */
-async function profileGet() {
-  const user = await authGetUser();
-  if (!user) return null;
+let _profileCache = null;
+let _profilePromise = null;
+async function profileGet(force) {
+  if (!force && _profileCache) return _profileCache;
+  if (!force && _profilePromise) return _profilePromise;
 
-  const { data, error } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .maybeSingle();
+  _profilePromise = (async () => {
+    const user = await authGetUser();
+    if (!user) return null;
+    const { data, error } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (error) { console.error('Profile get error:', error); return null; }
+    _profileCache = data;
+    return data;
+  })();
 
-  if (error) { console.error('Profile get error:', error); return null; }
-  return data;
+  try {
+    return await _profilePromise;
+  } finally {
+    _profilePromise = null;
+  }
 }
 
 /**

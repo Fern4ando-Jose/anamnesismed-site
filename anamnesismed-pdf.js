@@ -280,21 +280,37 @@ function exportPDF(){
     }},
   );
 
+  // #10 — Imprime SOMENTE os campos preenchidos. Uma seção sem nenhum campo preenchido
+  // é totalmente omitida (sem cabeçalho). A numeração é sequencial sobre o que sobra,
+  // para não deixar "buracos" (ex.: 1, 2, 4) quando uma seção vazia some.
+  // Um "Não" é resposta preenchida (negativo pertinente) e PERMANECE.
+  function _lineEmpty(line){
+    var t = (line==null ? '' : String(line)).trim();
+    if(!t || t==='—') return true;
+    var i = t.indexOf(': ');
+    if(i>-1){ var val = t.slice(i+2).trim(); if(val==='' || val==='—') return true; }
+    return false;
+  }
+  var secN = 1; // "1. Dados Pessoais" já foi escrito acima
+
   sections.forEach(function(s){
-    var tit = lang==='pt'?s.n+'. '+s.tPt:s.n+'. '+s.tEs;
-    w.document.write('<h2>'+tit+'</h2>');
     // Blindagem: uma seção que falhe (ex.: erro no gerador de narrativa) NÃO pode
     // apagar as demais seções do PDF. Captura o erro e segue.
     var txt;
-    try { txt = s.txt(); } catch(e){ console.warn('Erro na seção '+s.n+':', e); txt = '—'; }
+    try { txt = s.txt(); } catch(e){ console.warn('Erro na seção '+s.tPt+':', e); txt = ''; }
     txt = (txt==null) ? '' : String(txt);
-    txt.split('\n').forEach(function(line){if(line.trim())w.document.write('<p>'+line+'</p>');});
+    var lines = txt.split('\n').filter(function(line){ return line.trim() && !_lineEmpty(line); });
+    if(!lines.length) return; // seção sem campos preenchidos → não aparece
+    secN++;
+    w.document.write('<h2>'+(lang==='pt'?secN+'. '+s.tPt:secN+'. '+s.tEs)+'</h2>');
+    lines.forEach(function(line){ w.document.write('<p>'+line+'</p>'); });
   });
 
-  // RAS — Revisão por Aparatos e Sistemas (gerado dinamicamente por sistema)
+  // RAS — Revisão por Aparatos e Sistemas (só imprime sistemas com alguma resposta;
+  // se nenhum sistema foi respondido, a seção inteira é omitida).
   var rasSystems = document.querySelectorAll('#ras-content .ras-system');
   if(rasSystems.length){
-    w.document.write('<h2>'+(lang==='pt'?(nApp+3)+'. Revisão por Aparelhos e Sistemas (RAS)':(nApp+3)+'. Revisión por Aparatos y Sistemas (RAS)')+'</h2>');
+    var rasBody = '';
     rasSystems.forEach(function(sys){
       var nameEl = sys.querySelector('.ras-name');
       var sysName = nameEl ? nameEl.textContent.trim() : '';
@@ -303,26 +319,28 @@ function exportPDF(){
         var qEl = row.querySelector('.yn-question');
         var qText = qEl ? qEl.textContent.trim() : '';
         var sel = row.querySelector('.yn-btn.sim, .yn-btn.nao');
-        var ans = '—';
-        if(sel){
-          var m=(sel.getAttribute('onclick')||'').match(/\(this,\s*'([^']+)'\s*,\s*'([^']+)'\)/);
-          ans = (m&&m[2]==='sim')?(lang==='pt'?'Sim':'Sí'):(lang==='pt'?'Não':'No');
-        }
+        if(!sel) return; // pergunta não respondida → não aparece
+        var m=(sel.getAttribute('onclick')||'').match(/\(this,\s*'([^']+)'\s*,\s*'([^']+)'\)/);
+        var ans = (m&&m[2]==='sim')?(lang==='pt'?'Sim':'Sí'):(lang==='pt'?'Não':'No');
         if(qText) lines.push(qText+': '+ans);
       });
       var obs = sys.querySelector('textarea');
       var obsVal = obs ? obs.value : '';
-      var anyAnswered = lines.some(function(l){return l.indexOf(': —')===-1;});
-      if(anyAnswered || obsVal){
-        w.document.write('<h3>'+sysName+'</h3>');
-        lines.forEach(function(l){w.document.write('<p>'+l+'</p>');});
-        if(obsVal) w.document.write('<p><em>'+(lang==='pt'?'Observações: ':'Observaciones: ')+obsVal+'</em></p>');
+      if(lines.length || obsVal){
+        rasBody += '<h3>'+sysName+'</h3>';
+        lines.forEach(function(l){ rasBody += '<p>'+l+'</p>'; });
+        if(obsVal) rasBody += '<p><em>'+(lang==='pt'?'Observações: ':'Observaciones: ')+obsVal+'</em></p>';
       }
     });
+    if(rasBody){
+      secN++;
+      w.document.write('<h2>'+secN+'. '+(lang==='pt'?'Revisão por Aparelhos e Sistemas (RAS)':'Revisión por Aparatos y Sistemas (RAS)')+'</h2>');
+      w.document.write(rasBody);
+    }
   }
 
-  // Exame Físico Geral — Ectoscopia (chips selecionados) + Sinais vitais
-  w.document.write('<h2>'+(nApp+4)+'. '+(lang==='pt'?'Exame Físico Geral — Ectoscopia':'Examen Físico General — Ectoscopia')+'</h2>');
+  // Exame Físico Geral — Ectoscopia (chips selecionados) + Sinais vitais.
+  // Só imprime a seção se houver pelo menos um achado de ectoscopia ou sinais vitais.
   var ectoMap = [
     ['ecto-consciencia', lang==='pt'?'Estado de consciência':'Estado de consciencia'],
     ['ecto-orientacao', lang==='pt'?'Orientação':'Orientación'],
@@ -333,16 +351,19 @@ function exportPDF(){
     ['ecto-marcha', 'Marcha'],
     ['ecto-impressao', lang==='pt'?'Impressão geral':'Impresión general'],
   ];
-  ectoMap.forEach(function(e){
-    var v = selOne(e[0]);
-    if(v && v!=='—') w.document.write('<p>'+e[1]+': '+v+'</p>');
-  });
-  // Sinais vitais
+  var ectoLines = [];
+  ectoMap.forEach(function(e){ var v = selOne(e[0]); if(v && v!=='—') ectoLines.push(e[1]+': '+v); });
   var pa=document.getElementById('sv-pa').value,fc=document.getElementById('sv-fc').value,fr=document.getElementById('sv-fr').value,temp=document.getElementById('sv-temp').value,spo2=document.getElementById('sv-spo2').value;
-  if(pa||fc||fr||temp||spo2){
-    w.document.write('<h3>'+(lang==='pt'?'Sinais Vitais':'Signos Vitales')+'</h3>');
-    w.document.write('<p>PA: '+(pa||'—')+' mmHg | FC: '+(fc||'—')+' bpm | FR: '+(fr||'—')+' irpm | Temp: '+(temp||'—')+'°C | SpO₂: '+(spo2||'—')+'%</p>');
-    w.document.write('<p>Peso: '+(document.getElementById('sv-peso').value||'—')+' kg | Altura: '+(document.getElementById('sv-altura').value||'—')+' cm | IMC: '+(document.getElementById('sv-imc').value||'—')+'</p>');
+  var hasSV = !!(pa||fc||fr||temp||spo2);
+  if(ectoLines.length || hasSV){
+    secN++;
+    w.document.write('<h2>'+secN+'. '+(lang==='pt'?'Exame Físico Geral — Ectoscopia':'Examen Físico General — Ectoscopia')+'</h2>');
+    ectoLines.forEach(function(l){ w.document.write('<p>'+l+'</p>'); });
+    if(hasSV){
+      w.document.write('<h3>'+(lang==='pt'?'Sinais Vitais':'Signos Vitales')+'</h3>');
+      w.document.write('<p>PA: '+(pa||'—')+' mmHg | FC: '+(fc||'—')+' bpm | FR: '+(fr||'—')+' irpm | Temp: '+(temp||'—')+'°C | SpO₂: '+(spo2||'—')+'%</p>');
+      w.document.write('<p>Peso: '+(document.getElementById('sv-peso').value||'—')+' kg | Altura: '+(document.getElementById('sv-altura').value||'—')+' cm | IMC: '+(document.getElementById('sv-imc').value||'—')+'</p>');
+    }
   }
   
   w.document.write('<div class="footer"><span>AnamnesísMed · anamnesismed.com</span><span>Documento de uso educacional — não substitui avaliação médica</span><span>'+new Date().toLocaleDateString('pt-BR')+'</span></div>');

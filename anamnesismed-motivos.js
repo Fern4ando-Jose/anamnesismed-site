@@ -161,6 +161,12 @@ const MOTIVOS = {
                 "Palidez",
                 "Alteración intestinal"
               ]
+            },
+            {
+              "q": "Sinais de alarme associados (perda de peso, sudorese noturna, dor que desperta do sono ou déficit neurológico)?",
+              "qEs": "¿Signos de alarma asociados (pérdida de peso, sudoración nocturna, dolor que despierta del sueño o déficit neurológico)?",
+              "type": "yn",
+              "redFlag": true
             }
           ],
           "aeaGuideCir": [
@@ -1265,6 +1271,53 @@ const MOTIVOS = {
                 "En lisis (descenso gradual)",
                 "Aún persiste"
               ]
+            },
+            {
+              "q": "Calafrios e tremores?",
+              "qEs": "¿Escalofríos y temblores?",
+              "type": "yn"
+            },
+            {
+              "q": "Sintomas respiratórios associados (tosse, expectoração, dor torácica, dispneia)?",
+              "qEs": "¿Síntomas respiratorios asociados (tos, expectoración, dolor torácico, disnea)?",
+              "type": "yn"
+            },
+            {
+              "q": "Sintomas urinários (disúria, polaciúria, dor lombar)?",
+              "qEs": "¿Síntomas urinarios (disuria, polaquiuria, dolor lumbar)?",
+              "type": "yn"
+            },
+            {
+              "q": "Sintomas gastrointestinais (diarreia, vômitos, dor abdominal)?",
+              "qEs": "¿Síntomas gastrointestinales (diarrea, vómitos, dolor abdominal)?",
+              "type": "yn"
+            },
+            {
+              "q": "Odinofagia ou dor de garganta?",
+              "qEs": "¿Odinofagia o dolor de garganta?",
+              "type": "yn"
+            },
+            {
+              "q": "Cefaleia intensa, rigidez de nuca ou fotofobia (sinais meníngeos)?",
+              "qEs": "¿Cefalea intensa, rigidez de nuca o fotofobia (signos meníngeos)?",
+              "type": "yn",
+              "redFlag": true
+            },
+            {
+              "q": "Exantema, petéquias ou lesões de pele?",
+              "qEs": "¿Exantema, petequias o lesiones de piel?",
+              "type": "yn",
+              "redFlag": true
+            },
+            {
+              "q": "Sudorese noturna e/ou perda de peso não intencional?",
+              "qEs": "¿Sudoración nocturna y/o pérdida de peso no intencional?",
+              "type": "yn"
+            },
+            {
+              "q": "Viagem recente ou contato com pessoas doentes (exposição epidemiológica)?",
+              "qEs": "¿Viaje reciente o contacto con personas enfermas (exposición epidemiológica)?",
+              "type": "yn"
             }
           ],
           "rasHighlight": [
@@ -3126,6 +3179,12 @@ const MOTIVOS = {
                 "Palidez",
                 "Alteración intestinal"
               ]
+            },
+            {
+              "q": "Sinais de alarme associados (perda de peso, sudorese noturna, dor que desperta do sono ou déficit neurológico)?",
+              "qEs": "¿Signos de alarma asociados (pérdida de peso, sudoración nocturna, dolor que despierta del sueño o déficit neurológico)?",
+              "type": "yn",
+              "redFlag": true
             }
           ],
           "aeaGuideCir": [
@@ -3647,6 +3706,21 @@ const MOTIVOS = {
               "type": "yn"
             },
             {
+              "q": "Dor torácica associada?",
+              "qEs": "¿Dolor torácico asociado?",
+              "type": "yn"
+            },
+            {
+              "q": "Tosse ou expectoração?",
+              "qEs": "¿Tos o expectoración?",
+              "type": "yn"
+            },
+            {
+              "q": "Edema de membros inferiores?",
+              "qEs": "¿Edema de miembros inferiores?",
+              "type": "yn"
+            },
+            {
               "q": "Saturação de O₂ medida?",
               "qEs": "¿Saturación de O₂ medida?",
               "type": "input",
@@ -4071,6 +4145,53 @@ const MOTIVOS = {
                 "En lisis (descenso gradual)",
                 "Aún persiste"
               ]
+            },
+            {
+              "q": "Calafrios e tremores?",
+              "qEs": "¿Escalofríos y temblores?",
+              "type": "yn"
+            },
+            {
+              "q": "Sintomas respiratórios associados (tosse, expectoração, dor torácica, dispneia)?",
+              "qEs": "¿Síntomas respiratorios asociados (tos, expectoración, dolor torácico, disnea)?",
+              "type": "yn"
+            },
+            {
+              "q": "Sintomas urinários (disúria, polaciúria, dor lombar)?",
+              "qEs": "¿Síntomas urinarios (disuria, polaquiuria, dolor lumbar)?",
+              "type": "yn"
+            },
+            {
+              "q": "Sintomas gastrointestinais (diarreia, vômitos, dor abdominal)?",
+              "qEs": "¿Síntomas gastrointestinales (diarrea, vómitos, dolor abdominal)?",
+              "type": "yn"
+            },
+            {
+              "q": "Odinofagia ou dor de garganta?",
+              "qEs": "¿Odinofagia o dolor de garganta?",
+              "type": "yn"
+            },
+            {
+              "q": "Cefaleia intensa, rigidez de nuca ou fotofobia (sinais meníngeos)?",
+              "qEs": "¿Cefalea intensa, rigidez de nuca o fotofobia (signos meníngeos)?",
+              "type": "yn",
+              "redFlag": true
+            },
+            {
+              "q": "Exantema, petéquias ou lesões de pele?",
+              "qEs": "¿Exantema, petequias o lesiones de piel?",
+              "type": "yn",
+              "redFlag": true
+            },
+            {
+              "q": "Sudorese noturna e/ou perda de peso não intencional?",
+              "qEs": "¿Sudoración nocturna y/o pérdida de peso no intencional?",
+              "type": "yn"
+            },
+            {
+              "q": "Viagem recente ou contato com pessoas doentes (exposição epidemiológica)?",
+              "qEs": "¿Viaje reciente o contacto con personas enfermas (exposición epidemiológica)?",
+              "type": "yn"
             }
           ],
           "rasHighlight": [
@@ -4445,6 +4566,12 @@ const MOTIVOS = {
                 "Palidez",
                 "Alteración intestinal"
               ]
+            },
+            {
+              "q": "Sinais de alarme associados (perda de peso, sudorese noturna, dor que desperta do sono ou déficit neurológico)?",
+              "qEs": "¿Signos de alarma asociados (pérdida de peso, sudoración nocturna, dolor que despierta del sueño o déficit neurológico)?",
+              "type": "yn",
+              "redFlag": true
             }
           ],
           "aeaGuideCir": [
