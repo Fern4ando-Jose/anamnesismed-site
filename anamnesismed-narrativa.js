@@ -685,3 +685,79 @@ function gerarHCviaIA(lng){
     return fallback((err && err.message) || 'rede');
   });
 }
+
+// ── PAYLOAD DO ASSISTENTE DE IA (apoio diagnóstico) ───────────────────────────
+// Reaproveita montarPayloadHC (demografia + motivos + relato livre) e agrega
+// antecedentes, sinais vitais, exame físico e hipóteses. NÃO inclui identificadores
+// do paciente (nome, CI/documento) — a análise é feita sobre dados clínicos apenas.
+function montarPayloadAssistente(lng){
+  function gE(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+  function ecto(groupId){
+    var p=document.getElementById(groupId); if(!p) return '';
+    var s=p.querySelector('.ecto-opt.sel'); if(!s) return '';
+    // pega o rótulo do idioma atual (ou o texto puro)
+    var span=s.querySelector(lng==='es'?'.es':'.pt');
+    return (span?span.textContent:s.textContent).replace(/\s+/g,' ').trim();
+  }
+  function linhas(pairs){
+    return pairs.map(function(p){ var v=gE(p.id); return v?(p.lbl+': '+v):''; })
+                .filter(Boolean).join('\n');
+  }
+
+  var base = montarPayloadHC(lng); // { lang, demografia, motivos, relatoLivre }
+
+  var antecedentes = linhas([
+    {id:'app-medicacao', lbl: lng==='es'?'Medicación de uso':'Medicação em uso'},
+    {id:'app-cirurg',    lbl: lng==='es'?'Cirugías':'Cirurgias'},
+    {id:'app-trauma',    lbl: lng==='es'?'Traumas':'Traumas'},
+    {id:'app-intern',    lbl: lng==='es'?'Internaciones previas':'Internações prévias'},
+    {id:'app-outras',    lbl: lng==='es'?'Otras patologías':'Outras patologias'},
+    {id:'apf-mae-patol', lbl: lng==='es'?'Antecedente materno':'Antecedente materno'},
+    {id:'apf-pai-patol', lbl: lng==='es'?'Antecedente paterno':'Antecedente paterno'},
+    {id:'apf-outros',    lbl: lng==='es'?'Otros antec. familiares':'Outros antec. familiares'},
+    {id:'hab-diurese',   lbl: lng==='es'?'Diuresis':'Diurese'},
+    {id:'hab-catarse',   lbl: lng==='es'?'Catarsis':'Catarse'},
+    {id:'adm-texto',     lbl: lng==='es'?'Admisiones previas':'Admissões prévias'}
+  ]);
+
+  var sinaisVitais = linhas([
+    {id:'sv-pa',   lbl:'PA'},
+    {id:'sv-fc',   lbl:'FC'},
+    {id:'sv-fr',   lbl:'FR'},
+    {id:'sv-temp', lbl:'Temp'},
+    {id:'sv-spo2', lbl:'SpO2'},
+    {id:'sv-imc',  lbl:'IMC'}
+  ]);
+
+  var ectoPairs = [
+    ['ecto-consciencia', lng==='es'?'Conciencia':'Consciência'],
+    ['ecto-orientacao',  lng==='es'?'Orientación':'Orientação'],
+    ['ecto-nutric',      lng==='es'?'Estado nutricional':'Estado nutricional'],
+    ['ecto-facies',      lng==='es'?'Facies':'Fácies'],
+    ['ecto-decubito',    lng==='es'?'Decúbito':'Decúbito'],
+    ['ecto-marcha',      lng==='es'?'Marcha':'Marcha'],
+    ['ecto-impressao',   lng==='es'?'Impresión':'Impressão']
+  ];
+  var ectoTxt = ectoPairs.map(function(p){ var v=ecto(p[0]); return v?(p[1]+': '+v):''; }).filter(Boolean).join('; ');
+  var achados = gE('sum-achados');
+  var exameFisico = [ectoTxt, achados].filter(Boolean).join('\n');
+
+  var hipoteses = [
+    gE('sum-sindromes') ? ((lng==='es'?'Síndromes: ':'Síndromes: ')+gE('sum-sindromes')) : '',
+    gE('sum-hipoteses') ? ((lng==='es'?'Hipótesis: ':'Hipóteses: ')+gE('sum-hipoteses')) : ''
+  ].filter(Boolean).join('\n');
+
+  return {
+    lang: base.lang,
+    hc: {
+      demografia: base.demografia,
+      motivos: base.motivos,
+      relatoLivre: base.relatoLivre,
+      antecedentes: antecedentes,
+      sinaisVitais: sinaisVitais,
+      exameFisico: exameFisico,
+      hipoteses: hipoteses
+    }
+  };
+}
+if(typeof window!=='undefined'){ window.montarPayloadAssistente = montarPayloadAssistente; }

@@ -394,6 +394,48 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .hc-panel-body{max-height:none!important}
   .hc-panel.open .hc-panel-body{max-height:none!important}
 }
+
+/* ── Assistente de IA (apoio diagnóstico) ───────────────────────────── */
+.guide-tab-ia .ia-pro-pill{font-size:9px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:1px 5px;border-radius:6px;margin-left:4px;vertical-align:middle}
+.ia-dx-wrap{padding:18px 24px 60px;max-width:840px;margin:0 auto}
+.ia-dx-head{margin-bottom:16px}
+.ia-dx-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:var(--ink)}
+.ia-dx-title [data-am-icon]{color:#10b981;line-height:0}
+.ia-dx-sub{margin:6px 0 0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.ia-dx-checking{padding:28px 0;text-align:center;color:var(--muted);font-size:13px}
+.ia-dx-locked{text-align:center;padding:34px 20px;border:1px dashed var(--line);border-radius:14px;background:var(--cream)}
+.ia-dx-lock-ic{color:#10b981;display:inline-flex;margin-bottom:8px}
+.ia-dx-lock-title{font-size:15px;font-weight:800;color:var(--ink)}
+.ia-dx-lock-desc{font-size:12.5px;color:var(--muted);margin:6px auto 16px;max-width:420px;line-height:1.45}
+.ia-dx-upgrade{border:none;cursor:pointer;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:10px 22px;border-radius:10px}
+.ia-dx-upgrade:hover{filter:brightness(1.05)}
+.ia-dx-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.ia-dx-btn{display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:10px 18px;border-radius:10px}
+.ia-dx-btn[disabled]{opacity:.6;cursor:default}
+.ia-dx-btn [data-am-icon]{line-height:0}
+.ia-dx-status{font-size:11.5px;color:var(--muted);line-height:1.3}
+.ia-dx-sec-lbl{display:block;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--primary);margin:18px 0 8px}
+.ia-dx-resumo p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink);background:var(--bg);border-left:3px solid var(--primary);border-radius:8px;padding:10px 13px}
+.ia-dx-card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.ia-dx-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ia-dx-card-top strong{font-size:14px;color:var(--ink)}
+.ia-dx-badge{font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:8px;white-space:nowrap}
+.ia-dx-fav,.ia-dx-con{margin-top:8px}
+.ia-dx-fav>span,.ia-dx-con>span{font-size:11px;font-weight:700;color:var(--muted)}
+.ia-dx-card ul{margin:4px 0 0;padding-left:18px}
+.ia-dx-card li{font-size:12.5px;line-height:1.45;margin:2px 0}
+.ia-dx-li-fav li{color:#0f766e}
+.ia-dx-li-con li{color:var(--muted)}
+.ia-dx-alarme{margin-top:6px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.25);border-radius:12px;padding:10px 14px}
+.ia-dx-alarme .ia-dx-sec-lbl{color:#dc2626;margin-top:4px}
+.ia-dx-li-alarme li{font-size:12.5px;line-height:1.45;color:#b91c1c;margin:2px 0}
+.ia-dx-passos ul{margin:4px 0 0;padding-left:18px}
+.ia-dx-passos li{font-size:12.5px;line-height:1.5;color:var(--ink);margin:3px 0}
+.ia-dx-raw{font-size:13px;line-height:1.55;color:var(--ink);white-space:normal}
+.ia-dx-err{font-size:13px;color:#b91c1c;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);border-radius:10px;padding:12px 14px}
+.ia-dx-skel{height:14px;border-radius:6px;background:linear-gradient(90deg,var(--line),var(--cream),var(--line));background-size:200% 100%;animation:iaDxShimmer 1.2s infinite;margin:10px 0}
+@keyframes iaDxShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.ia-dx-disclaimer{margin-top:18px;font-size:11px;line-height:1.45;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 </style>
   <link rel="stylesheet" href="sidebar.css">
 </head>
@@ -521,10 +563,57 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <span class="guide-tab-icon" data-am-icon="file" data-am-size="15"></span>
         <span class="pt">Conduta</span><span class="es">Conducta</span>
       </div>
+      <div class="guide-tab guide-tab-ia" id="gtab-assistente" onclick="showGuide('assistente',this)">
+        <span class="guide-tab-icon" data-am-icon="sparkles" data-am-size="15"></span>
+        <span class="pt">Assistente IA</span><span class="es">Asistente IA</span>
+        <span class="ia-pro-pill">PRO</span>
+      </div>
     </div>
 
     <!-- GUIDE CONTENT (Mnemônicas, Manobras, etc.) -->
     <div id="guide-content-area" style="display:none"></div>
+
+    <!-- ASSISTENTE DE IA (apoio diagnóstico) — exclusivo do plano pago -->
+    <div id="assistente-area" style="display:none">
+      <div class="ia-dx-wrap">
+        <div class="ia-dx-head">
+          <span class="ia-dx-title"><span data-am-icon="sparkles" data-am-size="20"></span> <span class="pt">Assistente de IA — Apoio Diagnóstico</span><span class="es">Asistente de IA — Apoyo Diagnóstico</span></span>
+          <p class="ia-dx-sub pt">Lê a HC preenchida e sugere um diferencial priorizado, achados a favor/contra, sinais de alarme e próximos passos. Apoio ao raciocínio — não substitui o julgamento clínico.</p>
+          <p class="ia-dx-sub es">Lee la HC y sugiere un diferencial priorizado, hallazgos a favor/en contra, signos de alarma y próximos pasos. Apoyo al razonamiento — no sustituye el juicio clínico.</p>
+        </div>
+
+        <!-- estado: verificando acesso -->
+        <div id="ia-dx-checking" class="ia-dx-checking">
+          <span class="pt">Verificando acesso…</span><span class="es">Verificando acceso…</span>
+        </div>
+
+        <!-- estado: sem plano pago -->
+        <div id="ia-dx-locked" class="ia-dx-locked" style="display:none">
+          <div class="ia-dx-lock-ic" data-am-icon="sparkles" data-am-size="26"></div>
+          <div class="ia-dx-lock-title pt">Recurso exclusivo do plano pago</div>
+          <div class="ia-dx-lock-title es">Recurso exclusivo del plan de pago</div>
+          <div class="ia-dx-lock-desc pt">Faça upgrade para usar o Assistente de IA e acelerar seu raciocínio diagnóstico.</div>
+          <div class="ia-dx-lock-desc es">Mejora tu plan para usar el Asistente de IA y acelerar tu razonamiento diagnóstico.</div>
+          <button class="ia-dx-upgrade" onclick="if(window.stripeCheckout){stripeCheckout()}else{location.href='anamnesismed-config.html'}">
+            <span class="pt">Fazer upgrade</span><span class="es">Mejorar plan</span>
+          </button>
+        </div>
+
+        <!-- estado: ferramenta (Pro) -->
+        <div id="ia-dx-tool" class="ia-dx-tool" style="display:none">
+          <div class="ia-dx-actions">
+            <button class="ia-dx-btn" id="ia-dx-btn" onclick="assistenteAnalisar()">
+              <span data-am-icon="sparkles" data-am-size="16"></span>
+              <span class="pt">Analisar HC</span><span class="es">Analizar HC</span>
+            </button>
+            <span class="ia-dx-status" id="ia-dx-status"></span>
+          </div>
+          <div id="ia-dx-result" class="ia-dx-result"></div>
+          <div class="ia-dx-disclaimer pt">⚠️ Ferramenta de apoio à decisão. Não emite diagnóstico definitivo nem prescreve tratamento — sempre correlacione com a avaliação clínica.</div>
+          <div class="ia-dx-disclaimer es">⚠️ Herramienta de apoyo a la decisión. No emite diagnóstico definitivo ni prescribe tratamiento — correlaciona siempre con la evaluación clínica.</div>
+        </div>
+      </div>
+    </div>
 
     <!-- HC FORM SECTIONS -->
     <div class="hc-sections" id="hc-sections">
@@ -2477,6 +2566,14 @@ function openRefMotivo(){
     }
   }catch(e){ console.warn('deep-link de motivo erro:', e); }
 
+  // Deep-link: abrir direto a aba "Assistente IA" (vindo de Explorar → ?guide=assistente)
+  try{
+    var gParams = new URLSearchParams(window.location.search);
+    if(gParams.get('guide')==='assistente' && typeof showGuide==='function'){
+      showGuide('assistente', document.getElementById('gtab-assistente'));
+    }
+  }catch(e){ console.warn('deep-link guide erro:', e); }
+
   // Roteamento concluído: libera a tela de seleção para navegação normal (botão Início etc.)
   try{ document.documentElement.classList.remove('deep-hc'); }catch(e){}
 })();
@@ -2485,6 +2582,7 @@ function openRefMotivo(){
 <script src="anamnesismed-pdf.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-integration.js"></script>
+<script src="anamnesismed-assistente.js"></script>
 <script>
 // ── INTEGRAÇÃO SUPABASE: acesso real, dados do usuário, onboarding ──
 (async function(){
@@ -2495,6 +2593,12 @@ function openRefMotivo(){
     if (!ok) return; // sem acesso ativo (paywall já exibido por guardCheckAccess)
 
     if (window.uiUpdateUserInfo) await window.uiUpdateUserInfo();
+
+    // Gating do Assistente de IA: libera só para plano pago (Pro)
+    if (window.profileCheckAccess && window.assistenteApplyGate) {
+      try { window.assistenteApplyGate(await window.profileCheckAccess()); }
+      catch (e) { console.warn('assistente gate erro:', e); }
+    }
 
     if (window.profileGet && window.onboardingCheckAndShow) {
       var profile = await window.profileGet();

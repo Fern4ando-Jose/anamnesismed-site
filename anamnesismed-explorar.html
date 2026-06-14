@@ -119,6 +119,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .tool-tile-name{font-size:16px;font-weight:700}
 .tool-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
 .soon-badge{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--c);background:var(--cbg);padding:4px 11px;border-radius:20px}
+.pro-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:1px 6px;border-radius:6px;vertical-align:middle;margin-left:4px}
 .tool-tile.live{border-style:solid;border-color:var(--line);opacity:1;text-decoration:none;cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s}
 .tool-tile.live:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(30,27,75,.26);border-color:var(--c)}
 .tool-tile .go{align-self:flex-start;font-size:12.5px;font-weight:700;color:var(--c);display:flex;align-items:center;gap:6px}
@@ -222,15 +223,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <span class="go pt">Ver referências <span class="arrow">→</span></span>
         <span class="go es">Ver referencias <span class="arrow">→</span></span>
       </a>
-      <div class="tool-tile" style="--c:#10b981;--cbg:rgba(16,185,129,.12)">
+      <a href="anamnesismed-app.html?guide=assistente" class="tool-tile live" style="--c:#10b981;--cbg:rgba(16,185,129,.12)">
         <div class="tool-tile-icon" data-am-icon="sparkles" data-am-size="26"></div>
-        <div class="tool-tile-name pt">Assistente com IA</div>
-        <div class="tool-tile-name es">Asistente con IA</div>
-        <div class="tool-tile-desc pt">Apoio inteligente na anamnese e no raciocínio clínico.</div>
-        <div class="tool-tile-desc es">Apoyo inteligente en la anamnesis y el razonamiento clínico.</div>
-        <span class="soon-badge pt">Em breve</span>
-        <span class="soon-badge es">Próximamente</span>
-      </div>
+        <div class="tool-tile-name pt">Assistente com IA <span class="pro-badge">PRO</span></div>
+        <div class="tool-tile-name es">Asistente con IA <span class="pro-badge">PRO</span></div>
+        <div class="tool-tile-desc pt">Apoio diagnóstico: lê a HC e sugere diferencial, sinais de alarme e próximos passos.</div>
+        <div class="tool-tile-desc es">Apoyo diagnóstico: lee la HC y sugiere diferencial, signos de alarma y próximos pasos.</div>
+        <span class="go pt">Abrir assistente <span class="arrow">→</span></span>
+        <span class="go es">Abrir asistente <span class="arrow">→</span></span>
+      </a>
     </div>
 
   </div><!-- /panel -->
