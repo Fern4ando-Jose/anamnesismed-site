@@ -303,18 +303,26 @@ function showGuide(tab, el){
   var guideMap = {form:null, mnemonics:'gp-mnemonics', manobras:'gp-manobras', sinais:'gp-sinais', ddx:'gp-ddx', escalas:'gp-escalas', conduta:'gp-conduta'};
   var secs = document.getElementById('hc-sections');
   var area = document.getElementById('guide-content-area');
-  
+  var ai = document.getElementById('assistente-area');
+
   if(tab === 'form'){
     secs.style.display = '';
     area.style.display = 'none';
+    if(ai) ai.style.display = 'none';
+  } else if(tab === 'assistente'){
+    secs.style.display = 'none';
+    area.style.display = 'none';
+    if(ai) ai.style.display = '';
+    if(typeof assistenteOnOpen === 'function') assistenteOnOpen();
   } else {
     secs.style.display = 'none';
     area.style.display = '';
+    if(ai) ai.style.display = 'none';
     area.querySelectorAll('.guide-page').forEach(function(p){p.classList.remove('active')});
     var gp = document.getElementById(guideMap[tab]);
     if(gp) gp.classList.add('active');
   }
-  
+
   document.querySelectorAll('.guide-tab').forEach(function(t){t.classList.remove('active')});
   if(el) el.classList.add('active');
 }

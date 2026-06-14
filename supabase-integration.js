@@ -126,6 +126,16 @@ async function authGetSession() {
 }
 
 /**
+ * Obter o access_token da sessão atual (para chamar APIs autenticadas do backend,
+ * ex.: /api/assistente-dx, que valida o token e o plano no servidor).
+ */
+async function authGetToken() {
+  const { data: { session } } = await sb.auth.getSession();
+  return session ? session.access_token : null;
+}
+window.authGetToken = authGetToken;
+
+/**
  * Obter usuário atual
  */
 async function authGetUser() {

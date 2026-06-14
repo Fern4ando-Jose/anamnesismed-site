@@ -21,6 +21,9 @@
     },
     "api/gerar-hc.js": {
       "maxDuration": 30
+    },
+    "api/assistente-dx.js": {
+      "maxDuration": 30
     }
   }
 }
