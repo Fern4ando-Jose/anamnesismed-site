@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateIllustration } from "@/lib/illustration";
 
 export const maxDuration = 300;
 
@@ -462,10 +461,9 @@ export async function GET(req: NextRequest) {
     } catch { /* fallback silencioso */ }
 
     const ed   = String(editionNum).padStart(3, "0");
-    // Índice canônico do caso (mesma posição em TOPICS_BY_LANG, SUBJECTS e CASE_SYS).
+    // Índice canônico do caso (mesma posição em TOPICS_BY_LANG e CASE_SYS).
     const topicIdx = TOPICS_BY_LANG[lang].indexOf(topic);
-    const subject  = topicIdx >= 0 ? (SUBJECTS[topicIdx] ?? "") : "";
-    // Etiqueta de especialidade na capa (rótulo + watermark); fallback p/ keyword.
+    // Etiqueta de especialidade na capa (rótulo); fallback p/ keyword.
     const kw   = topicIdx >= 0 ? (CASE_SYS[topicIdx] ?? extractKeyword(topic, lang))
                                : extractKeyword(topic, lang);
     const base = process.env.PRODUCTION_URL ?? "https://anamnesismed-ig.vercel.app";
@@ -477,17 +475,15 @@ export async function GET(req: NextRequest) {
     const ctaBio      = lang === "es" ? "Link en bio" : "Link na bio";
     const ctaExtra    = `&follow=${enc(followLabel)}&badges=${enc(ctaBadges)}&bio=${enc(ctaBio)}`;
 
-    // Ilustração por IA (fal/Flux) só na CAPA. Falha → og usa o fundo escuro atual.
-    const ill = await generateIllustration(subject);
-    log.illustration = ill.url ? "ia" : `fallback: ${ill.error ?? "?"}`;
-    const imgParam = ill.url ? `&img=${encodeURIComponent(ill.url)}` : "";
+    // Visual infográfico limpo (cor de marca, tipográfico) — sem ilustração de IA.
+    log.illustration = "off";
 
     const totalSlides = 2 + content.slides.length; // capa + insights + cta
 
     // Construir URLs de cada slide (geradas pelo /api/og)
     const slideUrls: string[] = [
-      // Slide 1 — capa (recebe a ilustração de IA)
-      `${base}/api/og?slide=cover&slot=${slot}&title=${enc(content.postTitle)}&kw=${enc(kw)}&ed=${ed}${hq}${imgParam}`,
+      // Slide 1 — capa tipográfica
+      `${base}/api/og?slide=cover&slot=${slot}&title=${enc(content.postTitle)}&kw=${enc(kw)}&ed=${ed}${hq}`,
       // Slides de insight
       ...content.slides.map((text, i) =>
         `${base}/api/og?slide=insight&text=${enc(text)}&accent=${enc(content.accentWords[i] ?? "")}&num=${i + 2}&total=${totalSlides}&kw=${enc(kw)}&ed=${ed}${hq}`
