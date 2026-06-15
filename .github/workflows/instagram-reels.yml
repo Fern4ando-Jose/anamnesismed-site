@@ -92,7 +92,15 @@ jobs:
             console.log("REEL_PROPS montado:", JSON.stringify(props).slice(0, 300));
           '
 
-      # 6. Renderiza o Reel para out/reel.mp4
+      # 5.5 Gera b-roll de vídeo (fal/Veo) e injeta bgVideo no reel-props.json.
+      #      Em qualquer falha, segue sem b-roll (a composição usa fundo teal sólido).
+      - name: Gerar b-roll de vídeo (fal/Veo)
+        working-directory: instagram-automation
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+        run: node scripts/generate-broll.mjs ../reel-props.json
+
+      # 6. Renderiza o Reel (vídeo de fundo + texto) para out/reel.mp4
       - name: Renderizar Reel (Remotion)
         working-directory: instagram-automation
         run: node scripts/render-reel.mjs --props=../reel-props.json
