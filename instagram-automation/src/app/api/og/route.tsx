@@ -135,6 +135,7 @@ export async function GET(req: NextRequest) {
   const badges = (searchParams.get("badges") ?? "Salvar,Compartilhar,Marque um colega")
     .split(",").filter(Boolean);
   const bioLabel = searchParams.get("bio") ?? "Link na bio";
+  const img    = searchParams.get("img") ?? ""; // ilustração (capa)
 
   const [b8, b7, r4] = await Promise.all([
     loadGoogleFont("DM Sans", 800),
@@ -152,11 +153,23 @@ export async function GET(req: NextRequest) {
     return new ImageResponse(
       (
         <div style={bgStyle}>
+          {/* Ilustração full-bleed + scrim (quando ?img= vem). Sem img = fundo teal. */}
+          {img ? (
+            <>
+              <img src={img} width={W} height={H}
+                style={{ position: "absolute", top: 0, left: 0, width: W, height: H, objectFit: "cover" }} />
+              <div style={{
+                position: "absolute", top: 0, left: 0, width: W, height: H, display: "flex",
+                backgroundImage: "linear-gradient(180deg, rgba(8,22,30,0.55) 0%, rgba(8,22,30,0.12) 38%, rgba(8,22,30,0.92) 100%)",
+              }} />
+            </>
+          ) : null}
           {/* Barra de acento no topo */}
-          <div style={{ display: "flex", height: 8, background: CORAL, width: "100%", flexShrink: 0 }} />
+          <div style={{ display: "flex", height: 8, background: CORAL, width: "100%", flexShrink: 0, position: "relative" }} />
           <div style={{
             flex: 1, display: "flex", flexDirection: "column",
             padding: `80px ${PAD}px`, justifyContent: "space-between",
+            position: "relative",
           }}>
             <BrandHeader right={`Edição #${ed}`} />
 
@@ -215,6 +228,7 @@ export async function GET(req: NextRequest) {
           <div style={{
             flex: 1, display: "flex", flexDirection: "column",
             padding: `80px ${PAD}px`, justifyContent: "space-between",
+            position: "relative",
           }}>
             <BrandHeader right={kw} />
 
