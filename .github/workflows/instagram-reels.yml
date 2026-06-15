@@ -17,6 +17,11 @@ on:
         default: "noite"
         type: choice
         options: [manha, tarde, noite]
+      dryrun:
+        description: "Só renderizar e subir pro Blob (NÃO publica no Instagram)"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   reel:
@@ -102,9 +107,12 @@ jobs:
           URL=$(node scripts/upload-blob.mjs)
           echo "URL do vídeo: $URL"
           echo "video_url=$URL" >> "$GITHUB_OUTPUT"
+          echo "🎬 **Vídeo renderizado:** $URL" >> "$GITHUB_STEP_SUMMARY"
 
       # 8. Publica o Reel no Instagram via /api/publish-reel (faz o polling de status)
+      #    Pulado no modo dry-run (só renderiza + sobe pro Blob para pré-visualização).
       - name: Publicar Reel no Instagram
+        if: ${{ github.event.inputs.dryrun != 'true' }}
         run: |
           # Caption precisa ser url-encoded; usamos --data-urlencode no curl (GET via -G)
           curl -fsS --max-time 240 -G \

@@ -1,9 +1,9 @@
 // ─── Composição do Reel AnamnesísMed ──────────────────────────────────────────
-// Vídeo vertical 1080x1920 (9:16), 30fps, sem áudio. Sequência de cenas:
-//   1. Capa  → gancho `title` (Playfair branco) sobre INK, watermark gigante `kw`
-//   2. Slides → fundo CREAM, número grande, palavra de destaque em vermelho
-//   3. CTA   → "Siga @anamnesismed" sobre INK
-// As fontes Playfair Display + DM Sans são carregadas via @remotion/google-fonts.
+// Vídeo vertical 1080x1920 (9:16), 30fps, sem áudio. Visual alinhado à MARCA:
+// fundo teal sólido (#0B7C88), tipografia DM Sans branca, acentos coral (#FF5C49).
+//   1. Capa  → kicker (especialidade) + gancho `title` + "Qual o diagnóstico?"
+//   2. Slides → número coral grande + frase, palavra de destaque em coral
+//   3. CTA   → "Siga @anamnesismed" + pergunta/CTA
 
 import React from "react";
 import {
@@ -14,79 +14,83 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { loadFont as loadPlayfair } from "@remotion/google-fonts/PlayfairDisplay";
 import { loadFont as loadDMSans } from "@remotion/google-fonts/DMSans";
 
-// Carrega as famílias e expõe os nomes p/ usar em fontFamily
-const { fontFamily: PLAYFAIR } = loadPlayfair();
 const { fontFamily: DMSANS } = loadDMSans();
 
-// ─── Cores da marca ───────────────────────────────────────────────────────────
-const INK = "#0a0c10";
-const PAPER = "#f5f1e8";
-const CREAM = "#ede8d8";
-const RED = "#c0392b";
-const WHITE = "#ffffff";
+// ─── Cores da marca (espelham og/route.tsx e o site) ─────────────────────────
+const TEAL_DK = "#0B7C88"; // fundo sólido
+const TEAL    = "#0FA3B1";
+const CORAL   = "#FF5C49";
+const WHITE   = "#ffffff";
+const SOFT    = "rgba(255,255,255,0.78)";
+const FAINT   = "rgba(255,255,255,0.14)";
+
+// Fundo de marca com leve profundidade (radial teal claro -> teal escuro).
+const BG: React.CSSProperties = {
+  background: `radial-gradient(circle at 80% 12%, ${TEAL} 0%, ${TEAL_DK} 60%)`,
+};
 
 // ─── Props de entrada (inputProps) ────────────────────────────────────────────
-// type (não interface) para satisfazer o constraint do Remotion
-// Composition: Props extends Record<string, unknown> — interfaces não são
-// atribuíveis a índice implícito, mas um type-alias de objeto é.
+// type (não interface) p/ satisfazer o constraint Props extends Record<string,unknown>.
 export type ReelProps = {
-  title: string; // gancho da capa
-  slides: string[]; // frases dos slides internos
-  accentWords: string[]; // palavra em vermelho por slide
-  cta: string; // pergunta/chamada (vai na cena final, abaixo do "Siga")
-  kw: string; // keyword curta — watermark gigante
-  ed: string; // número da edição (ex.: "012")
+  title: string;        // gancho da capa
+  slides: string[];     // frases dos slides internos
+  accentWords: string[];// palavra de destaque (coral) por slide
+  cta: string;          // revelação/pergunta na cena final
+  kw: string;           // especialidade (kicker)
+  ed: string;           // edição (ex.: "012")
 };
 
 export const reelDefaultProps: ReelProps = {
-  title: "O erro que custa o diagnóstico",
+  title: "Atleta de 19 anos com desmaio durante treino. Qual o diagnóstico?",
   slides: [
-    "A pergunta certa vale mais que o exame caro",
-    "SOCRATES organiza toda a avaliação da dor",
-    "Bandeira vermelha ignorada muda o desfecho",
+    "Síncope durante o esforço — nunca ignore.",
+    "Sopro que aumenta com a manobra de Valsalva.",
+    "História familiar de morte súbita precoce.",
   ],
-  accentWords: ["diagnóstico", "SOCRATES", "vermelha"],
-  cta: "Qual sua pergunta-chave na anamnese?",
-  kw: "ANAMNESE",
+  accentWords: ["esforço", "Valsalva", "súbita"],
+  cta: "Diagnóstico: Cardiomiopatia Hipertrófica",
+  kw: "CARDIOLOGIA",
   ed: "001",
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-// Realça a palavra `accent` dentro de `text` pintando-a de vermelho.
+// Realça a palavra `accent` dentro de `text` pintando-a de coral.
 function Highlighted({ text, accent }: { text: string; accent: string }) {
   if (!accent) return <>{text}</>;
   const idx = text.toLowerCase().indexOf(accent.toLowerCase());
   if (idx === -1) return <>{text}</>;
-  const before = text.slice(0, idx);
-  const match = text.slice(idx, idx + accent.length);
-  const after = text.slice(idx + accent.length);
   return (
     <>
-      {before}
-      <span style={{ color: RED }}>{match}</span>
-      {after}
+      {text.slice(0, idx)}
+      <span style={{ color: CORAL }}>{text.slice(idx, idx + accent.length)}</span>
+      {text.slice(idx + accent.length)}
     </>
   );
 }
 
-// Faixa fina vermelha de assinatura (handle) usada nos rodapés
-function Handle({ color = INK }: { color?: string }) {
+// Wordmark / handle do rodapé.
+function Handle() {
   return (
-    <div
-      style={{
-        fontFamily: DMSANS,
-        fontSize: 38,
-        fontWeight: 600,
-        letterSpacing: 2,
-        color,
-        opacity: 0.85,
-      }}
-    >
-      @anamnesismed
+    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: CORAL }} />
+      <div style={{ fontFamily: DMSANS, fontSize: 36, fontWeight: 700, letterSpacing: 1, color: WHITE }}>
+        @anamnesismed
+      </div>
+    </div>
+  );
+}
+
+// Kicker: traço coral + rótulo em caixa-alta.
+function Kicker({ label }: { label: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
+      <div style={{ width: 64, height: 8, borderRadius: 4, backgroundColor: CORAL }} />
+      <div style={{ fontFamily: DMSANS, fontSize: 36, fontWeight: 700, letterSpacing: 8, color: CORAL }}>
+        {label.toUpperCase()}
+      </div>
     </div>
   );
 }
@@ -95,270 +99,113 @@ function Handle({ color = INK }: { color?: string }) {
 function CoverScene({ title, kw, ed }: { title: string; kw: string; ed: string }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-
-  // Entrada do título com mola (sobe e aparece)
   const entry = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 30 });
-  const titleY = interpolate(entry, [0, 1], [60, 0]);
-  const titleOpacity = interpolate(entry, [0, 1], [0, 1]);
-
-  // Watermark gigante com leve drift horizontal
-  const drift = interpolate(frame, [0, 90], [-20, 20], { extrapolateRight: "clamp" });
+  const y = interpolate(entry, [0, 1], [60, 0]);
+  const op = interpolate(entry, [0, 1], [0, 1]);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: INK }}>
-      {/* Watermark gigante translúcido em vermelho */}
-      <AbsoluteFill
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          transform: `translateX(${drift}px) rotate(-8deg)`,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: PLAYFAIR,
-            fontWeight: 900,
-            fontSize: 320,
-            color: RED,
-            opacity: 0.12,
-            whiteSpace: "nowrap",
-            letterSpacing: -8,
-          }}
-        >
-          {kw}
-        </div>
-      </AbsoluteFill>
-
+    <AbsoluteFill style={BG}>
+      {/* Barra de acento no topo */}
+      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 14, backgroundColor: CORAL }} />
       {/* Cabeçalho: edição */}
-      <div
-        style={{
-          position: "absolute",
-          top: 90,
-          left: 90,
-          fontFamily: DMSANS,
-          fontSize: 34,
-          letterSpacing: 6,
-          color: PAPER,
-          opacity: 0.6,
-        }}
-      >
+      <div style={{
+        position: "absolute", top: 110, left: 90,
+        fontFamily: DMSANS, fontSize: 32, fontWeight: 700, letterSpacing: 6, color: SOFT,
+      }}>
         ANAMNESÍSMED · Nº {ed}
       </div>
 
-      {/* Título/gancho */}
-      <AbsoluteFill
-        style={{
-          justifyContent: "center",
-          alignItems: "flex-start",
-          padding: "0 90px",
-        }}
-      >
-        <div
-          style={{
-            transform: `translateY(${titleY}px)`,
-            opacity: titleOpacity,
-          }}
-        >
-          <div
-            style={{
-              width: 110,
-              height: 8,
-              backgroundColor: RED,
-              marginBottom: 40,
-              borderRadius: 4,
-            }}
-          />
-          <div
-            style={{
-              fontFamily: PLAYFAIR,
-              fontWeight: 800,
-              fontSize: 108,
-              lineHeight: 1.05,
-              color: WHITE,
-            }}
-          >
+      <AbsoluteFill style={{ justifyContent: "center", alignItems: "flex-start", padding: "0 90px" }}>
+        <div style={{ transform: `translateY(${y}px)`, opacity: op, display: "flex", flexDirection: "column", gap: 44 }}>
+          <Kicker label={kw} />
+          <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 92, lineHeight: 1.08, color: WHITE, letterSpacing: -2 }}>
             {title}
           </div>
         </div>
       </AbsoluteFill>
 
-      {/* Rodapé com handle */}
-      <div style={{ position: "absolute", bottom: 90, left: 90 }}>
-        <Handle color={PAPER} />
+      <div style={{ position: "absolute", bottom: 96, left: 90 }}>
+        <Handle />
       </div>
     </AbsoluteFill>
   );
 }
 
-// ─── Cena de slide (insight) ──────────────────────────────────────────────────
-function SlideScene({
-  text,
-  accent,
-  index,
-  total,
-}: {
-  text: string;
-  accent: string;
-  index: number; // 1-based (apenas para o número grande)
-  total: number;
-}) {
+// ─── Cena de slide ──────────────────────────────────────────────────────────
+function SlideScene({ text, accent, index, total }: { text: string; accent: string; index: number; total: number }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-
-  // Número grande entra com mola
   const numEntry = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 25 });
   const numScale = interpolate(numEntry, [0, 1], [0.6, 1]);
-  const numOpacity = interpolate(numEntry, [0, 1], [0, 1]);
-
-  // Texto entra deslizando da esquerda, com pequeno atraso
-  const textEntry = spring({
-    frame: frame - 6,
-    fps,
-    config: { damping: 200 },
-    durationInFrames: 28,
-  });
+  const textEntry = spring({ frame: frame - 6, fps, config: { damping: 200 }, durationInFrames: 28 });
   const textX = interpolate(textEntry, [0, 1], [-60, 0]);
-  const textOpacity = interpolate(textEntry, [0, 1], [0, 1]);
+  const textOp = interpolate(textEntry, [0, 1], [0, 1]);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: CREAM }}>
-      {/* Número grande de fundo */}
-      <div
-        style={{
-          position: "absolute",
-          top: 120,
-          right: 70,
-          fontFamily: PLAYFAIR,
-          fontWeight: 900,
-          fontSize: 420,
-          color: INK,
-          opacity: 0.08,
-          transform: `scale(${numScale})`,
-        }}
-      >
-        {index}
-      </div>
-
-      {/* Indicador de progresso (índice / total) */}
-      <div
-        style={{
-          position: "absolute",
-          top: 100,
-          left: 90,
-          fontFamily: DMSANS,
-          fontSize: 40,
-          fontWeight: 700,
-          color: RED,
-          opacity: numOpacity,
-        }}
-      >
+    <AbsoluteFill style={BG}>
+      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 14, backgroundColor: CORAL }} />
+      {/* Progresso NN / TT */}
+      <div style={{
+        position: "absolute", top: 110, left: 90,
+        fontFamily: DMSANS, fontSize: 38, fontWeight: 700, letterSpacing: 2, color: SOFT,
+      }}>
         {String(index).padStart(2, "0")} / {String(total).padStart(2, "0")}
       </div>
 
-      {/* Texto do insight, com palavra de destaque em vermelho */}
-      <AbsoluteFill
-        style={{
-          justifyContent: "center",
-          alignItems: "flex-start",
-          padding: "0 90px",
-        }}
-      >
-        <div
-          style={{
-            transform: `translateX(${textX}px)`,
-            opacity: textOpacity,
-            fontFamily: PLAYFAIR,
-            fontWeight: 700,
-            fontSize: 88,
-            lineHeight: 1.15,
-            color: INK,
-          }}
-        >
-          <Highlighted text={text} accent={accent} />
+      <AbsoluteFill style={{ justifyContent: "center", alignItems: "flex-start", padding: "0 90px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
+          {/* Número coral grande */}
+          <div style={{
+            fontFamily: DMSANS, fontWeight: 800, fontSize: 200, lineHeight: 1, color: CORAL,
+            transform: `scale(${numScale})`, transformOrigin: "left center",
+          }}>
+            {String(index).padStart(2, "0")}
+          </div>
+          {/* Texto */}
+          <div style={{
+            transform: `translateX(${textX}px)`, opacity: textOp,
+            fontFamily: DMSANS, fontWeight: 800, fontSize: 76, lineHeight: 1.18, color: WHITE, letterSpacing: -1,
+          }}>
+            <Highlighted text={text} accent={accent} />
+          </div>
         </div>
       </AbsoluteFill>
 
-      {/* Rodapé */}
-      <div style={{ position: "absolute", bottom: 90, left: 90 }}>
-        <Handle color={INK} />
+      <div style={{ position: "absolute", bottom: 96, left: 90 }}>
+        <Handle />
       </div>
     </AbsoluteFill>
   );
 }
 
-// ─── Cena final — CTA ─────────────────────────────────────────────────────────
+// ─── Cena final — Revelação / CTA ─────────────────────────────────────────────
 function CtaScene({ cta }: { cta: string }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-
   const entry = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 30 });
   const scale = interpolate(entry, [0, 1], [0.85, 1]);
-  const opacity = interpolate(entry, [0, 1], [0, 1]);
-
-  // Pulso sutil no "Siga"
-  const pulse = 1 + 0.02 * Math.sin((frame / fps) * Math.PI * 2);
+  const op = interpolate(entry, [0, 1], [0, 1]);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: INK }}>
-      <AbsoluteFill
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "0 90px",
-          textAlign: "center",
-          transform: `scale(${scale})`,
-          opacity,
-        }}
-      >
-        <div
-          style={{
-            width: 110,
-            height: 8,
-            backgroundColor: RED,
-            marginBottom: 50,
-            borderRadius: 4,
-          }}
-        />
-        <div
-          style={{
-            fontFamily: PLAYFAIR,
-            fontWeight: 800,
-            fontSize: 96,
-            lineHeight: 1.1,
-            color: WHITE,
-            transform: `scale(${pulse})`,
-          }}
-        >
-          Siga <span style={{ color: RED }}>@anamnesismed</span>
-        </div>
-
-        {/* Pergunta/CTA de engajamento */}
-        <div
-          style={{
-            marginTop: 50,
-            fontFamily: DMSANS,
-            fontWeight: 400,
-            fontSize: 52,
-            lineHeight: 1.3,
-            color: PAPER,
-            opacity: 0.9,
-            maxWidth: 880,
-          }}
-        >
-          {cta}
-        </div>
-
-        <div
-          style={{
-            marginTop: 70,
-            fontFamily: DMSANS,
-            fontSize: 40,
-            fontWeight: 600,
-            letterSpacing: 2,
-            color: RED,
-          }}
-        >
-          → Anamnese completa no link da bio
+    <AbsoluteFill style={BG}>
+      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 14, backgroundColor: CORAL }} />
+      <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", padding: "0 90px", textAlign: "center" }}>
+        <div style={{ transform: `scale(${scale})`, opacity: op, display: "flex", flexDirection: "column", alignItems: "center", gap: 40 }}>
+          <Kicker label="Resposta" />
+          {/* Revelação (cta = "Diagnóstico: X") */}
+          <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 76, lineHeight: 1.12, color: WHITE, letterSpacing: -1, maxWidth: 900 }}>
+            {cta}
+          </div>
+          {/* Siga */}
+          <div style={{
+            marginTop: 20, fontFamily: DMSANS, fontWeight: 700, fontSize: 40, color: WHITE,
+            backgroundColor: CORAL, padding: "22px 46px", borderRadius: 14,
+          }}>
+            Siga @anamnesismed
+          </div>
+          <div style={{ fontFamily: DMSANS, fontSize: 34, fontWeight: 700, letterSpacing: 1, color: SOFT }}>
+            → Anamnese completa no link da bio
+          </div>
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
@@ -368,38 +215,25 @@ function CtaScene({ cta }: { cta: string }) {
 // ─── Composição completa ──────────────────────────────────────────────────────
 export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw, ed }) => {
   const { fps } = useVideoConfig();
-
-  // Duração por cena (em frames). Capa e CTA um pouco mais longas.
-  const COVER = Math.round(fps * 2.8); // ~2.8s
-  const SLIDE = Math.round(fps * 2.6); // ~2.6s cada
-  const CTA = Math.round(fps * 3.0); // ~3.0s
+  const COVER = Math.round(fps * 2.8);
+  const SLIDE = Math.round(fps * 2.6);
+  const CTA = Math.round(fps * 3.0);
 
   const safeSlides = slides && slides.length ? slides : reelDefaultProps.slides;
 
   let cursor = 0;
-  const next = (dur: number) => {
-    const from = cursor;
-    cursor += dur;
-    return from;
-  };
+  const next = (dur: number) => { const from = cursor; cursor += dur; return from; };
 
   return (
-    <AbsoluteFill style={{ backgroundColor: INK }}>
+    <AbsoluteFill style={{ backgroundColor: TEAL_DK }}>
       <Sequence from={next(COVER)} durationInFrames={COVER}>
         <CoverScene title={title} kw={kw} ed={ed} />
       </Sequence>
-
       {safeSlides.map((text, i) => (
         <Sequence key={i} from={next(SLIDE)} durationInFrames={SLIDE}>
-          <SlideScene
-            text={text}
-            accent={accentWords?.[i] ?? ""}
-            index={i + 1}
-            total={safeSlides.length}
-          />
+          <SlideScene text={text} accent={accentWords?.[i] ?? ""} index={i + 1} total={safeSlides.length} />
         </Sequence>
       ))}
-
       <Sequence from={next(CTA)} durationInFrames={CTA}>
         <CtaScene cta={cta} />
       </Sequence>
