@@ -48,6 +48,17 @@ function pickFile(video) {
   return pool[0]?.link;
 }
 
+// Retorna o melhor clipe portrait p/ uma query (que ainda não esteja em `used`).
+async function firstClip(query, used) {
+  const vids = await searchPexels(query);
+  for (const v of vids) {
+    if (used.has(v.id)) continue;
+    const link = pickFile(v);
+    if (link) { used.add(v.id); return link; }
+  }
+  return null;
+}
+
 async function main() {
   let props;
   try { props = JSON.parse(readFileSync(propsPath, "utf8")); }
@@ -55,27 +66,38 @@ async function main() {
   if (!KEY) { log("PEXELS_API_KEY ausente — seguindo sem footage (fundo teal)"); return; }
 
   const need = (Array.isArray(props.slides) ? props.slides.length : 3) + 2; // capa + slides + cta
-  const terms = [...(TERMS[(props.kw || "").toUpperCase()] || []), ...GENERIC];
-
-  const seen = new Set();
+  const used = new Set();
   const clips = [];
+
   try {
-    for (const q of terms) {
-      if (clips.length >= need) break;
-      const vids = await searchPexels(q);
-      for (const v of vids) {
+    // PREFERIDO: 1 clipe por CENA, na ordem das videoKeywords (footage casa com o texto).
+    const ordered = Array.isArray(props.videoKeywords) && props.videoKeywords.length
+      ? props.videoKeywords.slice(0, need)
+      : null;
+
+    if (ordered) {
+      for (const q of ordered) {
+        let link = await firstClip(q, used);
+        if (!link) link = await firstClip("hospital medical closeup", used); // fallback p/ a cena
+        clips.push(link); // pode ser null → a cena usa fundo teal
+        log(`cena "${q}" → ${link ? "ok" : "sem clipe"}`);
+      }
+    } else {
+      // FALLBACK: termos por especialidade + genéricos (sem alinhamento por cena).
+      const terms = [...(TERMS[(props.kw || "").toUpperCase()] || []), ...GENERIC];
+      for (const q of terms) {
         if (clips.length >= need) break;
-        if (seen.has(v.id)) continue;
-        const link = pickFile(v);
-        if (link) { seen.add(v.id); clips.push(link); }
+        const link = await firstClip(q, used);
+        if (link) clips.push(link);
       }
     }
   } catch (e) { log("exceção na busca:", e?.message || String(e)); }
 
-  if (!clips.length) { log("nenhum clipe encontrado — seguindo sem footage"); return; }
+  const real = clips.filter(Boolean).length;
+  if (!real) { log("nenhum clipe encontrado — seguindo sem footage"); return; }
   props.clips = clips;
   writeFileSync(propsPath, JSON.stringify(props));
-  log(`footage OK → ${clips.length} clipes gravados (precisava de ${need})`);
+  log(`footage OK → ${real}/${clips.length} cenas com clipe`);
 }
 
 main();

@@ -86,7 +86,8 @@ jobs:
               accentWords: Array.isArray(p.accentWords) ? p.accentWords : [],
               cta: p.cta || "Qual sua conduta?",
               kw,
-              ed: "000"
+              ed: "000",
+              videoKeywords: Array.isArray(p.videoKeywords) ? p.videoKeywords : []
             };
             // Caption do reel: usa a legenda gerada pelo Claude (mesma do carrossel)
             fs.writeFileSync("caption.txt", p.caption || title);

@@ -15,6 +15,7 @@ interface GeneratedContent {
   cta: string;             // slide final — pergunta ou chamada à ação
   instagramCaption: string;
   tags: string[];
+  videoKeywords?: string[]; // termos de busca (EN) p/ footage do Reel — 1 por cena
 }
 
 type Slot = "manha" | "tarde" | "noite";
@@ -245,7 +246,8 @@ Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
   ],
   "cta": "REVELACIÓN: empieza con 'Diagnóstico:' y nombra la respuesta de forma clara y corta, 30-80 caracteres",
   "instagramCaption": "pie de foto 700-1600 caracteres en español, EN ESTE orden: (1) recuenta el caso en 2-3 líneas; (2) 'Comenta tu diagnóstico antes de ver la respuesta 👇'; (3) revela el diagnóstico + 2 perlas clínicas (la pista que lo confirma y 1 conducta inicial); (4) CTA: 'Guarda para estudiar', 'Etiqueta a un colega' y 'Sigue ${handle} para más casos'; (5) '→ Anamnesis completa en el link de la bio'; (6) última línea con 6-9 hashtags. Emojis con moderación (1-3).",
-  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+  "videoKeywords": ["6 términos de búsqueda en INGLÉS para banco de VÍDEO (Pexels), UNO por escena en orden (portada, slides 1-4, revelación), concretos y filmables, que retraten la escena del caso — p.ej.: 'young athlete collapsing on track', 'hospital heart rate monitor closeup', 'doctor listening to patient chest', 'cardiac ultrasound screen', 'worried patient in hospital bed', 'ecg strip printout closeup'. Sin términos abstractos."]
 }
 
 Para los hashtags, MEZCLA alcance amplio + nicho: #medicina #medicinainterna #estudiantedemedicina #futuromedico #residentesmedicos #casoclinico #cualeseldiagnostico #semiologia #urgencias #MIR #ENARM #diagnostico #medtwitter #anamnesismed`;
@@ -282,7 +284,8 @@ Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
   ],
   "cta": "REVELAÇÃO: comece com 'Diagnóstico:' e nomeie a resposta de forma clara e curta, 30-80 chars",
   "instagramCaption": "legenda 700-1600 chars em português, NESTA ordem: (1) reconte o caso em 2-3 linhas; (2) 'Comente seu diagnóstico antes de ver a resposta 👇'; (3) revele o diagnóstico + 2 pérolas clínicas (a pista que fecha o diagnóstico e 1 conduta inicial); (4) CTA: 'Salve para estudar', 'Marque um colega' e 'Siga ${handle} para mais casos'; (5) '→ Anamnese completa no link da bio'; (6) em uma última linha, 6-9 hashtags. Use emojis com parcimônia (1-3).",
-  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+  "videoKeywords": ["6 termos de busca em INGLÊS para banco de VÍDEO (Pexels), UM por cena na ordem (capa, slides 1-4, revelação), concretos e filmáveis, retratando a cena do caso — ex.: 'young athlete collapsing on track', 'hospital heart rate monitor closeup', 'doctor listening to patient chest', 'cardiac ultrasound screen', 'worried patient in hospital bed', 'ecg strip printout closeup'. Sem termos abstratos."]
 }
 
 Para as hashtags, MISTURE alcance amplo + nicho: #medicina #medicinabrasileira #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #casoclinico #qualodiagnostico #semiologia #clinicamedica #diagnostico #medstudent #anamnesismed`;
@@ -506,6 +509,7 @@ export async function GET(req: NextRequest) {
         cta: content.cta,
         caption: content.instagramCaption,
         tags: content.tags,
+        videoKeywords: content.videoKeywords ?? [],
         slideUrls,
       });
     }
