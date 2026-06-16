@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateIllustration } from "@/lib/illustration";
+import { prerenderToBlob } from "@/lib/prerender";
 
 export const maxDuration = 300;
 
@@ -512,6 +513,20 @@ export async function GET(req: NextRequest) {
         videoKeywords: content.videoKeywords ?? [],
         slideUrls,
       });
+    }
+
+    // Pré-renderiza a CAPA (única com ilustração de IA) para o Blob: o Instagram
+    // passa a buscar uma imagem estática e pronta, em vez de compor on-the-fly
+    // (download da IA + Satori) — o que, em cold start, estourava o timeout do
+    // fetch do IG e travava a publicação. Falha → mantém a capa on-the-fly.
+    if (imgParam) {
+      const coverBlob = await prerenderToBlob(slideUrls[0], `og/cover-${slot}-${ed}.png`);
+      if (coverBlob) {
+        slideUrls[0]  = coverBlob;
+        log.coverBlob = coverBlob;
+      } else {
+        log.coverBlob = "falhou — mantendo capa on-the-fly";
+      }
     }
 
     // Publicar no Instagram
