@@ -90,12 +90,11 @@ function Kicker({ label }: { label: string }) {
   );
 }
 
-// Fundo do beat: clipe de footage (com fade-in/corte) + scrim de marca; ou teal sólido.
+// Fundo do beat: clipe de footage (corte seco) + scrim de marca; ou teal sólido.
+// Sem fade no fundo p/ o primeiro frame (thumbnail) nunca ficar em branco.
 function BeatBg({ clip }: { clip?: string }) {
-  const frame = useCurrentFrame();
-  const fade = interpolate(frame, [0, 9], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
-    <AbsoluteFill style={{ opacity: fade }}>
+    <AbsoluteFill>
       {clip ? (
         <OffthreadVideo src={clip} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       ) : (
@@ -122,7 +121,8 @@ function CoverBeat({ title, kw, ed, clip }: { title: string; kw: string; ed: str
         ANAMNESÍSMED · Nº {ed}
       </div>
       <AbsoluteFill style={{ justifyContent: "center", alignItems: "flex-start", padding: "0 90px" }}>
-        <div style={{ transform: `translateY(${y}px)`, opacity: e, display: "flex", flexDirection: "column", gap: 40 }}>
+        {/* Capa visível já no frame 0 (thumbnail) — só um leve deslize, sem fade de opacidade */}
+        <div style={{ transform: `translateY(${y}px)`, display: "flex", flexDirection: "column", gap: 40 }}>
           <Kicker label={kw} />
           <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 90, lineHeight: 1.08, color: WHITE, letterSpacing: -2, textShadow: SHADOW }}>
             {title}

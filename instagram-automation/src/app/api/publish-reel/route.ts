@@ -36,6 +36,8 @@ async function publishReel(videoUrl: string, caption: string): Promise<string> {
       media_type: "REELS",
       video_url: videoUrl,
       caption,
+      // Capa do Reel: frame em ~1,2s (capa já montada) — evita thumbnail em branco.
+      thumb_offset: 1200,
       access_token: token,
     }),
   });

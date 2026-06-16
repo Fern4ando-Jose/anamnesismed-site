@@ -7,8 +7,10 @@ name: Instagram Reels — AnamnesísMed
 # Roda 1x/dia às 21:00 UTC (18:00 BRT) + disparo manual (workflow_dispatch).
 
 on:
-  schedule:
-    - cron: "0 21 * * *" # 21:00 UTC = 18:00 BRT
+  # Agendamento automático DESLIGADO até o Nível 3 (footage) estar aprovado.
+  # Reativar depois descomentando o bloco schedule abaixo.
+  # schedule:
+  #   - cron: "0 21 * * *" # 21:00 UTC = 18:00 BRT
   workflow_dispatch:
     inputs:
       slot:
