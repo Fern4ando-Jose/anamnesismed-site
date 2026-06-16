@@ -1,5 +1,7 @@
 # ── Segredos e variáveis de ambiente ──────────────────────────────────────────
 # NUNCA versionar credenciais. Use variáveis de ambiente na Vercel/Cloudflare.
+# Cofre-mãe de chaves/segredos (fonte da verdade local, fora do Git):
+_segredos/
 .env
 .env.*
 !.env.example
