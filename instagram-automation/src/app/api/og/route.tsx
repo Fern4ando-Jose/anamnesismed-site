@@ -21,8 +21,13 @@ const pad2 = (n: number) => String(n).padStart(2, "0");
 
 // ─── Fontes (DM Sans — sans limpa, look infográfico) ──────────────────────────
 
-async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuffer> {
-  const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@${weight}&display=swap`;
+// Carrega o peso pedido com o subset SOB MEDIDA (&text=) — o Google devolve um
+// único arquivo cobrindo exatamente os glifos usados (inclui "â/ã/ô/ç"). Sem isso,
+// o css2 separa latin/latin-ext e o Satori (que não faz fallback entre fontes de
+// mesmo nome+peso) renderiza acentos como tofu (□).
+async function loadGoogleFont(family: string, weight: number, text: string): Promise<ArrayBuffer> {
+  const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@${weight}`
+    + `&text=${encodeURIComponent(text)}&display=swap`;
   const css = await fetch(url, {
     headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" },
   }).then(r => r.text());
@@ -135,12 +140,22 @@ export async function GET(req: NextRequest) {
   const badges = (searchParams.get("badges") ?? "Salvar,Compartilhar,Marque um colega")
     .split(",").filter(Boolean);
   const bioLabel = searchParams.get("bio") ?? "Link na bio";
-  const img    = searchParams.get("img") ?? ""; // ilustração (capa)
+  const img    = searchParams.get("img") ?? ""; // imagem (capa / achado clínico)
+  const credit = searchParams.get("credit") ?? ""; // crédito/licença da imagem clínica
+
+  // Glifos a embutir: todo texto dinâmico + rótulos fixos de qualquer slide.
+  // (União de caracteres únicos — o &text= do Google dedup e gera 1 arquivo/peso.)
+  const glyphs = [...new Set((
+    title + text + accent + kw + ed + handle + kicker + followLabel +
+    badges.join("") + bioLabel + credit +
+    "AnamnesísMed Edição # Arraste > Achado Resposta Siga Link na bio " +
+    "0123456789/ ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÉÊÍÓÔÕÚÇàáâãéêíóôõúç.,:;!?-—()@%"
+  ).split(""))].join("");
 
   const [b8, b7, r4] = await Promise.all([
-    loadGoogleFont("DM Sans", 800),
-    loadGoogleFont("DM Sans", 700),
-    loadGoogleFont("DM Sans", 400),
+    loadGoogleFont("DM Sans", 800, glyphs),
+    loadGoogleFont("DM Sans", 700, glyphs),
+    loadGoogleFont("DM Sans", 400, glyphs),
   ]);
   const fonts = [
     { name: "DMSans", data: b8, weight: 800 as const, style: "normal" as const },
@@ -258,6 +273,59 @@ export async function GET(req: NextRequest) {
             </div>
 
             <BrandFooter num={num} total={total} showPage={true} handle={handle} />
+          </div>
+        </div>
+      ),
+      { width: W, height: H, fonts }
+    );
+  }
+
+  // ── SLIDE ACHADO CLÍNICO (imagem real em destaque) ───────────────────────────
+  if (slide === "clinical") {
+    return new ImageResponse(
+      (
+        <div style={bgStyle}>
+          <div style={{ display: "flex", height: 8, background: CORAL, width: "100%", flexShrink: 0 }} />
+          <div style={{
+            flex: 1, display: "flex", flexDirection: "column",
+            padding: `80px ${PAD}px`, justifyContent: "space-between", position: "relative",
+          }}>
+            <BrandHeader right={kw} />
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 26, flex: 1, justifyContent: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ display: "flex", width: 30, height: 5, borderRadius: 3, background: CORAL }} />
+                <div style={{
+                  display: "flex", fontFamily: "DMSans", fontSize: 18, fontWeight: 700,
+                  color: CORAL, letterSpacing: "4px", textTransform: "uppercase",
+                }}>
+                  Achado
+                </div>
+              </div>
+              {/* Imagem clínica real, inteira (contain) sobre painel escuro */}
+              <div style={{
+                display: "flex", width: "100%", height: 600, borderRadius: 18, overflow: "hidden",
+                background: "rgba(0,0,0,0.38)", border: "1px solid rgba(255,255,255,0.16)",
+              }}>
+                {img ? (
+                  <img src={img} width={W - 2 * PAD} height={600}
+                    style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                ) : null}
+              </div>
+              {/* Legenda (texto único => div block sem display:flex) */}
+              <div style={{ fontFamily: "DMSans", fontSize: 46, fontWeight: 800, color: WHITE, lineHeight: 1.2, letterSpacing: "-0.5px" }}>
+                {text}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {credit ? (
+                <div style={{ display: "flex", fontFamily: "DMSans", fontSize: 17, fontWeight: 400, color: SOFT }}>
+                  {credit}
+                </div>
+              ) : null}
+              <BrandFooter num={num} total={total} showPage={true} handle={handle} />
+            </div>
           </div>
         </div>
       ),
