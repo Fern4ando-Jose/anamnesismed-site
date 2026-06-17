@@ -154,32 +154,31 @@ function getTopicForSlot(slot: Slot, date: Date, lang: Lang): string {
 
 const SLOT_INSTRUCTIONS_BY_LANG: Record<Lang, Record<Slot, string>> = {
   pt: {
-    manha: `Ângulo MANHÃ — motivacional e prático. O médico ou estudante está começando
-o plantão ou o dia de estudos. Entregue um insight clínico rápido e aplicável
-HOJE. Tom direto, confiante e encorajador. O gancho deve dar energia ("comece
-o plantão sabendo isto").`,
+    manha: `Ângulo MANHÃ — energia para quem vai encarar o plantão (SUS/UPA) ou o dia
+de estudo para a prova de residência. Entregue um ganho clínico aplicável HOJE.
+Tom direto e caloroso (você). Gancho que dá gás: "comece o plantão sabendo isto".`,
 
-    tarde: `Ângulo TARDE — pílula prática e objetiva. O leitor tem 30 segundos entre
-atendimentos. Entregue UMA regra de ouro, um passo a passo enxuto ou um erro
-comum a evitar. Tom de "salva-vidas de bolso", escaneável e direto ao ponto.`,
+    tarde: `Ângulo TARDE — bizu de bolso entre um atendimento e outro. UMA regra de
+ouro, um passo a passo enxuto ou o erro clássico que cai na prova e no plantão.
+Escaneável e direto ao ponto, como anotação de quem está na linha de frente.`,
 
-    noite: `Ângulo NOITE — reflexivo e profundo. O leitor está terminando o dia.
-Convide-o a pensar sobre raciocínio clínico e o impacto de uma boa anamnese na
-vida do paciente. Tom calmo e instigante, que gera comentários e identificação.`,
+    noite: `Ângulo NOITE — reflexivo. Quem fechou o plantão pensa no raciocínio
+clínico e no peso de uma boa anamnese para o paciente. Tom calmo e instigante,
+que puxa comentário e identificação do médico brasileiro.`,
   },
   es: {
-    manha: `Ángulo MAÑANA — motivacional y práctico. El médico o estudiante empieza
-la guardia o el día de estudio. Entrega un dato clínico rápido y aplicable HOY.
-Tono directo, seguro y alentador. El gancho debe dar energía ("empieza la
-guardia sabiendo esto").`,
+    manha: `Ángulo MAÑANA — energía para quien entra a la guardia o estudia para el
+ENARM / examen de residencia. Entrega una ganancia clínica aplicable HOY. Trato
+de "tú" (nunca "vosotros"), cercano. Gancho que activa: "empieza la guardia
+sabiendo esto".`,
 
-    tarde: `Ángulo TARDE — píldora práctica y concreta. El lector tiene 30 segundos
-entre pacientes. Entrega UNA regla de oro, un paso a paso conciso o un error
-común a evitar. Tono de "salvavidas de bolsillo", escaneable y al grano.`,
+    tarde: `Ángulo TARDE — dato de bolsillo entre paciente y paciente. UNA regla de
+oro, un paso a paso conciso o el error clásico que cae en el examen y en la
+guardia. Escaneable y al grano, como apunte de quien está en la primera línea.`,
 
-    noite: `Ángulo NOCHE — reflexivo y profundo. El lector termina su día. Invítalo a
-pensar sobre el razonamiento clínico y el impacto de una buena anamnesis en la
-vida del paciente. Tono calmado y provocador, que genera comentarios.`,
+    noite: `Ángulo NOCHE — reflexivo. Quien cierra la guardia piensa en el
+razonamiento clínico y el peso de una buena anamnesis para el paciente. Tono
+calmado y provocador, que invita a comentar; identificación del médico de LATAM.`,
   },
 };
 
@@ -216,7 +215,14 @@ function buildPrompt(lang: Lang, topic: string, context: string, slot: Slot, han
   const slotInstr = SLOT_INSTRUCTIONS_BY_LANG[lang][slot];
 
   if (lang === "es") {
-    return `Eres el editor clínico de AnamnesísMed — plataforma de anamnesis para médicos y estudiantes de habla hispana. Crea un CARRUSEL de Instagram en formato "¿CUÁL ES EL DIAGNÓSTICO?": un caso clínico interactivo que atrapa la atención, hace PENSAR al lector y comentar su sospecha, y solo revela el diagnóstico al final. Contenido serio y correcto.
+    return `Eres el editor clínico de AnamnesísMed — plataforma de anamnesis para médicos y estudiantes de LATINOAMÉRICA. Crea un CARRUSEL de Instagram en formato "¿CUÁL ES EL DIAGNÓSTICO?": un caso clínico interactivo que atrapa la atención, hace PENSAR al lector y comentar su sospecha, y solo revela el diagnóstico al final. Contenido serio y correcto.
+
+VOZ DEL MERCADO (Latinoamérica) — este contenido se GENERA para LATAM, NO se traduce del portugués:
+- Público: estudiante de medicina, interno, residente y quien prepara el ENARM / examen de residencia (México, Colombia, Perú, Argentina…).
+- Trato: "tú" en singular y "ustedes" en plural — NUNCA "vosotros" ni jerga de España.
+- Español latino neutro, sin modismos de un solo país; términos clínicos usados en LATAM.
+- Referencias nativas: la guardia, el internado, el examen de residencia, el hospital público.
+- Tono cercano, directo y profesional. El gancho se piensa para el feed LATAM, nunca calcado de otro idioma.
 
 Caso (con el diagnóstico entre paréntesis — NO lo reveles antes del final): "${topic}"
 ${slotInstr}
@@ -228,6 +234,7 @@ REGLAS DEL FORMATO (sigue TODAS):
 - Las diapositivas entregan el caso por etapas (historia → examen → pista decisiva) e invitan a la sospecha.
 - Clínica correcta y específica (datos, signos y hallazgos reales del caso). Lenguaje de quien está en la práctica, frases cortas.
 - COMENTARIO FÁCIL: pide la sospecha del lector antes de la revelación.
+- IDIOMA: español latino neutro (tú/ustedes), JAMÁS "vosotros" ni calcos del portugués.
 
 Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
 {
@@ -251,10 +258,16 @@ Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
   "videoKeywords": ["6 términos de búsqueda en INGLÉS para banco de VÍDEO (Pexels), UNO por escena en orden (portada, slides 1-4, revelación), concretos y filmables, que retraten la escena del caso — p.ej.: 'young athlete collapsing on track', 'hospital heart rate monitor closeup', 'doctor listening to patient chest', 'cardiac ultrasound screen', 'worried patient in hospital bed', 'ecg strip printout closeup'. Sin términos abstractos."]
 }
 
-Para los hashtags, MEZCLA alcance amplio + nicho: #medicina #medicinainterna #estudiantedemedicina #futuromedico #residentesmedicos #casoclinico #cualeseldiagnostico #semiologia #urgencias #MIR #ENARM #diagnostico #medtwitter #anamnesismed`;
+Para los hashtags, MEZCLA alcance amplio + nicho LATAM (sin etiquetas de España como #MIR): #medicina #medicinainterna #estudiantedemedicina #futuromedico #residentesmedicos #casoclinico #cualeseldiagnostico #semiologia #urgencias #ENARM #examenderesidencia #medicinalatam #diagnostico #anamnesismed`;
   }
 
-  return `Você é o editor clínico do AnamnesísMed — plataforma de anamnese para médicos e estudantes no Brasil. Crie um CARROSSEL de Instagram no formato "QUAL O DIAGNÓSTICO?": um caso clínico interativo que prende a atenção, faz o leitor PENSAR e COMENTAR o palpite, e só revela o diagnóstico no fim. Conteúdo sério e correto.
+  return `Você é o editor clínico do AnamnesísMed — plataforma de anamnese para médicos e estudantes no BRASIL. Crie um CARROSSEL de Instagram no formato "QUAL O DIAGNÓSTICO?": um caso clínico interativo que prende a atenção, faz o leitor PENSAR e COMENTAR o palpite, e só revela o diagnóstico no fim. Conteúdo sério e correto.
+
+VOZ DO MERCADO (Brasil) — este conteúdo é GERADO para o Brasil, NÃO traduzido de outro idioma:
+- Público: estudante de medicina, interno, R1 e quem estuda para a PROVA DE RESIDÊNCIA (ENARE, USP, UNIFESP) e o Revalida.
+- Tratamento: "você"; português brasileiro, levemente informal, sem gíria forçada (cabe "bizu", "fechou o diagnóstico", "cai na prova").
+- Referências nativas: plantão no SUS/UPA, internato, liga acadêmica, prova de residência.
+- Tom direto e caloroso. O gancho é pensado para o feed BR (que premia utilidade para prova e plantão), nunca calcado de outro idioma.
 
 Caso (com o diagnóstico entre parênteses — NÃO revele antes do fim): "${topic}"
 ${slotInstr}
@@ -266,6 +279,7 @@ REGRAS DO FORMATO (siga TODAS):
 - Os slides entregam o caso em etapas (história → exame → pista decisiva) e convidam ao palpite.
 - Clínica correta e específica (dados, sinais e achados reais do caso). Linguagem de quem está na prática, frases curtas.
 - COMENTÁRIO FÁCIL: peça o palpite do leitor antes da revelação.
+- IDIOMA: português brasileiro (você), nunca tradução/calco de outro idioma.
 
 Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
 {
@@ -289,7 +303,7 @@ Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
   "videoKeywords": ["6 termos de busca em INGLÊS para banco de VÍDEO (Pexels), UM por cena na ordem (capa, slides 1-4, revelação), concretos e filmáveis, retratando a cena do caso — ex.: 'young athlete collapsing on track', 'hospital heart rate monitor closeup', 'doctor listening to patient chest', 'cardiac ultrasound screen', 'worried patient in hospital bed', 'ecg strip printout closeup'. Sem termos abstratos."]
 }
 
-Para as hashtags, MISTURE alcance amplo + nicho: #medicina #medicinabrasileira #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #casoclinico #qualodiagnostico #semiologia #clinicamedica #diagnostico #medstudent #anamnesismed`;
+Para as hashtags, MISTURE alcance amplo + nicho BR: #medicina #medicinabrasileira #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #provaderesidencia #enare #revalida #casoclinico #qualodiagnostico #semiologia #clinicamedica #anamnesismed`;
 }
 
 // ─── Geração de conteúdo via Claude ──────────────────────────────────────────
