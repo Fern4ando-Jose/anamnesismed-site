@@ -16,11 +16,14 @@ Não acumule várias correções não commitadas — se algo der errado no meio 
 
 **Limpeza junto com o commit:** sempre que houver mudanças, limpar os temporários (apagar `_*.png/mp4/txt`, exports de teste; mídia reutilizável vai para `_arquivo-midia/<projeto>/`, que é gitignored) ANTES de commitar. Não perguntar a cada arquivo — fazer a curadoria e commitar.
 
-## 1b. Pendências vão para o painel central `.pendencias/` (não só na memória)
+## 1b. Pendências — painel único, com ponte pra agentes da nuvem
 
-Fonte **única** de pendências de TODO o workspace = `D:\Claude\.pendencias\anamnesismed.md` (controle interno, **fora do Git**, igual `.chaves`/`.gastos` — ver AGENTS.md §6). Ao identificar uma pendência, adicioná-la lá no formato `- [ ]` / `- [x]` sob a seção de prioridade (🔴 Crítico · 🟡 Importante · 🟢 Melhorias · ✅ Feito recente); o painel `pendencias.html` se regenera sozinho (Stop hook roda `gerar.mjs`). A memória do Claude guarda só lição/decisão/arquitetura e, quando muito, **aponta** pra pendência — nunca a substitui.
+A fonte de **visualização é ÚNICA** e fica na máquina do dono: `D:\Claude\.pendencias\anamnesismed.md` (fora do Git, igual `.chaves`/`.gastos`). **NUNCA pergunte onde colocar uma pendência — é sempre o painel central.** Como chegar lá depende de ONDE você roda:
 
-> O antigo `PENDENCIAS.md` na raiz do repo foi **descontinuado** (2026-06-16): conteúdo migrado para o painel central e o arquivo removido do Git + ignorado. Não recriar.
+- **Agente LOCAL** (tem acesso a `D:\Claude\`): edite direto `D:\Claude\.pendencias\anamnesismed.md`, formato `- [ ]` / `- [x]` sob 🔴 Crítico · 🟡 Importante · 🟢 Melhorias · ✅ Feito recente.
+- **Agente da NUVEM / remoto** (só tem ESTE repositório, **não alcança `D:\Claude`**): acrescente a pendência ao arquivo **`PENDENCIAS.inbox.md`** na raiz deste repo (`- [ ] texto`) e faça commit. É uma **caixa de entrada (fila)**, não a fonte de verdade — a máquina local drena pro painel central e esvazia. **Não crie `TODO.md` nem `PENDENCIAS.md`; não pergunte ao dono.**
+
+A memória do Claude guarda só lição/decisão/arquitetura e, quando muito, **aponta** pra pendência — nunca a substitui.
 
 ## 2. Nunca deixar valores estáticos onde deveria haver dado dinâmico
 
