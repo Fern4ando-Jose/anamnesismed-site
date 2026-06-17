@@ -3,6 +3,8 @@
 > Arquivo **canônico** de pendências do projeto. Toda pendência vai aqui (não só na memória do Claude).
 > Ordenar por urgência. Ao concluir, marcar `[x]` e mover para o histórico no fim, com a data.
 > Última atualização: 2026-06-16
+>
+> **▶ Retomar por aqui:** próximo passo = **MIX de formatos no carrossel do IG** (1º item 🟡 abaixo). Nada em prazo aberto; árvore do Git limpa.
 
 ---
 
