@@ -5,6 +5,9 @@ node_modules
 .next
 out
 
+# typescript build cache
+*.tsbuildinfo
+
 # env / secrets — NUNCA commitar
 .env
 .env.local
