@@ -16,9 +16,11 @@ Não acumule várias correções não commitadas — se algo der errado no meio 
 
 **Limpeza junto com o commit:** sempre que houver mudanças, limpar os temporários (apagar `_*.png/mp4/txt`, exports de teste; mídia reutilizável vai para `_arquivo-midia/<projeto>/`, que é gitignored) ANTES de commitar. Não perguntar a cada arquivo — fazer a curadoria e commitar.
 
-## 1b. Pendências vão para `PENDENCIAS.md` (não só na memória)
+## 1b. Pendências vão para o painel central `.pendencias/` (não só na memória)
 
-Toda pendência do projeto é registrada no arquivo canônico **`PENDENCIAS.md`** na raiz do repositório — versionado no Git, não apenas na memória do Claude. Ao identificar uma pendência, adicioná-la lá (ordenada por urgência); ao concluir, marcar `[x]` e mover para o histórico com a data. A memória do Claude pode guardar contexto de arquitetura, mas a **lista de pendências em si vive no `PENDENCIAS.md`**.
+Fonte **única** de pendências de TODO o workspace = `D:\Claude\.pendencias\anamnesismed.md` (controle interno, **fora do Git**, igual `.chaves`/`.gastos` — ver AGENTS.md §6). Ao identificar uma pendência, adicioná-la lá no formato `- [ ]` / `- [x]` sob a seção de prioridade (🔴 Crítico · 🟡 Importante · 🟢 Melhorias · ✅ Feito recente); o painel `pendencias.html` se regenera sozinho (Stop hook roda `gerar.mjs`). A memória do Claude guarda só lição/decisão/arquitetura e, quando muito, **aponta** pra pendência — nunca a substitui.
+
+> O antigo `PENDENCIAS.md` na raiz do repo foi **descontinuado** (2026-06-16): conteúdo migrado para o painel central e o arquivo removido do Git + ignorado. Não recriar.
 
 ## 2. Nunca deixar valores estáticos onde deveria haver dado dinâmico
 

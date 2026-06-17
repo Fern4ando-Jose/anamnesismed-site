@@ -63,3 +63,6 @@ HCs/
 
 # Mídia arquivada (reuso futuro) — não versionar
 _arquivo-midia/
+
+# Pendências: fonte única é o painel central D:\Claude\.pendencias\ (controle interno, fora do git)
+PENDENCIAS.md
