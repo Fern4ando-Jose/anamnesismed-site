@@ -6,10 +6,6 @@
 
 ---
 
-## 🔴 Prazo (com data correndo)
-
-- [ ] **Renovar token de deploy da Vercel** — expira **19/06/2026**. Sem ele, deploy do `anamnesismed-ig` (sempre via CLI, não por git) trava. Gerar token novo no painel da Vercel e atualizar onde for usado.
-
 ## 🟡 Próximos builds (aprovados)
 
 - [ ] **MIX de formatos no carrossel do IG** — hoje só "Qual o diagnóstico?". Adicionar: mnemônicos, red flags, passo a passo, scores/escalas. Aprovado pelo Fernando; é o próximo build. (`instagram-automation/src/app/api/publish/route.ts`)
@@ -25,3 +21,5 @@
 ## ✅ Histórico (concluídas)
 
 <!-- mover itens [x] pra cá com a data de conclusão -->
+
+- [x] **(2026-06-16) Token de deploy da Vercel "expira 19/06"** — investigado: **não é bloqueio.** Posts/Reels publicam via GitHub Actions com `CRON_SECRET` (não usam token Vercel). Deploy de código roda pelo CLI **já logado** como `fern4ando-jose` (projeto `anamnesismed-ig` linkado, acesso confirmado) — `vercel --prod` funciona sem o token. O token `--token` só seria preciso para deploy headless/CI, que não está configurado. *Opcional:* se um dia quiser auto-deploy em CI, gerar um `VERCEL_TOKEN` com expiração longa em vercel.com/account/tokens e colar em `_segredos/CHAVES.md`.
