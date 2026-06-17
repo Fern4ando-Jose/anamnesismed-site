@@ -17,25 +17,19 @@ import { NextRequest, NextResponse } from "next/server";
  *
  * O publish/route.ts lê o token do banco e cai no env var se não houver.
  */
-export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-  }
-
+// Renova UM token (de uma conta) via Instagram Login API e persiste no banco
+// sob a chave dada (se houver banco). Retorna o resultado por conta.
+async function refreshOne(dbKey: string, envToken: string | undefined) {
   // 1. Ler token atual (banco → fallback env). Banco é opcional.
-  let currentToken: string | undefined = process.env.META_ACCESS_TOKEN;
+  let currentToken: string | undefined = envToken;
   try {
     const { sql } = await import("@vercel/postgres");
-    const rows = await sql`SELECT value FROM config WHERE key = 'meta_access_token'`;
+    const rows = await sql`SELECT value FROM config WHERE key = ${dbKey}`;
     if (rows.rows[0]?.value) currentToken = rows.rows[0].value;
   } catch { /* sem banco — usa env var */ }
 
   if (!currentToken) {
-    return NextResponse.json(
-      { ok: false, error: "Nenhum token encontrado no banco nem no env var" },
-      { status: 500 }
-    );
+    return { ok: false as const, error: "Nenhum token (banco nem env var)" };
   }
 
   // 2. Renovar via Instagram Login API (não requer App ID/Secret)
@@ -47,7 +41,7 @@ export async function GET(req: NextRequest) {
   const data = await res.json();
 
   if (!res.ok || !data.access_token) {
-    return NextResponse.json({ ok: false, error: data }, { status: 500 });
+    return { ok: false as const, error: data };
   }
 
   const newToken: string  = data.access_token;
@@ -58,16 +52,30 @@ export async function GET(req: NextRequest) {
     const { sql } = await import("@vercel/postgres");
     await sql`
       INSERT INTO config (key, value, updated_at)
-      VALUES ('meta_access_token', ${newToken}, NOW())
+      VALUES (${dbKey}, ${newToken}, NOW())
       ON CONFLICT (key) DO UPDATE
         SET value = ${newToken}, updated_at = NOW()
     `;
   } catch { /* sem banco — token renovado mas não persistido */ }
 
-  return NextResponse.json({
-    ok: true,
-    message: "Token renovado com sucesso",
-    expires_in_days: Math.round(expiresIn / 86400),
-    updated_at: new Date().toISOString(),
-  });
+  return { ok: true as const, expires_in_days: Math.round(expiresIn / 86400) };
+}
+
+export async function GET(req: NextRequest) {
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+  }
+
+  // Renova PT sempre; ES só se a conta espanhola estiver configurada.
+  const pt = await refreshOne("meta_access_token", process.env.META_ACCESS_TOKEN);
+  const es = process.env.META_ACCESS_TOKEN_ES
+    ? await refreshOne("meta_access_token_es", process.env.META_ACCESS_TOKEN_ES)
+    : null;
+
+  const ok = pt.ok && (es === null || es.ok);
+  return NextResponse.json(
+    { ok, message: ok ? "Token(s) renovado(s)" : "Falha ao renovar", pt, es, updated_at: new Date().toISOString() },
+    { status: ok ? 200 : 500 }
+  );
 }

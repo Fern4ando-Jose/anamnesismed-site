@@ -330,20 +330,26 @@ async function generateContent(
 
 // ─── Token do Instagram ───────────────────────────────────────────────────────
 
-async function getAccessToken(): Promise<string> {
+async function getAccessToken(lang: Lang = "pt"): Promise<string> {
+  // Cada conta tem seu token: PT → META_ACCESS_TOKEN, ES → META_ACCESS_TOKEN_ES.
+  const dbKey  = lang === "es" ? "meta_access_token_es" : "meta_access_token";
+  const envVar = lang === "es" ? process.env.META_ACCESS_TOKEN_ES : process.env.META_ACCESS_TOKEN;
   try {
     const { sql } = await import("@vercel/postgres");
-    const rows = await sql`SELECT value FROM config WHERE key = 'meta_access_token'`;
+    const rows = await sql`SELECT value FROM config WHERE key = ${dbKey}`;
     if (rows.rows[0]?.value) return rows.rows[0].value;
   } catch { /* fallback para env var */ }
-  return process.env.META_ACCESS_TOKEN!;
+  return envVar!;
 }
 
 // ─── Publicação como carrossel ────────────────────────────────────────────────
 
-async function publishCarousel(caption: string, imageUrls: string[]): Promise<string> {
-  const accountId = process.env.META_INSTAGRAM_ACCOUNT_ID!;
-  const token     = await getAccessToken();
+async function publishCarousel(caption: string, imageUrls: string[], lang: Lang = "pt"): Promise<string> {
+  // Conta de publicação por idioma: PT → @anamnesismed, ES → @anamnesismed.es.
+  const accountId = (lang === "es"
+    ? process.env.META_INSTAGRAM_ACCOUNT_ID_ES
+    : process.env.META_INSTAGRAM_ACCOUNT_ID)!;
+  const token     = await getAccessToken(lang);
   const base      = `https://graph.instagram.com/v25.0/${accountId}`;
 
   // 1. Container por slide
@@ -532,7 +538,7 @@ export async function GET(req: NextRequest) {
     // Publicar no Instagram
     let instagramPostId: string | null = null;
     try {
-      instagramPostId = await publishCarousel(content.instagramCaption, slideUrls);
+      instagramPostId = await publishCarousel(content.instagramCaption, slideUrls, lang);
       log.instagramPostId = instagramPostId;
       log.slides          = slideUrls.length;
     } catch (igErr) {

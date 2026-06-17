@@ -1,0 +1,46 @@
+name: Instagram posts ES — AnamnesísMed
+
+# Agendador externo (grátis) dos 3 posts diários da conta @anamnesismed.es.
+# Mesmo endpoint /api/publish do projeto anamnesismed-ig, com &lang=es:
+# o conteúdo é GERADO em espanhol (não traduzido) e publicado na conta ES
+# (token/id ES vêm das env META_ACCESS_TOKEN_ES / META_INSTAGRAM_ACCOUNT_ID_ES).
+#
+# Horários em UTC, escalonados em relação ao PT p/ servir o fuso da Espanha
+# (CEST = UTC+2) e não colidir com o rate-limit do Meta App compartilhado.
+#   09:00 UTC = 11:00 CEST — mañana | 13:00 UTC = 15:00 CEST — tarde | 18:00 UTC = 20:00 CEST — noche
+
+on:
+  schedule:
+    - cron: "0 9 * * *"    # mañana
+    - cron: "0 13 * * *"   # tarde
+    - cron: "0 18 * * *"   # noche
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "Slot a publicar manualmente"
+        required: true
+        default: "manha"
+        type: choice
+        options: [manha, tarde, noite]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determinar slot a partir do horário do cron
+        id: slot
+        run: |
+          case "${{ github.event.schedule }}" in
+            "0 9 * * *")   SLOT=manha ;;
+            "0 13 * * *")  SLOT=tarde ;;
+            "0 18 * * *")  SLOT=noite ;;
+            *)             SLOT="${{ github.event.inputs.slot }}"; SLOT="${SLOT:-manha}" ;;
+          esac
+          echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
+          echo "Publicando slot ES: $SLOT"
+
+      - name: Publicar no Instagram (ES)
+        run: |
+          curl -fsS --max-time 240 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://anamnesismed-ig.vercel.app/api/publish?slot=${{ steps.slot.outputs.slot }}&lang=es"
