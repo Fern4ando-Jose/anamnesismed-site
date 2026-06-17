@@ -14,6 +14,12 @@ git push origin main
 
 Não acumule várias correções não commitadas — se algo der errado no meio do caminho, perde-se trabalho validado e abre espaço para regressões silenciosas.
 
+**Limpeza junto com o commit:** sempre que houver mudanças, limpar os temporários (apagar `_*.png/mp4/txt`, exports de teste; mídia reutilizável vai para `_arquivo-midia/<projeto>/`, que é gitignored) ANTES de commitar. Não perguntar a cada arquivo — fazer a curadoria e commitar.
+
+## 1b. Pendências vão para `PENDENCIAS.md` (não só na memória)
+
+Toda pendência do projeto é registrada no arquivo canônico **`PENDENCIAS.md`** na raiz do repositório — versionado no Git, não apenas na memória do Claude. Ao identificar uma pendência, adicioná-la lá (ordenada por urgência); ao concluir, marcar `[x]` e mover para o histórico com a data. A memória do Claude pode guardar contexto de arquitetura, mas a **lista de pendências em si vive no `PENDENCIAS.md`**.
+
 ## 2. Nunca deixar valores estáticos onde deveria haver dado dinâmico
 
 Exemplo do bug do "Trial — 27 dias restantes": o texto fixo no HTML voltava a aparecer porque o HTML era reescrito sem reconectar a função que populava o valor real.
