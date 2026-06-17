@@ -1,0 +1,263 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║           AnamnesísMed — Estrutura Atualizada do Projeto             ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+DESIGN SYSTEM (Direção 3 — "Saúde Confiável"):
+────────────────────────────────────────────────────────────────────────
+Paleta:   #f0f4f8 (bg) · #0d2d3d (navy/tinta) · #0e7490 (teal primário)
+          #0d9488 (teal-verde) · #f59e0b (âmbar/destaque)
+Fontes:   Libre Baskerville (títulos/serif) + Source Sans 3 (corpo/sans)
+Tom:      Acolhedor · Profissional · Confiável
+Ref:      Zocdoc · Apple Health · Doctolib
+
+ARQUIVOS DO PROJETO:
+────────────────────────────────────────────────────────────────────────
+index.html                   → Redireciona para a Landing Page
+anamnesismed-landing.html    → Página inicial (Landing Page) ✅ REDESIGN
+anamnesismed-auth.html       → Login / Cadastro (magic link) ✅ REDESIGN
+anamnesismed-dashboard.html  → Dashboard do usuário          ✅ REDESIGN
+anamnesismed-app.html        → App principal (HC completa)
+
+NAVEGAÇÃO COMPLETA:
+────────────────────────────────────────────────────────────────────────
+Landing → Auth → Dashboard → App
+
+  App (7 abas):
+    1. Anamnese      — Formulário completo (página única, scroll)
+    2. Mnemônicas    — LITIDIFIS, IDET, ROTA, FOCOS...
+    3. Manobras      — Técnica passo a passo + achados
+    4. Sinais Clássicos — Kernig, Brudzinski, Osler, Janeway...
+    5. Diagnóstico Diferencial — Tabela comparativa explicada
+    6. Escalas / Scores — Sepsis-3, Duke, qSOFA, temperaturas
+    7. Conduta       — Plano + Export PDF narrativo
+
+FUNCIONALIDADES:
+────────────────────────────────────────────────────────────────────────
+✅ Bilíngue ES / PT com troca em tempo real
+✅ Busca de motivos (sidebar + campo principal)
+✅ Formulário completo com rádios, checkboxes, EVA 0-10
+✅ Acordeões para manobras semiológicas
+✅ Export PDF narrativo ("Paciente de X anos que consulta por...")
+✅ Salvar/restaurar dados (localStorage)
+✅ Responsivo (tablet + mobile com bottom nav)
+✅ Progresso visual entre abas
+✅ Design system "Saúde Confiável" aplicado em 3 páginas
+
+Erros:
+3 - o botão de pesquisas de motivo de consulta esta sobrepondo a linha, dificultando a busca
+6- falta a descrição dos motivos de tos, quando dizer que sim deve abrir os itens (quantidade, color, olor...)
+7 - Mnemonicas etcs, está tudo corrido na mesma pagina, sendo nada ditatico, devemos corrigir isso
+8 -Alguns campos já estão saindo como marcados ex: APP os campos de Enfermedades de la infancia, já estão um um sinal de marcação em Antecedentes familiares relevantes, tbm ocorre o mesmo, revise onde mais possa estar assim e corrija;
+9 -criar um motor também o um texto corrido em ectoscopia
+10- o campo de dados pessoais está mal configurado, aparece um espaço muito grande em por ex: nome... depois em sexo, deve diminuir esse espaço para  melhor leitura
+11- esta demorando carregar alguns itens do site, por ex: HCs recientes, o nome, esses campos demoram um pouco a aparecer? qual poderia ser o problema?
+
+Guia para examen físico, palpacion, percusion, escutacion en cada motivo... 
+Diagnostico discutido com iA nativa
+
+obs> continuar com o google está ok, deve entrar na conta salva, porem a opção de criar nova conta deve abrir para um novo registro
+
+
+Pag inicial
+[CORRIGIDO 2026-06-07] App: entra direto na pagina sem fazer login
+roadmap: está aparecendo no site? pq? deveria ser um arquivo interno
+[CORRIGIDO 2026-06-07] FaQ: criar a pagina dele, pergunte me
+[CORRIGIDO 2026-06-07] Términos de uso e Privacidad: criar pagina com términos
+[CORRIGIDO 2026-06-07] Botão "ver el app" está entrado direto sem fazer login
+
+Pag login
+[CORRIGIDO 2026-06-07] criar banco dados p/ usuarios -> tabelas profiles e historias_clinicas criadas no Supabase via SQL Editor, com RLS habilitado e policies (auth.uid() = id / user_id)
+[CORRIGIDO 2026-06-07] fazer login con google funcionar -> verificado no painel Supabase: provider Google já está habilitado (toggle ON), com Client ID e Client Secret configurados; função authGoogleLogin() pronta no supabase-integration.js. Falta apenas testar ao vivo após o deploy do gate de login.
+
+app
+[CORRIGIDO 2026-06-07] Criar pagina configuração e usuario -> anamnesismed-config.html criada (dados pessoais, plano, logout), ligada ao Supabase (profileGet/authSaveProfile/authLogout) e ao guard de autenticação (PAGE='config' no supabase-integration.js)
+[CORRIGIDO 2026-06-07] Renomear e organizar dashboar -> "Configurações" e menu do usuário agora levam à nova página de perfil; corrigida inconsistência PT/ES no menu (Clínica Médica vs Medicina Interna -> Clínica Médica em ambos); seção renomeada de "Biblioteca" para "Especialidades"
+completar os motivos de consulta -> CORREÇÃO 2026-06-07: na verdade só existem 8 motivos cadastrados (7 em Clínica Médica: dor-torácica, dispneia, cefaleia, febre, dor-abdominal, edema, tosse; 1 em Cirurgia: apendicite). O badge "new" no sidebar é apenas indicador de versão (v1/v2), não um motivo placeholder. Ficará para depois — fica registrado para retomar.
+
+[CORRIGIDO 2026-06-07] BUG: mensagem "Tu trial ha terminado" (paywall) aparecendo na hora, em vez de só após 30 dias ->
+  Causa raiz dupla:
+  1) authSaveProfile() fazia upsert no perfil sem definir 'plano'/'trial_end'; como a tabela profiles tem 'plano default trial' mas trial_end SEM default (fica NULL), o cálculo de dias restantes dava NaN -> sistema tratava como "expirado" na hora.
+  2) Mais grave: o perfil do usuário nem sequer estava sendo criado na tabela public.profiles (0 registros, apesar de já existir 1 usuário em auth.users) -> profileCheckAccess() não encontrava perfil e também acionava o paywall.
+  Correções aplicadas:
+  - JS: authSaveProfile() em supabase-integration.js agora verifica se o perfil é novo/incompleto e define plano='trial' + trial_end = agora + 30 dias (precisa do deploy via git push, ver abaixo).
+  - DB: alter table profiles -> trial_end agora tem default 'now() + interval 30 days' (cobre inserts futuros fora do app); rodado backfill para perfis antigos sem trial_end (não havia nenhum afetado).
+  - DB: criado manualmente o registro de perfil que faltava para o usuário fernando-jose@outlook.com.br (id a52339cb-ee38-42c5-b14b-d642eb9399b5), com plano='trial' e trial_end=2026-07-07.
+  PENDENTE: enviar a alteração de supabase-integration.js (git add -A; git commit -m "fix: corrige criação de trial de 30 dias no cadastro de perfil"; git push) — sem isso, novos usuários continuam vulneráveis ao mesmo bug.
+
+[CORRIGIDO 2026-06-07] BUG: cards do dashboard ("HCs criadas: 3", "PDFs exportados: 2", "Motivos consultados: 7") mostravam números de exemplo fixos para qualquer usuário, inclusive os novos ->
+  - HTML (anamnesismed-dashboard.html): valores trocados para placeholders com id (zerados por padrão) e cards de HC de exemplo ocultados (display:none) — a lista real já era populada via uiLoadRecentHCs, mas os contadores no topo continuavam hardcoded.
+  - JS (supabase-integration.js): nova função uiLoadStats() calcula os números reais a partir de historias_clinicas do usuário (quantidade de HCs, motivos distintos consultados) e exibe 0/"Nenhum ainda" quando vazio. "PDFs exportados" mostra 0 por enquanto pois ainda não existe rastreamento de exportações no banco — fica registrado para criar essa contagem futuramente.
+  - Chamada uiLoadStats() adicionada ao fluxo de carregamento do dashboard.
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
+[CORRIGIDO 2026-06-07] BUG: campos de seleção do formulário (Estado Civil, Escolaridade etc.) mostravam DUAS setinhas (^) sobrepostas ->
+  Causa: a regra CSS "select.f-input" define uma seta customizada via SVG (background-image), mas não desativa a aparência nativa do navegador (appearance) — então a seta padrão do sistema aparecia junto com a customizada.
+  Correção: adicionado appearance:none / -webkit-appearance:none / -moz-appearance:none na regra select.f-input em anamnesismed-app.html. Verificado: é a única ocorrência desse padrão no projeto (não afeta outras páginas).
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
+[CORRIGIDO 2026-06-07] CONTEÚDO: faltava a mnemônica IIDET (semiologia da febre) na aba "Mnemotécnicas" ->
+  Origem: usuário enviou um material de referência (Interrogatorio.pdf) cujo quadro "Fiebre" descreve as características Início/Intensidade/Duração/Evolução/Término — que formam o acrônimo IIDET.
+  Correção: adicionado um novo card de mnemônica "IIDET" (com as 5 linhas Início/Intensidade/Duração/Evolução/Término e seus significados clínicos) ao array `mnemonics` de TODOS os 8 motivos de consulta com guia (febre, dor-toracica, dispneia, cefaleia, dor-abdominal, edema, tosse, apendicite) em anamnesismed-app.html — em febre como semiologia central, e nos demais como "semiologia da febre (se associada)".
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
+[CORRIGIDO 2026-06-07] NOVO: trava de onboarding pós-login — aceitar termos + escolher médico ou estudante ->
+  Implementado um overlay bloqueante (ver onboardingCheckAndShow em supabase-integration.js) que aparece
+  automaticamente assim que o usuário entra no dashboard ou no app pela primeira vez (logo após login com
+  Google ou magic link), em duas etapas em sequência:
+    1) Aceitar os Termos de Uso e Política de Privacidade (checkbox obrigatório + link para anamnesismed-terms.html)
+    2) Escolher "Sou médico(a)" ou "Sou estudante de medicina"
+  As respostas são salvas em profiles.termos_aceitos (boolean) e profiles.tipo_usuario ('medico'|'estudante').
+  O overlay só aparece se algum desses campos estiver vazio — usuários que já responderam não veem mais nada.
+  AÇÃO NECESSÁRIA: rodar este SQL no Supabase SQL Editor (adiciona as 2 colunas que ainda não existem):
+    ALTER TABLE profiles ADD COLUMN IF NOT EXISTS termos_aceitos boolean DEFAULT false;
+    ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tipo_usuario text;
+  PENDENTE: incluído no mesmo commit/push pendente acima (mas o SQL acima precisa ser rodado manualmente no Supabase).
+
+[CORRIGIDO 2026-06-07] BUG (reincidente): badge "Ferramenta clínica gratuita" ainda aparecia cortado no topo em celulares ->
+  A correção anterior (commit dc0fc13, line-height:1.4) não foi suficiente — o line-height continuava menor
+  que a altura necessária para o texto maiúsculo + letter-spacing, cortando o topo das letras em telas Android.
+  Nova correção em @media(max-width:600px) .hero-badge: line-height aumentado de 1.4 para 2, padding de
+  6px/12px para 9px/14px, e overflow:visible explícito.
+  PENDENTE: incluído no mesmo commit/push pendente acima.
+
+
+────────────────────────────────────────────────────────────────────────
+PROGRESSO — SESSÃO 2026-06-07
+────────────────────────────────────────────────────────────────────────
+✅ Domínio próprio configurado: www.anamnesismed.com
+   - Adicionado no Vercel (Domains) com redirect 308 de anamnesismed.com → www
+   - Registros DNS CNAME criados no Cloudflare (proxy desativado/DNS-only)
+   - Status "Valid Configuration" confirmado nos 3 domínios
+
+✅ Supabase Auth — URL Configuration corrigida
+   - Site URL alterado de http://localhost:3000 para https://www.anamnesismed.com
+   - Redirect URLs adicionadas: https://www.anamnesismed.com/** e
+     https://anamnesismed-site.vercel.app/**
+   - Corrige o erro de redirecionamento para localhost após login com Google
+
+✅ Verificado: nome do app na tela de consentimento OAuth (Google Cloud)
+   - Já estava correto como "AnamnesísMed" — nenhuma alteração necessária
+
+✅ Explicado: como visualizar/gerenciar usuários cadastrados
+   - Supabase → Authentication → Users (UID, nome, email, telefone, provedor)
+   - Supabase → Database → Table Editor (profiles / historias_clinicas) p/ dados de uso
+
+✅ Corrigido bug mobile: badge "Ferramenta clínica gratuita" cortado no topo
+   - Arquivo: anamnesismed-landing.html
+   - Adicionada regra dentro de @media(max-width:600px): permite quebra de linha,
+     reduz fonte/letter-spacing e limita largura
+   - Commit dc0fc13 "Corrigir badge do hero cortado em telas pequenas"
+   - Deploy confirmado no Vercel (Ready / Production)
+
+✅ FAQ — página criada (anamnesismed-faq.html), bilíngue PT/ES, com acordeão
+✅ Privacidade — página criada (anamnesismed-privacy.html), separada dos Termos
+✅ Links do rodapé corrigidos (anamnesismed-landing.html)
+   - FAQ, Termos de uso e Privacidade agora apontam para as páginas reais
+     (antes apontavam para "#")
+✅ Gate de login ativado — App entrava direto sem autenticação
+   - Causa: supabase-integration.js (já tinha toda a lógica pronta:
+     guardRequireAuth, guardCheckAccess, paywall, dados reais do usuário)
+     não estava incluído via <script> em landing/dashboard/app
+   - Adicionadas as tags <script> (Supabase + supabase-integration.js)
+     antes de </body> em: anamnesismed-landing.html, anamnesismed-dashboard.html,
+     anamnesismed-app.html
+   - Resolve junto: "App entra sem login" + "Botão ver o app sem login"
+   - PENDENTE: usuário precisa rodar `git add -A && git commit && git push`
+     localmente (sandbox não conseguiu — lock no .git) e testar ao vivo após deploy
+
+✅ Tabelas do banco de dados criadas no Supabase (SQL Editor)
+   - profiles (id, email, nome, sobrenome, universidade, ano_curso, idioma, plano, trial_end, criado_em)
+   - historias_clinicas (id, user_id, motivo_id, motivo, especialidade, dados jsonb, status, criado_em, atualizado_em)
+   - RLS habilitado em ambas + policies: usuário só acessa seus próprios dados
+     (auth.uid() = id em profiles / auth.uid() = user_id em historias_clinicas)
+   - Resultado: "Success. No rows returned" — tabelas confirmadas criadas
+
+✅ Google OAuth verificado no Supabase (Authentication > Providers > Google)
+   - Provider já está habilitado (toggle ON), Client ID e Client Secret configurados
+   - função authGoogleLogin() já pronta no supabase-integration.js
+   - Falta apenas testar o fluxo completo ao vivo, após o deploy do gate de login
+
+✅ Página de Configurações/Perfil criada (anamnesismed-config.html)
+   - Campos: nome, sobrenome, e-mail (somente leitura), universidade, ano/curso, idioma
+   - Seção de Plano (mostra Pro ou Trial com dias restantes) + botão de upgrade
+   - Botão "Sair da conta" (logout via Supabase)
+   - Integrada ao supabase-integration.js: nova PAGE='config' com guardRequireAuth,
+     carrega dados via profileGet() e salva via authSaveProfile()
+   - Scripts do Supabase incluídos (mesmo padrão das outras páginas)
+
+✅ Dashboard reorganizado
+   - "Configurações" e o cartão do usuário (rodapé da sidebar) agora linkam para
+     anamnesismed-config.html
+   - Corrigida inconsistência de tradução: "Clínica Médica" aparecia como
+     "Medicina Interna" em ES — agora consistente nos dois idiomas
+   - Seção renomeada de "Biblioteca" para "Especialidades" (nome mais condizente
+     com o conteúdo: Clínica Médica / Cirurgia Geral)
+
+NOTA: revisão de "completar os motivos de consulta" e expansão de conteúdo
+clínico ficou para uma próxima sessão (ver item correspondente acima).
+
+
+
+STATUS DO PROJETO:
+────────────────────────────────────────────────────────────────────────
+✅ Landing Page            — redesign completo (Direção 3)
+✅ Login / Cadastro        — redesign completo (magic link + Google)
+✅ Dashboard               — redesign completo (sidebar + stats + HCs)
+🔶 App Principal           — estrutura OK, pendente aplicar novo design
+🔲 Backend (Supabase)      — autenticação real (TODO: integrar)
+🔲 Stripe                  — pagamentos $1.99/mês (TODO: integrar)
+🔲 Expandir HCs            — completar 25 motivos de Clínica Médica
+🔲 Deploy                  — Vercel / Netlify → anamnesismed.com
+🟡 Domínio                 — anamnesismed.com já registrado ✓
+
+PRÓXIMOS PASSOS:
+────────────────────────────────────────────────────────────────────────
+1. Aplicar design "Saúde Confiável" ao anamnesismed-app.html
+2. Backend — Supabase (auth real: magic link + Google OAuth)
+3. Stripe — integração de pagamento ($1.99/mês)
+4. Expandir conteúdo — HCs dos 25 motivos de Clínica Médica
+5. Deploy — publicar em anamnesismed.com via Vercel
+
+© 2025 AnamnesísMed · anamnesismed.com
+
+[CORRIGIDO 2026-06-07] BUG: tela de aceitar termos pedindo toda hora
+Causa provável: a tabela "profiles" no Supabase tem RLS ativado mas falta uma
+política de UPDATE — o salvamento de termos_aceitos/tipo_usuario falha
+silenciosamente (erro só aparecia no console), e a cada novo carregamento o
+perfil ainda está com termos_aceitos=false, então o gate aparece de novo.
+Correção: o JS agora verifica o resultado do salvamento e mostra erro no botão
+em vez de seguir adiante silenciosamente. MAS é necessário rodar este SQL no
+Supabase (SQL Editor) para permitir que o próprio usuário atualize seu perfil:
+
+  CREATE POLICY "Usuarios podem atualizar o proprio perfil"
+  ON profiles FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+
+Sem essa política, o UPDATE é bloqueado pelo RLS e o aceite nunca é salvo.
+
+[CORRIGIDO 2026-06-07] Dashboard mobile — 3 ajustes:
+1. Menu lateral (☰) travava no celular: não havia como fechar (sem X, sem
+   fundo escurecido clicável, e o botão ☰ ficava coberto pelo sidebar aberto).
+   Adicionado: backdrop semitransparente clicável (#sidebar-backdrop) e botão
+   "✕" dentro do cabeçalho do sidebar (visível só em telas <=768px).
+2. Badge "Minhas HCs" e "X/5 HCs" no rodapé da sidebar mostravam "5" fixo para
+   todo mundo. Agora são preenchidos dinamicamente em uiLoadStats() a partir
+   de hcListAll() — refletem a quantidade real de HCs de cada usuário (zerado
+   para usuários novos).
+3. Adicionado item "Encerrar sessão" na sidebar, logo após "Upgrade para Pro",
+   chamando authLogout() (já existente em supabase-integration.js).
+
+[CORRIGIDO 2026-06-07] CONTEÚDO: removido o cartão IIDET ("Semiologia da
+febre") que havia sido replicado por engano em todos os 8 motivos de consulta.
+Mantido SOMENTE em Febre/Fiebre — é específico de febre e não fazia sentido
+aparecer em Cefaleia, Dor Torácica, etc. Cada motivo volta a exibir apenas
+suas próprias mnemotécnicas.
+
+[CORRIGIDO 2026-06-07] BUG: card de exemplo "Paciente A.P.L. — Cefaleia"
+aparecia por 1-2s no dashboard mobile e depois sumia. Causa: havia 3 cards de
+exemplo fixos no HTML de "HCs recentes" — 2 com style="display:none" e UM
+sem (o da Cefaleia), que ficava visível até uiLoadRecentHCs() rodar e
+substituir o conteúdo pelos dados reais (vazio, no caso). Removidos os 3
+cards de exemplo do HTML — a lista agora começa vazia e só é preenchida
+dinamicamente pela função real.

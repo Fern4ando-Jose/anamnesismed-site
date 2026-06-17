@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-labelledby="tE dE">
+  <title id="tE">AnamnesisMed — emblema circular</title>
+  <desc id="dE">Selo circular teal com anel claro, letra A branca e cruz médica âmbar.</desc>
+  <defs>
+    <linearGradient id="bgE" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e7490"/>
+      <stop offset="1" stop-color="#0b5365"/>
+    </linearGradient>
+  </defs>
+  <circle cx="120" cy="120" r="114" fill="url(#bgE)"/>
+  <circle cx="120" cy="120" r="102" fill="none" stroke="#f4f7f9" stroke-width="2.5" stroke-opacity="0.55"/>
+  <path fill="#ffffff" fill-rule="evenodd"
+        d="M120 70 L164 178 L145 178 L134 150 L106 150 L95 178 L76 178 Z
+           M120 120 L111 146 L129 146 Z"/>
+  <g fill="#f59e0b">
+    <rect x="139" y="80" width="24" height="7.5" rx="2.5"/>
+    <rect x="147.25" y="71.75" width="7.5" height="24" rx="2.5"/>
+  </g>
+</svg>
