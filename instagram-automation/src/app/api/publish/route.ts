@@ -616,6 +616,7 @@ export async function GET(req: NextRequest) {
         caption: content.instagramCaption,
         tags: content.tags,
         videoKeywords: content.videoKeywords ?? [],
+        esp: kw, // especialidade (CARDIOLOGIA, GASTRO…) → footage genérico do reel
         slideUrls,
       });
     }

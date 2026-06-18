@@ -96,6 +96,7 @@ jobs:
               kw,
               ed: "000",
               videoKeywords: Array.isArray(p.videoKeywords) ? p.videoKeywords : [],
+              specialty: p.esp || "",
               // Trilha de fundo por slot (sem narração). Arquivos em public/music/.
               music: "music/bed-" + (({manha:0,tarde:1,noite:2})["${{ steps.slot.outputs.slot }}"] ?? 0) + ".mp3"
             };

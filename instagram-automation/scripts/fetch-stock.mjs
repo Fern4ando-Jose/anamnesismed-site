@@ -1,8 +1,14 @@
 // ─── Busca footage real no Pexels (grátis) e injeta clips[] no reel-props.json ──
 // Uso (CI): node scripts/fetch-stock.mjs ../reel-props.json
-// - Escolhe termos de busca pela especialidade (kw) + termos médicos genéricos.
-// - Busca vídeos VERTICAIS (portrait) na API do Pexels, monta um pool e escolhe
-//   N clipes distintos (1 por beat: capa + slides + cta).
+// - Decisão 2026-06-18: o footage é AMBIENTE clínico genérico, NÃO a cena literal
+//   do caso. O acervo grátis do Pexels não tem clipe específico ("endoscopia de
+//   úlcera", "amostra de melena" etc.) e devolvia vídeo aleatório sem nada a ver
+//   com o texto. Então ignoramos as videoKeywords (cenas literais) e usamos só um
+//   pool de termos amplos que o Pexels TEM de verdade (hospital, médico, lab…),
+//   com um leve toque por especialidade. O texto do reel carrega o sentido; o
+//   vídeo é só pano de fundo profissional.
+// - Busca vídeos VERTICAIS (portrait) na API do Pexels e escolhe N clipes
+//   distintos (1 por beat: capa + slides + cta).
 // - Em qualquer falha / sem chave: loga no stderr e sai 0 SEM clips (a composição
 //   cai no fundo teal sólido — nunca quebra o Reel).
 // Logs no stderr; stdout reservado.
@@ -14,22 +20,41 @@ const log = (...a) => console.error("[stock]", ...a);
 const KEY = process.env.PEXELS_API_KEY;
 const propsPath = resolve(process.cwd(), process.argv[2] || "../reel-props.json");
 
-// Especialidade → termos de busca (inglês indexa melhor no Pexels).
+// Especialidade → 2 termos de "toque" temático (inglês indexa melhor no Pexels).
+// Mantidos AMPLOS de propósito: precisam existir no acervo grátis como footage
+// real, não como cena clínica específica. As chaves batem com tema.esp.
 const TERMS = {
-  CARDIOLOGIA: ["heart rate monitor", "cardiology", "heartbeat"],
-  NEUROLOGIA: ["brain scan", "mri scan", "neurology"],
-  PNEUMOLOGIA: ["chest x ray", "breathing", "lungs"],
-  GASTRO: ["laboratory", "medical lab", "stomach anatomy"],
-  ENDOCRINOLOGIA: ["laboratory blood", "insulin", "medical lab"],
-  ONCOLOGIA: ["microscope lab", "cancer research", "laboratory"],
-  INFECTOLOGIA: ["microscope", "virus research", "laboratory"],
-  REUMATOLOGIA: ["x ray bones", "joint pain", "hospital"],
-  PEDIATRIA: ["pediatric hospital", "child care hospital", "hospital"],
-  CIRURGIA: ["surgery room", "operating room", "surgeon"],
-  VASCULAR: ["blood flow", "vein", "circulation"],
-  GERIATRIA: ["elderly care", "hospital corridor", "senior patient"],
+  CARDIOLOGIA: ["heart rate monitor", "ecg hospital"],
+  NEUROLOGIA: ["mri scan", "brain scan"],
+  PNEUMOLOGIA: ["chest x ray", "oxygen mask hospital"],
+  GASTRO: ["medical laboratory", "ultrasound exam"],
+  ENDOCRINOLOGIA: ["laboratory blood test", "glucose test"],
+  NEFROLOGIA: ["dialysis machine", "laboratory blood test"],
+  INFECTOLOGIA: ["microscope laboratory", "iv drip hospital"],
+  ORTOPEDIA: ["x ray bones", "physical therapy"],
+  RADIOLOGIA: ["ct scan", "mri scan"],
+  TOXICOLOGIA: ["emergency room", "iv drip hospital"],
+  EMERGENCIA: ["emergency room", "ambulance hospital"],
+  "EMERGÊNCIA": ["emergency room", "ambulance hospital"],
+  CLINICA: ["doctor consultation", "hospital ward"],
+  "CLÍNICA": ["doctor consultation", "hospital ward"],
+  PEDIATRIA: ["pediatric hospital", "child care hospital"],
+  CIRURGIA: ["operating room", "surgeon hospital"],
+  VASCULAR: ["blood flow", "vein ultrasound"],
+  GERIATRIA: ["elderly care", "senior patient hospital"],
 };
-const GENERIC = ["hospital", "doctor", "medical", "stethoscope", "hospital corridor", "healthcare", "medical research"];
+// Pool base de b-roll clínico genérico — termos que o Pexels SEMPRE tem como
+// footage real (não animação 3D abstrata nem resultado aleatório).
+const GENERIC = [
+  "hospital corridor",
+  "doctor with stethoscope",
+  "medical team hospital",
+  "nurse hospital",
+  "doctor writing notes",
+  "laboratory research",
+  "patient hospital bed",
+  "medical equipment closeup",
+];
 
 async function searchPexels(query) {
   const url = `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&orientation=portrait&per_page=8&size=medium`;
@@ -69,27 +94,25 @@ async function main() {
   const used = new Set();
   const clips = [];
 
-  try {
-    // PREFERIDO: 1 clipe por CENA, na ordem das videoKeywords (footage casa com o texto).
-    const ordered = Array.isArray(props.videoKeywords) && props.videoKeywords.length
-      ? props.videoKeywords.slice(0, need)
-      : null;
+  // B-roll clínico genérico: leve toque por especialidade + pool seguro. NÃO usa
+  // as videoKeywords (cenas literais), que o acervo grátis não entrega.
+  const esp = String(props.specialty || props.esp || "").toUpperCase().trim();
+  const terms = [...(TERMS[esp] || []), ...GENERIC];
 
-    if (ordered) {
-      for (const q of ordered) {
-        let link = await firstClip(q, used);
-        if (!link) link = await firstClip("hospital medical closeup", used); // fallback p/ a cena
-        clips.push(link); // pode ser null → a cena usa fundo teal
-        log(`cena "${q}" → ${link ? "ok" : "sem clipe"}`);
-      }
-    } else {
-      // FALLBACK: termos por especialidade + genéricos (sem alinhamento por cena).
-      const terms = [...(TERMS[(props.kw || "").toUpperCase()] || []), ...GENERIC];
-      for (const q of terms) {
-        if (clips.length >= need) break;
-        const link = await firstClip(q, used);
-        if (link) clips.push(link);
-      }
+  try {
+    // 1 clipe distinto por beat, varrendo o pool. Cada termo retorna footage real
+    // de hospital/médico/lab — ambiente profissional, nunca "errado" pro texto.
+    for (const q of terms) {
+      if (clips.filter(Boolean).length >= need) break;
+      const link = await firstClip(q, used);
+      if (link) { clips.push(link); log(`b-roll "${q}" → ok`); }
+      else log(`b-roll "${q}" → sem clipe`);
+    }
+    // Se o pool não encheu os beats (raro), completa com termos bem genéricos.
+    for (const q of ["hospital", "doctor", "healthcare", "medical research", "stethoscope"]) {
+      if (clips.filter(Boolean).length >= need) break;
+      const link = await firstClip(q, used);
+      if (link) { clips.push(link); log(`b-roll extra "${q}" → ok`); }
     }
   } catch (e) { log("exceção na busca:", e?.message || String(e)); }
 

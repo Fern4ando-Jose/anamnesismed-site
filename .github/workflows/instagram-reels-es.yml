@@ -84,6 +84,7 @@ jobs:
               kw,
               ed: "000",
               videoKeywords: Array.isArray(p.videoKeywords) ? p.videoKeywords : [],
+              specialty: p.esp || "",
               music: "music/bed-" + (({manha:0,tarde:1,noite:2})["${{ steps.slot.outputs.slot }}"] ?? 0) + ".mp3"
             };
             fs.writeFileSync("caption.txt", p.caption || title);
