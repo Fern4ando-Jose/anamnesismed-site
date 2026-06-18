@@ -7,10 +7,13 @@ name: Instagram Reels — AnamnesísMed
 # Roda 1x/dia às 21:00 UTC (18:00 BRT) + disparo manual (workflow_dispatch).
 
 on:
-  # Agendamento automático DESLIGADO até o Nível 3 (footage) estar aprovado.
-  # Reativar depois descomentando o bloco schedule abaixo.
-  # schedule:
-  #   - cron: "0 21 * * *" # 21:00 UTC = 18:00 BRT
+  # 3 Reels/dia no @anamnesismed (aprovado 2026-06-18 → 6 posts/dia/conta: 3
+  # carrossel + 3 reel). Horários espalhados, sem colidir com os carrosséis PT
+  # (10:00/15:30/23:00) nem com os reels ES.
+  schedule:
+    - cron: "0 12 * * *" # 09:00 BRT — manha
+    - cron: "0 17 * * *" # 14:00 BRT — tarde
+    - cron: "0 21 * * *" # 18:00 BRT — noite
   workflow_dispatch:
     inputs:
       slot:
@@ -53,8 +56,13 @@ jobs:
       - name: Definir slot
         id: slot
         run: |
-          SLOT="${{ github.event.inputs.slot }}"
-          SLOT="${SLOT:-noite}"
+          # Agendado: cada cron mapeia p/ um slot (3 reels distintos/dia). Manual: usa o input.
+          case "${{ github.event.schedule }}" in
+            "0 12 * * *") SLOT=manha ;;
+            "0 17 * * *") SLOT=tarde ;;
+            "0 21 * * *") SLOT=noite ;;
+            *) SLOT="${{ github.event.inputs.slot }}"; SLOT="${SLOT:-noite}" ;;
+          esac
           echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
           echo "Slot escolhido: $SLOT"
 

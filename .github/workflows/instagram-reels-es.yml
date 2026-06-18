@@ -7,8 +7,12 @@ name: Instagram Reels ES — AnamnesísMed
 # Agendamento DESLIGADO até footage Nível 3 aprovado (igual ao PT). Só dispatch.
 
 on:
-  # schedule:
-  #   - cron: "0 20 * * *" # 20:00 UTC (escalonado do PT, p/ não colidir no rate-limit)
+  # 3 Reels/dia no @anamnesismed.es. Horários escalonados do PT e dos carrosséis
+  # ES (09:00/13:00/18:00) p/ não colidir no rate-limit do app.
+  schedule:
+    - cron: "0 11 * * *" # manha
+    - cron: "0 16 * * *" # tarde
+    - cron: "0 20 * * *" # noite
   workflow_dispatch:
     inputs:
       slot:
@@ -44,8 +48,13 @@ jobs:
       - name: Definir slot
         id: slot
         run: |
-          SLOT="${{ github.event.inputs.slot }}"
-          SLOT="${SLOT:-noite}"
+          # Agendado: cada cron mapeia p/ um slot (3 reels distintos/dia). Manual: usa o input.
+          case "${{ github.event.schedule }}" in
+            "0 11 * * *") SLOT=manha ;;
+            "0 16 * * *") SLOT=tarde ;;
+            "0 20 * * *") SLOT=noite ;;
+            *) SLOT="${{ github.event.inputs.slot }}"; SLOT="${SLOT:-noite}" ;;
+          esac
           echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
           echo "Slot escolhido: $SLOT"
 
