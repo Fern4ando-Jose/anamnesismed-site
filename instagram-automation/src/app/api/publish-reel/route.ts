@@ -7,24 +7,30 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 300;
 
-// ─── Token do Instagram (mesma estratégia do /api/publish) ────────────────────
-async function getAccessToken(): Promise<string> {
+type Lang = "pt" | "es";
+
+// ─── Token do Instagram por idioma (mesma estratégia do /api/publish) ─────────
+async function getAccessToken(lang: Lang = "pt"): Promise<string> {
+  const dbKey  = lang === "es" ? "meta_access_token_es" : "meta_access_token";
+  const envVar = lang === "es" ? process.env.META_ACCESS_TOKEN_ES : process.env.META_ACCESS_TOKEN;
   try {
     const { sql } = await import("@vercel/postgres");
-    const rows = await sql`SELECT value FROM config WHERE key = 'meta_access_token'`;
+    const rows = await sql`SELECT value FROM config WHERE key = ${dbKey}`;
     if (rows.rows[0]?.value) return rows.rows[0].value;
   } catch {
     /* fallback para env var */
   }
-  return process.env.META_ACCESS_TOKEN!;
+  return envVar!;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ─── Publicação como REEL ─────────────────────────────────────────────────────
-async function publishReel(videoUrl: string, caption: string): Promise<string> {
-  const accountId = process.env.META_INSTAGRAM_ACCOUNT_ID!;
-  const token = await getAccessToken();
+async function publishReel(videoUrl: string, caption: string, lang: Lang = "pt"): Promise<string> {
+  const accountId = (lang === "es"
+    ? process.env.META_INSTAGRAM_ACCOUNT_ID_ES
+    : process.env.META_INSTAGRAM_ACCOUNT_ID)!;
+  const token = await getAccessToken(lang);
   const graphRoot = "https://graph.instagram.com/v25.0";
   const base = `${graphRoot}/${accountId}`;
 
@@ -105,6 +111,7 @@ async function handle(req: NextRequest) {
   let video = params.get("video") ?? "";
   let caption = params.get("caption") ?? "";
   const slot = params.get("slot") ?? ""; // opcional — só para log
+  const lang: Lang = (params.get("lang") ?? process.env.POST_LANG) === "es" ? "es" : "pt";
 
   if ((!video || !caption) && req.method === "POST") {
     try {
@@ -116,14 +123,14 @@ async function handle(req: NextRequest) {
     }
   }
 
-  const log: Record<string, unknown> = { slot, video: video ? "(presente)" : "(ausente)" };
+  const log: Record<string, unknown> = { slot, lang, video: video ? "(presente)" : "(ausente)" };
 
   if (!video) {
     return NextResponse.json({ ok: false, error: "Parâmetro 'video' (URL pública) é obrigatório" }, { status: 400 });
   }
 
   try {
-    const postId = await publishReel(video, caption || "");
+    const postId = await publishReel(video, caption || "", lang);
     log.postId = postId;
     log.ok = true;
     return NextResponse.json({ ok: true, postId, log });

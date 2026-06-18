@@ -1,0 +1,118 @@
+name: Instagram Reels ES — AnamnesísMed
+
+# Pipeline GRÁTIS de Reels (vídeo) para o @anamnesismed.es (espelha o reels PT,
+# com &lang=es no preview e no publish-reel → conteúdo ES e publicação na conta ES).
+# Renderiza com Remotion no GitHub Actions, sobe o mp4 pro Blob e publica.
+#
+# Agendamento DESLIGADO até footage Nível 3 aprovado (igual ao PT). Só dispatch.
+
+on:
+  # schedule:
+  #   - cron: "0 20 * * *" # 20:00 UTC (escalonado do PT, p/ não colidir no rate-limit)
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "Slot usado para buscar o conteúdo (preview)"
+        required: false
+        default: "noite"
+        type: choice
+        options: [manha, tarde, noite]
+      dryrun:
+        description: "Só renderizar e subir pro Blob (NÃO publica no Instagram)"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: instagram-automation/package-lock.json
+
+      - name: Instalar dependências
+        working-directory: instagram-automation
+        run: npm install --no-audit --no-fund
+
+      - name: Definir slot
+        id: slot
+        run: |
+          SLOT="${{ github.event.inputs.slot }}"
+          SLOT="${SLOT:-noite}"
+          echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
+          echo "Slot escolhido: $SLOT"
+
+      # Conteúdo ES: preview com &lang=es (texto gerado para LATAM, não traduzido).
+      - name: Obter conteúdo (preview ES) e montar REEL_PROPS
+        id: content
+        run: |
+          curl -fsS --max-time 120 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&lang=es&slot=${{ steps.slot.outputs.slot }}" \
+            -o preview.json
+          echo "Prévia recebida:"
+          cat preview.json | head -c 400; echo
+
+          node -e '
+            const fs = require("fs");
+            const p = JSON.parse(fs.readFileSync("preview.json", "utf8"));
+            const STOP = new Set(["y","o","el","la","de","del","para","en","con","por","un","una","al","los","las","se","lo","más"]);
+            const title = p.title || "Anamnesis clínica";
+            const kw = ((title.split(/\s+/).find(w => !STOP.has(w.toLowerCase())) || title.split(" ")[0]) || "ANAMNESIS")
+              .toUpperCase().replace(/[^A-ZÁÉÍÓÚÜÑ]/g, "") || "ANAMNESIS";
+            const props = {
+              title,
+              slides: Array.isArray(p.slides) ? p.slides : [],
+              accentWords: Array.isArray(p.accentWords) ? p.accentWords : [],
+              cta: p.cta || "¿Cuál es tu conducta?",
+              kw,
+              ed: "000",
+              videoKeywords: Array.isArray(p.videoKeywords) ? p.videoKeywords : [],
+              music: "music/bed-" + (({manha:0,tarde:1,noite:2})["${{ steps.slot.outputs.slot }}"] ?? 0) + ".mp3"
+            };
+            fs.writeFileSync("caption.txt", p.caption || title);
+            fs.writeFileSync("reel-props.json", JSON.stringify(props));
+            console.log("REEL_PROPS (ES) montado:", JSON.stringify(props).slice(0, 300));
+          '
+
+      - name: Buscar footage (banco Pexels)
+        working-directory: instagram-automation
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: node scripts/fetch-stock.mjs ../reel-props.json
+
+      - name: Renderizar Reel (Remotion)
+        working-directory: instagram-automation
+        run: node scripts/render-reel.mjs --props=../reel-props.json
+
+      - name: Upload do mp4 para o Vercel Blob
+        id: upload
+        working-directory: instagram-automation
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: |
+          URL=$(node scripts/upload-blob.mjs)
+          echo "URL do vídeo: $URL"
+          echo "video_url=$URL" >> "$GITHUB_OUTPUT"
+          echo "🎬 **Vídeo ES renderizado:** $URL" >> "$GITHUB_STEP_SUMMARY"
+
+      # Publica na conta ES (&lang=es → publish-reel usa token/account-id ES).
+      - name: Publicar Reel no Instagram (ES)
+        if: ${{ github.event.inputs.dryrun != 'true' }}
+        run: |
+          curl -fsS --max-time 240 -G \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            --data-urlencode "video=${{ steps.upload.outputs.video_url }}" \
+            --data-urlencode "caption@caption.txt" \
+            --data-urlencode "slot=${{ steps.slot.outputs.slot }}" \
+            --data-urlencode "lang=es" \
+            "https://anamnesismed-ig.vercel.app/api/publish-reel"
+          echo
+          echo "Reel ES publicado."
