@@ -54,8 +54,22 @@ const QA_MODEL = "claude-sonnet-4-6"; // visão confiável p/ contar mãos/dedos
 // por índice) — em vez de pagar uma nova geração na fal a cada chamada.
 // Best-effort: qualquer falha de banco é fail-open. Só URLs APROVADAS no QA entram.
 
-export function cacheKey(model: string, subject: string): string {
-  return `${model}|${subject}`;
+// Token do Blob (aceita o env cru ou só o trecho vercel_blob_rw_...).
+function blobToken(): string | null {
+  const raw = process.env.BLOB_READ_WRITE_TOKEN || "";
+  const m = raw.match(/vercel_blob_rw_[A-Za-z0-9_-]+/);
+  return m ? m[0] : (raw.trim() || null);
+}
+
+// Caminho determinístico no Blob por (subject, dia UTC), SEM sufixo aleatório.
+// PT e ES, no mesmo dia e mesmo caso, batem na MESMA chave → a 2ª conta acha e
+// reusa a imagem que a 1ª gerou (capas IDÊNTICAS entre as contas), independente
+// de banco. (Sem ext aqui — o prefixo casa qualquer extensão no list.)
+export function cacheKey(subject: string, day?: string): string {
+  const d = day ?? new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
+  let h = 2166136261; // FNV-1a 32-bit
+  for (let i = 0; i < subject.length; i++) { h ^= subject.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return `illustrations/cache/${(h >>> 0).toString(36)}-${d}`;
 }
 
 // Seed determinístico por (subject, dia UTC). PT e ES, no mesmo dia e mesmo caso,
@@ -86,68 +100,45 @@ export function falRequestBody(prompt: string, seed: number) {
   };
 }
 
-async function readCachedIllustration(model: string, subject: string): Promise<string | null> {
+// Cache no Blob: a 2ª conta (PT/ES) acha a imagem que a 1ª gerou no MESMO dia/caso
+// e reusa — garante capas idênticas SEM Postgres. Lista pelo prefixo (qualquer ext).
+async function readCachedIllustration(subject: string): Promise<string | null> {
+  const token = blobToken();
+  if (!token) return null;
   try {
-    const { sql } = await import("@vercel/postgres");
-    const key = cacheKey(model, subject);
-    const rows = await sql<{ url: string }>`
-      SELECT url FROM illustration_cache
-      WHERE cache_key = ${key} AND created_at > NOW() - INTERVAL '24 hours'
-      LIMIT 1
-    `;
-    const url = rows.rows[0]?.url;
+    const { list } = await import("@vercel/blob");
+    const { blobs } = await list({ prefix: cacheKey(subject), token, limit: 1 });
+    const url = blobs[0]?.url;
     if (!url) return null;
-    // URLs da fal podem expirar — confirma que ainda responde antes de reusar.
-    try {
-      const check = await fetch(url, { method: "GET" });
-      if (!check.ok) return null;
-    } catch { return null; }
+    try { const c = await fetch(url, { method: "GET" }); if (!c.ok) return null; } catch { return null; }
     return url;
   } catch {
     return null; // sem cache → segue para a geração normal
   }
 }
 
-async function writeCachedIllustration(model: string, subject: string, url: string): Promise<void> {
+// Re-hospeda a imagem APROVADA no Blob na CHAVE DETERMINÍSTICA (sem sufixo, com
+// overwrite): URL estável que a outra conta encontra. Best-effort → fallback p/
+// a URL original da fal.
+async function writeCachedIllustration(subject: string, srcUrl: string): Promise<string | null> {
+  const token = blobToken();
+  if (!token) return null;
   try {
-    const { sql } = await import("@vercel/postgres");
-    const key = cacheKey(model, subject);
-    await sql`
-      INSERT INTO illustration_cache (cache_key, url, subject, model, created_at)
-      VALUES (${key}, ${url}, ${subject}, ${model}, NOW())
-      ON CONFLICT (cache_key) DO UPDATE SET url = ${url}, model = ${model}, created_at = NOW()
-    `;
-  } catch { /* cache é best-effort — nunca quebra o pipeline */ }
-}
-
-// ─── Re-hospedagem no Vercel Blob ────────────────────────────────────────────
-// As URLs da fal são CDN de terceiros, lentas/frias de forma intermitente e com
-// validade limitada. Re-hospedamos a imagem APROVADA no Blob (infra Vercel,
-// rápida e permanente) e cacheamos a URL do Blob. Best-effort: se falhar, segue
-// com a URL original da fal.
-async function rehostToBlob(srcUrl: string): Promise<string | null> {
-  try {
-    const raw = process.env.BLOB_READ_WRITE_TOKEN || "";
-    const m = raw.match(/vercel_blob_rw_[A-Za-z0-9_-]+/);
-    const token = m ? m[0] : raw.trim();
-    if (!token) return null;
-
     const res = await fetch(srcUrl);
     if (!res.ok) return null;
     const ct = res.headers.get("content-type") || "image/jpeg";
     const ext = ct.includes("png") ? "png" : ct.includes("webp") ? "webp" : "jpg";
     const buf = Buffer.from(await res.arrayBuffer());
-
     const { put } = await import("@vercel/blob");
-    const blob = await put(`illustrations/cover.${ext}`, buf, {
+    const blob = await put(`${cacheKey(subject)}.${ext}`, buf, {
       access: "public",
       contentType: ct,
       token,
-      addRandomSuffix: true, // nome único por imagem
+      addRandomSuffix: false,   // chave estável → a outra conta acha pelo prefixo
     });
     return blob.url;
   } catch {
-    return null; // re-host é best-effort — nunca quebra o pipeline
+    return null;
   }
 }
 
@@ -254,10 +245,11 @@ export async function generateIllustration(subject: string, opts: GenerateOpts =
   const useCache = opts.useCache ?? true;
   const automation: Automation = opts.automation ?? "ig-posts";
 
-  // Reuso da ilustração do dia: gasto fal = 0 quando há hit válido.
+  // Reuso da ilustração do dia (Blob): se a outra conta já gerou hoje p/ este
+  // caso, reusa a MESMA imagem (capas idênticas PT/ES) e gasto fal = 0.
   if (useCache) {
-    const hit = await readCachedIllustration(FAL_MODEL, subject);
-    if (hit) return { url: hit, model: FAL_MODEL, attempts: 0, qaReason: "cache 24h", cached: true };
+    const hit = await readCachedIllustration(subject);
+    if (hit) return { url: hit, model: FAL_MODEL, attempts: 0, qaReason: "cache do dia (Blob)", cached: true };
   }
 
   const prompt = buildPrompt(subject);
@@ -271,11 +263,9 @@ export async function generateIllustration(subject: string, opts: GenerateOpts =
     if (!gen.url) { lastErr = gen.error ?? "erro de geração"; continue; }
     const qa = await checkAnatomy(gen.url, automation);
     if (qa.ok) {
-      // Re-hospeda a imagem aprovada no Blob (URL rápida/permanente). Se falhar,
-      // segue com a URL original da fal — degrada ao comportamento anterior.
-      const finalUrl = (await rehostToBlob(gen.url)) ?? gen.url;
-      // Só imagens aprovadas entram no cache → reuso sempre devolve imagem boa.
-      if (useCache) await writeCachedIllustration(FAL_MODEL, subject, finalUrl);
+      // Grava a imagem aprovada no Blob na chave determinística (URL estável que
+      // a outra conta encontra). Se falhar, segue com a URL original da fal.
+      const finalUrl = (useCache ? await writeCachedIllustration(subject, gen.url) : null) ?? gen.url;
       return { url: finalUrl, model: FAL_MODEL, attempts: attempt, qaReason: qa.reason, cached: false };
     }
     lastQa = qa.reason;
