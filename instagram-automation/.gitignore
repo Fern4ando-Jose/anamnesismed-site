@@ -21,3 +21,5 @@ out
 
 .vercel
 .env*
+
+.env*

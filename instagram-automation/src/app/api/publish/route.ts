@@ -614,19 +614,19 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Pré-renderiza a CAPA (única com ilustração de IA) para o Blob: o Instagram
-    // passa a buscar uma imagem estática e pronta, em vez de compor on-the-fly
-    // (download da IA + Satori) — o que, em cold start, estourava o timeout do
-    // fetch do IG e travava a publicação. Falha → mantém a capa on-the-fly.
-    if (imgParam) {
-      const coverBlob = await prerenderToBlob(slideUrls[0], `og/cover-${slot}-${ed}.png`);
-      if (coverBlob) {
-        slideUrls[0]  = coverBlob;
-        log.coverBlob = coverBlob;
-      } else {
-        log.coverBlob = "falhou — mantendo capa on-the-fly";
-      }
+    // Pré-renderiza TODOS os slides (capa + insights + cta) para o Blob: o
+    // Instagram passa a buscar PNGs estáticos e prontos, em vez de compor cada
+    // um on-the-fly (Satori + download da IA na capa). Em cold start, a composição
+    // on-the-fly estourava o timeout de download do IG (erro 9004/2207052 "Media
+    // download has failed") em QUALQUER slide — não só na capa (antes só a capa
+    // era pré-renderizada). Sequencial p/ reusar a lambda quente. Cada falha
+    // mantém a URL on-the-fly daquele slide (nunca quebra o post).
+    let prerendered = 0;
+    for (let i = 0; i < slideUrls.length; i++) {
+      const blob = await prerenderToBlob(slideUrls[i], `og/${slot}-${ed}-${i}.png`);
+      if (blob) { slideUrls[i] = blob; prerendered++; }
     }
+    log.prerendered = `${prerendered}/${slideUrls.length} slides no Blob`;
 
     // Publicar no Instagram
     let instagramPostId: string | null = null;
