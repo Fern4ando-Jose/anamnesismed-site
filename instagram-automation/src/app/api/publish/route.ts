@@ -3,7 +3,7 @@ import { generateIllustration } from "@/lib/illustration";
 import { prerenderToBlob } from "@/lib/prerender";
 import { parseContentJson } from "@/lib/content-json";
 import { type Automation, checkBudget, logSpend, anthropicCost, tavilyCost, EST_RUN_COST } from "@/lib/spend";
-import { TOPICS_BY_LANG, SUBJECTS, CASE_SYS } from "@/lib/temas";
+import { TEMAS, type Tema, type Formato } from "@/lib/temas";
 
 export const maxDuration = 300;
 
@@ -41,15 +41,18 @@ function extractKeyword(topic: string, lang: Lang): string {
   return word.toUpperCase().replace(/[^A-ZÁÉÍÓÚÜÑÃÕÂÊÔÎÛÀÈÌÒÙÇ]/g, "");
 }
 
-function getTopicForSlot(slot: Slot, date: Date, lang: Lang): string {
+// Seleciona o TEMA do dia/slot — sobre o banco INTEIO (todos os formatos),
+// língua-independente: PT e ES no mesmo dia/slot pegam o MESMO tema (capa e
+// índice batem; só a copy muda). Avança por dayOfYear (não por dia-da-semana),
+// então percorre todo o banco em vez de travar nos 21 primeiros.
+function pickTema(slot: Slot, date: Date): Tema {
   const start      = new Date(date.getFullYear(), 0, 0);
   const dayOfYear  = Math.floor((date.getTime() - start.getTime()) / 86400000);
   const weekNum    = Math.floor(dayOfYear / 7);
-  const dayOfWeek  = date.getDay();
   const slotIdx    = slot === "manha" ? 0 : slot === "tarde" ? 1 : 2;
 
-  // embaralhamento determinístico por semana
-  const arr  = [...TOPICS_BY_LANG[lang]];
+  // embaralhamento determinístico por semana (igual p/ os dois idiomas)
+  const arr  = [...TEMAS];
   let seed   = weekNum * 6364136223846793005 + 1442695040888963407;
   for (let i = arr.length - 1; i > 0; i--) {
     seed     = Math.imul(seed, 1664525) + 1013904223;
@@ -57,7 +60,7 @@ function getTopicForSlot(slot: Slot, date: Date, lang: Lang): string {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 
-  const idx = (dayOfWeek * 3 + slotIdx) % arr.length;
+  const idx = (dayOfYear * 3 + slotIdx) % arr.length;
   return arr[idx];
 }
 
@@ -123,7 +126,113 @@ async function searchTopic(topic: string, automation: Automation): Promise<Searc
 
 // ─── Prompt do Claude (PT/ES) ─────────────────────────────────────────────────
 
-function buildPrompt(lang: Lang, topic: string, context: string, slot: Slot, handle: string): string {
+// Estrutura de slides por formato (rótulo da capa + o que cada slide entrega + CTA).
+const FORMATO_ESTRUTURA: Record<Lang, Record<Exclude<Formato, "caso-diagnostico">, { rotulo: string; capa: string; slides: string; cta: string }>> = {
+  pt: {
+    "mnemonico": { rotulo: "MNEMÔNICO", capa: "anuncie o mnemônico e prometa que o leitor vai sair sabendo usá-lo", slides: "cada slide destrincha 1 letra/bloco do mnemônico com o significado clínico e um exemplo curto", cta: "a regra de ouro para lembrar e usar no plantão/prova" },
+    "red-flag": { rotulo: "RED FLAGS", capa: "nomeie o sintoma e avise que existem sinais que mudam tudo", slides: "cada slide traz 1-2 sinais de alarme e POR QUE eles mudam a conduta", cta: "a conduta: quando investigar/encaminhar com urgência" },
+    "passo-a-passo": { rotulo: "PASSO A PASSO", capa: "nomeie a tarefa clínica e prometa um fluxo que cabe no bolso", slides: "cada slide = 1 passo do fluxo, EM ORDEM, objetivo e aplicável", cta: "o erro clássico a evitar (ou o passo que todo mundo pula)" },
+    "score": { rotulo: "SCORE", capa: "nomeie o score e diga em 1 frase quando ele é usado", slides: "apresente os critérios e a pontuação de forma escaneável (não despeje tudo num slide só)", cta: "interpretação: os pontos de corte e a conduta que muda" },
+  },
+  es: {
+    "mnemonico": { rotulo: "MNEMOTECNIA", capa: "anuncia la mnemotecnia y promete que el lector saldrá sabiendo usarla", slides: "cada diapositiva desglosa 1 letra/bloque con el significado clínico y un ejemplo corto", cta: "la regla de oro para recordarla y usarla en la guardia/examen" },
+    "red-flag": { rotulo: "RED FLAGS", capa: "nombra el síntoma y avisa que hay signos que lo cambian todo", slides: "cada diapositiva trae 1-2 signos de alarma y POR QUÉ cambian la conducta", cta: "la conducta: cuándo investigar/derivar con urgencia" },
+    "passo-a-passo": { rotulo: "PASO A PASO", capa: "nombra la tarea clínica y promete un flujo de bolsillo", slides: "cada diapositiva = 1 paso del flujo, EN ORDEN, concreto y aplicable", cta: "el error clásico a evitar (o el paso que todos saltan)" },
+    "score": { rotulo: "SCORE", capa: "nombra el score y di en 1 frase cuándo se usa", slides: "presenta los criterios y la puntuación de forma escaneable (no lo vuelques todo en una sola diapositiva)", cta: "interpretación: los puntos de corte y la conducta que cambia" },
+  },
+};
+
+// Prompt dos formatos novos (mnemônico/red-flag/passo-a-passo/score). Mesma VOZ
+// de mercado + motor de alcance + revisão anti-idioma do caso, mas com estrutura
+// de slides própria. Sai no MESMO formato JSON → as imagens /api/og servem igual.
+function buildFormatoPrompt(lang: Lang, formato: Formato, topic: string, context: string, slot: Slot, handle: string): string {
+  const slotInstr = SLOT_INSTRUCTIONS_BY_LANG[lang][slot];
+  const e = FORMATO_ESTRUTURA[lang][formato as Exclude<Formato, "caso-diagnostico">];
+
+  if (lang === "es") {
+    return `Eres el editor clínico de AnamnesísMed — plataforma de anamnesis para estudiantes de medicina (de 4º año en adelante), internos y residentes de LATINOAMÉRICA. Crea un CARRUSEL de Instagram del tipo ${e.rotulo}, de alto rendimiento para la guardia y el examen de residencia. Contenido serio, correcto y aplicable.
+
+VOZ DEL MERCADO (Latinoamérica) — GENERADO para LATAM, NO traducido del portugués:
+- Público: estudiante de medicina de ciclo clínico, interno, residente y quien prepara el ENARM/examen de residencia.
+- Trato "tú" (singular) y "ustedes" (plural) — NUNCA "vosotros" ni jerga de España. Español latino neutro.
+- Referencias nativas: la guardia, el internado, el hospital público, el examen de residencia.
+
+Tema (${e.rotulo}): "${topic}"
+${slotInstr}
+
+${context ? `Contexto investigado:\n${context}\n` : ""}MOTOR DE ALCANCE (RETENCIÓN + GUARDADOS + COMPARTIDOS):
+- GANCHO: la portada debe FRENAR EL SCROLL en 1-2 s — concreta y específica, hablándole a "tú".
+- GUARDABLE: el contenido debe ser una chuleta que el lector quiera GUARDAR para repasar antes de la guardia/examen.
+- COMPARTIBLE: debe dar ganas de etiquetar a un colega — etiquetar = compartir.
+- El pie de foto cierra SIEMPRE con un llamado a GUARDAR (🔖) y COMPARTIR/etiquetar (📩) antes de los hashtags.
+
+ESTRUCTURA (${e.rotulo}) — sigue TODAS:
+- Portada: ${e.capa}. Concreta y atractiva, máx 80 caracteres.
+- Diapositivas (4): ${e.slides}. Frases cortas, lenguaje de quien está en la práctica. Máx 90 caracteres cada una.
+- CTA final: ${e.cta}.
+- Clínica correcta y específica (criterios, cortes y conductas reales). Sin inventar datos.
+- IDIOMA: español latino neutro (tú/ustedes), JAMÁS "vosotros" ni calcos del portugués.
+
+Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
+{
+  "postTitle": "portada/gancho, máx 80 caracteres, español, SIN punto final innecesario",
+  "postBody": "artículo en markdown, mínimo 300 palabras, español: desarrollo del tema, con criterios/pasos/letras y su aplicación clínica (va al sitio)",
+  "slides": ["slide 1, máx 90", "slide 2, máx 90", "slide 3, máx 90", "slide 4, máx 90"],
+  "accentWords": ["palabra clave slide 1 (en rojo)", "palabra clave slide 2", "palabra clave slide 3", "palabra clave slide 4"],
+  "cta": "cierre accionable de 30-80 caracteres: ${e.cta}",
+  "instagramCaption": "pie de foto 700-1600 caracteres en español: (1) gancho fuerte; (2) desarrollo útil del tema; (3) CTA: 'Guarda para estudiar', 'Etiqueta a un colega' y 'Sigue ${handle} para más'; (4) '→ Anamnesis completa en el link de la bio'; (5) última línea con 6-9 hashtags. Emojis con moderación (1-3).",
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+  "videoKeywords": ["6 términos de búsqueda en INGLÉS para banco de VÍDEO (Pexels), UNO por escena, concretos y filmables, sin términos abstractos"]
+}
+
+Para los hashtags, MEZCLA alcance amplio + nicho LATAM (sin etiquetas de España como #MIR): #medicina #estudiantedemedicina #futuromedico #residentesmedicos #medicinainterna #semiologia #urgencias #ENARM #examenderesidencia #medicinalatam #anamnesismed`;
+  }
+
+  return `Você é o editor clínico do AnamnesísMed — plataforma de anamnese para estudantes de medicina (do 4º ano em diante), internos e residentes no BRASIL. Crie um CARROSSEL de Instagram do tipo ${e.rotulo}, de alto rendimento para o plantão e a prova de residência. Conteúdo sério, correto e aplicável.
+
+VOZ DO MERCADO (Brasil) — GERADO para o Brasil, NÃO traduzido de outro idioma:
+- Público: estudante de medicina do ciclo clínico, interno, R1 e quem estuda para a PROVA DE RESIDÊNCIA (ENARE, USP, UNIFESP) e o Revalida.
+- Tratamento "você"; português brasileiro, direto, sem gíria forçada (cabe "bizu", "cai na prova", "fechou o diagnóstico").
+- Referências nativas: plantão no SUS/UPA, internato, liga acadêmica, prova de residência.
+
+Tema (${e.rotulo}): "${topic}"
+${slotInstr}
+
+${context ? `Contexto pesquisado:\n${context}\n` : ""}MOTOR DE ALCANCE (RETENÇÃO + SALVAMENTOS + COMPARTILHAMENTOS):
+- GANCHO: a capa precisa PARAR O SCROLL em 1-2 s — concreta e específica, falando com "você".
+- SALVÁVEL: o conteúdo deve ser um bizu que o leitor queira SALVAR para revisar antes do plantão/prova.
+- COMPARTILHÁVEL: deve dar vontade de marcar um colega — marcar = compartilhar.
+- A legenda fecha SEMPRE com chamada para SALVAR (🔖) e COMPARTILHAR/marcar (📩) antes das hashtags.
+
+ESTRUTURA (${e.rotulo}) — siga TODAS:
+- Capa: ${e.capa}. Concreta e atraente, máx 80 chars.
+- Slides (4): ${e.slides}. Frases curtas, linguagem de quem está na prática. Máx 90 chars cada.
+- CTA final: ${e.cta}.
+- Clínica correta e específica (critérios, cortes e condutas reais). Sem inventar dados.
+- IDIOMA: português brasileiro (você), nunca tradução/calco de outro idioma.
+
+Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
+{
+  "postTitle": "capa/gancho, máx 80 chars, português, SEM ponto final desnecessário",
+  "postBody": "artigo em markdown, mínimo 300 palavras, português: desenvolvimento do tema, com critérios/passos/letras e a aplicação clínica (vai para o site)",
+  "slides": ["slide 1, máx 90", "slide 2, máx 90", "slide 3, máx 90", "slide 4, máx 90"],
+  "accentWords": ["palavra-chave slide 1 (em vermelho)", "palavra-chave slide 2", "palavra-chave slide 3", "palavra-chave slide 4"],
+  "cta": "fechamento acionável de 30-80 chars: ${e.cta}",
+  "instagramCaption": "legenda 700-1600 chars em português: (1) gancho forte; (2) desenvolvimento útil do tema; (3) CTA: 'Salve para estudar', 'Marque um colega' e 'Siga ${handle} para mais'; (4) '→ Anamnese completa no link da bio'; (5) em uma última linha, 6-9 hashtags. Emojis com parcimônia (1-3).",
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+  "videoKeywords": ["6 termos de busca em INGLÊS para banco de VÍDEO (Pexels), UM por cena, concretos e filmáveis, sem termos abstratos"]
+}
+
+Para as hashtags, MISTURE alcance amplo + nicho BR: #medicina #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #provaderesidencia #enare #revalida #semiologia #clinicamedica #anamnesismed`;
+}
+
+function buildPrompt(lang: Lang, topic: string, context: string, slot: Slot, handle: string, formato: Formato = "caso-diagnostico"): string {
+  // Formatos novos (mnemônico, red-flag, passo-a-passo, score) têm estrutura de
+  // slides própria — o caso "Qual o diagnóstico?" abaixo fica inalterado.
+  if (formato !== "caso-diagnostico") {
+    return buildFormatoPrompt(lang, formato, topic, context, slot, handle);
+  }
+
   const slotInstr = SLOT_INSTRUCTIONS_BY_LANG[lang][slot];
 
   if (lang === "es") {
@@ -241,12 +350,13 @@ async function generateContent(
   lang: Lang,
   handle: string,
   automation: Automation,
+  formato: Formato = "caso-diagnostico",
 ): Promise<GeneratedContent> {
   const context = searchResults
     .map((r, i) => `[${i + 1}] ${r.title}\n${r.content}`)
     .join("\n\n");
 
-  const prompt = buildPrompt(lang, topic, context, slot, handle);
+  const prompt = buildPrompt(lang, topic, context, slot, handle, formato);
 
   // O haiku ocasionalmente devolve JSON malformado → o post falhava em silêncio.
   // Tentamos 2×: parseContentJson extrai o objeto e, se o parse falhar, regenera.
@@ -398,14 +508,19 @@ export async function GET(req: NextRequest) {
 
   try {
     const now   = new Date();
-    const topic = topicOverride ?? getTopicForSlot(slot, now, lang);
-    log.topic   = topic;
+    // Tema do dia/slot (banco inteiro, todos os formatos). topicOverride pula a
+    // seleção (disparo manual com ?topic=) e cai no formato caso-diagnostico.
+    const tema    = topicOverride ? undefined : pickTema(slot, now);
+    const topic   = topicOverride ?? (tema ? tema[lang] : "");
+    const formato: Formato = tema?.formato ?? "caso-diagnostico";
+    log.topic     = topic;
+    log.formato   = formato;
 
     // Trava anti-duplicata: o mesmo CASO não se repete na conta em 7 dias.
-    // Janela de 7 dias (era 20h) cobre o ciclo semanal de tópicos e impede que
-    // backfill/disparo manual republiquem o caso da semana. A separação por
-    // idioma é implícita: as listas TOPICS_BY_LANG.pt e .es têm textos distintos,
-    // então uma string PT nunca casa com post da conta ES (e vice-versa).
+    // Janela de 7 dias (era 20h) cobre o ciclo de temas e impede que
+    // backfill/disparo manual republiquem o tema da semana. A separação por
+    // idioma é implícita: o enunciado PT (tema.pt) e o ES (tema.es) são textos
+    // distintos, então uma string PT nunca casa com post da conta ES (e vice-versa).
     try {
       const { sql } = await import("@vercel/postgres");
       const existing = await sql`
@@ -436,7 +551,7 @@ export async function GET(req: NextRequest) {
 
     // Pesquisa e geração de conteúdo
     const searchResults = await searchTopic(topic, automation);
-    const content       = await generateContent(topic, searchResults, slot, lang, handle, automation);
+    const content       = await generateContent(topic, searchResults, slot, lang, handle, automation, formato);
     log.title           = content.postTitle;
 
     // Número de edição sequencial
@@ -448,12 +563,10 @@ export async function GET(req: NextRequest) {
     } catch { /* fallback silencioso */ }
 
     const ed   = String(editionNum).padStart(3, "0");
-    // Índice canônico do caso (mesma posição em TOPICS_BY_LANG e CASE_SYS).
-    const topicIdx = TOPICS_BY_LANG[lang].indexOf(topic);
-    const subject  = topicIdx >= 0 ? (SUBJECTS[topicIdx] ?? "") : "";
-    // Etiqueta de especialidade na capa (rótulo); fallback p/ keyword.
-    const kw   = topicIdx >= 0 ? (CASE_SYS[topicIdx] ?? extractKeyword(topic, lang))
-                               : extractKeyword(topic, lang);
+    // Metáfora visual da capa + etiqueta de especialidade vêm do tema selecionado.
+    // No disparo manual (topicOverride sem tema) caímos no fallback por keyword.
+    const subject = tema?.subject ?? "";
+    const kw      = tema?.esp || extractKeyword(topic, lang);
     const base = process.env.PRODUCTION_URL ?? "https://anamnesismed-ig.vercel.app";
     const enc  = (s: string) => encodeURIComponent(s.slice(0, 120));
     const hq   = `&handle=${enc(handle)}`; // handle da conta no rodapé das imagens
