@@ -4,6 +4,7 @@ import { prerenderToBlob } from "@/lib/prerender";
 import { parseContentJson } from "@/lib/content-json";
 import { type Automation, checkBudget, logSpend, anthropicCost, tavilyCost, EST_RUN_COST } from "@/lib/spend";
 import { TEMAS, type Tema, type Formato } from "@/lib/temas";
+import { REEL_TEMAS, REEL_ROTULO, type ReelTema, type ReelFormato } from "@/lib/reel-temas";
 
 export const maxDuration = 300;
 
@@ -65,6 +66,25 @@ function pickTema(slot: Slot, date: Date, channel: "carousel" | "reel" = "carous
 
   const off = channel === "reel" ? REEL_OFFSET : 0;
   const idx = (dayOfYear * 3 + slotIdx + off) % arr.length;
+  return arr[idx];
+}
+
+// Seleciona o TEMA do REEL — banco PRÓPRIO (REEL_TEMAS), mesma lógica determinística
+// e língua-independente do pickTema (PT e ES no mesmo dia/slot pegam o mesmo tema).
+function pickReelTema(slot: Slot, date: Date): ReelTema {
+  const start     = new Date(date.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((date.getTime() - start.getTime()) / 86400000);
+  const weekNum   = Math.floor(dayOfYear / 7);
+  const slotIdx   = slot === "manha" ? 0 : slot === "tarde" ? 1 : 2;
+
+  const arr  = [...REEL_TEMAS];
+  let seed   = weekNum * 6364136223846793005 + 1442695040888963407;
+  for (let i = arr.length - 1; i > 0; i--) {
+    seed     = Math.imul(seed, 1664525) + 1013904223;
+    const j  = Math.abs(seed) % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  const idx = (dayOfYear * 3 + slotIdx) % arr.length;
   return arr[idx];
 }
 
@@ -230,6 +250,88 @@ Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
 Para as hashtags, MISTURE alcance amplo + nicho BR: #medicina #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #provaderesidencia #enare #revalida #semiologia #clinicamedica #anamnesismed`;
 }
 
+// ─── Prompt do REEL (hook-first, NATIVO de reel) ──────────────────────────────
+// Reel é o motor de ALCANCE: gancho que para o scroll em 1-2s, payoff curto e CTA
+// de engajamento. Sai no MESMO JSON do carrossel (postTitle/slides/cta…) p/ o
+// pipeline de render não mudar — só a ESCRITA é diferente (curta e hook-first).
+const REEL_ESTRUTURA: Record<Lang, Record<ReelFormato, { rotulo: string; hook: string; linhas: string; cta: string }>> = {
+  pt: {
+    curiosidade: { rotulo: "VOCÊ SABIA?", hook: "uma afirmação ou pergunta que INTRIGA em ≤55 chars — o fato clínico que pouca gente sabe", linhas: "3 linhas curtas: o fato, POR QUE muda a prática e um detalhe que gruda na memória", cta: "feche pedindo SALVAR e marcar quem não sabia" },
+    mnemonico:   { rotulo: "BIZU",        hook: "prometa o bizu que resolve, em ≤55 chars (ex.: 'O bizu que salva sua gasometria')", linhas: "3 linhas: cada uma destrincha letras/critérios do mnemônico com o significado clínico, EM ORDEM", cta: "feche pedindo SALVAR pra prova e perguntar qual letra sempre esquecem" },
+    pegadinha:   { rotulo: "PEGA DE PROVA", hook: "anuncie o erro que reprova, em ≤55 chars (ex.: 'A pegadinha de ECG que reprova todo mundo')", linhas: "3 linhas: a ARMADILHA → o raciocínio CORRETO → a regra de ouro pra nunca mais errar", cta: "feche pedindo COMENTAR se já caiu nessa e marcar um colega" },
+  },
+  es: {
+    curiosidade: { rotulo: "¿SABÍAS?",         hook: "una afirmación o pregunta que INTRIGA en ≤55 chars — el dato clínico que pocos saben", linhas: "3 líneas cortas: el dato, POR QUÉ cambia la práctica y un detalle que se queda en la memoria", cta: "cierra pidiendo GUARDAR y etiquetar a quien no lo sabía" },
+    mnemonico:   { rotulo: "TRUCO",            hook: "promete el truco que resuelve, en ≤55 chars (ej.: 'El truco que salva tu gasometría')", linhas: "3 líneas: cada una desglosa letras/criterios de la mnemotecnia con el significado clínico, EN ORDEN", cta: "cierra pidiendo GUARDAR para el examen y preguntar qué letra siempre olvidan" },
+    pegadinha:   { rotulo: "TRAMPA DE EXAMEN", hook: "anuncia el error que reprueba, en ≤55 chars (ej.: 'La trampa de ECG que reprueba a todos')", linhas: "3 líneas: la TRAMPA → el razonamiento CORRECTO → la regla de oro para no volver a fallar", cta: "cierra pidiendo COMENTAR si ya cayeron y etiquetar a un colega" },
+  },
+};
+
+function buildReelPrompt(lang: Lang, formato: ReelFormato, topic: string, slot: Slot, handle: string): string {
+  const slotInstr = SLOT_INSTRUCTIONS_BY_LANG[lang][slot];
+  const e = REEL_ESTRUTURA[lang][formato];
+
+  if (lang === "es") {
+    return `Eres el editor clínico de AnamnesísMed — plataforma de anamnesis para estudiantes de medicina (de 4º año en adelante), internos y residentes de LATINOAMÉRICA. Crea el GUION de un REEL vertical de Instagram del tipo ${e.rotulo}. El reel es el motor de ALCANCE: tiene que FRENAR EL SCROLL en 1-2 s y dar ganas de guardar/comentar/compartir. Contenido serio, correcto y aplicable.
+
+VOZ DEL MERCADO (Latinoamérica) — GENERADO para LATAM, NO traducido del portugués:
+- Público: estudiante de ciclo clínico, interno, residente y quien prepara el ENARM/examen de residencia.
+- Trato "tú" (singular) y "ustedes" (plural) — NUNCA "vosotros" ni jerga de España. Español latino neutro.
+
+Tema (${e.rotulo}): "${topic}"
+${slotInstr}
+
+MOTOR DEL REEL (RETENCIÓN + GUARDADOS + COMENTARIOS + COMPARTIDOS):
+- GANCHO (portada): ${e.hook}. Es lo PRIMERO que se ve y se oye — sin rodeos, directo a "tú".
+- PAYOFF (líneas): ${e.linhas}. Frases MUY cortas, ritmo rápido, una idea por línea.
+- CIERRE: ${e.cta}.
+- Clínica correcta y específica (criterios, signos, conductas reales). Sin inventar datos.
+- IDIOMA: español latino neutro (tú/ustedes), JAMÁS "vosotros" ni calcos del portugués. Relee y corrige cualquier palabra en portugués antes de devolver.
+
+Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
+{
+  "postTitle": "GANCHO del reel, ≤55 caracteres, español, sin punto final innecesario",
+  "postBody": "artículo en markdown, mínimo 250 palabras, español: desarrolla el tema con criterios/pasos y aplicación clínica (va al sitio)",
+  "slides": ["línea 1, ≤80 caracteres", "línea 2, ≤80", "línea 3, ≤80"],
+  "accentWords": ["palabra clave línea 1 (en rojo)", "palabra clave línea 2", "palabra clave línea 3"],
+  "cta": "cierre accionable de 30-90 caracteres: ${e.cta}",
+  "instagramCaption": "pie de foto 500-1200 caracteres en español: (1) gancho fuerte; (2) el dato/truco/trampa desarrollado; (3) CTA: 'Guarda esto', 'Etiqueta a un colega' y 'Sigue ${handle} para más'; (4) última línea con 6-9 hashtags. Emojis con moderación (1-3).",
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+}
+
+Para los hashtags, MEZCLA alcance amplio + nicho LATAM (sin #MIR de España): #medicina #estudiantedemedicina #futuromedico #residentesmedicos #medicinainterna #semiologia #ENARM #examenderesidencia #medicinalatam #anamnesismed`;
+  }
+
+  return `Você é o editor clínico do AnamnesísMed — plataforma de anamnese para estudantes de medicina (do 4º ano em diante), internos e residentes no BRASIL. Crie o ROTEIRO de um REEL vertical de Instagram do tipo ${e.rotulo}. O reel é o motor de ALCANCE: precisa PARAR O SCROLL em 1-2 s e dar vontade de salvar/comentar/compartilhar. Conteúdo sério, correto e aplicável.
+
+VOZ DO MERCADO (Brasil) — GERADO para o Brasil, NÃO traduzido:
+- Público: estudante do ciclo clínico, interno, R1 e quem estuda para a PROVA DE RESIDÊNCIA (ENARE, USP, UNIFESP) e o Revalida.
+- Tratamento "você"; português brasileiro direto (cabe "bizu", "cai na prova", "fechou o diagnóstico").
+
+Tema (${e.rotulo}): "${topic}"
+${slotInstr}
+
+MOTOR DO REEL (RETENÇÃO + SALVAMENTOS + COMENTÁRIOS + COMPARTILHAMENTOS):
+- GANCHO (capa): ${e.hook}. É a PRIMEIRA coisa que aparece — sem rodeio, direto com "você".
+- PAYOFF (linhas): ${e.linhas}. Frases MUITO curtas, ritmo rápido, uma ideia por linha.
+- FECHAMENTO: ${e.cta}.
+- Clínica correta e específica (critérios, sinais, condutas reais). Sem inventar dados.
+- IDIOMA: português brasileiro (você), nunca tradução/calco de outro idioma.
+
+Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
+{
+  "postTitle": "GANCHO do reel, ≤55 chars, português, sem ponto final desnecessário",
+  "postBody": "artigo em markdown, mínimo 250 palavras, português: desenvolve o tema com critérios/passos e a aplicação clínica (vai para o site)",
+  "slides": ["linha 1, ≤80 chars", "linha 2, ≤80", "linha 3, ≤80"],
+  "accentWords": ["palavra-chave linha 1 (em vermelho)", "palavra-chave linha 2", "palavra-chave linha 3"],
+  "cta": "fechamento acionável de 30-90 chars: ${e.cta}",
+  "instagramCaption": "legenda 500-1200 chars em português: (1) gancho forte; (2) o fato/bizu/pegadinha desenvolvido; (3) CTA: 'Salve isso', 'Marque um colega' e 'Siga ${handle} para mais'; (4) em uma última linha, 6-9 hashtags. Emojis com parcimônia (1-3).",
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+}
+
+Para as hashtags, MISTURE alcance amplo + nicho BR: #medicina #estudantedemedicina #futuromedico #ligaacademica #residenciamedica #provaderesidencia #enare #revalida #semiologia #anamnesismed`;
+}
+
 function buildPrompt(lang: Lang, topic: string, context: string, slot: Slot, handle: string, formato: Formato = "caso-diagnostico"): string {
   // Formatos novos (mnemônico, red-flag, passo-a-passo, score) têm estrutura de
   // slides própria — o caso "Qual o diagnóstico?" abaixo fica inalterado.
@@ -355,12 +457,16 @@ async function generateContent(
   handle: string,
   automation: Automation,
   formato: Formato = "caso-diagnostico",
+  reelFormato?: ReelFormato,
 ): Promise<GeneratedContent> {
   const context = searchResults
     .map((r, i) => `[${i + 1}] ${r.title}\n${r.content}`)
     .join("\n\n");
 
-  const prompt = buildPrompt(lang, topic, context, slot, handle, formato);
+  // Reel tem gerador próprio (hook-first); carrossel mantém o buildPrompt.
+  const prompt = reelFormato
+    ? buildReelPrompt(lang, reelFormato, topic, slot, handle)
+    : buildPrompt(lang, topic, context, slot, handle, formato);
 
   // O haiku ocasionalmente devolve JSON malformado → o post falhava em silêncio.
   // Tentamos 2×: parseContentJson extrai o objeto e, se o parse falhar, regenera.
@@ -516,11 +622,14 @@ export async function GET(req: NextRequest) {
     const now   = new Date();
     // Tema do dia/slot (banco inteiro, todos os formatos). topicOverride pula a
     // seleção (disparo manual com ?topic=) e cai no formato caso-diagnostico.
-    const tema    = topicOverride ? undefined : pickTema(slot, now, channel);
-    const topic   = topicOverride ?? (tema ? tema[lang] : "");
+    // Reel tem banco PRÓPRIO (REEL_TEMAS) e gerador hook-first; carrossel usa TEMAS.
+    const reelTema = (channel === "reel" && !topicOverride) ? pickReelTema(slot, now) : undefined;
+    const tema     = (channel === "reel" || topicOverride) ? undefined : pickTema(slot, now, channel);
+    const topic    = topicOverride ?? reelTema?.[lang] ?? (tema ? tema[lang] : "");
     const formato: Formato = tema?.formato ?? "caso-diagnostico";
+    const reelFormato: ReelFormato | undefined = reelTema?.formato;
     log.topic     = topic;
-    log.formato   = formato;
+    log.formato   = reelFormato ?? formato;
 
     // Trava anti-duplicata: o mesmo CASO não se repete na conta em 7 dias.
     // Janela de 7 dias (era 20h) cobre o ciclo de temas e impede que
@@ -557,7 +666,7 @@ export async function GET(req: NextRequest) {
 
     // Pesquisa e geração de conteúdo
     const searchResults = await searchTopic(topic, automation);
-    const content       = await generateContent(topic, searchResults, slot, lang, handle, automation, formato);
+    const content       = await generateContent(topic, searchResults, slot, lang, handle, automation, formato, reelFormato);
     log.title           = content.postTitle;
 
     // Número de edição sequencial
@@ -571,8 +680,8 @@ export async function GET(req: NextRequest) {
     const ed   = String(editionNum).padStart(3, "0");
     // Metáfora visual da capa + etiqueta de especialidade vêm do tema selecionado.
     // No disparo manual (topicOverride sem tema) caímos no fallback por keyword.
-    const subject = tema?.subject ?? "";
-    const kw      = tema?.esp || extractKeyword(topic, lang);
+    const subject = reelTema?.subject ?? tema?.subject ?? "";
+    const kw      = reelTema?.esp || tema?.esp || extractKeyword(topic, lang);
     const base = process.env.PRODUCTION_URL ?? "https://anamnesismed-ig.vercel.app";
     const enc  = (s: string) => encodeURIComponent(s.slice(0, 120));
     const hq   = `&handle=${enc(handle)}`; // handle da conta no rodapé das imagens
@@ -617,6 +726,8 @@ export async function GET(req: NextRequest) {
         tags: content.tags,
         videoKeywords: content.videoKeywords ?? [],
         esp: kw, // especialidade (CARDIOLOGIA, GASTRO…) → footage genérico do reel
+        // Reel: rótulo do formato (VOCÊ SABIA?/BIZU/PEGA DE PROVA) p/ o badge do vídeo.
+        ...(reelFormato ? { reelFormato, rotulo: REEL_ROTULO[lang][reelFormato] } : {}),
         slideUrls,
       });
     }
