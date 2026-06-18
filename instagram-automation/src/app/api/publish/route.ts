@@ -41,11 +41,14 @@ function extractKeyword(topic: string, lang: Lang): string {
   return word.toUpperCase().replace(/[^A-ZÁÉÍÓÚÜÑÃÕÂÊÔÎÛÀÈÌÒÙÇ]/g, "");
 }
 
-// Seleciona o TEMA do dia/slot — sobre o banco INTEIO (todos os formatos),
-// língua-independente: PT e ES no mesmo dia/slot pegam o MESMO tema (capa e
+// Seleciona o TEMA do dia/slot — sobre o banco INTEIRO (todos os formatos),
+// língua-independente: PT e ES no mesmo dia/slot/canal pegam o MESMO tema (capa e
 // índice batem; só a copy muda). Avança por dayOfYear (não por dia-da-semana),
 // então percorre todo o banco em vez de travar nos 21 primeiros.
-function pickTema(slot: Slot, date: Date): Tema {
+// `channel`: o REEL usa um DESLOCAMENTO p/ não cair no mesmo tema do carrossel do
+// dia/slot (assuntos distintos entre os formatos).
+const REEL_OFFSET = 17; // 53 temas é primo → qualquer offset != 0 nunca colide
+function pickTema(slot: Slot, date: Date, channel: "carousel" | "reel" = "carousel"): Tema {
   const start      = new Date(date.getFullYear(), 0, 0);
   const dayOfYear  = Math.floor((date.getTime() - start.getTime()) / 86400000);
   const weekNum    = Math.floor(dayOfYear / 7);
@@ -60,7 +63,8 @@ function pickTema(slot: Slot, date: Date): Tema {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 
-  const idx = (dayOfYear * 3 + slotIdx) % arr.length;
+  const off = channel === "reel" ? REEL_OFFSET : 0;
+  const idx = (dayOfYear * 3 + slotIdx + off) % arr.length;
   return arr[idx];
 }
 
@@ -503,6 +507,8 @@ export async function GET(req: NextRequest) {
   // dele entra no balde "manual". A publicação real entra em "ig-posts".
   const isPreview  = !!req.nextUrl.searchParams.get("preview");
   const automation: Automation = isPreview ? "manual" : "ig-posts";
+  // Canal: o reel (via ?channel=reel) pega tema deslocado do carrossel do dia.
+  const channel: "carousel" | "reel" = req.nextUrl.searchParams.get("channel") === "reel" ? "reel" : "carousel";
 
   const log: Record<string, unknown> = { slot, lang };
 
@@ -510,7 +516,7 @@ export async function GET(req: NextRequest) {
     const now   = new Date();
     // Tema do dia/slot (banco inteiro, todos os formatos). topicOverride pula a
     // seleção (disparo manual com ?topic=) e cai no formato caso-diagnostico.
-    const tema    = topicOverride ? undefined : pickTema(slot, now);
+    const tema    = topicOverride ? undefined : pickTema(slot, now, channel);
     const topic   = topicOverride ?? (tema ? tema[lang] : "");
     const formato: Formato = tema?.formato ?? "caso-diagnostico";
     log.topic     = topic;

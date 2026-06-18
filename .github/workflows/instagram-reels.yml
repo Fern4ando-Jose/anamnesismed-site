@@ -66,7 +66,7 @@ jobs:
           # Chama o endpoint de prévia (autenticado pelo CRON_SECRET)
           curl -fsS --max-time 120 \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&slot=${{ steps.slot.outputs.slot }}" \
+            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&slot=${{ steps.slot.outputs.slot }}" \
             -o preview.json
           echo "Prévia recebida:"
           cat preview.json | head -c 400; echo
