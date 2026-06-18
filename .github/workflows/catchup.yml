@@ -1,0 +1,51 @@
+name: Catch-up — redispara posts que o cron do GitHub atrasou/derrubou
+
+# REDE DE SEGURANÇA do agendamento. O scheduler do GitHub atrasa horas ou derruba
+# crons → posts somem. Este workflow roda de hora em hora, pergunta ao
+# /api/runs-status quais (slot, idioma) do dia já venceram e ainda NÃO publicaram,
+# e redispara SÓ esses. É idempotente: a trava anti-duplicata (mesmo caso por
+# conta em 7 dias) deduplica um cron real atrasado que chegue depois — não
+# duplica o post. Ver src/app/api/runs-status/route.ts.
+
+on:
+  schedule:
+    - cron: "30 * * * *" # de hora em hora (no minuto :30)
+  workflow_dispatch: {}
+
+# Necessário p/ o GITHUB_TOKEN poder disparar OUTROS workflows (workflow_dispatch
+# é exceção à regra anti-recursão do GitHub → o run disparado executa de verdade).
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: catchup
+  cancel-in-progress: false
+
+jobs:
+  catchup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detectar slots faltantes e redisparar
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+          RESP=$(curl -fsS --max-time 30 -H "Authorization: Bearer $CRON_SECRET" \
+            "https://anamnesismed-ig.vercel.app/api/runs-status")
+          echo "runs-status: $RESP"
+
+          echo "$RESP" | jq -c '.missing[]?' | while read -r item; do
+            lang=$(echo "$item" | jq -r '.lang')
+            slot=$(echo "$item" | jq -r '.slot')
+
+            if [ "$lang" = "es" ]; then wf="instagram-posts-es.yml"; else wf="instagram-posts.yml"; fi
+
+            echo "::notice title=Catch-up::redisparando $wf slot=$slot ($lang)"
+            gh workflow run "$wf" -f slot="$slot" \
+              || echo "::warning::falha ao disparar $wf slot=$slot ($lang)"
+          done

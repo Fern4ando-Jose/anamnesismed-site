@@ -442,19 +442,19 @@ async function publishCarousel(caption: string, imageUrls: string[], lang: Lang 
 async function savePost(params: {
   topic: string; slot: Slot; title: string; body: string;
   instagramCaption: string; tags: string[];
-  instagramPostId: string | null; publishedAt: Date;
+  instagramPostId: string | null; publishedAt: Date; lang: Lang;
 }): Promise<void> {
   const { sql } = await import("@vercel/postgres");
   await sql`
     INSERT INTO posts (
       topic, slot, title, body, instagram_caption,
-      tags, instagram_post_id, published_at
+      tags, instagram_post_id, published_at, lang
     ) VALUES (
       ${params.topic}, ${params.slot}, ${params.title},
       ${params.body}, ${params.instagramCaption},
       ${params.tags as any},
       ${params.instagramPostId},
-      ${params.publishedAt.toISOString()}
+      ${params.publishedAt.toISOString()}, ${params.lang}
     )
   `;
 }
@@ -626,6 +626,7 @@ export async function GET(req: NextRequest) {
         tags: content.tags,
         instagramPostId,
         publishedAt: now,
+        lang,
       });
       log.saved = true;
     } catch (dbErr) {

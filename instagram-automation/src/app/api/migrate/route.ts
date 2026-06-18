@@ -36,6 +36,10 @@ export async function GET(req: NextRequest) {
     CREATE INDEX IF NOT EXISTS idx_posts_topic ON posts (topic)
   `;
 
+  // Idioma/conta do post (pt → @anamnesismed, es → @anamnesismed.es). Usado pelo
+  // /api/runs-status p/ saber qual (slot,conta) do dia já publicou de fato.
+  await sql`ALTER TABLE posts ADD COLUMN IF NOT EXISTS lang TEXT`;
+
   await sql`
     CREATE TABLE IF NOT EXISTS config (
       key        TEXT PRIMARY KEY,
