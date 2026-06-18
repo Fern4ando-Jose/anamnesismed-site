@@ -211,8 +211,9 @@ export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw,
     <AbsoluteFill style={{ backgroundColor: TEAL_DK }}>
       {/* Narração (Kokoro) cobre todo o vídeo a partir do frame 0 */}
       {narration ? <Audio src={staticFile(narration)} /> : null}
-      {/* Bed de fundo opcional, volume baixo */}
-      {music ? <Audio src={staticFile(music)} volume={0.12} loop /> : null}
+      {/* Trilha de fundo. Com narração fica baixa (bed); sem narração é o áudio
+          principal, então sobe o volume. */}
+      {music ? <Audio src={staticFile(music)} volume={narration ? 0.12 : 0.5} loop /> : null}
 
       <Sequence from={next(COVER)} durationInFrames={COVER}>
         <CoverBeat title={title} kw={kw} ed={ed} clip={clipAt(beat++)} />
