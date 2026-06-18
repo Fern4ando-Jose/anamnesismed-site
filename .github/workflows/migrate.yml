@@ -1,0 +1,22 @@
+name: Migrate DB — AnamnesísMed
+
+# Cria/atualiza as tabelas no Postgres (posts, config, spend_log,
+# illustration_cache). Idempotente (CREATE TABLE IF NOT EXISTS / ALTER ... IF NOT
+# EXISTS) — pode rodar quantas vezes precisar. Disparo manual.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar /api/migrate
+        run: |
+          echo "Rodando migration…"
+          HTTP=$(curl -sS -o resp.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://anamnesismed-ig.vercel.app/api/migrate")
+          echo "HTTP $HTTP"
+          cat resp.json; echo
+          if [ "$HTTP" -ge 400 ]; then echo "::error::migrate falhou (HTTP $HTTP)"; exit 1; fi
