@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateIllustration } from "@/lib/illustration";
 import { prerenderToBlob } from "@/lib/prerender";
+import { parseContentJson } from "@/lib/content-json";
 
 export const maxDuration = 300;
 
@@ -228,6 +229,12 @@ Caso (con el diagnóstico entre paréntesis — NO lo reveles antes del final): 
 ${slotInstr}
 
 ${context ? `Contexto investigado:\n${context}\n` : ""}
+MOTOR DE ALCANCE (lo que más empuja el algoritmo es RETENCIÓN + GUARDADOS + COMPARTIDOS):
+- GANCHO: la portada debe FRENAR EL SCROLL en 1-2 segundos. Concreta y específica (edad, dato o signo llamativo del caso), nunca abstracta ni genérica. Háblale a "tú".
+- GUARDABLE: la PISTA DECISIVA debe ser una perla clínica que el lector quiera GUARDAR para repasar (un signo patognomónico, una regla de oro), no solo describir.
+- COMPARTIBLE: el caso debe dar ganas de etiquetar a un colega para resolverlo juntos — etiquetar = compartir.
+- El pie de foto cierra SIEMPRE con un llamado explícito a GUARDAR (🔖) y COMPARTIR/etiquetar (📩) antes de los hashtags.
+
 REGLAS DEL FORMATO (sigue TODAS):
 - NO reveles el diagnóstico en la portada ni en las diapositivas 1 a 4 — solo en el campo "cta" y en el pie de foto. Construye suspenso.
 - Portada: presenta el caso de forma intrigante y termina con "¿Cuál es el diagnóstico?".
@@ -235,6 +242,7 @@ REGLAS DEL FORMATO (sigue TODAS):
 - Clínica correcta y específica (datos, signos y hallazgos reales del caso). Lenguaje de quien está en la práctica, frases cortas.
 - COMENTARIO FÁCIL: pide la sospecha del lector antes de la revelación.
 - IDIOMA: español latino neutro (tú/ustedes), JAMÁS "vosotros" ni calcos del portugués.
+- REVISIÓN FINAL OBLIGATORIA: antes de devolver el JSON, relee TODO (título, slides, cta, pie de foto) y reemplaza CUALQUIER palabra o construcción en portugués por español latino — ej.: você→tú, dor→dolor, fígado→hígado, criança→niño, palpite→sospecha. No puede quedar NINGUNA palabra en portugués.
 
 Genera un JSON válido (sin markdown, sin backticks) con esta estructura EXACTA:
 {
@@ -273,6 +281,12 @@ Caso (com o diagnóstico entre parênteses — NÃO revele antes do fim): "${top
 ${slotInstr}
 
 ${context ? `Contexto pesquisado:\n${context}\n` : ""}
+MOTOR DE ALCANCE (o que mais empurra o algoritmo é RETENÇÃO + SALVAMENTOS + COMPARTILHAMENTOS):
+- GANCHO: a capa precisa PARAR O SCROLL em 1-2 segundos. Concreta e específica (idade, dado ou sinal marcante do caso), nunca abstrata ou genérica. Fale com "você".
+- SALVÁVEL: a PISTA DECISIVA deve ser uma pérola clínica que o leitor queira SALVAR para revisar (um sinal patognomônico, um bizu de prova), não só descrever.
+- COMPARTILHÁVEL: o caso deve dar vontade de marcar um colega para resolver junto — marcar = compartilhar.
+- A legenda fecha SEMPRE com chamada explícita para SALVAR (🔖) e COMPARTILHAR/marcar (📩) antes das hashtags.
+
 REGRAS DO FORMATO (siga TODAS):
 - NÃO revele o diagnóstico na capa nem nos slides 1 a 4 — só no campo "cta" e na legenda. Construa suspense.
 - Capa: apresente o caso de forma intrigante e termine com "Qual o diagnóstico?".
@@ -280,6 +294,7 @@ REGRAS DO FORMATO (siga TODAS):
 - Clínica correta e específica (dados, sinais e achados reais do caso). Linguagem de quem está na prática, frases curtas.
 - COMENTÁRIO FÁCIL: peça o palpite do leitor antes da revelação.
 - IDIOMA: português brasileiro (você), nunca tradução/calco de outro idioma.
+- REVISÃO FINAL OBRIGATÓRIA: antes de devolver o JSON, releia TUDO (título, slides, cta, legenda) e troque QUALQUER palavra ou construção em espanhol por português do Brasil — ex.: tú→você, dolor→dor, hígado→fígado, niño→criança, sospecha→palpite. Não pode sobrar NENHUMA palavra em espanhol.
 
 Gere um JSON válido (sem markdown, sem backticks) com esta estrutura EXATA:
 {
@@ -321,25 +336,35 @@ async function generateContent(
 
   const prompt = buildPrompt(lang, topic, context, slot, handle);
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": process.env.ANTHROPIC_API_KEY!,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 4096,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
+  // O haiku ocasionalmente devolve JSON malformado → o post falhava em silêncio.
+  // Tentamos 2×: parseContentJson extrai o objeto e, se o parse falhar, regenera.
+  const MAX_CONTENT_TRIES = 2;
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= MAX_CONTENT_TRIES; attempt++) {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY!,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 4096,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
 
-  if (!res.ok) throw new Error(`Claude API error: ${res.status}`);
-  const data  = await res.json();
-  const raw   = data.content?.[0]?.text ?? "";
-  const clean = raw.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean) as GeneratedContent;
+    if (!res.ok) throw new Error(`Claude API error: ${res.status}`);
+    const data = await res.json();
+    const raw  = data.content?.[0]?.text ?? "";
+    try {
+      return parseContentJson<GeneratedContent>(raw);
+    } catch (e) {
+      lastErr = e; // JSON malformado → regenera na próxima volta
+    }
+  }
+  throw new Error(`generateContent: JSON inválido após ${MAX_CONTENT_TRIES} tentativas: ${lastErr instanceof Error ? lastErr.message : String(lastErr)}`);
 }
 
 // ─── Token do Instagram ───────────────────────────────────────────────────────
@@ -458,17 +483,21 @@ export async function GET(req: NextRequest) {
     const topic = topicOverride ?? getTopicForSlot(slot, now, lang);
     log.topic   = topic;
 
-    // Verificar se tópico já foi publicado hoje
+    // Trava anti-duplicata: o mesmo CASO não se repete na conta em 7 dias.
+    // Janela de 7 dias (era 20h) cobre o ciclo semanal de tópicos e impede que
+    // backfill/disparo manual republiquem o caso da semana. A separação por
+    // idioma é implícita: as listas TOPICS_BY_LANG.pt e .es têm textos distintos,
+    // então uma string PT nunca casa com post da conta ES (e vice-versa).
     try {
       const { sql } = await import("@vercel/postgres");
       const existing = await sql`
         SELECT id FROM posts
         WHERE topic = ${topic}
-          AND published_at > NOW() - INTERVAL '20 hours'
+          AND published_at > NOW() - INTERVAL '7 days'
         LIMIT 1
       `;
       if (existing.rows.length > 0) {
-        return NextResponse.json({ ok: true, skipped: true, reason: "Tópico já publicado hoje", topic });
+        return NextResponse.json({ ok: true, skipped: true, reason: "Caso já publicado nesta conta nos últimos 7 dias", topic });
       }
     } catch { /* ignora erro de banco na checagem */ }
 
