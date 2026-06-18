@@ -31,6 +31,8 @@ const TERMS = {
   ENDOCRINOLOGIA: ["laboratory blood test", "glucose test"],
   NEFROLOGIA: ["dialysis machine", "laboratory blood test"],
   INFECTOLOGIA: ["microscope laboratory", "iv drip hospital"],
+  ONCOLOGIA: ["microscope laboratory", "cancer research"],
+  REUMATOLOGIA: ["x ray bones", "physical therapy"],
   ORTOPEDIA: ["x ray bones", "physical therapy"],
   RADIOLOGIA: ["ct scan", "mri scan"],
   TOXICOLOGIA: ["emergency room", "iv drip hospital"],
