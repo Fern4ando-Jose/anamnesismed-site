@@ -103,7 +103,22 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: node scripts/fetch-stock.mjs ../reel-props.json
 
-      # 6. Renderiza o Reel (vídeo de fundo + texto) para out/reel.mp4
+      # 5.7 Narração por voz (Kokoro, TTS local grátis). Lê title/slides/cta do
+      #      reel-props.json, gera o áudio por beat (pt-br) e devolve narration +
+      #      beatSecs ao props. Fail-open: se algo falhar, o reel sai mudo.
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar Kokoro (TTS)
+        run: |
+          sudo apt-get update && sudo apt-get install -y espeak-ng
+          pip install --quiet kokoro numpy
+      - name: Gerar narração (Kokoro)
+        working-directory: instagram-automation
+        run: python scripts/narrate.py --props ../reel-props.json --lang pt --out public/narration.wav
+
+      # 6. Renderiza o Reel (vídeo de fundo + texto + narração) para out/reel.mp4
       - name: Renderizar Reel (Remotion)
         working-directory: instagram-automation
         run: node scripts/render-reel.mjs --props=../reel-props.json

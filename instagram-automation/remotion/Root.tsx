@@ -5,16 +5,14 @@
 
 import React from "react";
 import { Composition } from "remotion";
-import { Reel, reelDefaultProps, ReelProps } from "./Reel";
+import { Reel, reelDefaultProps, ReelProps, beatFrames } from "./Reel";
 
 const FPS = 30;
 
-// Mesma matemática de duração usada dentro de Reel.tsx (mantida em sincronia).
-function totalDurationInFrames(slidesCount: number): number {
-  const COVER = Math.round(FPS * 2.8);
-  const SLIDE = Math.round(FPS * 2.6);
-  const CTA = Math.round(FPS * 3.0);
-  return COVER + SLIDE * Math.max(1, slidesCount) + CTA;
+// Duração total = soma dos frames de cada beat (MESMA função do Reel → nunca
+// dessincroniza). Com narração (beatSecs), o vídeo dura exatamente a fala.
+function totalDurationInFrames(slidesCount: number, beatSecs?: number[]): number {
+  return beatFrames(slidesCount, FPS, beatSecs).reduce((a, b) => a + b, 0);
 }
 
 export const RemotionRoot: React.FC = () => {
@@ -27,11 +25,11 @@ export const RemotionRoot: React.FC = () => {
       width={1080}
       height={1920}
       defaultProps={reelDefaultProps}
-      // Recalcula a duração conforme a quantidade real de slides recebida.
+      // Recalcula a duração conforme os slides e a narração (beatSecs) recebidos.
       calculateMetadata={({ props }) => {
         const p = props as ReelProps;
         const count = p.slides && p.slides.length ? p.slides.length : reelDefaultProps.slides.length;
-        return { durationInFrames: totalDurationInFrames(count) };
+        return { durationInFrames: totalDurationInFrames(count, p.beatSecs) };
       }}
     />
   );

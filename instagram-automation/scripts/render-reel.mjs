@@ -50,6 +50,9 @@ async function main() {
   console.log("[render] empacotando bundle Remotion…");
   const serveUrl = await bundle({
     entryPoint: entry,
+    // public/ explícito: é onde a narração (Kokoro) é gravada e de onde o
+    // staticFile("narration.wav") é resolvido no render.
+    publicDir: resolve(ROOT, "public"),
     // Mantém o webpack padrão do Remotion (não precisamos do config do Next aqui).
     onProgress: (p) => {
       if (p % 25 === 0) console.log(`[render] bundle ${p}%`);

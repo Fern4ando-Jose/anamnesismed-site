@@ -9,10 +9,12 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Audio,
   Sequence,
   OffthreadVideo,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -38,8 +40,21 @@ export type ReelProps = {
   cta: string;
   kw: string;
   ed: string;
-  clips?: string[]; // 1 clipe de footage por beat (cover + slides + cta). Vazio = teal.
+  clips?: string[];    // 1 clipe de footage por beat (cover + slides + cta). Vazio = teal.
+  narration?: string;  // arquivo em public/ (Kokoro TTS); ausente = reel mudo
+  beatSecs?: number[];  // duração (s) de cada beat = sua narração (cover, slides..., cta)
+  music?: string;      // bed de fundo opcional em public/ (volume baixo)
 };
+
+// Frames de cada beat: dirigido pela narração (beatSecs) p/ ficar em sync; sem
+// narração, cai nas durações fixas. Ordem: [cover, slide1..N, cta].
+export function beatFrames(slidesCount: number, fps: number, beatSecs?: number[]): number[] {
+  const n = Math.max(1, slidesCount);
+  if (beatSecs && beatSecs.length === n + 2) {
+    return beatSecs.map((s) => Math.max(1, Math.round(s * fps)));
+  }
+  return [Math.round(fps * 3.0), ...Array(n).fill(Math.round(fps * 3.0)), Math.round(fps * 3.4)];
+}
 
 export const reelDefaultProps: ReelProps = {
   title: "Atleta de 19 anos com desmaio durante treino. Qual o diagnóstico?",
@@ -179,12 +194,12 @@ function CtaBeat({ cta, clip }: { cta: string; clip?: string }) {
 }
 
 // ─── Composição: sequência de beats em corte ──────────────────────────────────
-export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw, ed, clips }) => {
+export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw, ed, clips, narration, beatSecs, music }) => {
   const { fps } = useVideoConfig();
-  const COVER = Math.round(fps * 3.0);
-  const SLIDE = Math.round(fps * 3.0);
-  const CTA = Math.round(fps * 3.4);
   const safeSlides = slides && slides.length ? slides : reelDefaultProps.slides;
+  const frames = beatFrames(safeSlides.length, fps, beatSecs); // [cover, slides..., cta]
+  const COVER = frames[0];
+  const CTA = frames[frames.length - 1];
   const pool = clips && clips.length ? clips : [];
   const clipAt = (i: number) => (pool.length ? pool[i % pool.length] : undefined);
 
@@ -194,11 +209,16 @@ export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw,
 
   return (
     <AbsoluteFill style={{ backgroundColor: TEAL_DK }}>
+      {/* Narração (Kokoro) cobre todo o vídeo a partir do frame 0 */}
+      {narration ? <Audio src={staticFile(narration)} /> : null}
+      {/* Bed de fundo opcional, volume baixo */}
+      {music ? <Audio src={staticFile(music)} volume={0.12} loop /> : null}
+
       <Sequence from={next(COVER)} durationInFrames={COVER}>
         <CoverBeat title={title} kw={kw} ed={ed} clip={clipAt(beat++)} />
       </Sequence>
       {safeSlides.map((text, i) => (
-        <Sequence key={i} from={next(SLIDE)} durationInFrames={SLIDE}>
+        <Sequence key={i} from={next(frames[i + 1])} durationInFrames={frames[i + 1]}>
           <SlideBeat text={text} accent={accentWords?.[i] ?? ""} index={i + 1} total={safeSlides.length} clip={clipAt(beat++)} />
         </Sequence>
       ))}
