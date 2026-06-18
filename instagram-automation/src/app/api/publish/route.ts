@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateIllustration } from "@/lib/illustration";
 import { prerenderToBlob } from "@/lib/prerender";
 import { parseContentJson } from "@/lib/content-json";
+import { type Automation, checkBudget, logSpend, anthropicCost, tavilyCost, EST_RUN_COST } from "@/lib/spend";
 
 export const maxDuration = 300;
 
@@ -185,7 +186,7 @@ calmado y provocador, que invita a comentar; identificación del médico de LATA
 
 // ─── Pesquisa de contexto médico ─────────────────────────────────────────────
 
-async function searchTopic(topic: string): Promise<SearchResult[]> {
+async function searchTopic(topic: string, automation: Automation): Promise<SearchResult[]> {
   // Tavily é opcional: sem chave ou em caso de falha, segue sem contexto extra.
   if (!process.env.TAVILY_API_KEY) return [];
   try {
@@ -201,6 +202,7 @@ async function searchTopic(topic: string): Promise<SearchResult[]> {
       }),
     });
     if (!res.ok) return [];
+    await logSpend({ automation, platform: "tavily", operation: "search", model: "advanced", units: 1, costUsd: tavilyCost() });
     const data = await res.json();
     return (data.results ?? []).map((r: any) => ({
       title: r.title ?? "", content: r.content ?? "", url: r.url ?? "",
@@ -329,6 +331,7 @@ async function generateContent(
   slot: Slot,
   lang: Lang,
   handle: string,
+  automation: Automation,
 ): Promise<GeneratedContent> {
   const context = searchResults
     .map((r, i) => `[${i + 1}] ${r.title}\n${r.content}`)
@@ -357,6 +360,7 @@ async function generateContent(
 
     if (!res.ok) throw new Error(`Claude API error: ${res.status}`);
     const data = await res.json();
+    await logSpend({ automation, platform: "anthropic", operation: "content", model: "claude-haiku-4-5-20251001", units: (data?.usage?.input_tokens ?? 0) + (data?.usage?.output_tokens ?? 0), costUsd: anthropicCost("claude-haiku-4-5-20251001", data?.usage) });
     const raw  = data.content?.[0]?.text ?? "";
     try {
       return parseContentJson<GeneratedContent>(raw);
@@ -476,6 +480,11 @@ export async function GET(req: NextRequest) {
   const handle     = process.env.POST_HANDLE
                      ?? (lang === "es" ? "@anamnesismed.es" : "@anamnesismed");
 
+  // Preview (pipeline do Reel/CI) não publica nem é barrado pelo teto — o gasto
+  // dele entra no balde "manual". A publicação real entra em "ig-posts".
+  const isPreview  = !!req.nextUrl.searchParams.get("preview");
+  const automation: Automation = isPreview ? "manual" : "ig-posts";
+
   const log: Record<string, unknown> = { slot, lang };
 
   try {
@@ -501,9 +510,24 @@ export async function GET(req: NextRequest) {
       }
     } catch { /* ignora erro de banco na checagem */ }
 
+    // Teto diário de gasto (ig-posts): se a próxima publicação estoura o
+    // orçamento, BLOQUEIA (não gasta) e devolve 402 p/ o GitHub Actions falhar
+    // e avisar o dono. Suba budget:ig-posts em config p/ liberar. Preview não
+    // é barrado (gasto vai p/ "manual").
+    if (!isPreview) {
+      const gate = await checkBudget("ig-posts", EST_RUN_COST.publish);
+      if (!gate.ok) {
+        return NextResponse.json({
+          ok: false, blocked: true,
+          reason: `Orçamento diário ig-posts estourado (gasto US$${gate.spent.toFixed(3)} + est US$${gate.est.toFixed(3)} > teto US$${gate.budget.toFixed(2)}). Suba budget:ig-posts em config p/ liberar.`,
+          gate,
+        }, { status: 402 });
+      }
+    }
+
     // Pesquisa e geração de conteúdo
-    const searchResults = await searchTopic(topic);
-    const content       = await generateContent(topic, searchResults, slot, lang, handle);
+    const searchResults = await searchTopic(topic, automation);
+    const content       = await generateContent(topic, searchResults, slot, lang, handle, automation);
     log.title           = content.postTitle;
 
     // Número de edição sequencial

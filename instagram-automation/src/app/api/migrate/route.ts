@@ -44,5 +44,24 @@ export async function GET(req: NextRequest) {
     )
   `;
 
+  // Governança de custo: 1 linha por chamada paga (fal/Anthropic/Tavily).
+  await sql`
+    CREATE TABLE IF NOT EXISTS spend_log (
+      id         SERIAL PRIMARY KEY,
+      automation TEXT NOT NULL,
+      platform   TEXT NOT NULL,
+      operation  TEXT NOT NULL,
+      model      TEXT,
+      units      INTEGER NOT NULL DEFAULT 0,
+      cost_usd   DOUBLE PRECISION NOT NULL DEFAULT 0,
+      meta       JSONB NOT NULL DEFAULT '{}'::jsonb,
+      ts         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_spend_log_ts ON spend_log (ts DESC)
+  `;
+
   return NextResponse.json({ ok: true, message: "Tabelas criadas com sucesso." });
 }
