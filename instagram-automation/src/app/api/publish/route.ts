@@ -554,9 +554,13 @@ export async function GET(req: NextRequest) {
     const ctaBio      = lang === "es" ? "Link en bio" : "Link na bio";
     const ctaExtra    = `&follow=${enc(followLabel)}&badges=${enc(ctaBadges)}&bio=${enc(ctaBio)}`;
 
-    // Ilustração (fal/Flux) só na CAPA. Falha/nsfw → og usa fundo teal (nunca quebra).
-    const ill = await generateIllustration(subject);
-    log.illustration = ill.url ? "ia" : `fallback: ${ill.error ?? "?"}`;
+    // Ilustração (fal/Flux) só na CAPA, com QA por visão. Falha/nsfw/reprovação
+    // → og usa fundo escuro (nunca quebra). Preview (CI) usa 1 tentativa e gasto
+    // "manual"; publicação real usa o loop de QA cheio em "ig-posts".
+    const ill = await generateIllustration(subject, isPreview
+      ? { maxTries: 1, automation: "manual" }
+      : { automation: "ig-posts" });
+    log.illustration = ill.url ? `ia (${ill.attempts}t${ill.cached ? ", cache" : ""})` : `fallback: ${ill.error ?? "?"}`;
     const imgParam = ill.url ? `&img=${encodeURIComponent(ill.url)}` : "";
 
     const totalSlides = 2 + content.slides.length; // capa + insights + cta

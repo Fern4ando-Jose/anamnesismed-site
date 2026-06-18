@@ -63,5 +63,16 @@ export async function GET(req: NextRequest) {
     CREATE INDEX IF NOT EXISTS idx_spend_log_ts ON spend_log (ts DESC)
   `;
 
+  // Cache de 24h da ilustração aprovada no QA (reuso entre PT/ES e publish/preview).
+  await sql`
+    CREATE TABLE IF NOT EXISTS illustration_cache (
+      cache_key  TEXT PRIMARY KEY,
+      url        TEXT NOT NULL,
+      subject    TEXT,
+      model      TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
   return NextResponse.json({ ok: true, message: "Tabelas criadas com sucesso." });
 }
