@@ -1,6 +1,12 @@
 # AnamnesísMed — Instagram Automation
 
-Sistema de posts diários automáticos para @anamnesismed. Arquitetura idêntica ao Dr. Libertad.
+Sistema de posts diários automáticos. Arquitetura idêntica ao Dr. Libertad.
+
+> **DUAS contas (uma por idioma/mercado):**
+> - **PT-BR → @anamnesismed** — envs `META_ACCESS_TOKEN` / `META_INSTAGRAM_ACCOUNT_ID` (padrão, `lang=pt`).
+> - **ES (LATAM) → @anamnesismed.es** — envs `META_ACCESS_TOKEN_ES` / `META_INSTAGRAM_ACCOUNT_ID_ES`.
+>
+> A "máquina" (geração, /api/og, render) é a mesma; muda só a copy, o @handle e as credenciais. O idioma/conta é escolhido por **`POST_LANG`** (`pt`|`es`) no deploy, ou `?lang=es` para teste pontual. O @handle do CTA segue o idioma (override por `POST_HANDLE`). Fonte de verdade = código (`api/publish/route.ts`), não este doc.
 
 ## Stack
 - **Next.js** (App Router, Edge Runtime para imagens)
@@ -18,7 +24,7 @@ Sistema de posts diários automáticos para @anamnesismed. Arquitetura idêntica
 1. Acesse [developers.facebook.com](https://developers.facebook.com)
 2. Crie um app do tipo **Business**
 3. Adicione o produto **Instagram Graph API**
-4. Conecte a conta @anamnesismed (precisa ser conta profissional)
+4. Conecte as contas **@anamnesismed** (PT) e **@anamnesismed.es** (ES) — ambas precisam ser conta profissional. Cada uma gera seu próprio token + account-id.
 5. Gere um **User Access Token** com as permissões:
    - `instagram_basic`
    - `instagram_content_publish`
@@ -60,14 +66,20 @@ Conecte ao projeto — as variáveis `POSTGRES_URL*` são preenchidas automatica
 
 | Variável | Valor |
 |---|---|
-| `META_ACCESS_TOKEN` | token de 60 dias |
-| `META_INSTAGRAM_ACCOUNT_ID` | ID numérico da conta |
+| `META_ACCESS_TOKEN` | token de 60 dias da conta **PT** (@anamnesismed) |
+| `META_INSTAGRAM_ACCOUNT_ID` | ID numérico da conta **PT** (@anamnesismed) |
+| `META_ACCESS_TOKEN_ES` | token de 60 dias da conta **ES** (@anamnesismed.es) |
+| `META_INSTAGRAM_ACCOUNT_ID_ES` | ID numérico da conta **ES** (@anamnesismed.es) |
+| `POST_LANG` | `pt` ou `es` — define qual conta este deploy publica |
+| `POST_HANDLE` | (opcional) sobrescreve o @handle do CTA (padrão segue o idioma) |
 | `META_APP_ID` | ID do Meta App |
 | `META_APP_SECRET` | Secret do Meta App |
 | `ANTHROPIC_API_KEY` | chave Claude |
 | `TAVILY_API_KEY` | chave Tavily |
 | `PRODUCTION_URL` | `https://anamnesismed-ig.vercel.app` |
 | `CRON_SECRET` | string aleatória longa (ex: `openssl rand -hex 32`) |
+
+> A conta ES é **opcional**: sem `META_ACCESS_TOKEN_ES` / `META_INSTAGRAM_ACCOUNT_ID_ES`, só a PT publica. As chaves de token no DB (refresh automático) são `meta_access_token` (PT) e `meta_access_token_es` (ES).
 
 ---
 
@@ -126,15 +138,15 @@ Cron Vercel (2x/dia)
        │    ├─ cta (slide final)
        │    └─ instagramCaption + tags
        ├─ Constrói URLs dos slides via /api/og
-       ├─ Publica como carrossel no @anamnesismed
-       └─ Salva log no Postgres
+       ├─ Publica como carrossel na conta do idioma (PT @anamnesismed | ES @anamnesismed.es)
+       └─ Salva log no Postgres (com a coluna `lang`)
 ```
 
 ---
 
 ## 7. Renovação do token
 
-O cron mensal (`/api/refresh-token`) renova automaticamente o token antes dos 60 dias expirarem.
+O cron mensal (`/api/refresh-token`) renova automaticamente os tokens das **duas contas** (PT sempre; ES só se `META_ACCESS_TOKEN_ES` estiver setado) antes dos 60 dias expirarem.
 Se precisar forçar:
 ```bash
 curl -H "Authorization: Bearer SEU_CRON_SECRET" \
