@@ -161,7 +161,7 @@ export async function buildReelSpec(lang: Lang, topic: string, automation: Autom
 
   const narration = await narrate(narrationFull, lang);
   if (!narration) throw new Error(`narração falhou (fal TTS) — texto ${narrationFull.length} chars`);
-  if (!narration.words.length) throw new Error(`narração sem timestamps de palavra (texto ${narrationFull.length} chars)`);
+  if (!narration.words.length) throw new Error(`narração sem timestamps de palavra. raw=${narration.rawSample}`);
 
   const segs = splitScenes(content.beats, content.cta, narration.words);
   const scenes: ReelScene[] = segs.map((s) => ({

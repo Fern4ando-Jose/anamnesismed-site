@@ -10,6 +10,7 @@ export interface Narration {
   words: NarrationWord[];
   durationSec: number;
   voice: string;
+  rawSample?: string; // amostra do formato de timestamps cru (debug)
 }
 
 // Vozes ElevenLabs (premade) — boas em PT-BR e ES neutro no multilingual-v2.
@@ -69,7 +70,8 @@ export async function narrate(text: string, lang: "pt" | "es", voiceOverride?: s
     if (!audioUrl) return null;
     const words = normalizeWords(d?.timestamps);
     const durationSec = words.length ? words[words.length - 1].end : 0;
-    return { audioUrl, words, durationSec, voice };
+    const rawSample = JSON.stringify(d?.timestamps)?.slice(0, 280);
+    return { audioUrl, words, durationSec, voice, rawSample };
   } catch (e) {
     console.error("[narrate] exceção", e instanceof Error ? e.message : String(e));
     return null;
