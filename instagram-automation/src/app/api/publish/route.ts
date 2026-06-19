@@ -663,7 +663,12 @@ export async function GET(req: NextRequest) {
     // isso direto, sem o conteúdo/imagens de carrossel. É o motor que resolve o
     // "a imagem não casa com o texto". Disparo real do reel é sempre via preview.
     if (channel === "reel" && isPreview) {
-      const spec = await buildReelSpec(lang, topic, automation);
+      let spec;
+      try {
+        spec = await buildReelSpec(lang, topic, automation);
+      } catch (e) {
+        return NextResponse.json({ ok: false, reason: `Erro no reel sincronizado: ${e instanceof Error ? e.message : String(e)}`, topic }, { status: 500 });
+      }
       if (!spec) {
         return NextResponse.json({ ok: false, reason: "Falha ao montar o reel sincronizado (narração/visual)", topic }, { status: 502 });
       }

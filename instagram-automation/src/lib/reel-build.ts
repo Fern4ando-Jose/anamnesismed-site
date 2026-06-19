@@ -145,18 +145,25 @@ function splitScenes(beats: ReelBeat[], ctaText: string, words: { text: string; 
 }
 
 // ── 4) Monta a ReelSpec completa ────────────────────────────────────────────────
-export async function buildReelSpec(lang: Lang, topic: string, automation: Automation): Promise<ReelSpec | null> {
+// withVideo: gera LTX image-to-video nos beats-chave. Por padrão FALSE — gerar vídeo
+// numa requisição HTTP estoura o timeout da função (Hobby = 60s). v1 = só imagem
+// (Flux) por frase com Ken Burns; o LTX entra na CI (sem limite de tempo) depois.
+export async function buildReelSpec(lang: Lang, topic: string, automation: Automation, withVideo = false): Promise<ReelSpec | null> {
   const content = await generateReelContent(lang, topic, automation);
   const narrationFull = [...content.beats.map((b) => b.say), content.cta].join(" ");
-  const narration = await narrate(narrationFull, lang);
+  const allBeats: ReelBeat[] = [...content.beats, { say: content.cta, caption: content.ctaCaption, visual: content.beats[0]?.visual ?? topic, key: false }];
+
+  // Narração + TODAS as imagens em PARALELO (independentes) p/ caber no timeout.
+  const [narration, ...images] = await Promise.all([
+    narrate(narrationFull, lang),
+    ...allBeats.map((b) => genReelImage(b.visual, automation)),
+  ]);
   if (!narration || !narration.words.length) return null;
 
-  // Visuais por frase, em paralelo. Beats-chave: imagem→vídeo (LTX). Demais: imagem.
-  const allBeats: ReelBeat[] = [...content.beats, { say: content.cta, caption: content.ctaCaption, visual: content.beats[0]?.visual ?? topic, key: false }];
-  const visuals = await Promise.all(allBeats.map(async (b) => {
-    const img = await genReelImage(b.visual, automation);
+  const visuals = await Promise.all(allBeats.map(async (b, i) => {
+    const img = images[i];
     if (!img) return { visualUrl: "", visualType: "image" as const };
-    if (b.key) {
+    if (withVideo && b.key) {
       const vid = await imageToVideo(img, b.visual, automation);
       if (vid) return { visualUrl: vid, visualType: "video" as const };
     }
