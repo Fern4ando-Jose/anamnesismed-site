@@ -33,27 +33,20 @@ jobs:
 
       # Preview: o servidor gera narração + visual POR FRASE (Flux + LTX) e devolve
       # a ReelSpec. Pode levar ~2min (por isso o --max-time alto).
-      - name: Obter ReelSpec (preview sync)
+      # 1) Plano (rápido): roteiro + narração + timing + prompts por cena.
+      - name: Obter plano do reel (preview sync)
         run: |
-          curl -fsS --max-time 290 \
+          curl -fsS --max-time 120 \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&lang=${{ github.event.inputs.lang }}&reelId=${{ github.event.inputs.reelId }}" \
             -o preview.json
-          echo "Prévia (início):"; head -c 500 preview.json; echo
-          node -e '
-            const p = JSON.parse(require("fs").readFileSync("preview.json","utf8"));
-            if (!p.reelSync || !p.spec) { console.error("ERRO: preview não devolveu reelSync/spec:", JSON.stringify(p).slice(0,300)); process.exit(1); }
-            const s = p.spec;
-            const handle = p.handle || "@anamnesismed";
-            const props = {
-              hook: s.hook, handle, audioUrl: s.audioUrl, durationSec: s.durationSec,
-              scenes: s.scenes, captions: s.captions, music: "music/bed-1.mp3",
-              ctaButton: (handle.includes(".es") ? "Sigue " : "Siga ") + handle,
-            };
-            require("fs").writeFileSync("reel-props.json", JSON.stringify(props));
-            const vids = s.scenes.filter(x=>x.visualType==="video").length;
-            console.log(`ReelSpec OK → ${s.scenes.length} cenas (${vids} vídeo, ${s.scenes.length-vids} imagem), ${s.captions.length} palavras, ${s.durationSec.toFixed(1)}s, voz ${s.voice}`);
-          '
+          echo "Plano (início):"; head -c 500 preview.json; echo
+
+      # 2) Gera 1 imagem POR CENA (cada chamada curta cabe no timeout) e monta os props.
+      - name: Gerar visuais por cena e montar props
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: node instagram-automation/scripts/build-reel-sync-props.mjs
 
       - name: Renderizar ReelSync (Remotion)
         working-directory: instagram-automation

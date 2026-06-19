@@ -9,7 +9,9 @@ import { narrate } from "@/lib/narrate";
 import { type Automation, logSpend } from "@/lib/spend";
 
 export interface ReelBeat { say: string; caption: string; visual: string; key: boolean }
-export interface ReelScene { visualUrl: string; visualType: "video" | "image"; start: number; end: number; caption: string }
+// A CENA carrega o PROMPT do visual (a requisição web NÃO gera o visual — estoura o
+// timeout). A CI gera a imagem por cena (endpoint /api/reel-visual) e preenche visualUrl.
+export interface ReelScene { visualPrompt: string; visualUrl: string; visualType: "video" | "image"; key: boolean; start: number; end: number; caption: string }
 export interface ReelCaption { text: string; start: number; end: number }
 export interface ReelSpec {
   hook: string;
@@ -111,7 +113,7 @@ async function genReelImage(prompt: string, automation: Automation): Promise<str
   } catch { return null; }
 }
 
-async function imageToVideo(imageUrl: string, prompt: string, automation: Automation): Promise<string | null> {
+export async function imageToVideo(imageUrl: string, prompt: string, automation: Automation): Promise<string | null> {
   const KEY = process.env.FAL_KEY;
   if (!KEY) return null;
   const model = "fal-ai/ltx-video-13b-distilled/image-to-video";
@@ -145,35 +147,24 @@ function splitScenes(beats: ReelBeat[], ctaText: string, words: { text: string; 
 }
 
 // ── 4) Monta a ReelSpec completa ────────────────────────────────────────────────
-// withVideo: gera LTX image-to-video nos beats-chave. Por padrão FALSE — gerar vídeo
-// numa requisição HTTP estoura o timeout da função (Hobby = 60s). v1 = só imagem
-// (Flux) por frase com Ken Burns; o LTX entra na CI (sem limite de tempo) depois.
-export async function buildReelSpec(lang: Lang, topic: string, automation: Automation, withVideo = false): Promise<ReelSpec | null> {
+// PLANO do reel (RÁPIDO, cabe no timeout): conteúdo em beats + narração (TTS) +
+// timing por frase + PROMPT de cada cena. NÃO gera imagem/vídeo aqui — isso é
+// pesado e estoura a função. A CI gera os visuais por cena (via /api/reel-visual)
+// e preenche scene.visualUrl; beats-chave podem virar LTX vídeo na CI.
+export async function buildReelSpec(lang: Lang, topic: string, automation: Automation): Promise<ReelSpec | null> {
   const content = await generateReelContent(lang, topic, automation);
-  const narrationFull = [...content.beats.map((b) => b.say), content.cta].join(" ");
   const allBeats: ReelBeat[] = [...content.beats, { say: content.cta, caption: content.ctaCaption, visual: content.beats[0]?.visual ?? topic, key: false }];
+  const narrationFull = allBeats.map((b) => b.say).join(" ");
 
-  // Narração + TODAS as imagens em PARALELO (independentes) p/ caber no timeout.
-  const [narration, ...images] = await Promise.all([
-    narrate(narrationFull, lang),
-    ...allBeats.map((b) => genReelImage(b.visual, automation)),
-  ]);
+  const narration = await narrate(narrationFull, lang);
   if (!narration || !narration.words.length) return null;
-
-  const visuals = await Promise.all(allBeats.map(async (b, i) => {
-    const img = images[i];
-    if (!img) return { visualUrl: "", visualType: "image" as const };
-    if (withVideo && b.key) {
-      const vid = await imageToVideo(img, b.visual, automation);
-      if (vid) return { visualUrl: vid, visualType: "video" as const };
-    }
-    return { visualUrl: img, visualType: "image" as const };
-  }));
 
   const segs = splitScenes(content.beats, content.cta, narration.words);
   const scenes: ReelScene[] = segs.map((s) => ({
-    visualUrl: visuals[s.idx]?.visualUrl ?? "",
-    visualType: visuals[s.idx]?.visualType ?? "image",
+    visualPrompt: allBeats[s.idx]?.visual ?? topic,
+    visualUrl: "",                  // a CI preenche (gera 1 imagem por cena)
+    visualType: "image",
+    key: allBeats[s.idx]?.key ?? false,
     start: s.start,
     end: s.end,
     caption: allBeats[s.idx]?.caption ?? "",
@@ -188,4 +179,10 @@ export async function buildReelSpec(lang: Lang, topic: string, automation: Autom
     captions: narration.words,
     ctaText: content.ctaCaption,
   };
+}
+
+// Gera 1 imagem (Flux) a partir do prompt da cena. Usado pelo endpoint que a CI
+// chama 1×por cena (cada chamada é curta e cabe no timeout da função).
+export async function generateSceneImage(prompt: string, automation: Automation): Promise<string | null> {
+  return genReelImage(prompt, automation);
 }
