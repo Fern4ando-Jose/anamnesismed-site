@@ -16,39 +16,45 @@ export interface Narration {
 // Vozes ElevenLabs (premade) — boas em PT-BR e ES neutro no multilingual-v2.
 export const REEL_VOICE: Record<"pt" | "es", string> = { pt: "Sarah", es: "Sarah" };
 
-// Normaliza os timestamps do fal/ElevenLabs (que podem vir por palavra ou por
-// caractere) para uma lista de PALAVRAS {text,start,end} em segundos.
+// Normaliza os timestamps do fal/ElevenLabs para PALAVRAS {text,start,end} (s).
+// Formato real (multilingual-v2): ARRAY de blocos, cada um com `characters[]` +
+// `character_start_times_seconds[]` + `character_end_times_seconds[]` (arrays
+// paralelos por caractere). Agrupamos os caracteres em palavras (separadas por
+// espaço). Também aceita formato por palavra [{text|word,start,end}] como fallback.
 function normalizeWords(ts: unknown): NarrationWord[] {
   if (!ts) return [];
-  // Formato por palavra: [{ text|word, start, end }]
-  if (Array.isArray(ts)) {
-    const arr = ts as Array<Record<string, unknown>>;
-    if (arr.length && (arr[0].word !== undefined || arr[0].text !== undefined) && arr[0].start !== undefined) {
-      return arr.map((w) => ({
-        text: String(w.word ?? w.text ?? "").trim(),
-        start: Number(w.start ?? 0),
-        end: Number(w.end ?? w.start ?? 0),
-      })).filter((w) => w.text);
-    }
+  const blocks = Array.isArray(ts) ? ts : [ts];
+
+  // Fallback: array já no nível de palavra.
+  const a0 = blocks[0] as Record<string, unknown> | undefined;
+  if (a0 && (a0.word !== undefined || a0.text !== undefined) && a0.start !== undefined && a0.characters === undefined) {
+    return (blocks as Array<Record<string, unknown>>)
+      .map((w) => ({ text: String(w.word ?? w.text ?? "").trim(), start: Number(w.start ?? 0), end: Number(w.end ?? w.start ?? 0) }))
+      .filter((w) => w.text);
   }
-  // Formato por caractere: { characters:[{text,start,end}] } → agrupa em palavras
-  const chars = (ts as { characters?: Array<{ text?: string; start?: number; end?: number }> })?.characters;
-  if (Array.isArray(chars)) {
-    const words: NarrationWord[] = [];
-    let cur = "", start = 0, end = 0, open = false;
-    for (const c of chars) {
-      const ch = String(c.text ?? "");
+
+  // Formato por caractere (ElevenLabs): junta caracteres em palavras.
+  const words: NarrationWord[] = [];
+  let cur = "", start = 0, end = 0, open = false;
+  for (const b of blocks as Array<Record<string, unknown>>) {
+    const chars = b?.characters as unknown[];
+    const st = (b?.character_start_times_seconds ?? b?.characterStartTimesSeconds) as number[] | undefined;
+    const en = (b?.character_end_times_seconds ?? b?.characterEndTimesSeconds) as number[] | undefined;
+    if (!Array.isArray(chars)) continue;
+    for (let i = 0; i < chars.length; i++) {
+      const ch = String(chars[i] ?? "");
+      const cs = Array.isArray(st) ? Number(st[i] ?? 0) : 0;
+      const ce = Array.isArray(en) ? Number(en[i] ?? cs) : cs;
       if (/\s/.test(ch)) {
         if (open && cur) { words.push({ text: cur, start, end }); cur = ""; open = false; }
       } else {
-        if (!open) { start = Number(c.start ?? 0); open = true; }
-        cur += ch; end = Number(c.end ?? c.start ?? 0);
+        if (!open) { start = cs; open = true; }
+        cur += ch; end = ce;
       }
     }
-    if (open && cur) words.push({ text: cur, start, end });
-    return words;
   }
-  return [];
+  if (open && cur) words.push({ text: cur, start, end });
+  return words;
 }
 
 export async function narrate(text: string, lang: "pt" | "es", voiceOverride?: string): Promise<Narration | null> {
