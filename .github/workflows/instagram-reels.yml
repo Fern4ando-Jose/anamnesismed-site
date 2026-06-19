@@ -83,6 +83,7 @@ jobs:
             -o preview.json
           echo "Prévia recebida:"
           cat preview.json | head -c 400; echo
+          echo "NARRACAO_AUDIO_URL: $(grep -o '\"audioUrl\":\"[^\"]*\"' preview.json | head -1 | sed 's/.*\"audioUrl\":\"//; s/\"$//')"
 
           # Extrai a keyword da capa a partir do título (1ª palavra "forte")
           # e monta os inputProps esperados pela composição Reel.

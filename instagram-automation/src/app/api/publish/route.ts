@@ -5,6 +5,7 @@ import { parseContentJson } from "@/lib/content-json";
 import { type Automation, checkBudget, logSpend, anthropicCost, tavilyCost, EST_RUN_COST } from "@/lib/spend";
 import { TEMAS, type Tema, type Formato } from "@/lib/temas";
 import { REEL_TEMAS, REEL_ROTULO, FORMATO_VISUAL, type ReelTema, type ReelFormato } from "@/lib/reel-temas";
+import { narrate, type Narration } from "@/lib/narrate";
 
 export const maxDuration = 300;
 
@@ -21,6 +22,7 @@ interface GeneratedContent {
   instagramCaption: string;
   tags: string[];
   videoKeywords?: string[]; // termos de busca (EN) p/ footage do Reel — 1 por cena
+  narration?: string;       // REEL: VO corrido de 20-30s (1 parágrafo) p/ a narração
 }
 
 type Slot = "manha" | "tarde" | "noite";
@@ -720,6 +722,17 @@ export async function GET(req: NextRequest) {
       `${base}/api/og?slide=cta&text=${enc(content.cta)}&num=${totalSlides}&total=${totalSlides}&kw=${enc(kw)}&ed=${ed}${hq}${ctaExtra}`,
     ];
 
+    // Narração por IA (só REEL): VO de 20-30s em UMA fala corrida, com timestamps
+    // por palavra → legenda sincronizada + corte do footage no tempo da voz. É o
+    // que dá o "sincronizado". Falha/sem chave → null e o reel segue sem narração.
+    let narration: Narration | null = null;
+    if (channel === "reel") {
+      const vo = content.narration?.trim()
+        || [content.postTitle, ...content.slides, content.cta].join(". ");
+      narration = await narrate(vo, lang);
+      log.narration = narration ? `ok (${narration.words.length} palavras, ${narration.durationSec.toFixed(1)}s, voz ${narration.voice})` : "sem narração";
+    }
+
     // Modo PRÉVIA — gera conteúdo + URLs das imagens SEM publicar nem salvar
     if (req.nextUrl.searchParams.get("preview")) {
       return NextResponse.json({
@@ -738,6 +751,9 @@ export async function GET(req: NextRequest) {
           rotulo: REEL_ROTULO[lang][reelFormato],
           visual: FORMATO_VISUAL[reelFormato],          // "footage" | "typografia"
           footage: reelTema?.footage ?? [],             // queries da AÇÃO (só técnica)
+        } : {}),
+        ...(narration ? {
+          narration: { audioUrl: narration.audioUrl, words: narration.words, durationSec: narration.durationSec, voice: narration.voice },
         } : {}),
         slideUrls,
       });
