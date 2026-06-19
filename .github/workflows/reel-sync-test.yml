@@ -36,11 +36,11 @@ jobs:
       # 1) Plano (rápido): roteiro + narração + timing + prompts por cena.
       - name: Obter plano do reel (preview sync)
         run: |
-          curl -fsS --max-time 120 \
+          HTTP=$(curl -sS -o preview.json -w "%{http_code}" --max-time 120 \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&lang=${{ github.event.inputs.lang }}&reelId=${{ github.event.inputs.reelId }}" \
-            -o preview.json
-          echo "Plano (início):"; head -c 500 preview.json; echo
+            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&lang=${{ github.event.inputs.lang }}&reelId=${{ github.event.inputs.reelId }}")
+          echo "HTTP $HTTP — corpo:"; cat preview.json; echo
+          if [ "$HTTP" -ge 400 ]; then echo "::error::preview falhou (HTTP $HTTP)"; exit 1; fi
 
       # 2) Gera 1 imagem POR CENA (cada chamada curta cabe no timeout) e monta os props.
       - name: Gerar visuais por cena e montar props
