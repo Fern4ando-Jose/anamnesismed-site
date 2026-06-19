@@ -90,8 +90,11 @@ async function generateReelContent(lang: Lang, topic: string, automation: Automa
   await logSpend({ automation, platform: "anthropic", operation: "reel-content", model: "claude-haiku-4-5-20251001", units: (data?.usage?.input_tokens ?? 0) + (data?.usage?.output_tokens ?? 0), costUsd: 0.01 });
   const raw: string = data.content?.[0]?.text ?? "";
   const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
-  const c = JSON.parse(json) as ReelContent;
+  let c: ReelContent;
+  try { c = JSON.parse(json) as ReelContent; }
+  catch { throw new Error(`reel content: JSON inválido (${raw.slice(0, 160)})`); }
   c.beats = (c.beats ?? []).slice(0, 5);
+  if (!c.beats.length) throw new Error(`reel content sem beats (${raw.slice(0, 160)})`);
   return c;
 }
 
@@ -157,7 +160,8 @@ export async function buildReelSpec(lang: Lang, topic: string, automation: Autom
   const narrationFull = allBeats.map((b) => b.say).join(" ");
 
   const narration = await narrate(narrationFull, lang);
-  if (!narration || !narration.words.length) return null;
+  if (!narration) throw new Error(`narração falhou (fal TTS) — texto ${narrationFull.length} chars`);
+  if (!narration.words.length) throw new Error(`narração sem timestamps de palavra (texto ${narrationFull.length} chars)`);
 
   const segs = splitScenes(content.beats, content.cta, narration.words);
   const scenes: ReelScene[] = segs.map((s) => ({
