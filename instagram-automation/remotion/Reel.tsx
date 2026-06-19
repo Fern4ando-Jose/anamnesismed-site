@@ -126,6 +126,24 @@ function Kicker({ label }: { label: string }) {
   );
 }
 
+// ÁREA SEGURA do Reel (1080x1920): o Instagram cobre a faixa de BAIXO (legenda +
+// botões) e um pouco do topo. Tudo que importa fica no topo (marca) e no MIOLO
+// vertical; a base fica livre. Padding generoso embaixo evita o corte das letras.
+const SAFE_CONTENT: React.CSSProperties = { justifyContent: "center", padding: "330px 80px 480px" };
+
+// Barra de marca no TOPO (handle à esquerda, etiqueta à direita) — fora da área
+// que o IG sobrepõe embaixo.
+function TopBar({ handle = "@anamnesismed", right }: { handle?: string; right?: string }) {
+  return (
+    <div style={{ position: "absolute", top: 150, left: 80, right: 80, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Handle handle={handle} />
+      {right ? (
+        <div style={{ fontFamily: DMSANS, fontSize: 34, fontWeight: 700, letterSpacing: 2, color: SOFT, textShadow: SHADOW }}>{right}</div>
+      ) : null}
+    </div>
+  );
+}
+
 // Fundo do beat: clipe de footage (corte seco) + scrim de marca; ou teal sólido.
 // Sem fade no fundo p/ o primeiro frame (thumbnail) nunca ficar em branco.
 function BeatBg({ clip, visual }: { clip?: string; visual?: "footage" | "typografia" }) {
@@ -159,19 +177,16 @@ function CoverBeat({ title, kw, ed, clip, visual, handle }: { title: string; kw:
   return (
     <AbsoluteFill>
       <BeatBg clip={clip} visual={visual} />
-      <div style={{ position: "absolute", top: 110, left: 90, fontFamily: DMSANS, fontSize: 32, fontWeight: 700, letterSpacing: 6, color: SOFT, textShadow: SHADOW }}>
-        ANAMNESÍSMED · Nº {ed}
-      </div>
-      <AbsoluteFill style={{ justifyContent: "center", alignItems: "flex-start", padding: "0 90px" }}>
+      <TopBar handle={handle} right={`Nº ${ed}`} />
+      <AbsoluteFill style={{ ...SAFE_CONTENT, alignItems: "flex-start" }}>
         {/* Capa visível já no frame 0 (thumbnail) — só um leve deslize, sem fade de opacidade */}
         <div style={{ transform: `translateY(${y}px)`, display: "flex", flexDirection: "column", gap: 40 }}>
           <Kicker label={kw} />
-          <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 90, lineHeight: 1.08, color: WHITE, letterSpacing: -2, textShadow: SHADOW }}>
+          <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 86, lineHeight: 1.08, color: WHITE, letterSpacing: -2, textShadow: SHADOW }}>
             {title}
           </div>
         </div>
       </AbsoluteFill>
-      <div style={{ position: "absolute", bottom: 96, left: 90 }}><Handle handle={handle} /></div>
     </AbsoluteFill>
   );
 }
@@ -184,20 +199,17 @@ function SlideBeat({ text, accent, index, total, clip, visual, handle }: { text:
   return (
     <AbsoluteFill>
       <BeatBg clip={clip} visual={visual} />
-      <div style={{ position: "absolute", top: 110, left: 90, fontFamily: DMSANS, fontSize: 38, fontWeight: 700, letterSpacing: 2, color: SOFT, textShadow: SHADOW }}>
-        {String(index).padStart(2, "0")} / {String(total).padStart(2, "0")}
-      </div>
-      <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "flex-start", padding: "0 90px 220px" }}>
-        <div style={{ transform: `translateX(${x}px)`, opacity: e, fontFamily: DMSANS, fontWeight: 800, fontSize: 80, lineHeight: 1.16, color: WHITE, letterSpacing: -1, textShadow: SHADOW }}>
+      <TopBar handle={handle} right={`${String(index).padStart(2, "0")} / ${String(total).padStart(2, "0")}`} />
+      <AbsoluteFill style={{ ...SAFE_CONTENT, alignItems: "flex-start" }}>
+        <div style={{ transform: `translateX(${x}px)`, opacity: e, fontFamily: DMSANS, fontWeight: 800, fontSize: 78, lineHeight: 1.16, color: WHITE, letterSpacing: -1, textShadow: SHADOW }}>
           <Highlighted text={text} accent={accent} />
         </div>
       </AbsoluteFill>
-      <div style={{ position: "absolute", bottom: 96, left: 90 }}><Handle handle={handle} /></div>
     </AbsoluteFill>
   );
 }
 
-function CtaBeat({ cta, clip, visual, ctaButton = "Siga @anamnesismed", ctaKicker }: { cta: string; clip?: string; visual?: "footage" | "typografia"; ctaButton?: string; ctaKicker?: string }) {
+function CtaBeat({ cta, clip, visual, ctaButton = "Siga @anamnesismed", ctaKicker, handle }: { cta: string; clip?: string; visual?: "footage" | "typografia"; ctaButton?: string; ctaKicker?: string; handle?: string }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const e = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 28 });
@@ -205,10 +217,11 @@ function CtaBeat({ cta, clip, visual, ctaButton = "Siga @anamnesismed", ctaKicke
   return (
     <AbsoluteFill>
       <BeatBg clip={clip} visual={visual} />
-      <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", padding: "0 90px", textAlign: "center" }}>
+      <TopBar handle={handle} />
+      <AbsoluteFill style={{ ...SAFE_CONTENT, alignItems: "center", textAlign: "center" }}>
         <div style={{ transform: `scale(${scale})`, opacity: e, display: "flex", flexDirection: "column", alignItems: "center", gap: 38 }}>
           {ctaKicker ? <Kicker label={ctaKicker} /> : null}
-          <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 76, lineHeight: 1.12, color: WHITE, letterSpacing: -1, maxWidth: 900, textShadow: SHADOW }}>
+          <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 74, lineHeight: 1.12, color: WHITE, letterSpacing: -1, maxWidth: 900, textShadow: SHADOW }}>
             {cta}
           </div>
           <div style={{ marginTop: 16, fontFamily: DMSANS, fontWeight: 700, fontSize: 40, color: WHITE, backgroundColor: CORAL, padding: "22px 46px", borderRadius: 14 }}>
@@ -251,7 +264,7 @@ export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw,
         </Sequence>
       ))}
       <Sequence from={next(CTA)} durationInFrames={CTA}>
-        <CtaBeat cta={cta} clip={clipAt(beat++)} visual={visual} ctaButton={ctaButton} ctaKicker={ctaKicker} />
+        <CtaBeat cta={cta} clip={clipAt(beat++)} visual={visual} ctaButton={ctaButton} ctaKicker={ctaKicker} handle={handle} />
       </Sequence>
     </AbsoluteFill>
   );
