@@ -92,14 +92,22 @@ async function main() {
   catch (e) { log("não consegui ler props:", e.message); return; }
   if (!KEY) { log("PEXELS_API_KEY ausente — seguindo sem footage (fundo teal)"); return; }
 
+  // VISUAL HÍBRIDO: na tipografia (mnemônico/curiosidade/pegadinha) o reel NÃO usa
+  // vídeo — fundo animado da marca. Então saímos SEM footage de propósito.
+  if (String(props.visual || "").toLowerCase() === "typografia") {
+    log("visual=typografia — reel sem footage (fundo animado da marca)");
+    return;
+  }
+
   const need = (Array.isArray(props.slides) ? props.slides.length : 3) + 2; // capa + slides + cta
   const used = new Set();
   const clips = [];
 
-  // B-roll clínico genérico: leve toque por especialidade + pool seguro. NÃO usa
-  // as videoKeywords (cenas literais), que o acervo grátis não entrega.
+  // Modo "footage" (técnica filmável): as queries da AÇÃO vêm do tema (props.footage)
+  // e CASAM com o vídeo. Fallback: acento por especialidade + pool genérico.
   const esp = String(props.specialty || props.esp || "").toUpperCase().trim();
-  const terms = [...(TERMS[esp] || []), ...GENERIC];
+  const acao = Array.isArray(props.footage) ? props.footage.filter(Boolean) : [];
+  const terms = [...acao, ...(TERMS[esp] || []), ...GENERIC];
 
   try {
     // 1 clipe distinto por beat, varrendo o pool. Cada termo retorna footage real

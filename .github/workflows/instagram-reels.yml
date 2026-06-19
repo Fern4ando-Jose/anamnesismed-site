@@ -27,6 +27,11 @@ on:
         required: false
         default: false
         type: boolean
+      reelId:
+        description: "QA: forçar um tema específico do banco de reel (id). Vazio = automático."
+        required: false
+        default: ""
+        type: string
 
 jobs:
   reel:
@@ -74,7 +79,7 @@ jobs:
           # Chama o endpoint de prévia (autenticado pelo CRON_SECRET)
           curl -fsS --max-time 120 \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&slot=${{ steps.slot.outputs.slot }}" \
+            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&slot=${{ steps.slot.outputs.slot }}&reelId=${{ github.event.inputs.reelId }}" \
             -o preview.json
           echo "Prévia recebida:"
           cat preview.json | head -c 400; echo
@@ -93,10 +98,18 @@ jobs:
               slides: Array.isArray(p.slides) ? p.slides : [],
               accentWords: Array.isArray(p.accentWords) ? p.accentWords : [],
               cta: p.cta || "Qual sua conduta?",
-              kw,
+              // Capa do reel-nativo mostra o rótulo do formato (VOCÊ SABIA?/BIZU/…);
+              // fallback: keyword derivada do título.
+              kw: p.rotulo || kw,
               ed: "000",
               videoKeywords: Array.isArray(p.videoKeywords) ? p.videoKeywords : [],
               specialty: p.esp || "",
+              // VISUAL HÍBRIDO: typografia (fundo animado) vs footage (vídeo real).
+              visual: p.visual || "footage",
+              footage: Array.isArray(p.footage) ? p.footage : [],
+              handle: "@anamnesismed",
+              ctaButton: "Siga @anamnesismed",
+              ctaKicker: "",
               // Trilha de fundo por slot (sem narração). Arquivos em public/music/.
               music: "music/bed-" + (({manha:0,tarde:1,noite:2})["${{ steps.slot.outputs.slot }}"] ?? 0) + ".mp3"
             };

@@ -81,10 +81,16 @@ jobs:
               slides: Array.isArray(p.slides) ? p.slides : [],
               accentWords: Array.isArray(p.accentWords) ? p.accentWords : [],
               cta: p.cta || "¿Cuál es tu conducta?",
-              kw,
+              // La portada del reel nativo muestra el rótulo del formato (¿SABÍAS?/TRUCO/…).
+              kw: p.rotulo || kw,
               ed: "000",
               videoKeywords: Array.isArray(p.videoKeywords) ? p.videoKeywords : [],
               specialty: p.esp || "",
+              visual: p.visual || "footage",
+              footage: Array.isArray(p.footage) ? p.footage : [],
+              handle: "@anamnesismed.es",
+              ctaButton: "Sigue @anamnesismed.es",
+              ctaKicker: "",
               music: "music/bed-" + (({manha:0,tarde:1,noite:2})["${{ steps.slot.outputs.slot }}"] ?? 0) + ".mp3"
             };
             fs.writeFileSync("caption.txt", p.caption || title);

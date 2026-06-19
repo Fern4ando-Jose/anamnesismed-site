@@ -38,12 +38,18 @@ export type ReelProps = {
   slides: string[];
   accentWords: string[];
   cta: string;
-  kw: string;
+  kw: string;          // rótulo da capa (reel-nativo: VOCÊ SABIA?/BIZU/… ; ou especialidade)
   ed: string;
   clips?: string[];    // 1 clipe de footage por beat (cover + slides + cta). Vazio = teal.
   narration?: string;  // arquivo em public/ (Kokoro TTS); ausente = reel mudo
   beatSecs?: number[];  // duração (s) de cada beat = sua narração (cover, slides..., cta)
   music?: string;      // bed de fundo opcional em public/ (volume baixo)
+  // VISUAL HÍBRIDO: "footage" = vídeo real ao fundo (técnica filmável);
+  // "typografia" = fundo animado da marca, sem vídeo (mnemônico/curiosidade/pegadinha).
+  visual?: "footage" | "typografia";
+  handle?: string;     // @anamnesismed (PT) ou @anamnesismed.es (ES)
+  ctaButton?: string;  // botão final: "Siga @…" / "Sigue @…"
+  ctaKicker?: string;  // kicker do beat final (vazio = sem kicker)
 };
 
 // Frames de cada beat: dirigido pela narração (beatSecs) p/ ficar em sync; sem
@@ -83,14 +89,29 @@ function Highlighted({ text, accent }: { text: string; accent: string }) {
   );
 }
 
-function Handle() {
+function Handle({ handle = "@anamnesismed" }: { handle?: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
       <div style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: CORAL }} />
       <div style={{ fontFamily: DMSANS, fontSize: 36, fontWeight: 700, letterSpacing: 1, color: WHITE, textShadow: SHADOW }}>
-        @anamnesismed
+        {handle}
       </div>
     </div>
+  );
+}
+
+// Fundo ANIMADO da marca (modo typografia): gradiente teal + 2 "blobs" que derivam
+// devagar (seno por tempo) + faixa coral. Texto vira o herói, sem vídeo competindo.
+function AnimatedBg() {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const d = (amp: number, speed: number, phase: number) => Math.sin(t * speed + phase) * amp;
+  return (
+    <AbsoluteFill style={{ background: `linear-gradient(160deg, #0A363C 0%, ${TEAL_DK} 52%, #0E5A66 100%)` }}>
+      <div style={{ position: "absolute", width: 920, height: 920, borderRadius: "50%", filter: "blur(95px)", background: "rgba(15,163,177,0.42)", top: -220 + d(28, 0.45, 0), left: -160 + d(40, 0.32, 1) }} />
+      <div style={{ position: "absolute", width: 720, height: 720, borderRadius: "50%", filter: "blur(110px)", background: "rgba(255,92,73,0.20)", bottom: -200 + d(34, 0.38, 2), right: -130 + d(28, 0.5, 0.5) }} />
+    </AbsoluteFill>
   );
 }
 
@@ -107,16 +128,22 @@ function Kicker({ label }: { label: string }) {
 
 // Fundo do beat: clipe de footage (corte seco) + scrim de marca; ou teal sólido.
 // Sem fade no fundo p/ o primeiro frame (thumbnail) nunca ficar em branco.
-function BeatBg({ clip }: { clip?: string }) {
+function BeatBg({ clip, visual }: { clip?: string; visual?: "footage" | "typografia" }) {
+  const typo = visual === "typografia";
   return (
     <AbsoluteFill>
-      {clip ? (
+      {typo ? (
+        <AnimatedBg />
+      ) : clip ? (
         <OffthreadVideo src={clip} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       ) : (
         <AbsoluteFill style={BG_SOLID} />
       )}
+      {/* Scrim p/ legibilidade — leve na typografia (fundo já controlado), forte no vídeo. */}
       <AbsoluteFill style={{
-        background: "linear-gradient(180deg, rgba(8,40,46,0.55) 0%, rgba(8,40,46,0.32) 45%, rgba(8,40,46,0.86) 100%)",
+        background: typo
+          ? "linear-gradient(180deg, rgba(8,40,46,0.10) 0%, rgba(8,40,46,0.40) 100%)"
+          : "linear-gradient(180deg, rgba(8,40,46,0.55) 0%, rgba(8,40,46,0.32) 45%, rgba(8,40,46,0.86) 100%)",
       }} />
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 14, backgroundColor: CORAL }} />
     </AbsoluteFill>
@@ -124,14 +151,14 @@ function BeatBg({ clip }: { clip?: string }) {
 }
 
 // ─── Beats ────────────────────────────────────────────────────────────────────
-function CoverBeat({ title, kw, ed, clip }: { title: string; kw: string; ed: string; clip?: string }) {
+function CoverBeat({ title, kw, ed, clip, visual, handle }: { title: string; kw: string; ed: string; clip?: string; visual?: "footage" | "typografia"; handle?: string }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const e = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 28 });
   const y = interpolate(e, [0, 1], [50, 0]);
   return (
     <AbsoluteFill>
-      <BeatBg clip={clip} />
+      <BeatBg clip={clip} visual={visual} />
       <div style={{ position: "absolute", top: 110, left: 90, fontFamily: DMSANS, fontSize: 32, fontWeight: 700, letterSpacing: 6, color: SOFT, textShadow: SHADOW }}>
         ANAMNESÍSMED · Nº {ed}
       </div>
@@ -144,19 +171,19 @@ function CoverBeat({ title, kw, ed, clip }: { title: string; kw: string; ed: str
           </div>
         </div>
       </AbsoluteFill>
-      <div style={{ position: "absolute", bottom: 96, left: 90 }}><Handle /></div>
+      <div style={{ position: "absolute", bottom: 96, left: 90 }}><Handle handle={handle} /></div>
     </AbsoluteFill>
   );
 }
 
-function SlideBeat({ text, accent, index, total, clip }: { text: string; accent: string; index: number; total: number; clip?: string }) {
+function SlideBeat({ text, accent, index, total, clip, visual, handle }: { text: string; accent: string; index: number; total: number; clip?: string; visual?: "footage" | "typografia"; handle?: string }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const e = spring({ frame: frame - 4, fps, config: { damping: 200 }, durationInFrames: 26 });
   const x = interpolate(e, [0, 1], [-50, 0]);
   return (
     <AbsoluteFill>
-      <BeatBg clip={clip} />
+      <BeatBg clip={clip} visual={visual} />
       <div style={{ position: "absolute", top: 110, left: 90, fontFamily: DMSANS, fontSize: 38, fontWeight: 700, letterSpacing: 2, color: SOFT, textShadow: SHADOW }}>
         {String(index).padStart(2, "0")} / {String(total).padStart(2, "0")}
       </div>
@@ -165,27 +192,27 @@ function SlideBeat({ text, accent, index, total, clip }: { text: string; accent:
           <Highlighted text={text} accent={accent} />
         </div>
       </AbsoluteFill>
-      <div style={{ position: "absolute", bottom: 96, left: 90 }}><Handle /></div>
+      <div style={{ position: "absolute", bottom: 96, left: 90 }}><Handle handle={handle} /></div>
     </AbsoluteFill>
   );
 }
 
-function CtaBeat({ cta, clip }: { cta: string; clip?: string }) {
+function CtaBeat({ cta, clip, visual, ctaButton = "Siga @anamnesismed", ctaKicker }: { cta: string; clip?: string; visual?: "footage" | "typografia"; ctaButton?: string; ctaKicker?: string }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const e = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 28 });
   const scale = interpolate(e, [0, 1], [0.86, 1]);
   return (
     <AbsoluteFill>
-      <BeatBg clip={clip} />
+      <BeatBg clip={clip} visual={visual} />
       <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", padding: "0 90px", textAlign: "center" }}>
         <div style={{ transform: `scale(${scale})`, opacity: e, display: "flex", flexDirection: "column", alignItems: "center", gap: 38 }}>
-          <Kicker label="Resposta" />
+          {ctaKicker ? <Kicker label={ctaKicker} /> : null}
           <div style={{ fontFamily: DMSANS, fontWeight: 800, fontSize: 76, lineHeight: 1.12, color: WHITE, letterSpacing: -1, maxWidth: 900, textShadow: SHADOW }}>
             {cta}
           </div>
           <div style={{ marginTop: 16, fontFamily: DMSANS, fontWeight: 700, fontSize: 40, color: WHITE, backgroundColor: CORAL, padding: "22px 46px", borderRadius: 14 }}>
-            Siga @anamnesismed
+            {ctaButton}
           </div>
         </div>
       </AbsoluteFill>
@@ -194,7 +221,7 @@ function CtaBeat({ cta, clip }: { cta: string; clip?: string }) {
 }
 
 // ─── Composição: sequência de beats em corte ──────────────────────────────────
-export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw, ed, clips, narration, beatSecs, music }) => {
+export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw, ed, clips, narration, beatSecs, music, visual, handle, ctaButton, ctaKicker }) => {
   const { fps } = useVideoConfig();
   const safeSlides = slides && slides.length ? slides : reelDefaultProps.slides;
   const frames = beatFrames(safeSlides.length, fps, beatSecs); // [cover, slides..., cta]
@@ -216,15 +243,15 @@ export const Reel: React.FC<ReelProps> = ({ title, slides, accentWords, cta, kw,
       {music ? <Audio src={staticFile(music)} volume={narration ? 0.12 : 0.5} loop /> : null}
 
       <Sequence from={next(COVER)} durationInFrames={COVER}>
-        <CoverBeat title={title} kw={kw} ed={ed} clip={clipAt(beat++)} />
+        <CoverBeat title={title} kw={kw} ed={ed} clip={clipAt(beat++)} visual={visual} handle={handle} />
       </Sequence>
       {safeSlides.map((text, i) => (
         <Sequence key={i} from={next(frames[i + 1])} durationInFrames={frames[i + 1]}>
-          <SlideBeat text={text} accent={accentWords?.[i] ?? ""} index={i + 1} total={safeSlides.length} clip={clipAt(beat++)} />
+          <SlideBeat text={text} accent={accentWords?.[i] ?? ""} index={i + 1} total={safeSlides.length} clip={clipAt(beat++)} visual={visual} handle={handle} />
         </Sequence>
       ))}
       <Sequence from={next(CTA)} durationInFrames={CTA}>
-        <CtaBeat cta={cta} clip={clipAt(beat++)} />
+        <CtaBeat cta={cta} clip={clipAt(beat++)} visual={visual} ctaButton={ctaButton} ctaKicker={ctaKicker} />
       </Sequence>
     </AbsoluteFill>
   );

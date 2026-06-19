@@ -9,7 +9,20 @@
 // Conteúdo gerado POR MERCADO (PT/ES), nunca traduzido: o seed é o assunto+ângulo;
 // o prompt (buildReelPrompt) escreve o gancho na voz de cada mercado.
 
-export type ReelFormato = "curiosidade" | "mnemonico" | "pegadinha";
+export type ReelFormato = "curiosidade" | "mnemonico" | "pegadinha" | "tecnica";
+
+// VISUAL HÍBRIDO (decisão do dono 2026-06-18): cada tema escolhe o visual.
+//  • tecnica   → "footage": tema FILMÁVEL (exame físico/manobra/procedimento) →
+//                vídeo real do Pexels CASA com a ação (queries em `footage`).
+//  • os demais → "typografia": tema abstrato (mnemônico/critério/curiosidade) que
+//                NÃO tem footage real → fundo animado da marca, texto como herói.
+export type ReelVisual = "footage" | "typografia";
+export const FORMATO_VISUAL: Record<ReelFormato, ReelVisual> = {
+  curiosidade: "typografia",
+  mnemonico: "typografia",
+  pegadinha: "typografia",
+  tecnica: "footage",
+};
 
 export interface ReelTema {
   id: number;        // posição canônica (informativa)
@@ -18,6 +31,7 @@ export interface ReelTema {
   pt: string;        // assunto/seed em PT (o prompt vira gancho de reel)
   es: string;        // assunto/seed em ES (LATAM)
   subject: string;   // metáfora visual (EN) — p/ tratamento visual futuro
+  footage?: string[]; // só nos temas "tecnica": queries Pexels da AÇÃO (1 por cena)
 }
 
 // ── CURIOSIDADE — fato clínico que surpreende ("você sabia?") ──
@@ -56,11 +70,25 @@ const PEGADINHAS: ReelTema[] = [
   { id: 147, esp: "CLÍNICA", formato: "pegadinha", pt: "TP/INR alargado isolado aponta via extrínseca (fator VII, varfarina) — não é efeito de heparina.", es: "TP/INR alargado aislado apunta a la vía extrínseca (factor VII, warfarina) — no es efecto de la heparina.", subject: "a coagulation cascade diagram with one branch lit" },
 ];
 
-// Banco final do reel — ordem fixa (curiosidade → mnemônico → pegadinha).
-export const REEL_TEMAS: ReelTema[] = [...CURIOSIDADES, ...MNEMONICOS, ...PEGADINHAS];
+// ── TÉCNICA — beira de leito FILMÁVEL (exame físico/manobra/procedimento) ──
+// Tema escolhido p/ CASAR com vídeo real do Pexels. `footage` = 1 query por cena
+// (capa + 3 linhas + cta = 5), de ações que o acervo grátis TEM de verdade.
+const TECNICAS: ReelTema[] = [
+  { id: 160, esp: "CARDIOLOGIA", formato: "tecnica", pt: "Como medir a pressão arterial sem errar: posição, manguito e os erros que inflam o número.", es: "Cómo medir la presión arterial sin errar: posición, manguito y los errores que inflan el número.", subject: "a clinician taking blood pressure with a cuff", footage: ["nurse measuring blood pressure", "blood pressure cuff arm", "sphygmomanometer reading", "patient seated arm supported", "doctor checking blood pressure"] },
+  { id: 161, esp: "CARDIOLOGIA", formato: "tecnica", pt: "Ausculta cardíaca: os 4 focos e onde encostar o estetoscópio em cada um.", es: "Auscultación cardíaca: los 4 focos y dónde apoyar el estetoscopio en cada uno.", subject: "a stethoscope on a chest at the cardiac foci", footage: ["doctor stethoscope chest", "cardiac auscultation", "listening heart stethoscope", "physician examining chest", "stethoscope close up"] },
+  { id: 162, esp: "GASTRO", formato: "tecnica", pt: "Palpação abdominal: a ordem certa dos 4 quadrantes e por que começar longe da dor.", es: "Palpación abdominal: el orden correcto de los 4 cuadrantes y por qué empezar lejos del dolor.", subject: "hands palpating an abdomen during exam", footage: ["doctor palpating abdomen", "abdominal physical examination", "physician examining patient stomach", "hands on patient abdomen", "clinical abdominal exam"] },
+  { id: 163, esp: "NEUROLOGIA", formato: "tecnica", pt: "Reflexo patelar: como posicionar a perna e percutir pra não dar falso negativo.", es: "Reflejo patelar: cómo posicionar la pierna y percutir para no dar falso negativo.", subject: "a reflex hammer striking the patellar tendon", footage: ["reflex hammer knee", "neurological exam reflex", "doctor testing knee reflex", "patient leg examination", "tendon reflex test"] },
+  { id: 164, esp: "EMERGÊNCIA", formato: "tecnica", pt: "RCP de qualidade: profundidade, ritmo (100-120/min) e o erro de parar as compressões.", es: "RCP de calidad: profundidad, ritmo (100-120/min) y el error de parar las compresiones.", subject: "hands performing chest compressions in CPR", footage: ["cpr chest compressions", "cpr training dummy", "resuscitation hands chest", "emergency cpr", "first aid compressions"] },
+  { id: 165, esp: "INFECTOLOGIA", formato: "tecnica", pt: "Higienização das mãos: os 5 momentos e os pontos que todo mundo esquece de esfregar.", es: "Higiene de manos: los 5 momentos y los puntos que todos olvidan frotar.", subject: "hands being washed with soap in a sink", footage: ["hand washing hospital", "surgical hand scrub", "doctor washing hands", "hand sanitizer hospital", "hand hygiene closeup"] },
+  { id: 166, esp: "CLÍNICA", formato: "tecnica", pt: "Punção venosa: escolha da veia, ângulo da agulha e como evitar o hematoma.", es: "Punción venosa: elección de la vena, ángulo de la aguja y cómo evitar el hematoma.", subject: "a venipuncture being performed on a forearm", footage: ["venipuncture blood draw", "nurse drawing blood", "iv insertion arm", "phlebotomy needle vein", "blood sample collection"] },
+  { id: 167, esp: "PNEUMOLOGIA", formato: "tecnica", pt: "Ausculta pulmonar: a sequência em zigue-zague e onde pegam os estertores.", es: "Auscultación pulmonar: la secuencia en zigzag y dónde se captan los estertores.", subject: "a stethoscope on the back auscultating lungs", footage: ["lung auscultation back", "doctor stethoscope back", "respiratory examination", "listening to lungs", "physician examining breathing"] },
+];
+
+// Banco final do reel — typografia (curiosidade/mnemônico/pegadinha) + footage (técnica).
+export const REEL_TEMAS: ReelTema[] = [...CURIOSIDADES, ...MNEMONICOS, ...PEGADINHAS, ...TECNICAS];
 
 // Rótulo de capa por formato (PT/ES) — usado no badge do reel.
 export const REEL_ROTULO: Record<"pt" | "es", Record<ReelFormato, string>> = {
-  pt: { curiosidade: "VOCÊ SABIA?", mnemonico: "BIZU", pegadinha: "PEGA DE PROVA" },
-  es: { curiosidade: "¿SABÍAS?", mnemonico: "TRUCO", pegadinha: "TRAMPA DE EXAMEN" },
+  pt: { curiosidade: "VOCÊ SABIA?", mnemonico: "BIZU", pegadinha: "PEGA DE PROVA", tecnica: "NA PRÁTICA" },
+  es: { curiosidade: "¿SABÍAS?", mnemonico: "TRUCO", pegadinha: "TRAMPA DE EXAMEN", tecnica: "EN LA PRÁCTICA" },
 };

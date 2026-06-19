@@ -4,7 +4,7 @@ import { prerenderToBlob } from "@/lib/prerender";
 import { parseContentJson } from "@/lib/content-json";
 import { type Automation, checkBudget, logSpend, anthropicCost, tavilyCost, EST_RUN_COST } from "@/lib/spend";
 import { TEMAS, type Tema, type Formato } from "@/lib/temas";
-import { REEL_TEMAS, REEL_ROTULO, type ReelTema, type ReelFormato } from "@/lib/reel-temas";
+import { REEL_TEMAS, REEL_ROTULO, FORMATO_VISUAL, type ReelTema, type ReelFormato } from "@/lib/reel-temas";
 
 export const maxDuration = 300;
 
@@ -259,11 +259,13 @@ const REEL_ESTRUTURA: Record<Lang, Record<ReelFormato, { rotulo: string; hook: s
     curiosidade: { rotulo: "VOCÊ SABIA?", hook: "uma afirmação ou pergunta que INTRIGA em ≤55 chars — o fato clínico que pouca gente sabe", linhas: "3 linhas curtas: o fato, POR QUE muda a prática e um detalhe que gruda na memória", cta: "feche pedindo SALVAR e marcar quem não sabia" },
     mnemonico:   { rotulo: "BIZU",        hook: "prometa o bizu que resolve, em ≤55 chars (ex.: 'O bizu que salva sua gasometria')", linhas: "3 linhas: cada uma destrincha letras/critérios do mnemônico com o significado clínico, EM ORDEM", cta: "feche pedindo SALVAR pra prova e perguntar qual letra sempre esquecem" },
     pegadinha:   { rotulo: "PEGA DE PROVA", hook: "anuncie o erro que reprova, em ≤55 chars (ex.: 'A pegadinha de ECG que reprova todo mundo')", linhas: "3 linhas: a ARMADILHA → o raciocínio CORRETO → a regra de ouro pra nunca mais errar", cta: "feche pedindo COMENTAR se já caiu nessa e marcar um colega" },
+    tecnica:     { rotulo: "NA PRÁTICA",  hook: "nomeie a técnica/manobra e prometa fazer certo, em ≤55 chars (ex.: 'Como medir a PA sem errar')", linhas: "3 linhas: cada uma = 1 PASSO da técnica, EM ORDEM, do jeito que se faz à beira do leito", cta: "feche pedindo SALVAR pra treinar e marcar a dupla de plantão" },
   },
   es: {
     curiosidade: { rotulo: "¿SABÍAS?",         hook: "una afirmación o pregunta que INTRIGA en ≤55 chars — el dato clínico que pocos saben", linhas: "3 líneas cortas: el dato, POR QUÉ cambia la práctica y un detalle que se queda en la memoria", cta: "cierra pidiendo GUARDAR y etiquetar a quien no lo sabía" },
     mnemonico:   { rotulo: "TRUCO",            hook: "promete el truco que resuelve, en ≤55 chars (ej.: 'El truco que salva tu gasometría')", linhas: "3 líneas: cada una desglosa letras/criterios de la mnemotecnia con el significado clínico, EN ORDEN", cta: "cierra pidiendo GUARDAR para el examen y preguntar qué letra siempre olvidan" },
     pegadinha:   { rotulo: "TRAMPA DE EXAMEN", hook: "anuncia el error que reprueba, en ≤55 chars (ej.: 'La trampa de ECG que reprueba a todos')", linhas: "3 líneas: la TRAMPA → el razonamiento CORRECTO → la regla de oro para no volver a fallar", cta: "cierra pidiendo COMENTAR si ya cayeron y etiquetar a un colega" },
+    tecnica:     { rotulo: "EN LA PRÁCTICA", hook: "nombra la técnica/maniobra y promete hacerla bien, en ≤55 chars (ej.: 'Cómo medir la PA sin errar')", linhas: "3 líneas: cada una = 1 PASO de la técnica, EN ORDEN, como se hace a la cabecera del paciente", cta: "cierra pidiendo GUARDAR para practicar y etiquetar a tu compañero de guardia" },
   },
 };
 
@@ -623,7 +625,11 @@ export async function GET(req: NextRequest) {
     // Tema do dia/slot (banco inteiro, todos os formatos). topicOverride pula a
     // seleção (disparo manual com ?topic=) e cai no formato caso-diagnostico.
     // Reel tem banco PRÓPRIO (REEL_TEMAS) e gerador hook-first; carrossel usa TEMAS.
-    const reelTema = (channel === "reel" && !topicOverride) ? pickReelTema(slot, now) : undefined;
+    // QA: no preview, ?reelId=<id> força um tema específico (testar typografia vs footage).
+    const reelIdParam = isPreview ? req.nextUrl.searchParams.get("reelId") : null;
+    const reelTema = (channel === "reel" && !topicOverride)
+      ? (reelIdParam ? (REEL_TEMAS.find((t) => String(t.id) === reelIdParam) ?? pickReelTema(slot, now)) : pickReelTema(slot, now))
+      : undefined;
     const tema     = (channel === "reel" || topicOverride) ? undefined : pickTema(slot, now, channel);
     const topic    = topicOverride ?? reelTema?.[lang] ?? (tema ? tema[lang] : "");
     const formato: Formato = tema?.formato ?? "caso-diagnostico";
@@ -727,7 +733,12 @@ export async function GET(req: NextRequest) {
         videoKeywords: content.videoKeywords ?? [],
         esp: kw, // especialidade (CARDIOLOGIA, GASTRO…) → footage genérico do reel
         // Reel: rótulo do formato (VOCÊ SABIA?/BIZU/PEGA DE PROVA) p/ o badge do vídeo.
-        ...(reelFormato ? { reelFormato, rotulo: REEL_ROTULO[lang][reelFormato] } : {}),
+        ...(reelFormato ? {
+          reelFormato,
+          rotulo: REEL_ROTULO[lang][reelFormato],
+          visual: FORMATO_VISUAL[reelFormato],          // "footage" | "typografia"
+          footage: reelTema?.footage ?? [],             // queries da AÇÃO (só técnica)
+        } : {}),
         slideUrls,
       });
     }
