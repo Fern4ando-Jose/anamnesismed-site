@@ -6,6 +6,7 @@ import { type Automation, checkBudget, logSpend, anthropicCost, tavilyCost, EST_
 import { TEMAS, type Tema, type Formato } from "@/lib/temas";
 import { REEL_TEMAS, REEL_ROTULO, FORMATO_VISUAL, type ReelTema, type ReelFormato } from "@/lib/reel-temas";
 import { narrate, type Narration } from "@/lib/narrate";
+import { buildReelSpec } from "@/lib/reel-build";
 
 export const maxDuration = 300;
 
@@ -656,6 +657,24 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ ok: true, skipped: true, reason: "Caso já publicado nesta conta nos últimos 7 dias", topic });
       }
     } catch { /* ignora erro de banco na checagem */ }
+
+    // REEL SINCRONIZADO (preview): monta a ReelSpec (visual POR FRASE casando com a
+    // fala + narração + legenda palavra a palavra) e devolve — o render (CI) consome
+    // isso direto, sem o conteúdo/imagens de carrossel. É o motor que resolve o
+    // "a imagem não casa com o texto". Disparo real do reel é sempre via preview.
+    if (channel === "reel" && isPreview) {
+      const spec = await buildReelSpec(lang, topic, automation);
+      if (!spec) {
+        return NextResponse.json({ ok: false, reason: "Falha ao montar o reel sincronizado (narração/visual)", topic }, { status: 502 });
+      }
+      log.reel = `sync: ${spec.scenes.length} cenas, ${spec.captions.length} palavras, ${spec.durationSec.toFixed(1)}s, voz ${spec.voice}`;
+      return NextResponse.json({
+        ok: true, preview: true, reelSync: true, topic, slot,
+        rotulo: reelFormato ? REEL_ROTULO[lang][reelFormato] : "",
+        handle,
+        spec,
+      });
+    }
 
     // Teto diário de gasto (ig-posts): se a próxima publicação estoura o
     // orçamento, BLOQUEIA (não gasta) e devolve 402 p/ o GitHub Actions falhar

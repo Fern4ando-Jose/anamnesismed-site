@@ -59,11 +59,14 @@ async function main() {
     },
   });
 
-  // ─── 3. Selecionar a composição "Reel" (resolve calculateMetadata) ──────────
-  console.log("[render] selecionando composição Reel…");
+  // ─── 3. Selecionar a composição (resolve calculateMetadata) ─────────────────
+  // --composition=Reel|ReelSync (padrão Reel). ReelSync = reel sincronizado.
+  const compArg = process.argv.find((a) => a.startsWith("--composition="));
+  const compId = compArg ? compArg.slice("--composition=".length) : "Reel";
+  console.log(`[render] selecionando composição ${compId}…`);
   const composition = await selectComposition({
     serveUrl,
-    id: "Reel",
+    id: compId,
     inputProps: inputProps ?? {},
   });
 

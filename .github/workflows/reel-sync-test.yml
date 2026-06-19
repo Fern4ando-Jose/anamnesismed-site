@@ -1,0 +1,69 @@
+name: Reel SYNC (teste) — AnamnesísMed
+
+# Teste isolado do REEL SINCRONIZADO (voz IA + visual por frase + legenda palavra a
+# palavra). NÃO publica — só renderiza e sobe pro Blob pra aprovação. Dispara manual.
+
+on:
+  workflow_dispatch:
+    inputs:
+      reelId:
+        description: "ID do tema do reel (REEL_TEMAS). Vazio = tema do dia."
+        required: false
+        default: "160"
+      lang:
+        description: "Idioma (pt/es)"
+        required: false
+        default: "pt"
+        type: choice
+        options: [pt, es]
+
+jobs:
+  reelsync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: instagram-automation/package-lock.json
+      - name: Instalar dependências
+        working-directory: instagram-automation
+        run: npm install --no-audit --no-fund
+
+      # Preview: o servidor gera narração + visual POR FRASE (Flux + LTX) e devolve
+      # a ReelSpec. Pode levar ~2min (por isso o --max-time alto).
+      - name: Obter ReelSpec (preview sync)
+        run: |
+          curl -fsS --max-time 290 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://anamnesismed-ig.vercel.app/api/publish?preview=1&channel=reel&lang=${{ github.event.inputs.lang }}&reelId=${{ github.event.inputs.reelId }}" \
+            -o preview.json
+          echo "Prévia (início):"; head -c 500 preview.json; echo
+          node -e '
+            const p = JSON.parse(require("fs").readFileSync("preview.json","utf8"));
+            if (!p.reelSync || !p.spec) { console.error("ERRO: preview não devolveu reelSync/spec:", JSON.stringify(p).slice(0,300)); process.exit(1); }
+            const s = p.spec;
+            const handle = p.handle || "@anamnesismed";
+            const props = {
+              hook: s.hook, handle, audioUrl: s.audioUrl, durationSec: s.durationSec,
+              scenes: s.scenes, captions: s.captions, music: "music/bed-1.mp3",
+              ctaButton: (handle.includes(".es") ? "Sigue " : "Siga ") + handle,
+            };
+            require("fs").writeFileSync("reel-props.json", JSON.stringify(props));
+            const vids = s.scenes.filter(x=>x.visualType==="video").length;
+            console.log(`ReelSpec OK → ${s.scenes.length} cenas (${vids} vídeo, ${s.scenes.length-vids} imagem), ${s.captions.length} palavras, ${s.durationSec.toFixed(1)}s, voz ${s.voice}`);
+          '
+
+      - name: Renderizar ReelSync (Remotion)
+        working-directory: instagram-automation
+        run: node scripts/render-reel.mjs --props=../reel-props.json --composition=ReelSync
+
+      - name: Upload do mp4 para o Vercel Blob
+        working-directory: instagram-automation
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: |
+          URL=$(node scripts/upload-blob.mjs)
+          echo "REEL_SYNC_URL: $URL"
+          echo "🎬 **Reel sincronizado (teste):** $URL" >> "$GITHUB_STEP_SUMMARY"
