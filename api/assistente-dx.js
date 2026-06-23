@@ -254,6 +254,10 @@ module.exports = async (req, res) => {
   } catch (err) {
     console.error('assistente-dx error:', err && err.message ? err.message : err);
     const status = (err && err.status) || 500;
-    return res.status(status).json({ error: (err && err.message) || msg('Erro ao gerar a análise', 'Error al generar el análisis') });
+    // Erros 4xx têm mensagem intencional p/ o usuário; 5xx (SDK/infra) → mensagem genérica (não vazar interno).
+    const safeMsg = status < 500 && err && err.message
+      ? err.message
+      : msg('Erro ao gerar a análise', 'Error al generar el análisis');
+    return res.status(status).json({ error: safeMsg });
   }
 };

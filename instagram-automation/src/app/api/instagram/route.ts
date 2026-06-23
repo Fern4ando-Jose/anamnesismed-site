@@ -15,7 +15,9 @@ export async function GET() {
   const data = await res.json();
 
   if (!res.ok) {
-    return NextResponse.json({ error: data }, { status: 500 });
+    // Não ecoar o objeto cru da Meta (metadados) ao cliente — só logar no servidor.
+    console.error("[instagram] Graph API erro:", res.status);
+    return NextResponse.json({ error: "Falha ao consultar a Graph API" }, { status: 502 });
   }
 
   return NextResponse.json(data);
