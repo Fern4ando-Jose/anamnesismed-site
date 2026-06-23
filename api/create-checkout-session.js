@@ -39,6 +39,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ url: session.url });
   } catch (err) {
     console.error('Stripe checkout error:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Não foi possível iniciar o pagamento' });
   }
 };

@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     event = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     console.error('Webhook signature error:', err.message);
-    return res.status(400).json({ error: `Webhook error: ${err.message}` });
+    return res.status(400).json({ error: 'Webhook signature inválida' });
   }
 
   const obj = event.data.object;
