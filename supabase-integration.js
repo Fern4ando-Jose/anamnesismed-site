@@ -17,6 +17,14 @@ const SUPABASE_ANON_KEY = 'sb_publishable_qkwzDeGxE_AGcxftwH83tg_nRI_Umts';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ── Escape de HTML — usar SEMPRE que dado do usuário/paciente entrar em innerHTML.
+// (nome do paciente, motivo etc. são dados livres → risco de XSS armazenado num app médico)
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // ── Detectar em qual página estamos ──────────────────────────────────────
 const PAGE = (() => {
   const p = window.location.pathname;
@@ -728,7 +736,7 @@ async function uiLoadRecentHCs(limit, preHcs) {
     <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" style="cursor:pointer">
       <div class="hc-color" style="background:${color}"></div>
       <div class="hc-info">
-        <div class="hc-name">${hc.motivo || hc.motivo_id}${nomePaciente ? ' — ' + nomePaciente : ''}</div>
+        <div class="hc-name">${escHtml(hc.motivo || hc.motivo_id)}${nomePaciente ? ' — ' + escHtml(nomePaciente) : ''}</div>
         <div class="hc-meta">
           <span>${specLabel}</span>
           <span class="hc-dot"></span>
