@@ -2,6 +2,9 @@
   "name": "anamnesismed",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "test": "node --test"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.69.0",
     "stripe": "^14.0.0",

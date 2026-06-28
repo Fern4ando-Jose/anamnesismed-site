@@ -265,3 +265,6 @@ module.exports = async (req, res) => {
     return res.status(status).json({ error: safeMsg });
   }
 };
+
+// Exposto para teste (não afeta o handler Vercel, que é a função acima).
+module.exports.parseRelatorio = parseRelatorio;
