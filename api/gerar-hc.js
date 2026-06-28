@@ -73,6 +73,10 @@ function buildSystemPrompt(pt) {
   ].join('\n');
 }
 
+// ── Limites de tamanho de input (anti-abuso/custo: tudo isto entra no prompt) ──
+var LIM = { relato: 8000, campo: 1000, nome: 200, motivos: 10, respostas: 60 };
+function clip(s, max) { s = (s == null ? '' : String(s)); return s.length > max ? s.slice(0, max) : s; }
+
 function buildUserMessage(pt, demografia, motivos, relatoLivre) {
   var L = [];
   L.push(pt ? '## Dados do paciente' : '## Datos del paciente');
@@ -87,17 +91,17 @@ function buildUserMessage(pt, demografia, motivos, relatoLivre) {
   }
   L.push('');
   L.push(pt ? '## Motivos e respostas do guia (AEA)' : '## Motivos y respuestas de la guía (AEA)');
-  (motivos || []).forEach(function (m) {
+  (motivos || []).slice(0, LIM.motivos).forEach(function (m) {
     L.push('');
-    L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + (m.nome || ''));
-    (m.respostas || []).forEach(function (r) {
-      if (r && r.pergunta && r.resposta) L.push('- ' + r.pergunta + ': ' + r.resposta);
+    L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + clip(m.nome, LIM.nome));
+    (m.respostas || []).slice(0, LIM.respostas).forEach(function (r) {
+      if (r && r.pergunta && r.resposta) L.push('- ' + clip(r.pergunta, LIM.campo) + ': ' + clip(r.resposta, LIM.campo));
     });
   });
   if (relatoLivre && String(relatoLivre).trim()) {
     L.push('');
     L.push(pt ? '## Relato livre do profissional (incorpore ao texto)' : '## Relato libre del profesional (incorpóralo al texto)');
-    L.push(String(relatoLivre).trim());
+    L.push(clip(String(relatoLivre).trim(), LIM.relato));
   }
   L.push('');
   L.push(pt
