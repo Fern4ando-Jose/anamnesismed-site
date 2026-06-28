@@ -670,19 +670,26 @@ function gerarHCviaIA(lng){
     if(!local && relato) local = relato; // sem motivos respondidos: usa o relato livre como narrativa
     return { ok: !!local, fonte:'local', narrativa: local, erro: motivo };
   }
-  return fetch('/api/gerar-hc', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  }).then(function(r){
-    return r.json().then(function(j){ return { status:r.status, j:j }; });
-  }).then(function(res){
-    if(res.status===200 && res.j && res.j.narrativa){
-      return { ok:true, fonte:'ia', narrativa: res.j.narrativa.trim() };
-    }
-    return fallback((res.j && res.j.error) || ('HTTP '+res.status));
-  }).catch(function(err){
-    return fallback((err && err.message) || 'rede');
+  // /api/gerar-hc exige token Supabase (bloqueia anônimo / aplica limite diário).
+  // Sem token ou em qualquer erro (401/429/503/rede) caímos no motor local — o usuário
+  // sempre recebe a HC; só perde a síntese por IA.
+  var tokenP = (typeof window.authGetToken === 'function') ? window.authGetToken() : Promise.resolve(null);
+  return Promise.resolve(tokenP).then(function(token){
+    if(!token) return fallback('auth');
+    return fetch('/api/gerar-hc', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      return r.json().then(function(j){ return { status:r.status, j:j }; });
+    }).then(function(res){
+      if(res.status===200 && res.j && res.j.narrativa){
+        return { ok:true, fonte:'ia', narrativa: res.j.narrativa.trim() };
+      }
+      return fallback((res.j && res.j.error) || ('HTTP '+res.status));
+    }).catch(function(err){
+      return fallback((err && err.message) || 'rede');
+    });
   });
 }
 
