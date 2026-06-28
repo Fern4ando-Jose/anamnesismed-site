@@ -11,8 +11,11 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 module.exports = async (req, res) => {
-  // CORS para o domínio do app
-  res.setHeader('Access-Control-Allow-Origin', process.env.NEXT_PUBLIC_URL || '*');
+  // CORS — falha fechado: só o domínio do app (NEXT_PUBLIC_URL), nunca '*'.
+  // Endpoint que cria cobrança não pode aceitar qualquer origem. Sem a env
+  // configurada, não enviamos o header (cross-origin bloqueado; same-origin segue).
+  const allowedOrigin = process.env.NEXT_PUBLIC_URL || '';
+  if (allowedOrigin) res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
