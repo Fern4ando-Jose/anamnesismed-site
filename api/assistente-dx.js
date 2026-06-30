@@ -83,11 +83,15 @@ function buildSystemPrompt(pt) {
   ].join('\n');
 }
 
+// ── Limites de tamanho de input (anti-abuso/custo: tudo isto entra no prompt) ──
+const LIM = { bloco: 4000, campo: 1000, nome: 200, motivos: 10, respostas: 60 };
+const clip = (s, max) => { s = (s == null ? '' : String(s)); return s.length > max ? s.slice(0, max) : s; };
+
 // ── MONTA A MENSAGEM DO USUÁRIO a partir da HC (já anonimizada pelo front) ─────
 function buildUserMessage(pt, hc) {
   hc = hc || {};
   const L = [];
-  const push = (label, val) => { if (val && String(val).trim()) L.push(label + ': ' + String(val).trim()); };
+  const push = (label, val, max) => { if (val && String(val).trim()) L.push(label + ': ' + clip(String(val).trim(), max || LIM.bloco)); };
 
   L.push(pt ? '## História Clínica (anonimizada)' : '## Historia Clínica (anonimizada)');
 
@@ -99,37 +103,37 @@ function buildUserMessage(pt, hc) {
   if (Array.isArray(hc.motivos) && hc.motivos.length) {
     L.push('');
     L.push(pt ? '## Motivos e respostas guiadas (AEA)' : '## Motivos y respuestas guiadas (AEA)');
-    hc.motivos.forEach((m) => {
+    hc.motivos.slice(0, LIM.motivos).forEach((m) => {
       L.push('');
-      L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + (m.nome || ''));
-      (m.respostas || []).forEach((r) => { if (r && r.pergunta && r.resposta) L.push('- ' + r.pergunta + ': ' + r.resposta); });
+      L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + clip(m.nome, LIM.nome));
+      (m.respostas || []).slice(0, LIM.respostas).forEach((r) => { if (r && r.pergunta && r.resposta) L.push('- ' + clip(r.pergunta, LIM.campo) + ': ' + clip(r.resposta, LIM.campo)); });
     });
   }
 
   if (hc.relatoLivre && String(hc.relatoLivre).trim()) {
     L.push('');
     L.push(pt ? '## Relato livre / HDA' : '## Relato libre / HEA');
-    L.push(String(hc.relatoLivre).trim());
+    L.push(clip(String(hc.relatoLivre).trim(), LIM.bloco));
   }
   if (hc.antecedentes && String(hc.antecedentes).trim()) {
     L.push('');
     L.push(pt ? '## Antecedentes (APP / APF / hábitos / RAS)' : '## Antecedentes (APP / APF / hábitos / RAS)');
-    L.push(String(hc.antecedentes).trim());
+    L.push(clip(String(hc.antecedentes).trim(), LIM.bloco));
   }
   if (hc.sinaisVitais && String(hc.sinaisVitais).trim()) {
     L.push('');
     L.push(pt ? '## Sinais vitais' : '## Signos vitales');
-    L.push(String(hc.sinaisVitais).trim());
+    L.push(clip(String(hc.sinaisVitais).trim(), LIM.bloco));
   }
   if (hc.exameFisico && String(hc.exameFisico).trim()) {
     L.push('');
     L.push(pt ? '## Exame físico' : '## Examen físico');
-    L.push(String(hc.exameFisico).trim());
+    L.push(clip(String(hc.exameFisico).trim(), LIM.bloco));
   }
   if (hc.hipoteses && String(hc.hipoteses).trim()) {
     L.push('');
     L.push(pt ? '## Hipóteses já anotadas pelo profissional' : '## Hipótesis ya anotadas por el profesional');
-    L.push(String(hc.hipoteses).trim());
+    L.push(clip(String(hc.hipoteses).trim(), LIM.bloco));
   }
 
   L.push('');
@@ -261,3 +265,6 @@ module.exports = async (req, res) => {
     return res.status(status).json({ error: safeMsg });
   }
 };
+
+// Exposto para teste (não afeta o handler Vercel, que é a função acima).
+module.exports.parseRelatorio = parseRelatorio;

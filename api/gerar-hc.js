@@ -3,8 +3,19 @@
  * Gera a narrativa clínica da AEA (História da Doença Atual) com a Claude API,
  * a partir dos motivos selecionados + respostas do guia AEA + dados do paciente.
  *
+ * SEGURANÇA (mesmo padrão do /api/assistente-dx):
+ *  - Exige `Authorization: Bearer <access_token do Supabase>` — bloqueia anônimo (401).
+ *  - Valida o token no servidor (qualquer usuário logado — trial ou pro — tem acesso;
+ *    não há gate de plano aqui, decisão do dono: manter o comportamento atual).
+ *  - Aplica limite diário por usuário (controle de custo da API) — FAIL-CLOSED: se a
+ *    tabela de uso não existir/falhar, devolve 503 e NÃO faz a chamada paga (o front
+ *    cai no motor de narrativa local, então o usuário ainda recebe a HC).
+ *  - A chave da Anthropic NUNCA vai ao front-end — toda a chamada acontece aqui.
+ *
  * Variáveis de ambiente necessárias no Vercel:
- *   ANTHROPIC_API_KEY → chave secreta da Anthropic (sk-ant-...)
+ *   ANTHROPIC_API_KEY     → chave secreta da Anthropic (sk-ant-...)
+ *   SUPABASE_URL          → https://xxx.supabase.co
+ *   SUPABASE_SERVICE_KEY  → service_role key (só no backend!)
  *
  * Entrada (POST JSON):
  *   { lang:'pt'|'es', demografia:{idade,sexo,tempoEvolucao}, motivos:[{ordem,nome,respostas:[{pergunta,resposta}]}], relatoLivre:'<texto livre da AEA>' }
@@ -15,9 +26,15 @@
  */
 
 const Anthropic = require('@anthropic-ai/sdk');
+const { createClient } = require('@supabase/supabase-js');
 
 const MODEL = 'claude-haiku-4-5';
 const MAX_TOKENS = 1800;
+
+// ── LIMITE DIÁRIO POR USUÁRIO ────────────────────────────────────────────────
+// Geração de HC é o fluxo central — teto mais generoso que o assistente (DAILY_LIMIT=20).
+// Quando os planos forem segmentados (médico×estudante), trocar por mapa lido do profile.
+const DAILY_LIMIT = 40;
 
 function buildSystemPrompt(pt) {
   if (pt) {
@@ -56,6 +73,10 @@ function buildSystemPrompt(pt) {
   ].join('\n');
 }
 
+// ── Limites de tamanho de input (anti-abuso/custo: tudo isto entra no prompt) ──
+var LIM = { relato: 8000, campo: 1000, nome: 200, motivos: 10, respostas: 60 };
+function clip(s, max) { s = (s == null ? '' : String(s)); return s.length > max ? s.slice(0, max) : s; }
+
 function buildUserMessage(pt, demografia, motivos, relatoLivre) {
   var L = [];
   L.push(pt ? '## Dados do paciente' : '## Datos del paciente');
@@ -70,17 +91,17 @@ function buildUserMessage(pt, demografia, motivos, relatoLivre) {
   }
   L.push('');
   L.push(pt ? '## Motivos e respostas do guia (AEA)' : '## Motivos y respuestas de la guía (AEA)');
-  (motivos || []).forEach(function (m) {
+  (motivos || []).slice(0, LIM.motivos).forEach(function (m) {
     L.push('');
-    L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + (m.nome || ''));
-    (m.respostas || []).forEach(function (r) {
-      if (r && r.pergunta && r.resposta) L.push('- ' + r.pergunta + ': ' + r.resposta);
+    L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + clip(m.nome, LIM.nome));
+    (m.respostas || []).slice(0, LIM.respostas).forEach(function (r) {
+      if (r && r.pergunta && r.resposta) L.push('- ' + clip(r.pergunta, LIM.campo) + ': ' + clip(r.resposta, LIM.campo));
     });
   });
   if (relatoLivre && String(relatoLivre).trim()) {
     L.push('');
     L.push(pt ? '## Relato livre do profissional (incorpore ao texto)' : '## Relato libre del profesional (incorpóralo al texto)');
-    L.push(String(relatoLivre).trim());
+    L.push(clip(String(relatoLivre).trim(), LIM.relato));
   }
   L.push('');
   L.push(pt
@@ -93,15 +114,66 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY não configurada no servidor' });
-  }
 
   var body = req.body || {};
   var lang = body.lang === 'es' ? 'es' : 'pt';
   var pt = lang !== 'es';
+  var msg = function (p, e) { return pt ? p : e; };
   var motivos = Array.isArray(body.motivos) ? body.motivos : [];
   var relatoLivre = typeof body.relatoLivre === 'string' ? body.relatoLivre : '';
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY não configurada no servidor' });
+  }
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    return res.status(500).json({ error: 'Supabase não configurado no servidor' });
+  }
+
+  // 1) Autenticação — token do Supabase no header Authorization (bloqueia anônimo)
+  var authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
+  var token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
+  if (!token) return res.status(401).json({ error: msg('Não autenticado', 'No autenticado') });
+
+  var sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+  var userId = null;
+  try {
+    var au = await sbAdmin.auth.getUser(token);
+    if (au.error || !au.data || !au.data.user) return res.status(401).json({ error: msg('Sessão inválida', 'Sesión inválida') });
+    userId = au.data.user.id;
+  } catch (e) {
+    return res.status(401).json({ error: msg('Falha ao validar sessão', 'Error al validar la sesión') });
+  }
+
+  // 2) Limite diário por usuário — FAIL-CLOSED (controle de custo da API paga).
+  // Não há gate de plano: qualquer usuário logado (trial ou pro) gera HC por IA.
+  // Se a tabela de uso não existir ou falhar, devolvemos 503 e NÃO chamamos o modelo
+  // (o front cai no motor de narrativa local — o usuário ainda recebe a HC).
+  var usageUnavailable = function () {
+    return res.status(503).json({ error: msg('Serviço de IA temporariamente indisponível', 'Servicio de IA temporalmente no disponible'), code: 'usage_unavailable' });
+  };
+  try {
+    var dia = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
+    var sel = await sbAdmin.from('gerar_hc_usage').select('count').eq('user_id', userId).eq('dia', dia).single();
+    if (sel.error && sel.error.code !== 'PGRST116') {
+      // PGRST116 = nenhuma linha (1º uso do dia, esperado). Qualquer outro erro
+      // (inclui tabela ausente) → fail-closed para não recriar o furo de custo.
+      console.error('[ALERTA custo] gerar_hc_usage select falhou (fail-closed):', sel.error.message || sel.error.code);
+      return usageUnavailable();
+    }
+    var usados = sel.data && typeof sel.data.count === 'number' ? sel.data.count : 0;
+    if (usados >= DAILY_LIMIT) {
+      return res.status(429).json({ error: msg('Limite diário de gerações de HC atingido. Tente novamente amanhã.', 'Límite diario de generaciones de HC alcanzado. Inténtalo de nuevo mañana.'), code: 'rate_limit' });
+    }
+    var up = await sbAdmin.from('gerar_hc_usage').upsert({ user_id: userId, dia: dia, count: usados + 1 }, { onConflict: 'user_id,dia' });
+    if (up.error) {
+      console.error('[ALERTA custo] gerar_hc_usage upsert falhou (fail-closed):', up.error.message || up.error.code);
+      return usageUnavailable();
+    }
+  } catch (e) {
+    console.error('[ALERTA custo] gerar_hc_usage exceção (fail-closed):', e && e.message ? e.message : e);
+    return usageUnavailable();
+  }
 
   // Precisa de pelo menos um motivo com alguma resposta OU relato livre preenchido
   var temConteudo = (relatoLivre.trim().length > 0) || motivos.some(function (m) {
@@ -133,6 +205,10 @@ module.exports = async (req, res) => {
   } catch (err) {
     console.error('gerar-hc error:', err && err.message ? err.message : err);
     var status = (err && err.status) || 500;
-    return res.status(status).json({ error: (err && err.message) || 'Erro ao gerar a HC' });
+    // Erros 4xx têm mensagem intencional p/ o usuário; 5xx (SDK/infra) → mensagem genérica (não vazar interno).
+    var safeMsg = status < 500 && err && err.message
+      ? err.message
+      : msg('Erro ao gerar a HC', 'Error al generar la HC');
+    return res.status(status).json({ error: safeMsg });
   }
 };
