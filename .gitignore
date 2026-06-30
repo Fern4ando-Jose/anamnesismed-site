@@ -57,12 +57,15 @@ tmp/
 
 # ── Material local / estudo / backups (NÃO vai para produção online) ───────────
 .claude/
+Material/
 Antigos/
 Material de Estudo/
+_notas/
 HCs/
 
-# Mídia arquivada (reuso futuro) — não versionar
+# Mídia arquivada (reuso futuro) — não versionar (AGENTS.md §1.11)
 _arquivo-midia/
+Arquivo-Midia/
 
-# Pendências: fonte única é o painel central D:\Claude\.pendencias\ (controle interno, fora do git)
+# Pendências: fonte única é o painel central D:\Claude\.claude\pendencias\ (controle interno, fora do git)
 PENDENCIAS.md
