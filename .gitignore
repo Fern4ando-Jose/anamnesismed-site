@@ -70,3 +70,7 @@ Arquivo-Midia/
 
 # Pendências: fonte única é o painel central D:\Claude\.claude\pendencias\ (controle interno, fora do git)
 PENDENCIAS.md
+
+# Governança/decisões do projeto — vivem só localmente + repo privado
+# github.com/Fern4ando-Jose/governanca-privada (nunca no repo de produção)
+/CLAUDE.md
