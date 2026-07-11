@@ -207,6 +207,16 @@ module.exports = async (req, res) => {
     if (!narrativa) {
       return res.status(502).json({ error: pt ? 'O modelo não retornou texto' : 'El modelo no devolvió texto' });
     }
+    // Observabilidade estruturada: uma linha JSON por chamada paga, para a rotina
+    // semanal de custo ler nos logs da Vercel (rota + status + userId + tokens).
+    // userId é ID do Supabase (não é PII); nenhum dado de paciente é logado.
+    var u = (response && response.usage) || {};
+    console.log(JSON.stringify({
+      evt: 'ai_call', route: 'gerar-hc', status: 200, lang: lang, model: MODEL,
+      userId: userId, input_tokens: u.input_tokens || 0, output_tokens: u.output_tokens || 0,
+      cache_read: u.cache_read_input_tokens || 0, cache_write: u.cache_creation_input_tokens || 0,
+      ts: new Date().toISOString(),
+    }));
     return res.status(200).json({ narrativa: narrativa });
   } catch (err) {
     console.error('gerar-hc error:', err && err.message ? err.message : err);

@@ -253,6 +253,18 @@ module.exports = async (req, res) => {
       .filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
 
     const relatorio = parseRelatorio(text);
+
+    // Observabilidade estruturada: uma linha JSON por chamada paga (rota+status+userId+tokens),
+    // lida pela rotina semanal de custo nos logs da Vercel. userId é ID Supabase (não PII);
+    // nenhum dado de paciente é logado.
+    const u = (response && response.usage) || {};
+    console.log(JSON.stringify({
+      evt: 'ai_call', route: 'assistente-dx', status: 200, lang: lang, model: MODEL,
+      userId: userId, input_tokens: u.input_tokens || 0, output_tokens: u.output_tokens || 0,
+      cache_read: u.cache_read_input_tokens || 0, cache_write: u.cache_creation_input_tokens || 0,
+      parsed: !!relatorio, ts: new Date().toISOString(),
+    }));
+
     if (!relatorio) {
       // fallback: devolve o texto cru para o front exibir como apoio
       if (text) return res.status(200).json({ relatorio: null, raw: text });

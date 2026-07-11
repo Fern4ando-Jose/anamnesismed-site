@@ -462,33 +462,62 @@ async function hcSave(motivoId, motivo, especialidade, dados) {
 
 /**
  * Registrar uma exportação de PDF (contador "PDFs exportados" do dashboard).
- * Não há tabela própria no banco para isso ainda; persistimos no localStorage,
- * por usuário, seguindo o mesmo padrão local já usado em saveHC().
+ * Persiste no banco (tabela pdf_exports, cross-device) COM fallback para localStorage:
+ * enquanto a migration 2026-07-11-pdf-exports não roda em produção, o insert falha e a
+ * contagem segue local (comportamento anterior). Assim que a tabela existir, vira
+ * cross-device sem nova mudança de código.
  */
 function pdfExportsKey(userId) { return 'am-pdf-exports-' + userId; }
 
 async function pdfExportRecord(meta) {
   const user = await authGetUser();
   if (!user) return { ok: false, error: 'Não autenticado' };
+  const ts = new Date().toISOString();
+  const motivo = (meta && meta.motivo) || null;
+  const motivoId = (meta && meta.motivoId) || null;
+
+  // Sempre grava local (offline / tabela ainda não migrada).
   const key = pdfExportsKey(user.id);
   let arr = [];
   try { arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
-  arr.push({
-    ts: new Date().toISOString(),
-    motivo: (meta && meta.motivo) || null,
-    motivoId: (meta && meta.motivoId) || null
-  });
+  arr.push({ ts, motivo, motivoId });
   try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {}
+
+  // Best-effort no banco (RLS garante user_id = auth.uid()).
+  try {
+    const { error } = await sb.from('pdf_exports')
+      .insert({ user_id: user.id, motivo, motivo_id: motivoId, exported_at: ts });
+    if (error) console.warn('pdf_exports insert (fallback local):', error.message || error.code);
+  } catch (e) { console.warn('pdf_exports indisponível (fallback local):', e && e.message ? e.message : e); }
+
   return { ok: true, total: arr.length };
 }
 
 async function pdfExportList() {
   const user = await authGetUser();
   if (!user) return [];
-  let arr = [];
-  try { arr = JSON.parse(localStorage.getItem(pdfExportsKey(user.id)) || '[]'); } catch (e) {}
-  // Compatibilidade: registros antigos eram strings ISO simples (sem motivo associado)
-  return arr.map(e => typeof e === 'string' ? { ts: e, motivo: null, motivoId: null } : e);
+
+  // Local (compat: registros antigos eram strings ISO simples).
+  let local = [];
+  try { local = JSON.parse(localStorage.getItem(pdfExportsKey(user.id)) || '[]'); } catch (e) {}
+  local = local.map(e => typeof e === 'string' ? { ts: e, motivo: null, motivoId: null } : e);
+
+  // Banco (se a tabela existir). União com o local, deduplicada por ts — evita o
+  // contador "cair" quando a migration é aplicada e ainda há registros só locais.
+  try {
+    const { data, error } = await sb.from('pdf_exports')
+      .select('motivo, motivo_id, exported_at')
+      .eq('user_id', user.id);
+    if (!error && Array.isArray(data)) {
+      const db = data.map(r => ({ ts: r.exported_at, motivo: r.motivo, motivoId: r.motivo_id }));
+      const seen = new Set();
+      return db.concat(local).filter(e => {
+        if (seen.has(e.ts)) return false;
+        seen.add(e.ts); return true;
+      });
+    }
+  } catch (e) { /* tabela ausente ou offline → só local */ }
+  return local;
 }
 
 window.pdfExportRecord = pdfExportRecord;
