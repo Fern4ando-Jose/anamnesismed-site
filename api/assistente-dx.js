@@ -241,7 +241,11 @@ module.exports = async (req, res) => {
       model: MODEL,
       max_tokens: MAX_TOKENS,
       thinking: { type: 'disabled' }, // controle de custo: relatório direto, sem raciocínio extra cobrado
-      system: buildSystemPrompt(pt),
+      // Prompt caching no bloco system (estável entre requests; o que varia é a HC do usuário).
+      // ⚠️ HOJE não cacheia de fato: o mínimo cacheável do Sonnet 4.6 é 2048 tokens e este
+      // system tem ~800 → cache_creation_input_tokens: 0 (silencioso). Estrutura correta
+      // mantida: passa a cachear sozinho se o system crescer além do mínimo.
+      system: [{ type: 'text', text: buildSystemPrompt(pt), cache_control: { type: 'ephemeral' } }],
       messages: [{ role: 'user', content: buildUserMessage(pt, hc) }],
     });
 

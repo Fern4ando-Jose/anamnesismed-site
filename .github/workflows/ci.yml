@@ -1,0 +1,49 @@
+name: CI — Site AnamnesísMed
+
+# Cobertura de qualidade do SITE/app (os outros 7 workflows são só da automação de
+# Instagram). Roda em todo push/PR na main: valida sintaxe de todos os .js, roda os
+# testes (node:test, sem rede/deps) e o verify.sh de integridade do HTML.
+# Não faz deploy — o deploy segue pela Vercel, gate humano (qa-deploy).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Só código de produção — a pasta instagram-automation tem seu próprio ciclo.
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências (raiz)
+        run: npm ci || npm install
+
+      - name: Sintaxe — node --check em todos os .js do site
+        run: |
+          echo "Validando sintaxe dos .js (fora de node_modules e instagram-automation)…"
+          FAIL=0
+          while IFS= read -r f; do
+            node --check "$f" || { echo "::error file=$f::erro de sintaxe"; FAIL=1; }
+          done < <(find . -name '*.js' \
+            -not -path './node_modules/*' \
+            -not -path './instagram-automation/*' \
+            -not -path './.git/*')
+          exit $FAIL
+
+      - name: Testes (node:test)
+        run: npm test
+
+      - name: Integridade do HTML (verify.sh)
+        run: bash scripts/verify.sh

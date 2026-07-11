@@ -188,7 +188,13 @@ module.exports = async (req, res) => {
     var response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      system: buildSystemPrompt(pt),
+      // Prompt caching: o system é estável entre requests (o que varia é a mensagem
+      // do usuário). O breakpoint fica no bloco system para reusar o prefixo.
+      // ⚠️ HOJE não cacheia de fato: o mínimo cacheável do Haiku 4.5 é 4096 tokens e
+      // este system tem ~600 → a API devolve cache_creation_input_tokens: 0 (silencioso).
+      // Mantido como estrutura correta: se o system crescer além do mínimo, passa a
+      // cachear sozinho, sem nova mudança de código.
+      system: [{ type: 'text', text: buildSystemPrompt(pt), cache_control: { type: 'ephemeral' } }],
       messages: [{ role: 'user', content: buildUserMessage(pt, body.demografia, motivos, relatoLivre) }],
     });
 
