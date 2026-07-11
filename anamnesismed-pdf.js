@@ -42,6 +42,11 @@ function ynAns(groupId){
 
 function exportPDF(){
   var lang = document.documentElement.getAttribute('data-lang')||'pt';
+  // Escape de HTML — dado do usuário (nome, campos, observações, narrativa) é escrito
+  // via document.write numa janela same-origin; sem escape, um valor como
+  // "<img src=x onerror=…>" digitado em qualquer campo executaria script ao exportar.
+  // Aplicado em TODO sink que recebe conteúdo do usuário (rótulos fixos ficam como estão).
+  function esc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   // Salva a HC (igual ao botão "Salvar") e registra a exportação para o contador "PDFs exportados"
   try{ saveHC(); }catch(e){ console.warn('saveHC erro ao exportar PDF:', e); }
   if (window.pdfExportRecord) {
@@ -59,7 +64,7 @@ function exportPDF(){
   
   var w = window.open('','_blank');
   w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8">');
-  w.document.write('<title>HC — '+mNome+'</title>');
+  w.document.write('<title>HC — '+esc(mNome)+'</title>');
   w.document.write('<style>');
   w.document.write('*{margin:0;padding:0;box-sizing:border-box}');
   w.document.write('body{font-family:Arial,sans-serif;font-size:12px;color:#0d2d3d;padding:30px}');
@@ -81,17 +86,17 @@ function exportPDF(){
   // Header
   w.document.write('<div class="header">');
   w.document.write('<div><div class="logo">Anamnesis<span>Med</span></div><p style="font-size:10px;color:#4b6070;margin-top:2px">História Clínica — Documento gerado em '+new Date().toLocaleDateString('pt-BR')+'</p></div>');
-  w.document.write('<div style="text-align:right;font-size:10px;color:#4b6070"><strong>Motivo:</strong> '+mNom+'<br><strong>Data:</strong> '+new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>');
+  w.document.write('<div style="text-align:right;font-size:10px;color:#4b6070"><strong>Motivo:</strong> '+esc(mNom)+'<br><strong>Data:</strong> '+new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>');
   w.document.write('</div>');
   
   // DADOS PESSOAIS — TABELA
   w.document.write('<h2>'+(lang==='pt'?'1. Dados Pessoais':'1. Datos Personales')+'</h2>');
   w.document.write('<table class="dados">');
-  w.document.write('<tr><td>'+(lang==='pt'?'Nome':'Nombre')+'</td><td>'+mNome+'</td><td>'+(lang==='pt'?'Sexo':'Sexo')+'</td><td>'+(mSexo==='M'?(lang==='pt'?'Masculino':'Masculino'):(mSexo==='F'?(lang==='pt'?'Feminino':'Femenino'):'—'))+'</td></tr>');
-  w.document.write('<tr><td>'+(lang==='pt'?'Idade':'Edad')+'</td><td>'+mIdade+' anos</td><td>CI/RG</td><td>'+(document.getElementById('dp-ci').value||'—')+'</td></tr>');
-  w.document.write('<tr><td>'+(lang==='pt'?'Procedência':'Procedencia')+'</td><td>'+(document.getElementById('dp-proc').value||'—')+'</td><td>'+(lang==='pt'?'Ocupação':'Ocupación')+'</td><td>'+(document.getElementById('dp-ocup').value||'—')+'</td></tr>');
-  w.document.write('<tr><td>'+(lang==='pt'?'Estado Civil':'Estado Civil')+'</td><td>'+(document.getElementById('dp-ecivil').value||'—')+'</td><td>'+(lang==='pt'?'Telefone':'Teléfono')+'</td><td>'+(document.getElementById('dp-tel').value||'—')+'</td></tr>');
-  w.document.write('<tr><td>'+(lang==='pt'?'Data Ingresso':'Fecha Ingreso')+'</td><td>'+(document.getElementById('dp-dtingresso').value||'—')+'</td><td>'+(lang==='pt'?'Acompanhante':'Acompañante')+'</td><td>'+(document.getElementById('dp-acomp-nome').value||'—')+'</td></tr>');
+  w.document.write('<tr><td>'+(lang==='pt'?'Nome':'Nombre')+'</td><td>'+esc(mNome)+'</td><td>'+(lang==='pt'?'Sexo':'Sexo')+'</td><td>'+(mSexo==='M'?(lang==='pt'?'Masculino':'Masculino'):(mSexo==='F'?(lang==='pt'?'Feminino':'Femenino'):'—'))+'</td></tr>');
+  w.document.write('<tr><td>'+(lang==='pt'?'Idade':'Edad')+'</td><td>'+esc(mIdade)+' anos</td><td>CI/RG</td><td>'+esc(document.getElementById('dp-ci').value||'—')+'</td></tr>');
+  w.document.write('<tr><td>'+(lang==='pt'?'Procedência':'Procedencia')+'</td><td>'+esc(document.getElementById('dp-proc').value||'—')+'</td><td>'+(lang==='pt'?'Ocupação':'Ocupación')+'</td><td>'+esc(document.getElementById('dp-ocup').value||'—')+'</td></tr>');
+  w.document.write('<tr><td>'+(lang==='pt'?'Estado Civil':'Estado Civil')+'</td><td>'+esc(document.getElementById('dp-ecivil').value||'—')+'</td><td>'+(lang==='pt'?'Telefone':'Teléfono')+'</td><td>'+esc(document.getElementById('dp-tel').value||'—')+'</td></tr>');
+  w.document.write('<tr><td>'+(lang==='pt'?'Data Ingresso':'Fecha Ingreso')+'</td><td>'+esc(document.getElementById('dp-dtingresso').value||'—')+'</td><td>'+(lang==='pt'?'Acompanhante':'Acompañante')+'</td><td>'+esc(document.getElementById('dp-acomp-nome').value||'—')+'</td></tr>');
   
   function selLangText(sel){
     if(!sel) return '—';
@@ -153,7 +158,7 @@ function exportPDF(){
   var feVal = selLangText(feSel);
   var ingr = document.querySelector('#dp-ingresso .sel');
   var ingrVal = selLangText(ingr);
-  w.document.write('<tr><td>'+(lang==='pt'?'Forma de ingresso':'Forma de ingreso')+'</td><td>'+ingrVal+'</td><td>'+(lang==='pt'?'Fonte e Fé':'Fuente y Fe')+'</td><td>'+feVal+'</td></tr>');
+  w.document.write('<tr><td>'+(lang==='pt'?'Forma de ingresso':'Forma de ingreso')+'</td><td>'+esc(ingrVal)+'</td><td>'+(lang==='pt'?'Fonte e Fé':'Fuente y Fe')+'</td><td>'+esc(feVal)+'</td></tr>');
   w.document.write('</table>');
 
   // NARRATIVE SECTIONS — cobre todos os painéis preenchíveis da HC (não apenas um subconjunto fixo)
@@ -303,7 +308,7 @@ function exportPDF(){
     if(!lines.length) return; // seção sem campos preenchidos → não aparece
     secN++;
     w.document.write('<h2>'+(lang==='pt'?secN+'. '+s.tPt:secN+'. '+s.tEs)+'</h2>');
-    lines.forEach(function(line){ w.document.write('<p>'+line+'</p>'); });
+    lines.forEach(function(line){ w.document.write('<p>'+esc(line)+'</p>'); });
   });
 
   // RAS — Revisão por Aparatos e Sistemas (só imprime sistemas com alguma resposta;
@@ -327,9 +332,9 @@ function exportPDF(){
       var obs = sys.querySelector('textarea');
       var obsVal = obs ? obs.value : '';
       if(lines.length || obsVal){
-        rasBody += '<h3>'+sysName+'</h3>';
-        lines.forEach(function(l){ rasBody += '<p>'+l+'</p>'; });
-        if(obsVal) rasBody += '<p><em>'+(lang==='pt'?'Observações: ':'Observaciones: ')+obsVal+'</em></p>';
+        rasBody += '<h3>'+esc(sysName)+'</h3>';
+        lines.forEach(function(l){ rasBody += '<p>'+esc(l)+'</p>'; });
+        if(obsVal) rasBody += '<p><em>'+(lang==='pt'?'Observações: ':'Observaciones: ')+esc(obsVal)+'</em></p>';
       }
     });
     if(rasBody){
@@ -358,11 +363,11 @@ function exportPDF(){
   if(ectoLines.length || hasSV){
     secN++;
     w.document.write('<h2>'+secN+'. '+(lang==='pt'?'Exame Físico Geral — Ectoscopia':'Examen Físico General — Ectoscopia')+'</h2>');
-    ectoLines.forEach(function(l){ w.document.write('<p>'+l+'</p>'); });
+    ectoLines.forEach(function(l){ w.document.write('<p>'+esc(l)+'</p>'); });
     if(hasSV){
       w.document.write('<h3>'+(lang==='pt'?'Sinais Vitais':'Signos Vitales')+'</h3>');
-      w.document.write('<p>PA: '+(pa||'—')+' mmHg | FC: '+(fc||'—')+' bpm | FR: '+(fr||'—')+' irpm | Temp: '+(temp||'—')+'°C | SpO₂: '+(spo2||'—')+'%</p>');
-      w.document.write('<p>Peso: '+(document.getElementById('sv-peso').value||'—')+' kg | Altura: '+(document.getElementById('sv-altura').value||'—')+' cm | IMC: '+(document.getElementById('sv-imc').value||'—')+'</p>');
+      w.document.write('<p>PA: '+esc(pa||'—')+' mmHg | FC: '+esc(fc||'—')+' bpm | FR: '+esc(fr||'—')+' irpm | Temp: '+esc(temp||'—')+'°C | SpO₂: '+esc(spo2||'—')+'%</p>');
+      w.document.write('<p>Peso: '+esc(document.getElementById('sv-peso').value||'—')+' kg | Altura: '+esc(document.getElementById('sv-altura').value||'—')+' cm | IMC: '+esc(document.getElementById('sv-imc').value||'—')+'</p>');
     }
   }
   

@@ -901,7 +901,7 @@ async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
   list.innerHTML = recentes.map(ev => {
     const lab = labels[ev.tipo] || labels.created;
     const time = activityFormatTime(ev.ts);
-    const motivoTxt = ev.motivo ? ` — ${ev.motivo}` : '';
+    const motivoTxt = ev.motivo ? ` — ${escHtml(ev.motivo)}` : '';
     return `
       <div class="act-item">
         <div class="act-dot ${lab.dot}"></div>
