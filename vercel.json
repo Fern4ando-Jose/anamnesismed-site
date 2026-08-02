@@ -27,6 +27,12 @@
     },
     "api/assistente-dx.js": {
       "maxDuration": 60
+    },
+    "api/manter-banco-vivo.js": {
+      "maxDuration": 15
     }
-  }
+  },
+  "crons": [
+    { "path": "/api/manter-banco-vivo", "schedule": "0 9 * * *" }
+  ]
 }
