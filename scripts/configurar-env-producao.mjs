@@ -13,15 +13,37 @@
  * supabase.com/dashboard e em vercel.com (contas do dono).
  *
  * Uso:
- *   node scripts/configurar-env-producao.mjs            → confere e repõe o que faltar
- *   node scripts/configurar-env-producao.mjs --so-ver   → só relata, não escreve
+ *   node scripts/configurar-env-producao.mjs                → repõe o que faltar no site
+ *   node scripts/configurar-env-producao.mjs --so-ver       → só relata, não escreve
+ *   node scripts/configurar-env-producao.mjs --destino painel
+ *       → leva a MESMA chave para o painel administrativo (painel-adm), com os nomes
+ *         que ele espera (ANAMNESIS_*), para a aba "Usuários" ler o banco do produto.
  */
 import http from 'node:http';
 
 const PORTA = 9222;
 const REF = 'zrntgfsciiwhwghadosg';
-const PROJETO_VERCEL = 'anamnesismed-site';
 const SO_VER = process.argv.includes('--so-ver');
+
+// Um lugar só descreve cada destino: qual projeto na Vercel e com que NOMES a mesma
+// chave entra lá. Sem isto, cada painel novo viraria uma cópia deste script.
+const DESTINOS = {
+  site: {
+    projeto: 'anamnesismed-site',
+    nomes: { url: 'SUPABASE_URL', chave: 'SUPABASE_SERVICE_KEY' },
+    extras: { NEXT_PUBLIC_URL: 'https://www.anamnesismed.com' },
+  },
+  painel: {
+    projeto: 'painel-adm',
+    nomes: { url: 'ANAMNESIS_SUPABASE_URL', chave: 'ANAMNESIS_SUPABASE_SERVICE_KEY' },
+    extras: {},
+  },
+};
+
+const arg = process.argv.indexOf('--destino');
+const DESTINO = DESTINOS[arg > -1 ? process.argv[arg + 1] : 'site'];
+if (!DESTINO) { console.error('❌ destino desconhecido — use site ou painel'); process.exit(1); }
+const PROJETO_VERCEL = DESTINO.projeto;
 
 const j = (caminho) => new Promise((ok, ruim) => {
   http.get({ host: '127.0.0.1', port: PORTA, path: caminho }, (r) => {
@@ -71,9 +93,9 @@ const escapar = (s) => JSON.stringify(String(s));
   console.log('· chave de serviço obtida do painel (valor não exibido)');
 
   const querido = {
-    SUPABASE_URL: `https://${REF}.supabase.co`,
-    SUPABASE_SERVICE_KEY: chave,
-    NEXT_PUBLIC_URL: 'https://www.anamnesismed.com',
+    [DESTINO.nomes.url]: `https://${REF}.supabase.co`,
+    [DESTINO.nomes.chave]: chave,
+    ...DESTINO.extras,
   };
 
   // 2) O que já existe lá.

@@ -938,6 +938,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   <span data-am-icon="sparkles" data-am-size="16"></span>
                   <span class="pt">Gerar HC</span><span class="es">Generar HC</span>
                 </button>
+                <!-- Atalho para o passo seguinte: com a HC redigida, mandar o caso para a
+                     IA e receber o diagnóstico provável. Antes era preciso saber que a aba
+                     "Assistente IA" existia lá em cima e apertar outro botão lá dentro. -->
+                <button type="button" class="conduta-btn" id="btn-ia-dx-atalho" onclick="hcAnalisarComIA()" style="margin:0;padding:8px 16px;font-size:12px;display:none">
+                  <span data-am-icon="brain" data-am-size="16"></span>
+                  <span class="pt">Analisar caso (IA)</span><span class="es">Analizar caso (IA)</span>
+                </button>
                 <span id="ia-hc-status" style="font-size:11px;color:var(--muted);line-height:1.3"></span>
               </div>
               <label class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
@@ -2582,6 +2589,10 @@ function hcGerarComIA(){
     if(res.ok && res.narrativa){
       out.value = res.narrativa;
       if(typeof markHCDirty==='function') markHCDirty();
+      // HC redigida → o passo seguinte é pedir o diagnóstico provável. O atalho só
+      // aparece agora, quando há caso para analisar (botão morto na tela é ruído).
+      var atalho = document.getElementById('btn-ia-dx-atalho');
+      if(atalho) atalho.style.display = '';
       if(status){
         status.textContent = res.fonte==='ia'
           ? (lang==='es'?'Listo (IA) — revise antes de exportar':'Pronto (IA) — revise antes de exportar')
@@ -2596,6 +2607,21 @@ function hcGerarComIA(){
     if(btn) btn.disabled = false;
     if(status) status.textContent = (lang==='es'?'Error inesperado':'Erro inesperado');
   });
+}
+
+// ── DA HC PRONTA PARA O DIAGNÓSTICO PROVÁVEL ──────────
+// Um clique só: abre a aba do Assistente e JÁ manda o caso para a análise, em vez
+// de exigir que a pessoa descubra a aba lá em cima e aperte um segundo botão.
+// A validação de conteúdo e a trava de plano pago continuam sendo do assistente
+// (anamnesismed-assistente.js) — aqui não se duplica regra nenhuma.
+function hcAnalisarComIA(){
+  var tab = document.getElementById('gtab-assistente');
+  if(typeof showGuide === 'function') showGuide('assistente', tab);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Deixa a aba pintar antes de disparar, para o "Analisando…" aparecer na tela.
+  setTimeout(function(){
+    if(typeof window.assistenteAnalisar === 'function') window.assistenteAnalisar();
+  }, 120);
 }
 
 // Botão flutuante 📖: abre a Referência Clínica do motivo de consulta atual em nova aba
