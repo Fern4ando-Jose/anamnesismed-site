@@ -947,6 +947,22 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 </button>
                 <span id="ia-hc-status" style="font-size:11px;color:var(--muted);line-height:1.3"></span>
               </div>
+              <!-- Aparece só quando a HC aberta guarda um texto do formato antigo.
+                   O PDF imprime o que está guardado, então sem isto o médico exporta
+                   o texto velho sem saber por quê. -->
+              <div id="aviso-hc-antiga" style="display:none;margin:8px 0;padding:10px 13px;border-radius:8px;background:#fff7ed;border:1px solid #fed7aa;font-size:12px;line-height:1.5;color:#7c2d12">
+                <span class="pt"><strong>Esta HC foi escrita no formato antigo.</strong> O que você imprimir sai como está aqui — o texto fica guardado com a HC.</span>
+                <span class="es"><strong>Esta HC fue escrita en el formato anterior.</strong> Lo que imprima sale tal como está aquí — el texto queda guardado con la HC.</span>
+                <button type="button" class="conduta-btn conduta-btn-primary" onclick="atualizarNarrativa()" style="margin:8px 0 0;padding:6px 14px;font-size:12px">
+                  <span class="pt">Reescrever no formato novo</span><span class="es">Reescribir en el formato nuevo</span>
+                </button>
+              </div>
+              <div id="desfazer-hc-antiga" style="display:none;margin:8px 0;font-size:12px;color:var(--muted)">
+                <span class="pt">Texto reescrito.</span><span class="es">Texto reescrito.</span>
+                <a href="javascript:void(0)" onclick="desfazerAtualizacao()" style="color:var(--primary);font-weight:700">
+                  <span class="pt">desfazer e voltar ao anterior</span><span class="es">deshacer y volver al anterior</span>
+                </a>
+              </div>
               <label class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
               <label class="f-label es">Narrativa de la HC (revise antes de exportar)</label>
               <textarea class="f-input" id="aea-narrativa" rows="6" placeholder="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-pt="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-es="Haga clic en “Generar HC” para redactar la narrativa a partir de los motivos, tiempo de evolución y relato libre. Puede editarla antes de exportar."></textarea>
@@ -2617,6 +2633,57 @@ function hcGerarComIA(){
   });
 }
 
+// ── HC SALVA COM O TEXTO ANTIGO ───────────────────────
+// O texto da narrativa fica GUARDADO junto com a HC, e é ele que o PDF imprime —
+// não se regenera na impressão. Então uma HC salva antes de 02/08/2026 continua
+// saindo no formato antigo mesmo com o motor novo no ar (foi o que o dono viu).
+//
+// Não regeramos sozinhos: o campo é editável e o médico pode ter revisado o texto à
+// mão; sobrescrever a revisão dele sem avisar seria pior que o formato velho. Então
+// avisamos e deixamos a troca a um clique, com desfazer.
+var __narrativaAnterior = null;
+
+function narrativaEhAntiga(txt){
+  if(!txt) return false;
+  // Marcas que só o formato antigo produzia.
+  return /,\s*localizad[ao] em/i.test(txt)
+      || /de car[áa]ter [^.,]+,\s*(de intensidade|irradiad)/i.test(txt)
+      || /Como fatores moduladores, refere:/i.test(txt)
+      || /Refere ainda:\s*fatores/i.test(txt)
+      || /irradiad[ao] para n[ãa]o/i.test(txt)
+      || /dura[çc][ãa]o de cada epis[óo]dio de (cont[íi]nua|descont[íi]nua)/i.test(txt)
+      || /apresentando quadro de .* de evolu[çc][ãa]o, caracterizado por/i.test(txt);
+}
+
+function avisarNarrativaAntiga(){
+  var out = document.getElementById('aea-narrativa');
+  var aviso = document.getElementById('aviso-hc-antiga');
+  if(!out || !aviso) return;
+  aviso.style.display = narrativaEhAntiga(out.value) ? '' : 'none';
+}
+
+function atualizarNarrativa(){
+  var out = document.getElementById('aea-narrativa');
+  if(!out) return;
+  __narrativaAnterior = out.value;
+  var aviso = document.getElementById('aviso-hc-antiga');
+  if(aviso) aviso.style.display = 'none';
+  var desfazer = document.getElementById('desfazer-hc-antiga');
+  if(desfazer) desfazer.style.display = '';
+  hcGerarComIA();   // reescreve com o motor atual; o médico revê antes de exportar
+}
+
+function desfazerAtualizacao(){
+  var out = document.getElementById('aea-narrativa');
+  if(!out || __narrativaAnterior === null) return;
+  out.value = __narrativaAnterior;
+  __narrativaAnterior = null;
+  var desfazer = document.getElementById('desfazer-hc-antiga');
+  if(desfazer) desfazer.style.display = 'none';
+  if(typeof markHCDirty==='function') markHCDirty();
+  avisarNarrativaAntiga();
+}
+
 // ── DA HC PRONTA PARA O DIAGNÓSTICO PROVÁVEL ──────────
 // Um clique só: abre a aba do Assistente e JÁ manda o caso para a análise, em vez
 // de exigir que a pessoa descubra a aba lá em cima e aperte um segundo botão.
@@ -2773,6 +2840,7 @@ function openRefMotivo(){
           }
         }
         if (typeof hcDirty !== 'undefined') hcDirty = false;
+        if (typeof avisarNarrativaAntiga === 'function') avisarNarrativaAntiga();
       } catch (e) {
         console.warn('hcLoad erro ao restaurar HC via deep-link:', e);
       }

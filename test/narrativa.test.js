@@ -133,3 +133,30 @@ test('localização entra colada no sintoma, sem "localizada em" entre vírgulas
   assert.ok(!/,\s*localizad/i.test(txt), `saiu: ${txt}`);
   assert.ok(/dor em parte anterior perna direita/i.test(txt), `saiu: ${txt}`);
 });
+
+// ── HC salva com o texto ANTIGO (02/08/2026) ──────────────────────────────────
+// O texto fica guardado junto com a HC e é ele que o PDF imprime. Uma HC salva antes
+// da correção continua saindo no formato velho — o app precisa reconhecer isso.
+// (A função vive no app.html; aqui testamos a REGRA, copiada em espelho, para que uma
+// mudança no formato novo que passe a casar como "antigo" seja pega.)
+const EH_ANTIGA = (txt) =>
+  /,\s*localizad[ao] em/i.test(txt) ||
+  /de car[áa]ter [^.,]+,\s*(de intensidade|irradiad)/i.test(txt) ||
+  /Como fatores moduladores, refere:/i.test(txt) ||
+  /Refere ainda:\s*fatores/i.test(txt) ||
+  /irradiad[ao] para n[ãa]o/i.test(txt) ||
+  /dura[çc][ãa]o de cada epis[óo]dio de (cont[íi]nua|descont[íi]nua)/i.test(txt) ||
+  /apresentando quadro de .* de evolu[çc][ãa]o, caracterizado por/i.test(txt);
+
+test('reconhece o texto salvo no formato antigo', () => {
+  const antigo = 'Paciente, apresentando quadro de dor, localizada em parte anterior perna direita, ' +
+    'de início insidioso / gradual. Refere dor de caráter urente, irradiada para não irradia, de ' +
+    'intensidade 7-8, com duração de cada episódio de descontínua. Refere ainda: fatores (repouso).';
+  assert.ok(EH_ANTIGA(antigo), 'deveria reconhecer o formato antigo');
+});
+
+test('o texto novo NÃO é confundido com o antigo', () => {
+  const ctx = carregarGerador({ 'dp-idade': '62', 'dp-sexo': 'F', 'mc-tempo-n': '3', 'mc-tempo-u': 'anos' });
+  const novo = ctx.gerarNarrativaAEA_generica(CASO_DONO, 'pt', MOTIVO_DOR);
+  assert.ok(!EH_ANTIGA(novo), `o texto novo foi marcado como antigo: ${novo}`);
+});
