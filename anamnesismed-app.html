@@ -2590,9 +2590,21 @@ function hcGerarComIA(){
       out.value = res.narrativa;
       if(typeof markHCDirty==='function') markHCDirty();
       if(status){
+        // Quando cai no motor local, DIZER POR QUÊ. Antes a tela só avisava "IA
+        // indisponível" e o médico não tinha como saber se era sessão expirada,
+        // limite do dia ou falha do serviço — e achava que o texto pior era o normal.
+        var porQue = '';
+        if(res.fonte!=='ia' && res.erro){
+          var e = String(res.erro).toLowerCase();
+          if(/auth|sess|401/.test(e))      porQue = lang==='es'?' — sesión expirada, inicia sesión de nuevo':' — sessão expirada, entre de novo';
+          else if(/limit|429/.test(e))     porQue = lang==='es'?' — límite diario alcanzado':' — limite de hoje atingido';
+          else if(/plano|403|upgrade/.test(e)) porQue = lang==='es'?' — recurso del plan de pago':' — recurso do plano pago';
+          else if(/rede|network|fetch/.test(e)) porQue = lang==='es'?' — sin conexión con el servidor':' — sem conexão com o servidor';
+          else                              porQue = ' — ' + res.erro;
+        }
         status.textContent = res.fonte==='ia'
           ? (lang==='es'?'Listo (IA) — revise antes de exportar':'Pronto (IA) — revise antes de exportar')
-          : (lang==='es'?'Generado localmente (IA no disponible)':'Gerado localmente (IA indisponível)');
+          : (lang==='es'?'Generado sin IA'+porQue:'Gerado sem IA'+porQue);
       }
     } else {
       if(status) status.textContent = res.erro || (lang==='es'?'No fue posible generar':'Não foi possível gerar');
