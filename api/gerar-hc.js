@@ -53,6 +53,21 @@ function buildSystemPrompt(pt) {
       '9. NÃO use títulos, marcadores, markdown ou listas. Apenas o(s) parágrafo(s) de texto corrido.',
       '10. Termine com a frase de fecho padrão: "Procura esta unidade de saúde para avaliação médica." (somente se houver história relevante).',
       '11. Não acrescente comentários, observações ou explicações fora da narrativa clínica.',
+      '',
+      // Estas regras de estilo espelham o motor local de reserva (anamnesismed-narrativa.js),
+      // reescrito em 02/08/2026 por ordem do dono: "tem que ser uma história clínica fluida,
+      // igual as histórias clínicas geradas em hospitais". Os dois escritores do produto
+      // precisam soar iguais — senão o médico percebe quando a IA não rodou.
+      'ESTILO (como se escreve numa enfermaria, não num formulário):',
+      '· Frases curtas. No máximo três informações por frase — nunca uma fila de vírgulas.',
+      '· O tempo de evolução vem colado no sintoma: "com dor em face anterior da perna direita há 3 anos" — nunca "apresentando quadro de 3 anos de evolução, caracterizado por...".',
+      '· A localização emenda no sintoma ("dor em região retroesternal"), sem o particípio "localizada em" entre vírgulas.',
+      '· Nada de rótulo de campo no texto: escreva "Relaciona o quadro com esforço físico", nunca "Como fatores moduladores, refere:".',
+      '· Resposta negativa vira negativo pertinente ("Nega irradiação"), nunca é copiada como achado ("irradiada para não irradia").',
+      '· Concorde gênero e número com o substantivo-guia: a dor é constritiva, não constritivo.',
+      '',
+      'EXEMPLO do padrão esperado (formato, não conteúdo — não reaproveite estes dados):',
+      '"Paciente feminino de 62 anos, com dor em face anterior da perna direita há 3 anos, de início insidioso. Descreve a dor como urente, de intensidade 7-8/10 na EVA e descontínua (em crises). Desde o início, o quadro apresenta curso flutuante. Relaciona o quadro com repouso. Nega irradiação. Procura esta unidade de saúde para avaliação médica."',
     ].join('\n');
   }
   return [
@@ -70,6 +85,17 @@ function buildSystemPrompt(pt) {
     '9. NO uses títulos, viñetas, markdown ni listas. Solo el/los párrafo(s) de texto continuo.',
     '10. Termina con la frase de cierre estándar: "Acude a esta unidad de salud para evaluación médica." (solo si hay historia relevante).',
     '11. No agregues comentarios, observaciones ni explicaciones fuera de la narrativa clínica.',
+    '',
+    'ESTILO (como se escribe en una sala, no en un formulario):',
+    '· Frases cortas. Máximo tres informaciones por frase — nunca una fila de comas.',
+    '· El tiempo de evolución va pegado al síntoma: "con dolor en cara anterior de la pierna derecha desde hace 3 años" — nunca "presentando cuadro de 3 años de evolución, caracterizado por...".',
+    '· La localización se une al síntoma ("dolor en región retroesternal"), sin el participio "localizado en" entre comas.',
+    '· Nada de etiquetas de campo en el texto: escribe "Relaciona el cuadro con el esfuerzo físico", nunca "Como factores moduladores, refiere:".',
+    '· Una respuesta negativa se vuelve negativo pertinente ("Niega irradiación"), nunca se copia como hallazgo ("irradiado hacia no irradia").',
+    '· Concuerda género y número con el sustantivo guía.',
+    '',
+    'EJEMPLO del patrón esperado (formato, no contenido — no reutilices estos datos):',
+    '"Paciente femenino de 62 años, con dolor en cara anterior de la pierna derecha desde hace 3 años, de inicio insidioso. Describe el dolor como urente, de intensidad 7-8/10 en EVA y discontinuo (por crisis). Desde su inicio, el cuadro presenta curso fluctuante. Relaciona el cuadro con el reposo. Niega irradiación. Acude a esta unidad de salud para evaluación médica."',
   ].join('\n');
 }
 
