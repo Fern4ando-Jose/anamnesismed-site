@@ -797,6 +797,75 @@ function montarPayloadAssistente(lng){
                 .filter(Boolean).join('\n');
   }
 
+  // ── COLETOR DE SIM/NÃO (02/08/2026, ordem do dono) ──────────────────────────
+  // "ele tem que buscar todas as informações da história clínica completa, não
+  // somente a informação inicial… ele está falando pode ter referência a diabetes
+  // mellitus, mas a gente não tem quadros de diabetes mellitus?"
+  // Estava certo: o assistente recebia a AEA, alguns campos de texto, sinais vitais
+  // e ectoscopia — e NÃO recebia as doenças crônicas (HAS, DIABETES, dislipidemia),
+  // alergias, IST, tabagismo, etilismo nem a revisão por aparelhos e sistemas. Como
+  // ninguém lhe dizia que o diabetes fora NEGADO, ele especulava diabetes.
+  //
+  // As respostas sim/não do app não vivem em campo de formulário: o estado está nas
+  // classes do botão (`sim`/`nao`, com `yn-on` nos blocos de antecedentes). Este
+  // coletor lê o que foi respondido — inclusive os NÃO, que valem tanto quanto os
+  // sim para o raciocínio — e junta os detalhes do bloco que abre no "sim".
+  function coletarYN(raizId){
+    var raiz = document.getElementById(raizId); if(!raiz) return '';
+    var linhasYN = [];
+    var rows = raiz.querySelectorAll('.yn-row');
+    for(var i=0;i<rows.length;i++){
+      var row = rows[i];
+      var qEl = row.querySelector('.yn-question'); if(!qEl) continue;
+      var qSpan = qEl.querySelector(lng==='es'?'.es':'.pt');
+      var q = ((qSpan?qSpan.textContent:qEl.textContent)||'').replace(/\s+/g,' ').trim();
+      if(!q) continue;
+      // O botão marcado é a fonte: nos antecedentes ele leva `yn-on` e o RÓTULO
+      // importa — tabagismo tem três respostas (Sim/Não/Ex) e o "Ex" é gravado com a
+      // mesma classe do "Não". Ler a classe perderia "ex-tabagista", que muda o risco.
+      var marcado = row.querySelector('.yn-btn.yn-on') || row.querySelector('.yn-btn.sim, .yn-btn.nao');
+      if(!marcado) continue;                       // não respondida → não inventa
+      var sim = marcado.classList.contains('sim');
+      var rot = marcado.querySelector(lng==='es'?'.es':'.pt');
+      var val = ((rot?rot.textContent:marcado.textContent)||'').replace(/\s+/g,' ').trim()
+                || (sim ? (lng==='es'?'Sí':'Sim') : (lng==='es'?'No':'Não'));
+      // Detalhes do bloco que abre no "sim" (tempo de doença, tipo, tratamento…)
+      var det = '';
+      var extra = row.nextElementSibling;
+      if(sim && extra && extra.classList && extra.classList.contains('yn-extra')){
+        var partes = [];
+        var campos = extra.querySelectorAll('input, textarea');
+        for(var k=0;k<campos.length;k++){
+          var v=(campos[k].value||'').trim(); if(v) partes.push(v);
+        }
+        var sels = extra.querySelectorAll('.f-radio.sel, .f-radio.sel-danger');
+        for(var m=0;m<sels.length;m++){
+          var sv=(sels[m].textContent||'').replace(/\s+/g,' ').trim(); if(sv) partes.push(sv);
+        }
+        if(partes.length) det = ' ('+partes.join('; ')+')';
+      }
+      linhasYN.push(q+': '+val+det);
+    }
+    return linhasYN.join('\n');
+  }
+
+  // A revisão por aparelhos vem em blocos por sistema; guarda o nome do sistema para
+  // o modelo saber a que aparelho pertence cada resposta.
+  function coletarRAS(){
+    var raiz = document.getElementById('ras-content'); if(!raiz) return '';
+    var blocos = raiz.querySelectorAll('.ras-system'), out=[];
+    for(var i=0;i<blocos.length;i++){
+      var nomeEl = blocos[i].querySelector('.ras-name');
+      var nome = nomeEl ? nomeEl.textContent.replace(/\s+/g,' ').trim() : '';
+      var corpo = coletarYN(blocos[i].id);
+      var obs = blocos[i].querySelector('textarea');
+      var obsTxt = obs && obs.value.trim() ? ((lng==='es'?'Obs.: ':'Obs.: ')+obs.value.trim()) : '';
+      var conteudo = [corpo, obsTxt].filter(Boolean).join('\n');
+      if(conteudo) out.push(nome+':\n'+conteudo);
+    }
+    return out.join('\n');
+  }
+
   var base = montarPayloadHC(lng); // { lang, demografia, motivos, relatoLivre }
 
   var antecedentes = linhas([
@@ -840,13 +909,23 @@ function montarPayloadAssistente(lng){
     gE('sum-hipoteses') ? ((lng==='es'?'Hipótesis: ':'Hipóteses: ')+gE('sum-hipoteses')) : ''
   ].filter(Boolean).join('\n');
 
+  // Doenças crônicas / alergias / IST e hábitos: o "sim" E o "não" vão para a análise.
+  var comorbidades = coletarYN('app-cronicas');
+  var habitos = [coletarYN('panel-habitos'), linhas([
+    {id:'hab-sono-h', lbl: lng==='es'?'Horas de sueño':'Horas de sono'}
+  ])].filter(Boolean).join('\n');
+  var ras = coletarRAS();
+
   return {
     lang: base.lang,
     hc: {
       demografia: base.demografia,
       motivos: base.motivos,
       relatoLivre: base.relatoLivre,
+      comorbidades: comorbidades,
       antecedentes: antecedentes,
+      habitos: habitos,
+      ras: ras,
       sinaisVitais: sinaisVitais,
       exameFisico: exameFisico,
       hipoteses: hipoteses

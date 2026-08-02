@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--
+  BANCADA DE TESTE do coletor da HC (02/08/2026).
+
+  Para que serve: conferir, sem login e sem gastar IA, que o assistente recebe a HC
+  COMPLETA — doenças crônicas (inclusive as NEGADAS), hábitos e revisão por aparelhos.
+  Nasceu da ordem do dono: o modelo sugeria diabetes num paciente cujo diabetes estava
+  marcado como "Não", porque esses campos nunca eram enviados.
+
+  Como usar: copie anamnesismed-narrativa.js para o lado deste arquivo com o nome
+  narrativa.js e abra a página no navegador. O bloco no fim mostra o que seria enviado.
+
+  Esperado: "Diabetes Mellitus: Não" aparecer em comorbidades; tabagismo sair como "Ex"
+  (e não como "Não"); pergunta sem resposta NÃO aparecer; RAS trazer sistema, respostas
+  e observação.
+-->
+<html lang="pt-BR"><head><meta charset="utf-8"><title>teste do coletor</title></head>
+<body>
+<!-- Reproduz a estrutura real do formulário: doenças crônicas, hábitos e RAS. -->
+<div id="app-cronicas">
+  <div class="yn-row">
+    <div class="yn-question"><span class="pt">Hipertensão Arterial (HTA)</span><span class="es">Hipertensión Arterial</span></div>
+    <div class="yn-btns">
+      <button class="yn-btn sim yn-on"><span class="pt">Sim</span><span class="es">Sí</span></button>
+      <button class="yn-btn"><span class="pt">Não</span><span class="es">No</span></button>
+    </div>
+  </div>
+  <div class="yn-extra" style="display:block">
+    <input value="10 anos"><div class="f-radios"><div class="f-radio sel">Tratada</div></div>
+  </div>
+
+  <div class="yn-row">
+    <div class="yn-question"><span class="pt">Diabetes Mellitus</span><span class="es">Diabetes Mellitus</span></div>
+    <div class="yn-btns">
+      <button class="yn-btn"><span class="pt">Sim</span><span class="es">Sí</span></button>
+      <button class="yn-btn nao yn-on"><span class="pt">Não</span><span class="es">No</span></button>
+    </div>
+  </div>
+
+  <div class="yn-row">
+    <div class="yn-question"><span class="pt">Dislipidemia</span><span class="es">Dislipidemia</span></div>
+    <div class="yn-btns">
+      <button class="yn-btn"><span class="pt">Sim</span><span class="es">Sí</span></button>
+      <button class="yn-btn"><span class="pt">Não</span><span class="es">No</span></button>
+    </div>
+  </div>
+</div>
+
+<div id="panel-habitos">
+  <div class="yn-row">
+    <div class="yn-question"><span class="pt">Tabagismo</span><span class="es">Tabaquismo</span></div>
+    <div class="yn-btns">
+      <button class="yn-btn"><span class="pt">Sim</span><span class="es">Sí</span></button>
+      <button class="yn-btn"><span class="pt">Não</span><span class="es">No</span></button>
+      <button class="yn-btn nao yn-on"><span class="pt">Ex</span><span class="es">Ex</span></button>
+    </div>
+  </div>
+  <div class="yn-extra" style="display:none"><input value="20 anos-maço"></div>
+</div>
+
+<div id="ras-content">
+  <div class="ras-system" id="ras-cardio">
+    <div class="ras-name">Cardiovascular</div>
+    <div class="ras-body"><div class="ras-content">
+      <div class="yn-row"><div class="yn-question">Dor torácica</div>
+        <div class="yn-btns"><button class="yn-btn nao">Não</button><button class="yn-btn">Sim</button></div></div>
+      <div class="yn-row"><div class="yn-question">Edema de membros inferiores</div>
+        <div class="yn-btns"><button class="yn-btn sim">Sim</button><button class="yn-btn">Não</button></div></div>
+      <textarea>sem sopros audíveis</textarea>
+    </div></div>
+  </div>
+</div>
+
+<!-- campos que o payload lê por id (vazios, para não atrapalhar) -->
+<input id="dp-idade" value="62"><input id="dp-sexo" value="F">
+<input id="mc-tempo-n" value="3"><input id="mc-tempo-u" value="anos">
+<textarea id="aea-texto">dor em perna direita</textarea>
+<textarea id="app-medicacao">Losartana 50 mg/dia</textarea>
+<div id="hc-sections"></div>
+
+<pre id="saida" style="font:13px/1.5 Consolas,monospace;white-space:pre-wrap"></pre>
+<script src="narrativa.js"></script>
+<script>
+  var p = montarPayloadAssistente('pt');
+  document.getElementById('saida').textContent = JSON.stringify({
+    comorbidades: p.hc.comorbidades,
+    habitos: p.hc.habitos,
+    ras: p.hc.ras,
+    antecedentes: p.hc.antecedentes
+  }, null, 2);
+  window.__resultado = p.hc;
+</script>
+</body></html>

@@ -50,6 +50,7 @@ function buildSystemPrompt(pt) {
       '',
       'REGRAS OBRIGATÓRIAS:',
       '1. Use EXCLUSIVAMENTE as informações fornecidas na HC. NUNCA invente sintomas, sinais, exames ou dados que não estejam no texto. Se um dado essencial faltar, aponte-o como lacuna a investigar.',
+      '1b. LEIA A HC INTEIRA antes de responder — comorbidades, antecedentes, hábitos, revisão por aparelhos, sinais vitais e exame físico, não apenas a queixa e a HDA. Um item respondido com "Não" foi NEGADO pelo profissional: trate-o como negativo pertinente e NUNCA o cite como hipótese, fator de risco ou "dado que falta". Exemplo do erro a evitar: sugerir diabetes ou pedir glicemia quando o formulário registra "Diabetes: Não".',
       '2. Você é uma FERRAMENTA DE APOIO À DECISÃO — não emite diagnóstico definitivo, não prescreve tratamento e não substitui a avaliação médica presencial. Enquadre tudo como sugestão para correlação clínica.',
       '3. Priorize as hipóteses por probabilidade considerando o quadro, e SEMPRE destaque os diagnósticos graves/que não se pode perder ("can\'t-miss"), mesmo quando pouco prováveis.',
       '4. Para cada hipótese, liste objetivamente os achados da HC que a sustentam (a favor) e os que a enfraquecem ou ainda faltam para confirmá-la (contra).',
@@ -78,6 +79,7 @@ function buildSystemPrompt(pt) {
     '',
     'REGLAS OBLIGATORIAS:',
     '1. Usa EXCLUSIVAMENTE la información proporcionada en la HC. NUNCA inventes síntomas, signos, estudios ni datos que no estén en el texto. Si falta un dato esencial, señálalo como una laguna a investigar.',
+    '1b. LEE LA HC COMPLETA antes de responder — comorbilidades, antecedentes, hábitos, revisión por aparatos, signos vitales y examen físico, no solo el motivo y la HEA. Un ítem respondido con "No" fue NEGADO por el profesional: trátalo como negativo pertinente y NUNCA lo cites como hipótesis, factor de riesgo ni "dato que falta". Ejemplo del error a evitar: sugerir diabetes o pedir glucemia cuando el formulario registra "Diabetes: No".',
     '2. Eres una HERRAMIENTA DE APOYO A LA DECISIÓN — no emites diagnóstico definitivo, no prescribes tratamiento y no sustituyes la evaluación médica presencial. Enmarca todo como sugerencia para correlación clínica.',
     '3. Prioriza las hipótesis por probabilidad según el cuadro, y SIEMPRE destaca los diagnósticos graves/que no se pueden pasar por alto ("can\'t-miss"), aunque sean poco probables.',
     '4. Para cada hipótesis, enumera objetivamente los hallazgos de la HC que la sustentan (a favor) y los que la debilitan o aún faltan para confirmarla (en contra).',
@@ -134,10 +136,33 @@ function buildUserMessage(pt, hc) {
     L.push(pt ? '## Relato livre / HDA' : '## Relato libre / HEA');
     L.push(clip(String(hc.relatoLivre).trim(), LIM.bloco));
   }
+  // ── A HC COMPLETA, não só o começo (02/08/2026, ordem do dono) ───────────────
+  // Faltava justamente o que o médico marca como sim/não: doenças crônicas
+  // (hipertensão, DIABETES, dislipidemia), alergias, IST, tabagismo, etilismo e a
+  // revisão por aparelhos. Sem isso o modelo especulava "possível diabetes" num
+  // paciente cujo diabetes tinha sido explicitamente NEGADO no formulário.
+  if (hc.comorbidades && String(hc.comorbidades).trim()) {
+    L.push('');
+    L.push(pt ? '## Doenças crônicas, alergias e IST (respondido pelo profissional; "Não" = NEGADO, não é lacuna)'
+              : '## Enfermedades crónicas, alergias e ITS (respondido por el profesional; "No" = NEGADO, no es laguna)');
+    L.push(clip(String(hc.comorbidades).trim(), LIM.bloco));
+  }
   if (hc.antecedentes && String(hc.antecedentes).trim()) {
     L.push('');
-    L.push(pt ? '## Antecedentes (APP / APF / hábitos / RAS)' : '## Antecedentes (APP / APF / hábitos / RAS)');
+    L.push(pt ? '## Antecedentes pessoais e familiares' : '## Antecedentes personales y familiares');
     L.push(clip(String(hc.antecedentes).trim(), LIM.bloco));
+  }
+  if (hc.habitos && String(hc.habitos).trim()) {
+    L.push('');
+    L.push(pt ? '## Hábitos de vida (tabagismo, etilismo, atividade física, sono; "Não" = NEGADO)'
+              : '## Hábitos de vida (tabaquismo, etilismo, actividad física, sueño; "No" = NEGADO)');
+    L.push(clip(String(hc.habitos).trim(), LIM.bloco));
+  }
+  if (hc.ras && String(hc.ras).trim()) {
+    L.push('');
+    L.push(pt ? '## Revisão por aparelhos e sistemas (RAS) — cada "Não" é negativo pertinente'
+              : '## Revisión por aparatos y sistemas — cada "No" es negativo pertinente');
+    L.push(clip(String(hc.ras).trim(), LIM.bloco * 2));
   }
   if (hc.sinaisVitais && String(hc.sinaisVitais).trim()) {
     L.push('');
