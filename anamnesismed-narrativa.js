@@ -281,8 +281,9 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   var sexoAdj = sexoRaw==='M'?'masculino':(sexoRaw==='F'?(pt?'feminino':'femenino'):'');
 
   var P=[];
-  // ── 1. ABERTURA: paciente + tempo de evolução + motivo + início/migração ──
+  // ── 1. ABERTURA: paciente + motivo + localização + "há X" + início ──
   var ab='';
+  var tEvolNoFim='';   // o tempo entra depois da localização ("dor em X há 3 anos")
   if(cont){
     ab=(pt?'Adicionalmente, refere quadro de ':'Asimismo, refiere cuadro de ')+mtxt;
     if(tEvol) ab+=(pt?', com '+tEvol+' de evolução':', de '+tEvol+' de evolución');
@@ -291,15 +292,18 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     if(sexoAdj) ab+=' '+sexoAdj;
     if(idade && /^\d+$/.test(idade)) ab+=(pt?' de '+idade+' anos':' de '+idade+' años de edad');
     if(tEvol){
-      ab+=(pt?', apresentando quadro de '+tEvol+' de evolução, caracterizado por '
-            :', que presenta cuadro de aproximadamente '+tEvol+' de evolución, caracterizado por ')+mtxt;
+      // "apresentando quadro de 3 anos de evolução, caracterizado por dor…" é
+      // linguagem de relatório. Numa HC de hospital se escreve o sintoma primeiro e
+      // o tempo logo depois: "com dor em … há 3 anos".
+      ab+=(pt?', com '+mtxt : ', con '+mtxt);
+      tEvolNoFim = tEvol;
     } else {
       // Sem sexo/idade/tempo, "Paciente, apresentando quadro de dor" fica com uma
       // vírgula solta logo depois do sujeito. A vírgula só faz sentido quando há
       // aposto antes ("Paciente feminino, 62 anos, apresentando…").
       var temAposto = !!(sexoAdj || (idade && /^\d+$/.test(idade)));
-      ab+=(pt ? (temAposto?', ':' ')+'apresentando quadro de '+mtxt
-              : (temAposto?', ':' ')+'que presenta cuadro de '+mtxt);
+      ab+=(pt ? (temAposto?', ':' ')+'com quadro de '+mtxt
+              : (temAposto?', ':' ')+'con cuadro de '+mtxt);
     }
   }
   var locTxt='';
@@ -312,8 +316,14 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
       locTxt+=(pt?', com migração da dor — ':', con migración del dolor — ')+mg;
     }
   } else if(B.LOC){
-    locTxt+=(pt?', '+gA('localizad')+' em ':', localizado en ')+low(B.LOC);
+    // "dor, localizada em face anterior da perna" → "dor em face anterior da perna".
+    // O particípio entre vírgulas é jargão de formulário; a HC de hospital emenda
+    // a localização direto no sintoma.
+    locTxt+=(pt?' em ':' en ')+low(B.LOC).replace(/^(em|en|na|no)\s+/,'');
   }
+  // O tempo de evolução fecha a localização — "dor em face anterior da perna direita
+  // há 3 anos" — em vez de abrir a frase como cabeçalho de relatório.
+  if(tEvolNoFim) locTxt += (pt?' há ':' desde hace ')+tEvolNoFim;
   if(B.ONSET){
     var on=low(semBarra(B.ONSET)).replace(/^in[íi]cio\s+(e\s+(t[ée]rmino|dura[çc][ãa]o|migra[çc][ãa]o)\s+)?/,'').trim();
     if(on) locTxt+=(pt?', de início ':', de inicio ')+on;
@@ -322,8 +332,18 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   P.push(ab);
 
   // ── 2. CARACTERIZAÇÃO + EVOLUÇÃO ──
+  // Os atributos entram depois de "Descreve a dor COMO …", então o primeiro é o
+  // adjetivo puro ("urente"), não "de caráter urente" — que só existia para colar
+  // numa enumeração de formulário.
   var c=[];
-  if(B.CAR) c.push((pt?'de caráter ':'de carácter ')+low(B.CAR));
+  // Concordância: o formulário guarda o tipo no masculino ("Constritivo", "Surdo"),
+  // mas em PT o substantivo-guia é "dor" (feminino) — saía "a dor como constritivo".
+  // Adjetivo terminado em -o concorda; os invariáveis (urente, pulsátil, lancinante…)
+  // passam intactos.
+  function concorda(adj){
+    return (pt && fem) ? adj.replace(/o\b/g, 'a') : adj;
+  }
+  if(B.CAR) c.push(concorda(low(B.CAR)));
   // Irradiação é campo LIVRE: o médico escreve "não irradia", "nenhuma", "ausente"…
   // A guarda só conhecia "sem irradiação", então saía a frase absurda
   // "irradiada para não irradia". Agora qualquer negativa some da narrativa —
@@ -349,13 +369,10 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     var du=low(B.DUREP);
     // Sem repetir "de caráter" quando o tipo da dor já usou a expressão: sai
     // "de caráter urente, descontínua (em crises)", como se escreve na prática.
-    var jaTemCarater = !!B.CAR;
     if(/^cont[íi]nua?\b|^continua\b/.test(du)){
-      c.push(pt ? (jaTemCarater? gA('contínu') : 'de caráter contínuo')
-                : (jaTemCarater? 'continuo' : 'de carácter continuo'));
+      c.push(pt ? gA('contínu') : 'continuo');
     } else if(/^descont[íi]nua?\b|^discontinua\b|em crises|por crisis/.test(du)){
-      c.push(pt ? (jaTemCarater? gA('descontínu')+' (em crises)' : 'de caráter descontínuo (em crises)')
-                : (jaTemCarater? 'discontinuo (por crisis)' : 'de carácter discontinuo (por crisis)'));
+      c.push(pt ? gA('descontínu')+' (em crises)' : 'discontinuo (por crisis)');
     }
     else c.push((pt?'com duração de cada episódio de ':'con duración de cada episodio de ')+du);
   }
@@ -375,20 +392,41 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     if(/migrou|mudou de car|cambi[óo] de car/.test(e)) return pt?'migração e mudança de caráter da dor':'migración y cambio de carácter del dolor';
     return (pt?'curso ':'curso ')+e;   // fallback: prefixa "curso" p/ virar substantivo (ex.: "curso súbito e intenso")
   }
+  // ── FLUIDEZ (02/08/2026, ordem do dono: "tem que ser uma história clínica fluida,
+  // igual às geradas em hospitais") ──────────────────────────────────────────────
+  // Antes, todos os atributos entravam num período só, separados por vírgula:
+  // "Refere dor de caráter urente, de intensidade 7-8/10 na EVA, descontínua (em
+  // crises), com curso flutuante desde o início." Lê-se como formulário, não como
+  // história. Agora os atributos são distribuídos em ATÉ DUAS frases (no máximo três
+  // atributos cada), a segunda começando por um conectivo — que é como o médico
+  // escreve à mão.
   var leadN = isPain ? (pt?'dor ':'dolor ') : (pt?'quadro ':'cuadro ');
-  var caracSent='';
-  if(c.length) caracSent=(pt?'Refere ':'Refiere ')+leadN+c.join(', ');
-  if(B.EVOL){
-    var evt=(pt?'com ':'con ')+normEvol(B.EVOL)+(pt?' desde o início':' desde su inicio');
-    if(caracSent) caracSent+=', '+evt;
-    else caracSent=(pt?'O quadro apresenta ':'El cuadro presenta ')+normEvol(B.EVOL)+(pt?' desde o início':' desde su inicio');
+  if(c.length){
+    var prim=c.slice(0,3), resto=c.slice(3);
+    P.push((pt?'Descreve a ':'Describe el ')+leadN.trim()+(pt?' como ':' como ')+join(prim, pt?' e ':' y ')+'.');
+    if(resto.length) P.push((pt?'Refere ainda ser ':'Refiere además ser ')+join(resto, pt?' e ':' y ')+'.');
   }
-  if(caracSent) P.push(caracSent+'.');
+  if(B.EVOL){
+    var ev=normEvol(B.EVOL);
+    // "curso flutuante" → "Desde o início, o quadro tem curso flutuante."
+    P.push(pt ? 'Desde o início, o quadro apresenta '+ev+'.'
+              : 'Desde su inicio, el cuadro presenta '+ev+'.');
+  }
 
   // ── 3. FATORES MODULADORES ──
+  // "Como fatores moduladores, refere: repouso" é rótulo de formulário. Numa HC se
+  // escreve o que o fator FAZ; quando a pergunta não distingue piora de melhora
+  // (o guia pergunta "iniciam, exacerbam ou acalmam" de uma vez), a frase honesta é
+  // relacionar sem afirmar a direção — inventar "piora com" seria dado clínico falso.
   if(B.FATOR.length){
     var fs=B.FATOR.filter(function(f){return !/sem rela|sin rela|nenhum|ning[úu]n/.test(f);});
-    if(fs.length) P.push((pt?'Como fatores moduladores, refere: ':'Como factores moduladores, refiere: ')+join(fs,pt?' e ':' y ')+'.');
+    if(fs.length){
+      // "com" e não "a": o fator vem sem artigo do formulário ("repouso", "esforço
+      // físico") e "relaciona o quadro a repouso" exigiria contração ("ao repouso"),
+      // que erra assim que o fator for feminino ou plural.
+      var fsTxt=join(fs.map(low), pt?' e ':' y ');
+      P.push(pt ? 'Relaciona o quadro com '+fsTxt+'.' : 'Relaciona el cuadro con '+fsTxt+'.');
+    }
   }
 
   // ── 4. SINTOMAS ASSOCIADOS ──

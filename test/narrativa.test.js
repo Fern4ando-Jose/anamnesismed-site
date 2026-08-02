@@ -63,7 +63,7 @@ test('fatores moduladores não caem em "Refere ainda:"', () => {
   const ctx = carregarGerador();
   const txt = ctx.gerarNarrativaAEA_generica(CASO_DONO, 'pt', MOTIVO_DOR);
   assert.ok(!/Refere ainda: fatores/i.test(txt), `saiu: ${txt}`);
-  assert.ok(/fatores moduladores, refere: repouso/i.test(txt), `saiu: ${txt}`);
+  assert.ok(/Relaciona o quadro com repouso/i.test(txt), `saiu: ${txt}`);
 });
 
 test('intensidade em faixa ganha a escala ("7-8/10 na EVA")', () => {
@@ -82,13 +82,13 @@ test('opção com barra não vai inteira para o texto corrido', () => {
 test('sem sexo e idade, não sobra vírgula depois de "Paciente"', () => {
   const ctx = carregarGerador();
   const txt = ctx.gerarNarrativaAEA_generica(CASO_DONO, 'pt', MOTIVO_DOR);
-  assert.ok(/^Paciente apresentando/.test(txt), `saiu: ${txt}`);
+  assert.ok(/^Paciente com /.test(txt), `saiu: ${txt}`);
 });
 
 test('com sexo e idade, o aposto mantém a vírgula', () => {
   const ctx = carregarGerador({ 'dp-idade': '62', 'dp-sexo': 'F' });
   const txt = ctx.gerarNarrativaAEA_generica(CASO_DONO, 'pt', MOTIVO_DOR);
-  assert.ok(/^Paciente feminino de 62 anos, apresentando/.test(txt), `saiu: ${txt}`);
+  assert.ok(/^Paciente feminino de 62 anos, com /.test(txt), `saiu: ${txt}`);
 });
 
 test('irradiação de verdade continua aparecendo', () => {
@@ -103,4 +103,33 @@ test('duração de verdade (em horas) continua sendo duração', () => {
   const caso = CASO_DONO.map((x) => (x.qText === 'Duração (D)' ? r('Duração (D)', '2 horas') : x));
   const txt = ctx.gerarNarrativaAEA_generica(caso, 'pt', MOTIVO_DOR);
   assert.ok(/dura[çc][ãa]o de cada epis[óo]dio de 2 horas/i.test(txt), `saiu: ${txt}`);
+});
+
+// ── FLUIDEZ (02/08/2026, 2ª ordem do dono: "tem que ser uma história clínica fluida,
+// igual as histórias clínicas geradas em hospitais") ──────────────────────────────
+test('a narrativa é prosa, não uma frase com fila de vírgulas', () => {
+  const ctx = carregarGerador({ 'dp-idade': '62', 'dp-sexo': 'F', 'mc-tempo-n': '3', 'mc-tempo-u': 'anos' });
+  const txt = ctx.gerarNarrativaAEA_generica(CASO_DONO, 'pt', MOTIVO_DOR);
+  const frases = txt.split(/(?<=\.)\s+/).filter(Boolean);
+  assert.ok(frases.length >= 4, `deveria ter várias frases, teve ${frases.length}: ${txt}`);
+  for (const f of frases) {
+    assert.ok((f.match(/,/g) || []).length <= 3, `frase com vírgulas demais: ${f}`);
+  }
+  // e o tempo de evolução colado no sintoma, não como cabeçalho de relatório
+  assert.ok(/perna direita há 3 anos/i.test(txt), `saiu: ${txt}`);
+  assert.ok(!/quadro de 3 anos de evolução, caracterizado por/i.test(txt), `saiu: ${txt}`);
+});
+
+test('o tipo da dor concorda em gênero ("dor constritiva", não "constritivo")', () => {
+  const ctx = carregarGerador({ 'dp-idade': '58', 'dp-sexo': 'M' });
+  const caso = CASO_DONO.map((x) => (x.qText === 'Tipo (T)' ? r('Tipo (T)', 'Constritivo (em aperto)') : x));
+  const txt = ctx.gerarNarrativaAEA_generica(caso, 'pt', MOTIVO_DOR);
+  assert.ok(/dor como constritiva/i.test(txt), `saiu: ${txt}`);
+});
+
+test('localização entra colada no sintoma, sem "localizada em" entre vírgulas', () => {
+  const ctx = carregarGerador();
+  const txt = ctx.gerarNarrativaAEA_generica(CASO_DONO, 'pt', MOTIVO_DOR);
+  assert.ok(!/,\s*localizad/i.test(txt), `saiu: ${txt}`);
+  assert.ok(/dor em parte anterior perna direita/i.test(txt), `saiu: ${txt}`);
 });
