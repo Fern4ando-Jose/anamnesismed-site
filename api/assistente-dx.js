@@ -28,11 +28,12 @@ const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
 
 const MODEL = 'claude-sonnet-4-6';
-// 1500 e não 2200 (02/08/2026): o relatório estruturado cabe com folga neste
-// tamanho, e cada token a mais é tempo a mais dentro do teto da função — foi
-// resposta longa demais que fazia a análise ser cortada no meio (ver comentário
-// em "5) Chamada ao modelo").
-const MAX_TOKENS = 1500;
+// 3000 (02/08/2026, 2ª correção do dia): eu havia baixado para 1500 para caber no
+// tempo, e o efeito foi PIOR — o relatório era cortado no meio de uma frase, o JSON
+// ficava inválido e a tela despejava o texto cru para o médico. Agora o tamanho é
+// controlado pelo PROMPT (3–4 hipóteses, listas curtas) e este teto é só a rede de
+// segurança; com stream e 60s de execução, a resposta completa cabe.
+const MAX_TOKENS = 3000;
 
 // ── LIMITE DIÁRIO POR USUÁRIO ────────────────────────────────────────────────
 // TODO (a definir depois): diferenciar limite/preço entre MÉDICO e ESTUDANTE.
@@ -52,17 +53,24 @@ function buildSystemPrompt(pt) {
       '2. Você é uma FERRAMENTA DE APOIO À DECISÃO — não emite diagnóstico definitivo, não prescreve tratamento e não substitui a avaliação médica presencial. Enquadre tudo como sugestão para correlação clínica.',
       '3. Priorize as hipóteses por probabilidade considerando o quadro, e SEMPRE destaque os diagnósticos graves/que não se pode perder ("can\'t-miss"), mesmo quando pouco prováveis.',
       '4. Para cada hipótese, liste objetivamente os achados da HC que a sustentam (a favor) e os que a enfraquecem ou ainda faltam para confirmá-la (contra).',
-      '5. Em "próximos passos", sugira exames complementares pertinentes e perguntas/dados que faltam na anamnese — sem prescrever doses ou condutas terapêuticas definitivas.',
-      '6. Seja conciso, técnico e em português clínico do Brasil.',
+      '5. Seja conciso, técnico e em português clínico do Brasil. Cada item de lista: UMA linha, no máximo ~14 palavras.',
       '',
       'FORMATO DE SAÍDA: responda APENAS com um objeto JSON válido (sem markdown, sem cercas ```), exatamente neste formato:',
       '{',
       '  "resumo": "uma frase resumindo o caso (representação do problema)",',
       '  "diferenciais": [ { "hipotese": "nome da hipótese", "probabilidade": "alta|media|baixa", "aFavor": ["achado 1","achado 2"], "contra": ["achado/lacuna 1"] } ],',
-      '  "sinaisAlarme": ["sinal de alarme / red flag presente ou a vigiar"],',
-      '  "proximosPassos": ["exame ou pergunta sugerida"]',
+      '  "exameFisico": ["manobra ou sinal a pesquisar AGORA, com o que a positividade sugere"],',
+      '  "exames": ["exame complementar, do mais útil ao menos, com o que se espera dele"],',
+      '  "paraFechar": ["o que confirma ou descarta a hipótese principal — o passo que fecha o diagnóstico"],',
+      '  "perguntasFaltantes": ["dado que falta na anamnese e muda a conduta"],',
+      '  "sinaisAlarme": ["sinal de alarme / red flag presente ou a vigiar"]',
       '}',
-      'Inclua de 3 a 6 hipóteses em "diferenciais", ordenadas da mais para a menos provável. Não escreva nada fora do JSON.',
+      '',
+      'LIMITES DE TAMANHO (obrigatórios — resposta longa é cortada e se perde):',
+      '· 3 a 4 hipóteses em "diferenciais", da mais para a menos provável;',
+      '· no máximo 3 itens em "aFavor" e 3 em "contra" de cada hipótese;',
+      '· no máximo 4 itens em "exameFisico", 4 em "exames", 3 em "paraFechar", 3 em "perguntasFaltantes" e 3 em "sinaisAlarme".',
+      'Em "exameFisico" cite manobras semiológicas pelo nome (ex.: Lasègue, Homans, pesquisa de pulsos distais, monofilamento). Não prescreva doses nem tratamento. Não escreva nada fora do JSON.',
     ].join('\n');
   }
   return [
@@ -73,17 +81,24 @@ function buildSystemPrompt(pt) {
     '2. Eres una HERRAMIENTA DE APOYO A LA DECISIÓN — no emites diagnóstico definitivo, no prescribes tratamiento y no sustituyes la evaluación médica presencial. Enmarca todo como sugerencia para correlación clínica.',
     '3. Prioriza las hipótesis por probabilidad según el cuadro, y SIEMPRE destaca los diagnósticos graves/que no se pueden pasar por alto ("can\'t-miss"), aunque sean poco probables.',
     '4. Para cada hipótesis, enumera objetivamente los hallazgos de la HC que la sustentan (a favor) y los que la debilitan o aún faltan para confirmarla (en contra).',
-    '5. En "próximos pasos", sugiere estudios complementarios pertinentes y preguntas/datos que faltan en la anamnesis — sin prescribir dosis ni conductas terapéuticas definitivas.',
-    '6. Sé conciso, técnico y en español clínico.',
+    '5. Sé conciso, técnico y en español clínico. Cada ítem de lista: UNA línea, máximo ~14 palabras.',
     '',
     'FORMATO DE SALIDA: responde SOLO con un objeto JSON válido (sin markdown, sin vallas ```), exactamente en este formato:',
     '{',
     '  "resumo": "una frase que resume el caso (representación del problema)",',
     '  "diferenciais": [ { "hipotese": "nombre de la hipótesis", "probabilidade": "alta|media|baixa", "aFavor": ["hallazgo 1","hallazgo 2"], "contra": ["hallazgo/laguna 1"] } ],',
-    '  "sinaisAlarme": ["signo de alarma / red flag presente o a vigilar"],',
-    '  "proximosPassos": ["estudio o pregunta sugerida"]',
+    '  "exameFisico": ["maniobra o signo a buscar AHORA, con lo que su positividad sugiere"],',
+    '  "exames": ["estudio complementario, del más útil al menos, con lo que se espera de él"],',
+    '  "paraFechar": ["lo que confirma o descarta la hipótesis principal — el paso que cierra el diagnóstico"],',
+    '  "perguntasFaltantes": ["dato que falta en la anamnesis y cambia la conducta"],',
+    '  "sinaisAlarme": ["signo de alarma / red flag presente o a vigilar"]',
     '}',
-    'Incluye de 3 a 6 hipótesis en "diferenciais", ordenadas de la más a la menos probable. No escribas nada fuera del JSON.',
+    '',
+    'LÍMITES DE TAMAÑO (obligatorios — una respuesta larga se corta y se pierde):',
+    '· 3 a 4 hipótesis en "diferenciais", de la más a la menos probable;',
+    '· máximo 3 ítems en "aFavor" y 3 en "contra" de cada hipótesis;',
+    '· máximo 4 ítems en "exameFisico", 4 en "exames", 3 en "paraFechar", 3 en "perguntasFaltantes" y 3 en "sinaisAlarme".',
+    'En "exameFisico" nombra las maniobras semiológicas (p. ej.: Lasègue, Homans, pulsos distales, monofilamento). No prescribas dosis ni tratamiento. No escribas nada fuera del JSON.',
   ].join('\n');
 }
 
@@ -148,16 +163,55 @@ function buildUserMessage(pt, hc) {
 }
 
 // ── Extrai e valida o JSON retornado pelo modelo ──────────────────────────────
+/**
+ * Fecha um JSON que veio CORTADO no meio (resposta truncada pelo limite de tokens).
+ * Sem isto, um relatório 90% pronto virava lixo: o JSON.parse falhava, o servidor
+ * devolvia o texto cru e a tela mostrava chaves e colchetes para o médico — foi
+ * exatamente o que o dono viu em 02/08. Melhor entregar as 3 hipóteses que vieram
+ * inteiras do que nada.
+ */
+function repararJson(s) {
+  let t = s;
+  // 1) se terminou dentro de uma string, fecha a aspa
+  const aspas = (t.match(/(?<!\\)"/g) || []).length;
+  if (aspas % 2 === 1) t += '"';
+  // 2) descarta um item pela metade (", "hipotese": ) que ficaria inválido
+  t = t.replace(/,\s*("[^"]*"\s*:?\s*)?$/, '');
+  // 3) fecha colchetes e chaves abertos, na ordem inversa da abertura
+  const pilha = [];
+  let dentroStr = false, escapado = false;
+  for (const ch of t) {
+    if (escapado) { escapado = false; continue; }
+    if (ch === '\\') { escapado = true; continue; }
+    if (ch === '"') { dentroStr = !dentroStr; continue; }
+    if (dentroStr) continue;
+    if (ch === '{' || ch === '[') pilha.push(ch);
+    else if (ch === '}' || ch === ']') pilha.pop();
+  }
+  while (pilha.length) t += pilha.pop() === '{' ? '}' : ']';
+  return t;
+}
+
 function parseRelatorio(text) {
   if (!text) return null;
   let s = String(text).trim();
   // remove cercas de código se vierem
   s = s.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-  // pega do primeiro { ao último }
-  const a = s.indexOf('{'), b = s.lastIndexOf('}');
-  if (a >= 0 && b > a) s = s.slice(a, b + 1);
+  const a = s.indexOf('{');
+  if (a > 0) s = s.slice(a);
   try {
-    const o = JSON.parse(s);
+    let o = null;
+    // 1ª tentativa: do primeiro { ao último } — o recorte clássico, que resolve o
+    // caso de o modelo escrever algo depois do JSON.
+    const b = s.lastIndexOf('}');
+    if (b > 0) { try { o = JSON.parse(s.slice(0, b + 1)); } catch (e0) { o = null; } }
+    // 2ª: o texto inteiro (o corte acima decapita a resposta quando ela foi truncada:
+    // o último } é o fim de um ITEM, não do relatório — foi assim que as seções depois
+    // de "diferenciais" sumiam).
+    if (!o) { try { o = JSON.parse(s); } catch (e1) { o = null; } }
+    // 3ª: fecha o que ficou aberto e aproveita o que veio inteiro.
+    if (!o) o = JSON.parse(repararJson(s));
+    const lista = (v) => (Array.isArray(v) ? v.map(String).filter(Boolean) : []);
     return {
       resumo: typeof o.resumo === 'string' ? o.resumo : '',
       diferenciais: Array.isArray(o.diferenciais) ? o.diferenciais.map((h) => ({
@@ -166,8 +220,15 @@ function parseRelatorio(text) {
         aFavor: Array.isArray(h.aFavor) ? h.aFavor.map(String) : [],
         contra: Array.isArray(h.contra) ? h.contra.map(String) : [],
       })) : [],
-      sinaisAlarme: Array.isArray(o.sinaisAlarme) ? o.sinaisAlarme.map(String) : [],
-      proximosPassos: Array.isArray(o.proximosPassos) ? o.proximosPassos.map(String) : [],
+      // Seções pedidas pelo dono em 02/08: além das causas prováveis, o que EXAMINAR
+      // agora (manobras), o que PEDIR e o que FECHA o diagnóstico.
+      exameFisico: lista(o.exameFisico),
+      exames: lista(o.exames),
+      paraFechar: lista(o.paraFechar),
+      perguntasFaltantes: lista(o.perguntasFaltantes),
+      sinaisAlarme: lista(o.sinaisAlarme),
+      // compatibilidade: versões anteriores devolviam tudo junto em "proximosPassos"
+      proximosPassos: lista(o.proximosPassos),
     };
   } catch (e) {
     return null;

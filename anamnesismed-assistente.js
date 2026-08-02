@@ -154,14 +154,40 @@
     if(r.sinaisAlarme && r.sinaisAlarme.length){
       h += '<div class="ia-dx-alarme"><span class="ia-dx-sec-lbl">'+esc(t('Sinais de alarme','Signos de alarma'))+'</span>'+ul(r.sinaisAlarme,'ia-dx-li-alarme')+'</div>';
     }
+    // As três seções que respondem "e agora, o que eu faço?" — pedido do dono em
+    // 02/08: o que examinar na hora, o que pedir e o que fecha o diagnóstico.
+    if(r.exameFisico && r.exameFisico.length){
+      h += '<div class="ia-dx-passos"><span class="ia-dx-sec-lbl">'+esc(t('Ao exame — manobras e sinais a pesquisar','Al examen — maniobras y signos a buscar'))+'</span>'+ul(r.exameFisico,'ia-dx-li-passos')+'</div>';
+    }
+    if(r.exames && r.exames.length){
+      h += '<div class="ia-dx-passos"><span class="ia-dx-sec-lbl">'+esc(t('Exames a solicitar','Estudios a solicitar'))+'</span>'+ul(r.exames,'ia-dx-li-passos')+'</div>';
+    }
+    if(r.paraFechar && r.paraFechar.length){
+      h += '<div class="ia-dx-passos"><span class="ia-dx-sec-lbl">'+esc(t('Para fechar o diagnóstico','Para cerrar el diagnóstico'))+'</span>'+ul(r.paraFechar,'ia-dx-li-passos')+'</div>';
+    }
+    if(r.perguntasFaltantes && r.perguntasFaltantes.length){
+      h += '<div class="ia-dx-passos"><span class="ia-dx-sec-lbl">'+esc(t('Falta perguntar','Falta preguntar'))+'</span>'+ul(r.perguntasFaltantes,'ia-dx-li-passos')+'</div>';
+    }
     if(r.proximosPassos && r.proximosPassos.length){
       h += '<div class="ia-dx-passos"><span class="ia-dx-sec-lbl">'+esc(t('Próximos passos','Próximos pasos'))+'</span>'+ul(r.proximosPassos,'ia-dx-li-passos')+'</div>';
     }
     out.innerHTML = h || ('<div class="ia-dx-err">'+esc(t('Sem conteúdo para exibir.','Sin contenido para mostrar.'))+'</div>');
   }
+  // Texto que o servidor não conseguiu organizar. NUNCA despejar JSON na tela: em
+  // 02/08 o relatório veio cortado, o servidor não conseguiu montar a estrutura e o
+  // médico recebeu chaves, colchetes e aspas na cara. Se o que sobrou parece código,
+  // a tela diz o que houve e oferece repetir; se for texto legível, mostra o texto.
   function renderRaw(text){
     var out = el('ia-dx-result'); if(!out) return;
-    out.innerHTML = '<div class="ia-dx-raw">'+esc(text).replace(/\n/g,'<br>')+'</div>';
+    var s = String(text||'').trim();
+    var pareceCodigo = /^[\{\[]/.test(s) || /"\s*:\s*[\["{]/.test(s.slice(0,400));
+    if(pareceCodigo){
+      out.innerHTML = '<div class="ia-dx-err">'+esc(t(
+        'A análise voltou incompleta e não pôde ser organizada na tela. Clique em "Analisar HC" novamente — se repetir, resuma a HC.',
+        'El análisis volvió incompleto y no se pudo organizar en pantalla. Pulsa "Analizar HC" de nuevo — si se repite, resume la HC.'))+'</div>';
+      return;
+    }
+    out.innerHTML = '<div class="ia-dx-raw">'+esc(s).replace(/\n/g,'<br>')+'</div>';
   }
 
   // expõe API usada pelo app.html / guide.js

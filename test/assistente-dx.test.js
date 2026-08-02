@@ -64,3 +64,41 @@ test('parseRelatorio: campos ausentes viram defaults seguros (arrays vazios)', (
   assert.deepEqual(r.sinaisAlarme, []);
   assert.deepEqual(r.proximosPassos, []);
 });
+
+// ── Resposta CORTADA no meio (02/08/2026) ───────────────────────────────────────
+// O dono recebeu o JSON cru na tela porque a resposta do modelo passou do limite de
+// tamanho e foi truncada no meio de uma frase: o parse falhava e o texto ia inteiro
+// para a tela. Agora o que veio inteiro é aproveitado.
+test('parseRelatorio: resposta truncada no meio ainda entrega o que veio', () => {
+  const truncado = `{
+  "resumo": "Mulher de 62 anos com dor urente em perna direita.",
+  "diferenciais": [
+    { "hipotese": "Neuropatia de fibras finas", "probabilidade": "alta",
+      "aFavor": ["Dor urente", "Início insidioso"], "contra": ["Falta glicemia"] },
+    { "hipotese": "Síndrome das pernas inquietas", "probabilidade": "media",
+      "aFavor": ["Piora ao repouso"], "contra": ["Sem alívio com movimento relatado"] }
+  ],
+  "exameFisico": ["Pesquisa de pulsos distais", "Monofilamento de 10 g"],
+  "sinaisAlarme": ["Dor intensa há 3 anos sem diagnóstico — investigação insuficiente até o`;
+  const r = parseRelatorio(truncado);
+  assert.ok(r, 'deveria devolver relatório mesmo truncado');
+  assert.strictEqual(r.diferenciais.length, 2);
+  assert.strictEqual(r.diferenciais[0].hipotese, 'Neuropatia de fibras finas');
+  assert.strictEqual(r.exameFisico.length, 2);
+});
+
+test('parseRelatorio: as seções novas (manobras, exames, fechar) são lidas', () => {
+  const r = parseRelatorio(JSON.stringify({
+    resumo: 'x',
+    diferenciais: [],
+    exameFisico: ['Sinal de Homans'],
+    exames: ['Doppler venoso de MID'],
+    paraFechar: ['Doppler negativo afasta TVP'],
+    perguntasFaltantes: ['Uso de álcool?'],
+    sinaisAlarme: [],
+  }));
+  assert.deepStrictEqual(r.exameFisico, ['Sinal de Homans']);
+  assert.deepStrictEqual(r.exames, ['Doppler venoso de MID']);
+  assert.deepStrictEqual(r.paraFechar, ['Doppler negativo afasta TVP']);
+  assert.deepStrictEqual(r.perguntasFaltantes, ['Uso de álcool?']);
+});
