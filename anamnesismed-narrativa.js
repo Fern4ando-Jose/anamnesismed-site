@@ -168,6 +168,17 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   function isPlaceholder(v){ return /^(descreva|describa|relate|liste|ex\.?:|ej\.?:|n[ºo]\/dia|nº|dum\b|fum\b|medicamento,|°c$|0 a 10$|quanto|cu[áa]nt|anos?-ma|a[ñn]os?-paq|%|qual$)/i.test(low(v).trim()); }
   function join(arr, and){ arr=arr.filter(Boolean); if(!arr.length) return ''; if(arr.length===1) return arr[0]; var cp=arr.slice(); var last=cp.pop(); return cp.join(', ')+and+last; }
   function yes(v){ return /^(sim|sí|si)\b/i.test(low(v)); }
+  // Resposta que NEGA (campo livre ou opção): "não irradia", "nenhuma", "ausente",
+  // "sem irradiação", "nega", "-". Serve para não escrever a resposta negativa como
+  // se fosse um achado ("irradiada para não irradia").
+  function negativo(v){
+    var s=low(v||'').trim().replace(/[.!]+$/,'');
+    return !s || /^(n[ãa]o|no|nenhum|nenhuma|ning[úu]n|ninguna|ausente|nega|niega|sem\b|sin\b|nao\b|-|–|n\/a|na)\b/.test(s)
+             || /(sem|sin) irradia/.test(s);
+  }
+  // Radio com duas leituras separadas por barra ("Insidioso / gradual") — no texto
+  // corrido só a primeira serve; "de início insidioso / gradual" não é português médico.
+  function semBarra(v){ return String(v||'').split(/\s*\/\s*/)[0].trim(); }
   function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
 
   function role(a){
@@ -186,7 +197,12 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     if(/dura[çc][ãa]o|duraci[óo]n/.test(q)) return 'DUREP';
     if(/^in[ií]cio|in[ií]cio e |in[ií]cio em rela|circunst[âa]ncia (em que )?ocorreu|mecanismo do trauma/.test(q)) return 'ONSET';
     if(/frequ[êe]ncia|periodicidade|n[úu]mero de|quantos epis[óo]dios|momento do dia|momento de predom|padr[ãa]o.*febr|curva febril|ritmo da dor|nict[úu]ria/.test(q)) return 'FREQ';
-    if(/rela[çc][ãa]o com|fatores que (pioram|melhoram)|fatores desencadeant|posi[çc][ãa]o que alivia|outros fatores|que (piora|alivia)|relaci[óo]n con/.test(q)) return 'FATOR';
+    // "Fatores — iniciam, exacerbam ou acalmam (F)" (motivo dor) não casava em nenhum
+    // padrão e caía em DESC: a narrativa saía "Refere ainda: fatores (repouso)" em vez
+    // de "Como fatores moduladores, refere: repouso". Qualquer pergunta que COMECE por
+    // "fatores"/"factores" é fator modulador — menos "fatores de risco", que é antecedente
+    // e já foi capturado acima.
+    if(/^fatores?\b|^factores?\b|rela[çc][ãa]o com|fatores que (pioram|melhoram)|fatores desencadeant|posi[çc][ãa]o que alivia|outros fatores|que (piora|alivia)|relaci[óo]n con/.test(q)) return 'FATOR';
     if(/car[áa]ter|car[áa]cter|tipo\b|tipo de sensa|como descreveria|conte[úu]do do v[óo]mito|caracter[íi]sticas? d|caracteriza[çc][ãa]o|apresenta[çc][ãa]o|aspecto/.test(q)) return 'CAR';
     if(a.type==='yn') return 'ASSOC';
     return 'DESC';
@@ -278,7 +294,12 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
       ab+=(pt?', apresentando quadro de '+tEvol+' de evolução, caracterizado por '
             :', que presenta cuadro de aproximadamente '+tEvol+' de evolución, caracterizado por ')+mtxt;
     } else {
-      ab+=(pt?', apresentando quadro de '+mtxt:', que presenta cuadro de '+mtxt);
+      // Sem sexo/idade/tempo, "Paciente, apresentando quadro de dor" fica com uma
+      // vírgula solta logo depois do sujeito. A vírgula só faz sentido quando há
+      // aposto antes ("Paciente feminino, 62 anos, apresentando…").
+      var temAposto = !!(sexoAdj || (idade && /^\d+$/.test(idade)));
+      ab+=(pt ? (temAposto?', ':' ')+'apresentando quadro de '+mtxt
+              : (temAposto?', ':' ')+'que presenta cuadro de '+mtxt);
     }
   }
   var locTxt='';
@@ -294,7 +315,7 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
     locTxt+=(pt?', '+gA('localizad')+' em ':', localizado en ')+low(B.LOC);
   }
   if(B.ONSET){
-    var on=low(B.ONSET).replace(/^in[íi]cio\s+(e\s+(t[ée]rmino|dura[çc][ãa]o|migra[çc][ãa]o)\s+)?/,'').trim();
+    var on=low(semBarra(B.ONSET)).replace(/^in[íi]cio\s+(e\s+(t[ée]rmino|dura[çc][ãa]o|migra[çc][ãa]o)\s+)?/,'').trim();
     if(on) locTxt+=(pt?', de início ':', de inicio ')+on;
   }
   ab+=locTxt+'.';
@@ -303,14 +324,41 @@ function gerarNarrativaAEA_generica(ans, lng, mObj, opts){
   // ── 2. CARACTERIZAÇÃO + EVOLUÇÃO ──
   var c=[];
   if(B.CAR) c.push((pt?'de caráter ':'de carácter ')+low(B.CAR));
-  if(B.IRR){ var ir=low(B.IRR); if(!/sem irradia|sin irradia/.test(ir)) c.push((pt?gA('irradiad')+' para ':'irradiado hacia ')+ir.replace(/^(para|hacia)\s+/,'')); }
+  // Irradiação é campo LIVRE: o médico escreve "não irradia", "nenhuma", "ausente"…
+  // A guarda só conhecia "sem irradiação", então saía a frase absurda
+  // "irradiada para não irradia". Agora qualquer negativa some da narrativa —
+  // e vira negativo pertinente, que é o que o texto médico espera.
+  if(B.IRR){
+    var ir=low(B.IRR);
+    if(negativo(ir)) B.assocNao.unshift(pt?'irradiação':'irradiación');
+    else c.push((pt?gA('irradiad')+' para ':'irradiado hacia ')+ir.replace(/^(para|hacia)\s+/,''));
+  }
   if(B.INT){
     var iv=B.INT.trim();
-    var ivTxt=/^\d+$/.test(iv) ? iv+(pt?'/10 na EVA':'/10 en EVA')
-                               : low(iv).replace(/\s*[—–]\s*(.+)$/, ' ($1)');   // "grau 0 — só com exercício" → "grau 0 (só com exercício)"
+    // A EVA vem como número (7) ou FAIXA (7-8, "4 a 6") — a faixa não casava no
+    // número puro e o texto perdia o "/10 na EVA", saindo "de intensidade 7-8".
+    var ivTxt=/^\d+\s*(?:[-–a]\s*\d+)?$/i.test(iv)
+      ? iv.replace(/\s*a\s*/i,'-').replace(/\s+/g,'')+(pt?'/10 na EVA':'/10 en EVA')
+      : low(iv).replace(/\s*[—–]\s*(.+)$/, ' ($1)');   // "grau 0 — só com exercício" → "grau 0 (só com exercício)"
     c.push((pt?'de intensidade ':'de intensidad ')+ivTxt);
   }
-  if(B.DUREP) c.push((pt?'com duração de cada episódio de ':'con duración de cada episodio de ')+low(B.DUREP));
+  // "Duração (D)" do motivo dor responde CONTÍNUA / DESCONTÍNUA — isto é continuidade,
+  // não duração. O texto saía "com duração de cada episódio de descontínua". Quando a
+  // resposta é uma dessas, a frase vira "de caráter contínuo/descontínuo (em crises)".
+  if(B.DUREP){
+    var du=low(B.DUREP);
+    // Sem repetir "de caráter" quando o tipo da dor já usou a expressão: sai
+    // "de caráter urente, descontínua (em crises)", como se escreve na prática.
+    var jaTemCarater = !!B.CAR;
+    if(/^cont[íi]nua?\b|^continua\b/.test(du)){
+      c.push(pt ? (jaTemCarater? gA('contínu') : 'de caráter contínuo')
+                : (jaTemCarater? 'continuo' : 'de carácter continuo'));
+    } else if(/^descont[íi]nua?\b|^discontinua\b|em crises|por crisis/.test(du)){
+      c.push(pt ? (jaTemCarater? gA('descontínu')+' (em crises)' : 'de caráter descontínuo (em crises)')
+                : (jaTemCarater? 'discontinuo (por crisis)' : 'de carácter discontinuo (por crisis)'));
+    }
+    else c.push((pt?'com duração de cada episódio de ':'con duración de cada episodio de ')+du);
+  }
   if(B.FREQ.length) c.push((pt?'de padrão ':'de patrón ')+join(B.FREQ.map(low),pt?' e ':' y '));
   function normEvol(e){
     // remove parêntese final e um eventual "desde o início" embutido (o frame já adiciona um)

@@ -75,7 +75,17 @@
         method:'POST',
         headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
         body: JSON.stringify(payload)
-      }).then(function(r){ return r.json().then(function(j){ return { status:r.status, j:j }; }); });
+      }).then(function(r){
+        // A resposta nem sempre é JSON: quando a análise passa do tempo máximo, a
+        // plataforma devolve uma página de erro. Antes isso estourava no r.json() e
+        // caía no catch, e a tela dizia "Falha de conexão" — que mandava o médico
+        // procurar problema na internet dele, sendo que a internet estava boa.
+        return r.text().then(function(txt){
+          var j = null;
+          try { j = JSON.parse(txt); } catch (e) { j = null; }
+          return { status:r.status, j:j, cru:txt };
+        });
+      });
     }).then(function(res){
       if(res.status === 200 && res.j){
         if(res.j.relatorio){ renderRelatorio(res.j.relatorio); }
@@ -91,6 +101,11 @@
         showError(t('Sessão expirada. Faça login novamente.','Sesión expirada. Inicia sesión de nuevo.')); if(status) status.textContent='';
       } else if(res.status === 429 || code === 'rate_limit'){
         showError((res.j && res.j.error) || t('Limite diário atingido.','Límite diario alcanzado.')); if(status) status.textContent='';
+      } else if(!res.j){
+        // Resposta sem JSON = a análise foi cortada por tempo (504/502) ou a rota caiu.
+        showError(t('A análise demorou mais que o tempo permitido e foi interrompida. Tente novamente — se repetir, reduza o tamanho da HC.',
+                    'El análisis tardó más del tiempo permitido y se interrumpió. Inténtalo de nuevo — si se repite, reduce el tamaño de la HC.'));
+        if(status) status.textContent='';
       } else {
         showError((res.j && res.j.error) || t('Erro ao gerar a análise.','Error al generar el análisis.')); if(status) status.textContent='';
       }

@@ -28,7 +28,11 @@ const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
 
 const MODEL = 'claude-sonnet-4-6';
-const MAX_TOKENS = 2200;
+// 1500 e não 2200 (02/08/2026): o relatório estruturado cabe com folga neste
+// tamanho, e cada token a mais é tempo a mais dentro do teto da função — foi
+// resposta longa demais que fazia a análise ser cortada no meio (ver comentário
+// em "5) Chamada ao modelo").
+const MAX_TOKENS = 1500;
 
 // ── LIMITE DIÁRIO POR USUÁRIO ────────────────────────────────────────────────
 // TODO (a definir depois): diferenciar limite/preço entre MÉDICO e ESTUDANTE.
@@ -235,9 +239,18 @@ module.exports = async (req, res) => {
   if (!temConteudo) return res.status(400).json({ error: msg('Preencha a HC antes de pedir a análise', 'Completa la HC antes de pedir el análisis') });
 
   // 5) Chamada ao modelo
+  //
+  // ⏱️ POR QUE STREAM E NÃO create() DIRETO (02/08/2026): a tela mostrava
+  // "Falha de conexão. Tente novamente." em toda análise. A causa não era conexão:
+  // a função tinha 30s de teto na Vercel e uma resposta longa do Sonnet passa
+  // disso — a plataforma cortava a requisição e devolvia um erro que NÃO é JSON,
+  // então o `r.json()` do navegador estourava e caía no catch genérico ("falha de
+  // conexão"). Agora: teto de 60s (máximo do plano atual), resposta mais curta e
+  // `stream()`, que mantém a conexão viva recebendo os pedaços à medida que saem
+  // em vez de esperar tudo de uma vez. O formato devolvido ao cliente é o mesmo.
   try {
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const response = await client.messages.create({
+    const response = await client.messages.stream({
       model: MODEL,
       max_tokens: MAX_TOKENS,
       thinking: { type: 'disabled' }, // controle de custo: relatório direto, sem raciocínio extra cobrado
@@ -247,7 +260,7 @@ module.exports = async (req, res) => {
       // mantida: passa a cachear sozinho se o system crescer além do mínimo.
       system: [{ type: 'text', text: buildSystemPrompt(pt), cache_control: { type: 'ephemeral' } }],
       messages: [{ role: 'user', content: buildUserMessage(pt, hc) }],
-    });
+    }).finalMessage();
 
     const text = (response.content || [])
       .filter((b) => b.type === 'text').map((b) => b.text).join('').trim();

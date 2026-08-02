@@ -941,7 +941,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 <!-- Atalho para o passo seguinte: com a HC redigida, mandar o caso para a
                      IA e receber o diagnóstico provável. Antes era preciso saber que a aba
                      "Assistente IA" existia lá em cima e apertar outro botão lá dentro. -->
-                <button type="button" class="conduta-btn" id="btn-ia-dx-atalho" onclick="hcAnalisarComIA()" style="margin:0;padding:8px 16px;font-size:12px;display:none">
+                <button type="button" class="conduta-btn" id="btn-ia-dx-atalho" onclick="hcAnalisarComIA()" style="margin:0;padding:8px 16px;font-size:12px">
                   <span data-am-icon="brain" data-am-size="16"></span>
                   <span class="pt">Analisar caso (IA)</span><span class="es">Analizar caso (IA)</span>
                 </button>
@@ -2589,10 +2589,6 @@ function hcGerarComIA(){
     if(res.ok && res.narrativa){
       out.value = res.narrativa;
       if(typeof markHCDirty==='function') markHCDirty();
-      // HC redigida → o passo seguinte é pedir o diagnóstico provável. O atalho só
-      // aparece agora, quando há caso para analisar (botão morto na tela é ruído).
-      var atalho = document.getElementById('btn-ia-dx-atalho');
-      if(atalho) atalho.style.display = '';
       if(status){
         status.textContent = res.fonte==='ia'
           ? (lang==='es'?'Listo (IA) — revise antes de exportar':'Pronto (IA) — revise antes de exportar')
