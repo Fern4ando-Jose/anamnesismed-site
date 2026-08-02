@@ -158,6 +158,17 @@ do
   fi
 done
 
+# -- Narrativa da HC: passa os 33 motivos pelo gerador e caça frase quebrada
+# (02/08/2026 — nasceu do "irradiada para não irradia" que chegou ao dono).
+echo ""
+echo "> Narrativa da HC (todos os motivos)"
+if node scripts/auditar-narrativa.mjs > /tmp/_narrativa.txt 2>&1; then
+  check "Nenhuma frase quebrada nos motivos" "ok"
+else
+  check "Nenhuma frase quebrada nos motivos" "PROBLEMA DE TEXTO — rode: node scripts/auditar-narrativa.mjs"
+  tail -20 /tmp/_narrativa.txt
+fi
+
 # -- Resultado
 echo ""
 echo "======================================================="
