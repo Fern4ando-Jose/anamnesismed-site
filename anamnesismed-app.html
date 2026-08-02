@@ -19,8 +19,8 @@
   if(p.get('novo')||p.get('motivo')||p.get('hc'))document.documentElement.classList.add('deep-hc');
 }catch(e){}})();
 </script>
-<script src="am-icons.js"></script>
-<script src="nav-back.js"></script>
+<script src="am-icons.js?v=f6cfe7c9"></script>
+<script src="nav-back.js?v=eeac804b"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -458,7 +458,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 @keyframes iaDxShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .ia-dx-disclaimer{margin-top:18px;font-size:11px;line-height:1.45;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 </style>
-  <link rel="stylesheet" href="sidebar.css">
+  <link rel="stylesheet" href="sidebar.css?v=20566b6d">
 </head>
 <body>
 <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
@@ -1771,9 +1771,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div>
   </div>
 </nav>
-<script src="anamnesismed-motivos.js"></script>
-<script src="anamnesismed-guide.js"></script>
-<script src="anamnesismed-guide-es.js"></script>
+<script src="anamnesismed-motivos.js?v=ad716e9d"></script>
+<script src="anamnesismed-guide.js?v=3b1b9653"></script>
+<script src="anamnesismed-guide-es.js?v=4b87efd7"></script>
 <script>
 // ── LANG ──────────────────────────────────────────────
 function setLang(l){
@@ -2545,6 +2545,10 @@ function restoreFormSnapshot(snap){
       });
     });
   }
+  // Toda restauração passa por aqui — rascunho local, HC do banco, deep-link. O aviso
+  // de "texto no formato antigo" vive AQUI e não só no deep-link: quem abria a HC por
+  // outro caminho nunca via o aviso e concluía, com razão, que nada tinha mudado.
+  if(typeof avisarNarrativaAntiga === 'function') avisarNarrativaAntiga();
 }
 
 // ── SAVE HC ───────────────────────────────────────────
@@ -2661,6 +2665,23 @@ function avisarNarrativaAntiga(){
   if(!out || !aviso) return;
   aviso.style.display = narrativaEhAntiga(out.value) ? '' : 'none';
 }
+
+// Rede de segurança: qualquer caminho que ponha texto no campo — restauração, colagem,
+// digitação, código de terceiros — passa a ser checado. Sem isto o aviso dependia de
+// alguém lembrar de chamá-lo em cada lugar novo, que é o defeito que ele mesmo tinha.
+document.addEventListener('DOMContentLoaded', function(){
+  var out = document.getElementById('aea-narrativa');
+  if(!out) return;
+  out.addEventListener('input', avisarNarrativaAntiga);
+  avisarNarrativaAntiga();
+  // O texto pode ser reposto depois do carregamento (rascunho, HC do banco): confere
+  // de novo por alguns segundos, sem custo perceptível.
+  var tentativas = 0;
+  var timer = setInterval(function(){
+    avisarNarrativaAntiga();
+    if(++tentativas >= 10) clearInterval(timer);
+  }, 1000);
+});
 
 function atualizarNarrativa(){
   var out = document.getElementById('aea-narrativa');
@@ -2789,11 +2810,11 @@ function openRefMotivo(){
   try{ document.documentElement.classList.remove('deep-hc'); }catch(e){}
 })();
 </script>
-<script src="anamnesismed-narrativa.js"></script>
-<script src="anamnesismed-pdf.js"></script>
+<script src="anamnesismed-narrativa.js?v=0df032df"></script>
+<script src="anamnesismed-pdf.js?v=5c96e332"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js"></script>
-<script src="anamnesismed-assistente.js"></script>
+<script src="supabase-integration.js?v=bb827873"></script>
+<script src="anamnesismed-assistente.js?v=8d43d51d"></script>
 <script>
 // ── INTEGRAÇÃO SUPABASE: acesso real, dados do usuário, onboarding ──
 (async function(){
@@ -2850,6 +2871,6 @@ function openRefMotivo(){
   }
 })();
 </script>
-<script src="sidebar.js"></script>
+<script src="sidebar.js?v=f6cd0d5b"></script>
 </body>
 </html>

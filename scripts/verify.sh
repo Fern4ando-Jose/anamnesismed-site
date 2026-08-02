@@ -158,6 +158,17 @@ do
   fi
 done
 
+# -- Versão dos scripts nos HTMLs: sem isto o navegador do usuário reaproveita o
+# arquivo antigo e a correção "não aparece" (02/08/2026).
+echo ""
+echo "> Versão dos scripts/estilos nas páginas"
+node scripts/versionar-assets.mjs > /tmp/_versoes.txt 2>&1
+if node scripts/versionar-assets.mjs --conferir > /dev/null 2>&1; then
+  check "Scripts carimbados com a versão atual" "ok"
+else
+  check "Scripts carimbados com a versão atual" "FALHOU ao carimbar — veja scripts/versionar-assets.mjs"
+fi
+
 # -- Narrativa da HC: passa os 33 motivos pelo gerador e caça frase quebrada
 # (02/08/2026 — nasceu do "irradiada para não irradia" que chegou ao dono).
 echo ""
