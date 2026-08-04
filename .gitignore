@@ -74,3 +74,6 @@ PENDENCIAS.md
 # Governança/decisões do projeto — vivem só localmente + repo privado
 # github.com/Fern4ando-Jose/governanca-privada (nunca no repo de produção)
 /CLAUDE.md
+
+# Governança do workspace — NUNCA sobe a repo nenhum (P3). Gerado por .claude/lib/memoria-por-projeto.mjs
+MEMORIA.md
