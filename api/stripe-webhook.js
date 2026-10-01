@@ -9,19 +9,27 @@
  *   SUPABASE_SERVICE_KEY    → service_role key (só no backend!)
  *
  * IMPORTANTE: esta rota precisa do body RAW (não parseado).
- * O vercel.json deve ter bodyParser: false para este path.
+ * O body é lido do stream (antes de qualquer acesso a req.body) e o
+ * `module.exports.config` abaixo desliga o bodyParser no runtime que o respeitar.
  */
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Só os MÓDULOS são carregados no topo; os CLIENTES (Stripe/Supabase) são criados dentro
+// do handler, depois de checar as envs — assim a falta de uma env vira um erro claro
+// (500 com log) em vez de derrubar o carregamento da função.
+const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
-
-const sbAdmin = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
+
+  const faltando = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'SUPABASE_URL', 'SUPABASE_SERVICE_KEY']
+    .filter((k) => !process.env[k]);
+  if (faltando.length) {
+    console.error('[stripe-webhook] env ausente no servidor:', faltando.join(', '));
+    return res.status(500).json({ error: 'Webhook não configurado no servidor' });
+  }
+  const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+  const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
   // Lê o body raw para validar assinatura do Stripe
   const chunks = [];
@@ -69,17 +77,28 @@ module.exports = async (req, res) => {
         break;
       }
 
-      case 'customer.subscription.deleted':
-      case 'invoice.payment_failed': {
+      // Rebaixa SOMENTE quando a assinatura realmente acabou: deleted, ou updated com
+      // status unpaid/canceled. invoice.payment_failed NÃO rebaixa — a 1ª falha de cartão
+      // é rotineira e o Stripe faz novas tentativas (dunning); se esgotar, ele muda a
+      // assinatura para unpaid/canceled e cai nos casos abaixo.
+      case 'customer.subscription.updated':
+        if (obj.status !== 'unpaid' && obj.status !== 'canceled') break;
+        // eslint-disable-next-line no-fallthrough
+      case 'customer.subscription.deleted': {
         const customerId = obj.customer;
         if (customerId) {
           await sbAdmin.from('profiles')
             .update({ plano: 'trial' })
             .eq('stripe_id', customerId);
-          console.log(`⚠️  Assinatura cancelada/falhada — customer ${customerId} → trial`);
+          console.log(`⚠️  Assinatura encerrada (${event.type}) — customer ${customerId} → trial`);
         }
         break;
       }
+
+      case 'invoice.payment_failed':
+        // Só registra; não rebaixa na primeira falha (ver comentário acima).
+        console.warn(`[stripe-webhook] pagamento falhou — customer ${obj.customer} (sem rebaixar)`);
+        break;
 
       default:
         // Evento não tratado — OK, só confirma recebimento
@@ -97,3 +116,6 @@ module.exports = async (req, res) => {
 
   res.status(200).json({ received: true });
 };
+
+// Desliga o parse automático do body (necessário p/ validar a assinatura do Stripe).
+module.exports.config = { api: { bodyParser: false } };

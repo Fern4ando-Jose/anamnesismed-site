@@ -136,3 +136,59 @@ test('tabela de idempotência ausente → segue sem dedup e ainda processa', asy
   assert.ok(update, 'deve processar mesmo sem a tabela de idempotência');
   assert.equal(update.vals.plano, 'pro');
 });
+
+// ── Rebaixamento de plano ─────────────────────────────────────────────────────
+async function rodaEvento(event) {
+  const supa = makeSupabaseMock({ error: null });
+  const handler = loadHandler(makeStripeMock(event), supa.exports);
+  const res = makeRes();
+  await handler(makeReq(event), res);
+  return { res, calls: supa.calls, update: supa.calls.find((c) => c.op === 'update' && c.table === 'profiles') };
+}
+
+test('invoice.payment_failed NÃO rebaixa o plano (1ª falha)', async () => {
+  const { res, update } = await rodaEvento({ id: 'evt_pf', type: 'invoice.payment_failed', data: { object: { customer: 'cus_9' } } });
+  assert.equal(res.code, 200);
+  assert.equal(update, undefined);
+});
+
+test('customer.subscription.deleted → rebaixa para trial pelo stripe_id', async () => {
+  const { res, update } = await rodaEvento({ id: 'evt_del', type: 'customer.subscription.deleted', data: { object: { customer: 'cus_9' } } });
+  assert.equal(res.code, 200);
+  assert.ok(update);
+  assert.equal(update.vals.plano, 'trial');
+  assert.equal(update.col, 'stripe_id');
+  assert.equal(update.val, 'cus_9');
+});
+
+test('customer.subscription.updated: unpaid/canceled rebaixa; active não', async () => {
+  for (const status of ['unpaid', 'canceled']) {
+    const { update } = await rodaEvento({ id: 'evt_u_' + status, type: 'customer.subscription.updated', data: { object: { customer: 'cus_9', status } } });
+    assert.ok(update, status + ' deve rebaixar');
+    assert.equal(update.vals.plano, 'trial');
+  }
+  for (const status of ['active', 'past_due']) {
+    const { update } = await rodaEvento({ id: 'evt_u_' + status, type: 'customer.subscription.updated', data: { object: { customer: 'cus_9', status } } });
+    assert.equal(update, undefined, status + ' não rebaixa');
+  }
+});
+
+test('env ausente → 500 claro, sem criar clients nem tocar o banco', async () => {
+  const guardado = process.env.STRIPE_WEBHOOK_SECRET;
+  delete process.env.STRIPE_WEBHOOK_SECRET;
+  try {
+    const supa = makeSupabaseMock({ error: null });
+    const handler = loadHandler(makeStripeMock({ id: 'e', type: 'x', data: { object: {} } }), supa.exports);
+    const res = makeRes();
+    await handler(makeReq({}), res);
+    assert.equal(res.code, 500);
+    assert.equal(supa.calls.length, 0);
+  } finally {
+    process.env.STRIPE_WEBHOOK_SECRET = guardado;
+  }
+});
+
+test('exporta config com bodyParser desligado', () => {
+  const handler = loadHandler(makeStripeMock(null), makeSupabaseMock({ error: null }).exports);
+  assert.equal(handler.config.api.bodyParser, false);
+});

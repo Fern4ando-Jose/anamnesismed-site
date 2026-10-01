@@ -15,9 +15,9 @@
  * Não gasta API paga (P2): fala só com o Supabase, com a chave de serviço já
  * configurada. Não lê nem devolve dado de paciente — conta linhas de `profiles`.
  *
- * Proteção: o agendador da Vercel manda o cabeçalho `x-vercel-cron`; fora isso,
- * exige `?token=` igual a CRON_SECRET quando essa variável existir. Sem proteção
- * alguma seria uma porta aberta para qualquer um martelar o banco.
+ * Proteção: exige `Authorization: Bearer <CRON_SECRET>` SEMPRE (a Vercel injeta esse
+ * header nos crons quando a env CRON_SECRET está definida no projeto). Sem a env,
+ * responde 503 (fail-closed). Sem proteção seria uma porta aberta para martelar o banco.
  */
 const { createClient } = require('@supabase/supabase-js');
 
@@ -26,10 +26,16 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const doAgendador = !!req.headers['x-vercel-cron'];
+  // CRON_SECRET é OBRIGATÓRIO e sempre conferido via `Authorization: Bearer <segredo>`
+  // (a Vercel envia esse header sozinha nos crons quando a env CRON_SECRET existe).
+  // Não confiamos em `x-vercel-cron`: é um header comum, qualquer cliente pode forjá-lo.
   const segredo = process.env.CRON_SECRET;
-  const tokenOk = !segredo || (req.query && req.query.token === segredo);
-  if (!doAgendador && !tokenOk) return res.status(401).json({ error: 'Não autorizado' });
+  if (!segredo) {
+    console.error(JSON.stringify({ evt: 'keepalive', ok: false, motivo: 'CRON_SECRET ausente' }));
+    return res.status(503).json({ ok: false, error: 'CRON_SECRET não configurado no servidor' });
+  }
+  const auth = req.headers['authorization'] || '';
+  if (auth !== 'Bearer ' + segredo) return res.status(401).json({ error: 'Não autorizado' });
 
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
