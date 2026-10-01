@@ -6,8 +6,13 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0B7C88">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AnamnesísMed — Historia clínica completa para médicos y estudiantes</title>
 <meta name="description" content="Herramienta de historia clínica completa para médicos y estudiantes. Mnemotécnicas, maniobras semiológicas, escalas y diagnóstico diferencial. Gratis para empezar.">
@@ -271,6 +276,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   .nav-logo{font-size:17px}
   .btn-outline{display:none}
   .nav-right .btn-primary{display:none}
+  .nav-right .pwa-btn{display:none!important}
   .mob-menu{top:56px}
   .hero-left{padding:72px 16px 36px}
   .hero-badge{white-space:normal;max-width:100%;font-size:12px;letter-spacing:1px;line-height:1.6;padding:10px 14px 8px;overflow:visible;animation:none;opacity:1;transform:none}
@@ -296,6 +302,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   .stat-n{font-size:22px}
 }
 </style>
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
@@ -315,6 +322,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
       <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
       <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
     </div>
+    <button type="button" class="pwa-btn pwa-ui" data-pwa-install hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg><span class="pt">Instalar app</span><span class="es">Instalar la app</span></button>
     <a href="anamnesismed-auth.html" class="btn-outline pt">Entrar</a>
     <a href="anamnesismed-auth.html" class="btn-outline es">Iniciar sesión</a>
     <a href="anamnesismed-auth.html" class="btn-primary pt">Começar grátis</a>
@@ -336,6 +344,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   <div class="mob-div"></div>
   <a href="anamnesismed-auth.html" class="mob-cta-g pt">Entrar</a>
   <a href="anamnesismed-auth.html" class="mob-cta-g es">Iniciar sesión</a>
+  <button type="button" class="mob-cta-g pwa-ui" data-pwa-install hidden style="width:100%;min-height:48px;cursor:pointer;font-family:inherit;margin-top:8px"><span class="pt">Instalar app</span><span class="es">Instalar la app</span></button>
   <a href="anamnesismed-auth.html" class="mob-cta-s pt">Começar grátis →</a>
   <a href="anamnesismed-auth.html" class="mob-cta-s es">Empezar gratis →</a>
 </div>
