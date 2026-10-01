@@ -312,16 +312,20 @@ function setLang(l){
   });
   var email=document.getElementById('email-login');
   email.placeholder=l==='pt'?'seu@email.com':'tu@email.com';
+  if(typeof lastErr!=='undefined'&&lastErr){showError(lastErr);}
   try{localStorage.setItem('am-lang',l)}catch(e){}
 }
 
-function showError(msg){
+var lastErr=null;
+function showError(key){
   var box=document.getElementById('auth-error');
-  box.textContent=msg;
+  lastErr=key;
+  box.textContent=MSG[curLang()][key]||key;
   box.hidden=false;
 }
 function clearError(){
   var box=document.getElementById('auth-error');
+  lastErr=null;
   box.hidden=true;box.textContent='';
   document.getElementById('email-login').removeAttribute('aria-invalid');
 }
@@ -347,12 +351,12 @@ function handleSubmit(e){
   var email=input.value.trim();
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     input.setAttribute('aria-invalid','true');
-    showError(MSG[curLang()].invalid);
+    showError('invalid');
     input.focus();
     return;
   }
   if(typeof authSendMagicLink!=='function'){
-    showError(MSG[curLang()].unavailable);
+    showError('unavailable');
     return;
   }
   sending=true;setBusy(true);
@@ -360,7 +364,7 @@ function handleSubmit(e){
   try{p=Promise.resolve(authSendMagicLink(email));}catch(err){p=Promise.reject(err);}
   p.then(function(result){
     if(!result||!result.ok){
-      showError(result&&result.rate?MSG[curLang()].rate:MSG[curLang()].generic);
+      showError(result&&result.rate?'rate':'generic');
       return;
     }
     document.getElementById('auth-form-wrap').style.display='none';
@@ -371,7 +375,7 @@ function handleSubmit(e){
     success.focus();
   }).catch(function(err){
     console.error('magic link',err);
-    showError(MSG[curLang()].generic);
+    showError('generic');
   }).then(function(){
     sending=false;setBusy(false);
   });
@@ -380,12 +384,12 @@ function handleSubmit(e){
 function googleAuth(){
   clearError();
   if(typeof authGoogleLogin!=='function'){
-    showError(MSG[curLang()].unavailable);
+    showError('unavailable');
     return;
   }
   Promise.resolve(authGoogleLogin()).then(function(r){
-    if(r&&r.ok===false)showError(MSG[curLang()].google);
-  }).catch(function(){showError(MSG[curLang()].google);});
+    if(r&&r.ok===false)showError('google');
+  }).catch(function(){showError('google');});
 }
 
 document.getElementById('form-login').addEventListener('submit',handleSubmit);
