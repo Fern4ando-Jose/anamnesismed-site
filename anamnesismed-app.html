@@ -81,7 +81,7 @@ html.deep-hc #screen-index{display:none!important}
 .cat-lbl{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding:0 2px;display:flex;align-items:center;gap:8px}
 .cat-lbl::after{content:'';flex:1;height:1px;background:var(--line)}
 .motivo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.motivo-card{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);padding:13px 12px;cursor:pointer;user-select:none;transition:all .18s;display:flex;align-items:flex-start;gap:9px;position:relative;overflow:hidden;text-decoration:none}
+.motivo-card{font:inherit;color:inherit;text-align:left;width:100%;background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);padding:13px 12px;cursor:pointer;user-select:none;transition:all .18s;display:flex;align-items:flex-start;gap:9px;position:relative;overflow:hidden;text-decoration:none}
 .motivo-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,45,61,.09);border-color:rgba(14,116,144,.3)}
 .motivo-card:active{transform:scale(.98)}
 .motivo-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
@@ -92,8 +92,8 @@ html.deep-hc #screen-index{display:none!important}
 .mc-purple::before{background:#6d28d9}
 .mc-navy::before{background:#1a3a5c}
 .motivo-icon{font-size:18px;flex-shrink:0;width:34px;height:34px;background:var(--cream);border-radius:7px;display:flex;align-items:center;justify-content:center}
-.motivo-info{flex:1;min-width:0}
-.motivo-name{font-size:12px;font-weight:700;line-height:1.3;color:var(--ink)}
+.motivo-info{flex:1;min-width:0;display:block}
+.motivo-name{display:block;font-size:12px;font-weight:700;line-height:1.3;color:var(--ink)}
 .motivo-sub{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── HC SCREEN ── */
@@ -1958,11 +1958,11 @@ function onMCInput(val){
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
     var specLabel = m._spec==='clinica'?(lang==='pt'?'Clínica Médica':'Clínica Médica'):(lang==='pt'?'Cirurgia Geral':'Cirugía General');
-    return '<div onclick="selectMotivoFromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
+    return '<button type="button" onclick="selectMotivoFromMC(\''+m.id+'\')" style="width:100%;border:0;background:none;text-align:left;font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:11px 14px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
       +'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>'
-      +'<div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'
-      +'<div style="font-size:12px;color:var(--muted);line-height:1.3;margin-top:1px">'+specLabel+'</div></div>'
-      +'</div>';
+      +'<span style="min-width:0;flex:1;display:block"><span style="display:block;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</span>'
+      +'<span style="display:block;font-size:12px;color:var(--muted);line-height:1.3;margin-top:1px">'+specLabel+'</span></span>'
+      +'</button>';
   }).join('');
   // Posição já vem do CSS inline (top:calc(100% + 2px);left:0;width:100%)
   // relativo ao .f-row — não sobrescrever via JS (offsetTop usava o wrapper
@@ -2026,7 +2026,7 @@ function mcbSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo2FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'+'</div>';
+    return '<button type="button" onclick="selectMotivo2FromMC(\''+m.id+'\')" style="width:100%;border:0;background:none;text-align:left;font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</span>'+'</button>';
   }).join('');
   var inp = document.getElementById('mc-b');
   sug.style.display = 'block';
@@ -2072,7 +2072,7 @@ function mccSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo3FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'+'</div>';
+    return '<button type="button" onclick="selectMotivo3FromMC(\''+m.id+'\')" style="width:100%;border:0;background:none;text-align:left;font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</span>'+'</button>';
   }).join('');
   sug.style.display = 'block';
 }
@@ -2178,10 +2178,10 @@ function renderMotivoGrid(spec){
     html += '<div class="motivo-grid">';
     cat.items.forEach(function(m){
       var nm = lang==='es'?(m.nameEs||m.name):m.name;
-      html += '<div class="motivo-card '+m.color+'" onclick="openHC(\''+m.id+'\')">';
-      html += '<div class="motivo-icon">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</div>';
-      html += '<div class="motivo-info"><div class="motivo-name">'+nm+'</div></div>';
-      html += '</div>';
+      html += '<button type="button" class="motivo-card '+m.color+'" onclick="openHC(\''+m.id+'\')">';
+      html += '<span class="motivo-icon" aria-hidden="true">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>';
+      html += '<span class="motivo-info"><span class="motivo-name">'+nm+'</span></span>';
+      html += '</button>';
     });
     html += '</div></div>';
   });
@@ -2931,6 +2931,6 @@ function openRefMotivo(){
   setup(document.getElementById('guide-tabs'));
 })();
 </script>
-<script src="sidebar.js?v=4ced0109"></script>
+<script src="sidebar.js?v=6360908e"></script>
 </body>
 </html>

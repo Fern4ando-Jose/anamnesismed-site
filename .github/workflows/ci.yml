@@ -30,11 +30,22 @@ jobs:
       - name: Instalar dependências (raiz)
         run: npm ci || npm install
 
-      # Auditoria de dependências: informativa (continue-on-error) para não travar o CI
-      # por ruído de advisory sem correção disponível — olhar o log quando aparecer.
+      # Auditoria de dependências: FALHA o job se houver vulnerabilidade ALTA ou crítica
+      # (hoje está limpo, inclusive moderate/low). Se um advisory alto sem correção disponível
+      # travar o CI, avalie o risco e documente a exceção em docs/seguranca.md antes de afrouxar.
       - name: Auditoria de dependências (npm audit)
         run: npm audit --audit-level=high
-        continue-on-error: true
+
+      # Postgres de verdade para test/sql-pg.test.js (trigger de billing, RPCs de cota,
+      # idempotência das migrations). O runner ubuntu já traz os binários, fora do PATH.
+      - name: Localizar binários do Postgres (para os testes de SQL)
+        run: |
+          BIN=$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -1 || true)
+          if [ -z "$BIN" ]; then
+            sudo apt-get update -y && sudo apt-get install -y postgresql
+            BIN=$(ls -d /usr/lib/postgresql/*/bin | sort -V | tail -1)
+          fi
+          echo "PG_BIN=$BIN" >> "$GITHUB_ENV"
 
       - name: Sintaxe — node --check em todos os .js do site
         run: |

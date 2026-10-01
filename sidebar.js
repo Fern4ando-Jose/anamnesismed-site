@@ -200,3 +200,65 @@
   });
 
 })();
+
+/* ── A11Y: elementos clicáveis não-nativos (div/span com onclick) ───────────────────────────
+   Cards, chips, cabeçalhos de acordeão etc. são gerados em HTML/JS como <div onclick>. Em vez de
+   reescrever centenas de pontos (e arriscar o layout), damos a eles semântica de botão:
+   role + tabindex=0 + Enter/Espaço, e espelhamos o estado (aria-pressed / aria-expanded) a
+   partir das classes (.sel/.on/.active/.open). Roda também em conteúdo inserido depois. */
+(function () {
+  'use strict';
+  var SKIP = 'button,a,input,select,textarea,summary,label,[role],[tabindex]';
+  var NOISE = /overlay|backdrop/i;
+  var PRESSED = '.f-radio,.f-check,.ecto-opt,.filter-chip,.f-eva-btn,.f-chip,.chip';
+  var EXPAND = '.hc-panel-head,.acc-head,.ras-head';
+
+  function label(el) {
+    if (el.hasAttribute('aria-label') || el.textContent.trim()) return;
+    el.setAttribute('aria-label', 'Fechar / Cerrar');
+  }
+  function sync(el) {
+    if (el.matches(EXPAND)) {
+      var p = el.parentElement;
+      el.setAttribute('aria-expanded', p && /\bopen\b/.test(p.className) ? 'true' : 'false');
+    } else if (el.matches(PRESSED)) {
+      el.setAttribute('aria-pressed', /\b(sel|sel-danger|on|active)\b/.test(el.className) ? 'true' : 'false');
+    }
+  }
+  function enhance(root) {
+    if (!root || root.nodeType !== 1) return;
+    var list = [].slice.call(root.querySelectorAll('[onclick]'));
+    if (root.hasAttribute && root.hasAttribute('onclick')) list.unshift(root);
+    list.forEach(function (el) {
+      if (el.matches(SKIP) || NOISE.test(el.className + ' ' + el.id)) return;
+      el.setAttribute('role', 'button');
+      el.tabIndex = 0;
+      el.setAttribute('data-am-kb', '');
+      if (/^[×✕xX]$/.test(el.textContent.trim())) label(el);
+      sync(el);
+    });
+  }
+  function init() {
+    enhance(document.body);
+    new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        if (m.type === 'childList') {
+          m.addedNodes.forEach(enhance);
+          if (m.target.nodeType === 1 && m.target.parentElement) {
+            var c = m.target.closest(EXPAND + ',' + PRESSED); if (c) sync(c);
+          }
+        } else if (m.target.nodeType === 1) {
+          var t = m.target;
+          if (t.matches(EXPAND + ',' + PRESSED)) sync(t);
+          var h = t.querySelector(':scope > ' + EXPAND.split(',').join(',:scope > ')); if (h) sync(h);
+        }
+      });
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    document.addEventListener('keydown', function (e) {
+      var el = e.target;
+      if (!el || !el.hasAttribute || !el.hasAttribute('data-am-kb')) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); el.click(); }
+    });
+  }
+  if (document.body) init(); else document.addEventListener('DOMContentLoaded', init);
+})();
