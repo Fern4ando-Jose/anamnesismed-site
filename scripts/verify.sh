@@ -68,12 +68,16 @@ if [ -d "$(dirname "$0")/../src" ]; then
   SYNC=$(node -e '
     const fs=require("fs"); const R=process.cwd();
     const {assemble}=require(R+"/scripts/build.js");
-    const {motivosSrc,esSrc}=assemble();
+    const {motivosSrc,esSrc,enfSrc}=assemble();
     const a=fs.readFileSync(R+"/anamnesismed-motivos.js","utf8")===motivosSrc;
     const b=fs.readFileSync(R+"/anamnesismed-guide-es.js","utf8")===esSrc;
-    process.stdout.write(a&&b?"OK":"DESSINCRONIZADO");
+    const c=fs.existsSync(R+"/anamnesismed-enfermidades.js") && fs.readFileSync(R+"/anamnesismed-enfermidades.js","utf8")===enfSrc;
+    process.stdout.write(a&&b&&c?"OK":"DESSINCRONIZADO");
   ' 2>/dev/null)
   [ "$SYNC" = "OK" ] && check "Producao == build(src/)" "ok" || check "Producao != build(src/) — rode: node scripts/build.js" "ERRO"
+  # Guias de enfermidade: campos obrigatorios, paridade PT/ES, refs, ids, casos (docs/ESQUEMA-ENFERMIDADE.md)
+  ENFV=$(node "$(dirname "$0")/validar-enfermidades.js" 2>&1); ENFRC=$?
+  [ $ENFRC -eq 0 ] && check "Guias de enfermidade validas" "ok" || { echo "$ENFV" | sed 's/^/        /'; check "Guias de enfermidade invalidas" "ERRO"; }
 fi
 
 

@@ -170,7 +170,7 @@ AM.motivo("pancreatite-aguda", {
           [
             "T",
             "Trauma",
-            "Trauma abdominal / pós-CPRE"
+            "Trauma abdominal"
           ],
           [
             "S",
@@ -190,7 +190,7 @@ AM.motivo("pancreatite-aguda", {
           [
             "S",
             "Scorpion",
-            "Picada de escorpião"
+            "Picada de escorpião (Tityus trinitatis — regional, Trinidad)"
           ],
           [
             "H",
@@ -383,7 +383,7 @@ AM.motivo("pancreatite-aguda", {
             "Queda Ht>10%, BUN↑>5, Ca<8, PaO₂<60, BE>4, sequestro fluido>6L"
           ]
         ],
-        "note": "≥3 critérios → pancreatite grave (mortalidade crescente com a pontuação)"
+        "note": "≥3 critérios → pancreatite grave (mortalidade crescente com a pontuação) | Limites da admissão acima: pancreatite não biliar; na biliar: idade >70, leucócitos >18.000, glicose >220, DHL >400, TGO >250"
       }
     ],
     "conduta": {
@@ -396,18 +396,18 @@ AM.motivo("pancreatite-aguda", {
         "TC de abdome com contraste (após 72h) para necrose se grave/dúvida"
       ],
       "drugs": [
-        "Hidratação venosa vigorosa (Ringer lactato) — pilar do tratamento",
+        "Hidratação venosa precoce, moderadamente agressiva e guiada por metas (Ringer lactato) — pilar do tratamento",
         "Analgesia (opioides se necessário)",
         "Antieméticos",
-        "Suporte nutricional precoce (enteral preferível)",
+        "Dieta oral precoce (24-48 h) conforme tolerância; enteral se não tolerar (preferível à parenteral)",
         "ATB apenas se necrose infectada/colangite — não profilático"
       ],
       "steps": [
         "1. Diagnóstico: 2 de 3 (dor típica + lipase >3x LSN + imagem)",
         "2. Estratificar gravidade (BISAP/Ranson, PCR 48h)",
-        "3. Reposição volêmica agressiva precoce",
+        "3. Reposição volêmica precoce, guiada por metas, evitando excesso de volume",
         "4. Analgesia e controle de náuseas",
-        "5. Tratar a causa: CPRE se colangite/obstrução biliar; suspender álcool; controlar triglicerídeos",
+        "5. Tratar a causa: CPRE urgente se colangite (obstrução biliar sem colangite: avaliar); suspender álcool; controlar triglicerídeos",
         "6. Casos graves/necrose → UTI; ATB só se infecção documentada"
       ]
     }
@@ -427,7 +427,7 @@ AM.motivo("pancreatite-aguda", {
           ],
           [
             "Trauma",
-            "Trauma abdominal / pos-CPRE"
+            "Trauma abdominal"
           ],
           [
             "Steroids",
@@ -443,7 +443,7 @@ AM.motivo("pancreatite-aguda", {
           ],
           [
             "Scorpion",
-            "Picadura de escorpión"
+            "Picadura de escorpión (Tityus trinitatis — regional, Trinidad)"
           ],
           [
             "Hyper",
@@ -627,7 +627,7 @@ AM.motivo("pancreatite-aguda", {
             "Caída Hto>10%, BUN↑>5, Ca<8, PaO₂<60, EB>4, secuestro de fluido>6L"
           ]
         ],
-        "note": "≥3 criterios → pancreatitis grave (mortalidad creciente con la puntuación)"
+        "note": "≥3 criterios → pancreatitis grave (mortalidad creciente con la puntuación) | Límites del ingreso arriba: pancreatitis no biliar; en la biliar: edad >70, leucocitos >18.000, glucosa >220, LDH >400, AST >250"
       }
     ],
     "conduta": {
@@ -640,18 +640,18 @@ AM.motivo("pancreatite-aguda", {
         "TC de abdomen con contraste (tras 72h) para necrosis si es grave/duda"
       ],
       "drugs": [
-        "Hidratación venosa vigorosa (Ringer lactato) — pilar del tratamiento",
+        "Hidratación venosa precoz, moderadamente agresiva y guiada por metas (Ringer lactato) — pilar del tratamiento",
         "Analgesia (opioides si es necesario)",
         "Antieméticos",
-        "Soporte nutricional precoz (enteral preferible)",
+        "Dieta oral precoz (24-48 h) según tolerancia; enteral si no la tolera (preferible a la parenteral)",
         "ATB solo si necrosis infectada/colangitis — no profiláctico"
       ],
       "steps": [
         "1. Diagnóstico: 2 de 3 (dolor típico + lipasa >3x LSN + imagen)",
         "2. Estratificar gravedad (BISAP/Ranson, PCR 48h)",
-        "3. Reposición volémica agresiva precoz",
+        "3. Reposición volémica precoz, guiada por metas, evitando el exceso de volumen",
         "4. Analgesia y control de náuseas",
-        "5. Tratar la causa: CPRE si colangitis/obstrucción biliar; suspender alcohol; controlar triglicéridos",
+        "5. Tratar la causa: CPRE urgente si hay colangitis (obstrucción biliar sin colangitis: valorar); suspender alcohol; controlar triglicéridos",
         "6. Casos graves/necrosis → UCI; ATB solo si infección documentada"
       ]
     }

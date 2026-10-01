@@ -142,7 +142,7 @@ AM.motivo("apendicite", {
           [
             "A",
             "Anorexia",
-            ">90% dos casos"
+            "Muito frequente (sintoma precoce)"
           ],
           [
             "P",
@@ -177,7 +177,7 @@ AM.motivo("apendicite", {
           [
             "I²",
             "Instabilidade",
-            "FC↑, T>38,5°C, Leuco>18.000 → perfuração"
+            "FC↑, febre alta, leucocitose acentuada → suspeitar de perfuração"
           ],
           [
             "T",
@@ -222,12 +222,12 @@ AM.motivo("apendicite", {
           ],
           [
             "E",
-            "Elevação da temperatura (≥ 37,3 °C)",
+            "Elevação da temperatura (> 37,3 °C)",
             "1 ponto"
           ],
           [
             "L",
-            "Leucocitose (≥ 10.000/mm³)",
+            "Leucocitose (> 10.000/mm³)",
             "2 pontos"
           ],
           [
@@ -355,7 +355,7 @@ AM.motivo("apendicite", {
         "abnormal": "Dor intensa e generalizada à descompressão súbita — acometimento de todo o peritônio parietal (Guéneau de Mussy +)"
       },
       {
-        "title": "Sinal de Chandelier (grito de Laffont)",
+        "title": "Sinal de Chandelier (dor à mobilização do colo)",
         "subtitle": "Foco inflamatório pélvico (DDx ou apendicite pélvica)",
         "steps": [
           "Paciente em posição ginecológica",
@@ -464,7 +464,7 @@ AM.motivo("apendicite", {
             "1"
           ]
         ],
-        "note": "1-4: Baixa | 5-6: Observação | 7-8: Provável → cirurgia | 9-10: Alta → cirurgia imediata"
+        "note": "1-4: Baixa | 5-6: Observação | 7-8: Provável → avaliação cirúrgica | 9-10: Alta → cirurgia | Mulheres, crianças e idosos: confirmar com imagem"
       },
       {
         "title": "AIR Score",
@@ -473,46 +473,18 @@ AM.motivo("apendicite", {
           "Pontos"
         ],
         "rows": [
-          [
-            "Vômito",
-            "1"
-          ],
-          [
-            "Dor FID",
-            "1"
-          ],
-          [
-            "Defesa FID leve",
-            "1"
-          ],
-          [
-            "Defesa FID moderada/grave",
-            "2"
-          ],
-          [
-            "Rebote FID",
-            "1"
-          ],
-          [
-            "Temperatura ≥38,5°C",
-            "1"
-          ],
-          [
-            "Leuco 10.000-14.900",
-            "1"
-          ],
-          [
-            "Leuco ≥15.000",
-            "2"
-          ],
-          [
-            "PCR 10-49",
-            "1"
-          ],
-          [
-            "PCR ≥50",
-            "2"
-          ]
+          ["Vômito", "1"],
+          ["Dor FID", "1"],
+          ["Rebote ou defesa muscular — leve", "1"],
+          ["Rebote ou defesa muscular — moderada", "2"],
+          ["Rebote ou defesa muscular — forte", "3"],
+          ["Temperatura ≥38,5°C", "1"],
+          ["Leucócitos 10.000-14.900", "1"],
+          ["Leucócitos ≥15.000", "2"],
+          ["Neutrófilos 70-84%", "1"],
+          ["Neutrófilos ≥85%", "2"],
+          ["PCR 10-49", "1"],
+          ["PCR ≥50", "2"]
         ],
         "note": "0-4: Alta com orientação | 5-8: Observação + imagem | 9-12: Cirurgia direta"
       }
@@ -523,23 +495,23 @@ AM.motivo("apendicite", {
         "β-HCG (mulheres)",
         "Urina rotina",
         "USG abdominal (1ª linha)",
-        "TC abdome+pelve c/ contraste (gold standard)",
-        "Rx abdome (pneumoperitônio)"
+        "TC abdome+pelve c/ contraste (se USG inconclusivo ou dúvida)",
+        "Rx abdome (só se suspeita de perfuração ou obstrução)"
       ],
       "drugs": [
         "NPO + hidratação EV",
-        "Dipirona/Tramadol EV (não retarda diagnóstico)",
+        "Analgesia EV, inclusive opioide (não mascara nem retarda o diagnóstico)",
         "Ondansetrona 4-8mg EV",
-        "ATB pré-op: Cefazolina 2g EV 30min antes",
-        "Perfurada: Metronidazol 500mg + Ceftriaxona 2g EV"
+        "ATB pré-op até 60 min antes da incisão: Cefazolina 2g EV + Metronidazol 500mg EV (cobertura de anaeróbios)",
+        "Perfurada/complicada: Metronidazol 500mg 8/8h + Ceftriaxona 1-2g 24/24h EV; duração curta, conforme o controle do foco"
       ],
       "steps": [
         "1. Anamnese + exame → Alvarado score",
         "2. Laboratório + β-HCG + USG",
         "3. NPO + acesso EV + analgesia",
         "4. Alvarado ≤4 + USG normal: alta c/ orientação",
-        "5. Alvarado 5-6: observação 12-24h",
-        "6. Alvarado ≥7 ou TC confirma: apendicectomia laparoscópica <24h"
+        "5. Alvarado 5-6 (ou mulher, criança, idoso): imagem e/ou observação 12-24h",
+        "6. Alvarado ≥7 com quadro clássico, ou imagem confirmando: apendicectomia laparoscópica <24h"
       ]
     }
   },
@@ -550,7 +522,7 @@ AM.motivo("apendicite", {
         "rows": [
           [
             "Anorexia",
-            ">90% de los casos"
+            "Muy frecuente (síntoma precoz)"
           ],
           [
             "Migración del dolor",
@@ -578,7 +550,7 @@ AM.motivo("apendicite", {
           ],
           [
             "Inestabilidad",
-            "FC↑, T>38,5°C, Leuco>18.000 → perforación"
+            "FC↑, fiebre alta, leucocitosis marcada → sospechar perforación"
           ],
           [
             "Tacto rectal",
@@ -591,49 +563,17 @@ AM.motivo("apendicite", {
         ]
       },
       {
-        "kw": "A. MAESTRO",
+        "kw": "MANTRELS",
         "name": "Escala de Alvarado (10 puntos)",
         "rows": [
-          [
-            "Anorexia",
-            "1 punto",
-            "A"
-          ],
-          [
-            "Migración del dolor a FID",
-            "1 punto",
-            "M"
-          ],
-          [
-            "Aumento de leucocitos (Leucocitosis)",
-            "2 puntos",
-            "A"
-          ],
-          [
-            "Entumecimiento / dolor a la descompresión",
-            "1 punto",
-            "E"
-          ],
-          [
-            "Signo de rebote (Blumberg)",
-            "1 punto",
-            "S"
-          ],
-          [
-            "Temperatura elevada (Fiebre)",
-            "1 punto",
-            "T"
-          ],
-          [
-            "Rigidez / dolor exquisito en FID",
-            "2 puntos",
-            "R"
-          ],
-          [
-            "Orientación a la izquierda (Desviación)",
-            "1 punto",
-            "O"
-          ]
+          ["Migración del dolor a la FID", "1 punto", "M"],
+          ["Anorexia", "1 punto", "A"],
+          ["Náuseas/vómitos", "1 punto", "N"],
+          ["Tenderness — dolor a la palpación en la FID", "2 puntos", "T"],
+          ["Rebound — dolor a la descompresión súbita (Blumberg)", "1 punto", "R"],
+          ["Elevación de la temperatura (> 37,3 °C)", "1 punto", "E"],
+          ["Leucocitosis (> 10.000/mm³)", "2 puntos", "L"],
+          ["Shift to the left — desviación a la izquierda en el hemograma", "1 punto", "S"]
         ]
       }
     ],
@@ -754,7 +694,7 @@ AM.motivo("apendicite", {
         "abnormal": "Dolor intenso y generalizado a la descompresión súbita — afectación de todo el peritoneo parietal (Guéneau de Mussy +)"
       },
       {
-        "title": "Signo de Chandelier (grito de Laffont)",
+        "title": "Signo de Chandelier (dolor a la movilización del cuello uterino)",
         "subtitle": "Foco inflamatorio pélvico (DDx o apendicitis pélvica)",
         "steps": [
           "Paciente en posición ginecológica",
@@ -863,7 +803,7 @@ AM.motivo("apendicite", {
             "1"
           ]
         ],
-        "note": "1-4: Baja | 5-6: Observación | 7-8: Probable → cirugía | 9-10: Alta → cirugía inmediata"
+        "note": "1-4: Baja | 5-6: Observación | 7-8: Probable → evaluación quirúrgica | 9-10: Alta → cirugía | Mujeres, niños y ancianos: confirmar con imagen"
       },
       {
         "title": "AIR Score",
@@ -872,46 +812,18 @@ AM.motivo("apendicite", {
           "Puntos"
         ],
         "rows": [
-          [
-            "Vómito",
-            "1"
-          ],
-          [
-            "Dolor FID",
-            "1"
-          ],
-          [
-            "Defensa FID leve",
-            "1"
-          ],
-          [
-            "Defensa FID moderada/grave",
-            "2"
-          ],
-          [
-            "Rebote FID",
-            "1"
-          ],
-          [
-            "Temperatura ≥38,5°C",
-            "1"
-          ],
-          [
-            "Leuco 10.000-14.900",
-            "1"
-          ],
-          [
-            "Leuco ≥15.000",
-            "2"
-          ],
-          [
-            "PCR 10-49",
-            "1"
-          ],
-          [
-            "PCR ≥50",
-            "2"
-          ]
+          ["Vómito", "1"],
+          ["Dolor FID", "1"],
+          ["Rebote o defensa muscular — leve", "1"],
+          ["Rebote o defensa muscular — moderada", "2"],
+          ["Rebote o defensa muscular — fuerte", "3"],
+          ["Temperatura ≥38,5°C", "1"],
+          ["Leucocitos 10.000-14.900", "1"],
+          ["Leucocitos ≥15.000", "2"],
+          ["Neutrófilos 70-84%", "1"],
+          ["Neutrófilos ≥85%", "2"],
+          ["PCR 10-49", "1"],
+          ["PCR ≥50", "2"]
         ],
         "note": "0-4: Alta con indicaciones | 5-8: Observación + imagen | 9-12: Cirugía directa"
       }
@@ -922,15 +834,15 @@ AM.motivo("apendicite", {
         "β-HCG (mujeres)",
         "Orina rutina",
         "USG abdominal (1ª línea)",
-        "TC abdomen+pelvis c/ contraste (gold standard)",
-        "Rx abdomen (neumoperitoneo)"
+        "TC abdomen+pelvis c/ contraste (si la ecografía no es concluyente o hay duda)",
+        "Rx abdomen (solo si se sospecha perforación u obstrucción)"
       ],
       "drugs": [
         "NPO + hidratación EV",
-        "Dipirona/Tramadol EV (no retrasa el diagnóstico)",
+        "Analgesia EV, incluido opioide (no enmascara ni retrasa el diagnóstico)",
         "Ondansetrón 4-8mg EV",
-        "ATB prequirúrgico: Cefazolina 2g EV 30min antes",
-        "Perforada: Metronidazol 500mg + Ceftriaxona 2g EV"
+        "ATB prequirúrgico hasta 60 min antes de la incisión: Cefazolina 2g EV + Metronidazol 500mg EV (cobertura de anaerobios)",
+        "Perforada/complicada: Metronidazol 500mg cada 8 h + Ceftriaxona 1-2g cada 24 h EV; duración corta, según el control del foco"
       ],
       "steps": [
         "1. Anamnesis + examen → Alvarado score",

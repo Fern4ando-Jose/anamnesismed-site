@@ -296,7 +296,7 @@ AM.motivo("colecistite-colelitiase", {
         "name": "Sinal de Murphy",
         "eponym": "Colecistite aguda",
         "how": "Parada inspiratória à palpação do HCD",
-        "means": "Colecistite aguda — alta sensibilidade"
+        "means": "Colecistite aguda — boa especificidade; sensibilidade moderada (isolado, não afasta o diagnóstico)"
       },
       {
         "name": "Tríade de Charcot",
@@ -375,7 +375,7 @@ AM.motivo("colecistite-colelitiase", {
             "Disfunção de órgão (cardiovascular, neurológica, respiratória, renal, hepática, hematológica)"
           ]
         ],
-        "note": "Grau III exige suporte de órgão + drenagem precoce"
+        "note": "Grau III: suporte de órgão e drenagem precoce; colecistectomia só em centro avançado e em casos selecionados"
       },
       {
         "title": "Preditores de coledocolitíase (ASGE)",
@@ -384,22 +384,10 @@ AM.motivo("colecistite-colelitiase", {
           "Força"
         ],
         "rows": [
-          [
-            "Cálculo no colédoco à USG",
-            "Muito forte"
-          ],
-          [
-            "Bilirrubina total >4 mg/dL",
-            "Muito forte"
-          ],
-          [
-            "Via biliar dilatada + Bili 1,8-4",
-            "Forte"
-          ],
-          [
-            "Colangite clínica",
-            "Muito forte"
-          ]
+          ["Cálculo no colédoco à imagem", "Alto risco"],
+          ["Colangite clínica", "Alto risco"],
+          ["Bilirrubina total >4 mg/dL com via biliar dilatada", "Alto risco"],
+          ["Via biliar dilatada isolada, enzimas hepáticas alteradas ou idade >55", "Risco intermediário"]
         ],
         "note": "Alto risco → CPRE; risco intermediário → colangio-RM ou USG endoscópica"
       }
@@ -414,7 +402,7 @@ AM.motivo("colecistite-colelitiase", {
       ],
       "drugs": [
         "Jejum + hidratação venosa",
-        "Analgesia (dipirona/AINE; opioide se intensa)",
+        "Analgesia (AINE; opioide se intensa)",
         "Antieméticos",
         "Antibiótico (ex.: ceftriaxona + metronidazol) na colecistite/colangite",
         "CPRE para desobstrução na coledocolitíase/colangite"
@@ -423,7 +411,7 @@ AM.motivo("colecistite-colelitiase", {
         "1. Confirmar diagnóstico clínico + USG",
         "2. Jejum, hidratação e analgesia",
         "3. ATB se colecistite/colangite",
-        "4. Colecistectomia videolaparoscópica precoce (idealmente <72h) na colecistite aguda",
+        "4. Colecistectomia videolaparoscópica precoce na colecistite aguda (até 7 dias da admissão e 10 dias do início dos sintomas — WSES 2020)",
         "5. Coledocolitíase/colangite: CPRE para drenagem + colecistectomia posterior"
       ]
     }
@@ -540,7 +528,7 @@ AM.motivo("colecistite-colelitiase", {
         "name": "Signo de Murphy",
         "eponym": "Colecistitis aguda",
         "how": "Detención inspiratoria a la palpación del HCD",
-        "means": "Colecistitis aguda — alta sensibilidad"
+        "means": "Colecistitis aguda — buena especificidad; sensibilidad moderada (aislado, no descarta el diagnóstico)"
       },
       {
         "name": "Tríada de Charcot",
@@ -619,7 +607,7 @@ AM.motivo("colecistite-colelitiase", {
             "Disfunción de órgano (cardiovascular, neurológica, respiratoria, renal, hepática, hematológica)"
           ]
         ],
-        "note": "El grado III exige soporte de órgano + drenaje precoz"
+        "note": "Grado III: soporte de órgano y drenaje precoz; colecistectomía solo en centro avanzado y en casos seleccionados"
       },
       {
         "title": "Predictores de coledocolitiasis (ASGE)",
@@ -628,22 +616,10 @@ AM.motivo("colecistite-colelitiase", {
           "Fuerza"
         ],
         "rows": [
-          [
-            "Cálculo en el colédoco en la USG",
-            "Muy fuerte"
-          ],
-          [
-            "Bilirrubina total >4 mg/dL",
-            "Muy fuerte"
-          ],
-          [
-            "Vía biliar dilatada + Bili 1,8-4",
-            "Fuerte"
-          ],
-          [
-            "Colangitis clínica",
-            "Muy fuerte"
-          ]
+          ["Cálculo en el colédoco en la imagen", "Alto riesgo"],
+          ["Colangitis clínica", "Alto riesgo"],
+          ["Bilirrubina total >4 mg/dL con vía biliar dilatada", "Alto riesgo"],
+          ["Vía biliar dilatada aislada, enzimas hepáticas alteradas o edad >55", "Riesgo intermedio"]
         ],
         "note": "Alto riesgo → CPRE; riesgo intermedio → colangio-RM o USG endoscópica"
       }
@@ -658,7 +634,7 @@ AM.motivo("colecistite-colelitiase", {
       ],
       "drugs": [
         "Ayuno + hidratación venosa",
-        "Analgesia (dipirona/AINE; opioide si es intensa)",
+        "Analgesia (AINE; opioide si es intensa)",
         "Antieméticos",
         "Antibiótico (ej.: ceftriaxona + metronidazol) en colecistitis/colangitis",
         "CPRE para desobstrucción en la coledocolitiasis/colangitis"
@@ -667,7 +643,7 @@ AM.motivo("colecistite-colelitiase", {
         "1. Confirmar diagnóstico clínico + USG",
         "2. Ayuno, hidratación y analgesia",
         "3. ATB si colecistitis/colangitis",
-        "4. Colecistectomía videolaparoscópica precoz (idealmente <72h) en la colecistitis aguda",
+        "4. Colecistectomía videolaparoscópica precoz en la colecistitis aguda (hasta 7 días del ingreso y 10 días del inicio de los síntomas — WSES 2020)",
         "5. Coledocolitiasis/colangitis: CPRE para drenaje + colecistectomía posterior"
       ]
     }

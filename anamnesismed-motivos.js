@@ -7342,7 +7342,7 @@ const GUIDE_CONTENT = {
           [
             "A",
             "Anorexia",
-            ">90% dos casos"
+            "Muito frequente (sintoma precoce)"
           ],
           [
             "P",
@@ -7377,7 +7377,7 @@ const GUIDE_CONTENT = {
           [
             "I²",
             "Instabilidade",
-            "FC↑, T>38,5°C, Leuco>18.000 → perfuração"
+            "FC↑, febre alta, leucocitose acentuada → suspeitar de perfuração"
           ],
           [
             "T",
@@ -7422,12 +7422,12 @@ const GUIDE_CONTENT = {
           ],
           [
             "E",
-            "Elevação da temperatura (≥ 37,3 °C)",
+            "Elevação da temperatura (> 37,3 °C)",
             "1 ponto"
           ],
           [
             "L",
-            "Leucocitose (≥ 10.000/mm³)",
+            "Leucocitose (> 10.000/mm³)",
             "2 pontos"
           ],
           [
@@ -7555,7 +7555,7 @@ const GUIDE_CONTENT = {
         "abnormal": "Dor intensa e generalizada à descompressão súbita — acometimento de todo o peritônio parietal (Guéneau de Mussy +)"
       },
       {
-        "title": "Sinal de Chandelier (grito de Laffont)",
+        "title": "Sinal de Chandelier (dor à mobilização do colo)",
         "subtitle": "Foco inflamatório pélvico (DDx ou apendicite pélvica)",
         "steps": [
           "Paciente em posição ginecológica",
@@ -7664,7 +7664,7 @@ const GUIDE_CONTENT = {
             "1"
           ]
         ],
-        "note": "1-4: Baixa | 5-6: Observação | 7-8: Provável → cirurgia | 9-10: Alta → cirurgia imediata"
+        "note": "1-4: Baixa | 5-6: Observação | 7-8: Provável → avaliação cirúrgica | 9-10: Alta → cirurgia | Mulheres, crianças e idosos: confirmar com imagem"
       },
       {
         "title": "AIR Score",
@@ -7682,27 +7682,35 @@ const GUIDE_CONTENT = {
             "1"
           ],
           [
-            "Defesa FID leve",
+            "Rebote ou defesa muscular — leve",
             "1"
           ],
           [
-            "Defesa FID moderada/grave",
+            "Rebote ou defesa muscular — moderada",
             "2"
           ],
           [
-            "Rebote FID",
-            "1"
+            "Rebote ou defesa muscular — forte",
+            "3"
           ],
           [
             "Temperatura ≥38,5°C",
             "1"
           ],
           [
-            "Leuco 10.000-14.900",
+            "Leucócitos 10.000-14.900",
             "1"
           ],
           [
-            "Leuco ≥15.000",
+            "Leucócitos ≥15.000",
+            "2"
+          ],
+          [
+            "Neutrófilos 70-84%",
+            "1"
+          ],
+          [
+            "Neutrófilos ≥85%",
             "2"
           ],
           [
@@ -7723,23 +7731,23 @@ const GUIDE_CONTENT = {
         "β-HCG (mulheres)",
         "Urina rotina",
         "USG abdominal (1ª linha)",
-        "TC abdome+pelve c/ contraste (gold standard)",
-        "Rx abdome (pneumoperitônio)"
+        "TC abdome+pelve c/ contraste (se USG inconclusivo ou dúvida)",
+        "Rx abdome (só se suspeita de perfuração ou obstrução)"
       ],
       "drugs": [
         "NPO + hidratação EV",
-        "Dipirona/Tramadol EV (não retarda diagnóstico)",
+        "Analgesia EV, inclusive opioide (não mascara nem retarda o diagnóstico)",
         "Ondansetrona 4-8mg EV",
-        "ATB pré-op: Cefazolina 2g EV 30min antes",
-        "Perfurada: Metronidazol 500mg + Ceftriaxona 2g EV"
+        "ATB pré-op até 60 min antes da incisão: Cefazolina 2g EV + Metronidazol 500mg EV (cobertura de anaeróbios)",
+        "Perfurada/complicada: Metronidazol 500mg 8/8h + Ceftriaxona 1-2g 24/24h EV; duração curta, conforme o controle do foco"
       ],
       "steps": [
         "1. Anamnese + exame → Alvarado score",
         "2. Laboratório + β-HCG + USG",
         "3. NPO + acesso EV + analgesia",
         "4. Alvarado ≤4 + USG normal: alta c/ orientação",
-        "5. Alvarado 5-6: observação 12-24h",
-        "6. Alvarado ≥7 ou TC confirma: apendicectomia laparoscópica <24h"
+        "5. Alvarado 5-6 (ou mulher, criança, idoso): imagem e/ou observação 12-24h",
+        "6. Alvarado ≥7 com quadro clássico, ou imagem confirmando: apendicectomia laparoscópica <24h"
       ]
     }
   },
@@ -8366,7 +8374,7 @@ const GUIDE_CONTENT = {
         "name": "Sinal de Murphy",
         "eponym": "Colecistite aguda",
         "how": "Parada inspiratória à palpação do HCD",
-        "means": "Colecistite aguda — alta sensibilidade"
+        "means": "Colecistite aguda — boa especificidade; sensibilidade moderada (isolado, não afasta o diagnóstico)"
       },
       {
         "name": "Tríade de Charcot",
@@ -8445,7 +8453,7 @@ const GUIDE_CONTENT = {
             "Disfunção de órgão (cardiovascular, neurológica, respiratória, renal, hepática, hematológica)"
           ]
         ],
-        "note": "Grau III exige suporte de órgão + drenagem precoce"
+        "note": "Grau III: suporte de órgão e drenagem precoce; colecistectomia só em centro avançado e em casos selecionados"
       },
       {
         "title": "Preditores de coledocolitíase (ASGE)",
@@ -8455,20 +8463,20 @@ const GUIDE_CONTENT = {
         ],
         "rows": [
           [
-            "Cálculo no colédoco à USG",
-            "Muito forte"
-          ],
-          [
-            "Bilirrubina total >4 mg/dL",
-            "Muito forte"
-          ],
-          [
-            "Via biliar dilatada + Bili 1,8-4",
-            "Forte"
+            "Cálculo no colédoco à imagem",
+            "Alto risco"
           ],
           [
             "Colangite clínica",
-            "Muito forte"
+            "Alto risco"
+          ],
+          [
+            "Bilirrubina total >4 mg/dL com via biliar dilatada",
+            "Alto risco"
+          ],
+          [
+            "Via biliar dilatada isolada, enzimas hepáticas alteradas ou idade >55",
+            "Risco intermediário"
           ]
         ],
         "note": "Alto risco → CPRE; risco intermediário → colangio-RM ou USG endoscópica"
@@ -8484,7 +8492,7 @@ const GUIDE_CONTENT = {
       ],
       "drugs": [
         "Jejum + hidratação venosa",
-        "Analgesia (dipirona/AINE; opioide se intensa)",
+        "Analgesia (AINE; opioide se intensa)",
         "Antieméticos",
         "Antibiótico (ex.: ceftriaxona + metronidazol) na colecistite/colangite",
         "CPRE para desobstrução na coledocolitíase/colangite"
@@ -8493,7 +8501,7 @@ const GUIDE_CONTENT = {
         "1. Confirmar diagnóstico clínico + USG",
         "2. Jejum, hidratação e analgesia",
         "3. ATB se colecistite/colangite",
-        "4. Colecistectomia videolaparoscópica precoce (idealmente <72h) na colecistite aguda",
+        "4. Colecistectomia videolaparoscópica precoce na colecistite aguda (até 7 dias da admissão e 10 dias do início dos sintomas — WSES 2020)",
         "5. Coledocolitíase/colangite: CPRE para drenagem + colecistectomia posterior"
       ]
     }
@@ -12480,7 +12488,7 @@ const GUIDE_CONTENT = {
           [
             "T",
             "Trauma",
-            "Trauma abdominal / pós-CPRE"
+            "Trauma abdominal"
           ],
           [
             "S",
@@ -12500,7 +12508,7 @@ const GUIDE_CONTENT = {
           [
             "S",
             "Scorpion",
-            "Picada de escorpião"
+            "Picada de escorpião (Tityus trinitatis — regional, Trinidad)"
           ],
           [
             "H",
@@ -12693,7 +12701,7 @@ const GUIDE_CONTENT = {
             "Queda Ht>10%, BUN↑>5, Ca<8, PaO₂<60, BE>4, sequestro fluido>6L"
           ]
         ],
-        "note": "≥3 critérios → pancreatite grave (mortalidade crescente com a pontuação)"
+        "note": "≥3 critérios → pancreatite grave (mortalidade crescente com a pontuação) | Limites da admissão acima: pancreatite não biliar; na biliar: idade >70, leucócitos >18.000, glicose >220, DHL >400, TGO >250"
       }
     ],
     "conduta": {
@@ -12706,18 +12714,18 @@ const GUIDE_CONTENT = {
         "TC de abdome com contraste (após 72h) para necrose se grave/dúvida"
       ],
       "drugs": [
-        "Hidratação venosa vigorosa (Ringer lactato) — pilar do tratamento",
+        "Hidratação venosa precoce, moderadamente agressiva e guiada por metas (Ringer lactato) — pilar do tratamento",
         "Analgesia (opioides se necessário)",
         "Antieméticos",
-        "Suporte nutricional precoce (enteral preferível)",
+        "Dieta oral precoce (24-48 h) conforme tolerância; enteral se não tolerar (preferível à parenteral)",
         "ATB apenas se necrose infectada/colangite — não profilático"
       ],
       "steps": [
         "1. Diagnóstico: 2 de 3 (dor típica + lipase >3x LSN + imagem)",
         "2. Estratificar gravidade (BISAP/Ranson, PCR 48h)",
-        "3. Reposição volêmica agressiva precoce",
+        "3. Reposição volêmica precoce, guiada por metas, evitando excesso de volume",
         "4. Analgesia e controle de náuseas",
-        "5. Tratar a causa: CPRE se colangite/obstrução biliar; suspender álcool; controlar triglicerídeos",
+        "5. Tratar a causa: CPRE urgente se colangite (obstrução biliar sem colangite: avaliar); suspender álcool; controlar triglicerídeos",
         "6. Casos graves/necrose → UTI; ATB só se infecção documentada"
       ]
     }
