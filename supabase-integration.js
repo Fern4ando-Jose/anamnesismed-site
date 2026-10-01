@@ -161,7 +161,7 @@ async function authGoogleLogin() {
  */
 async function authSaveProfile(data) {
   const { data: { user } } = await sb.auth.getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: 'no_user' };
 
   // Verifica se já existe perfil — se não existir, é um cadastro novo
   // e precisa iniciar o trial de 30 dias (senão o paywall aparece na hora)
@@ -180,6 +180,8 @@ async function authSaveProfile(data) {
     ano_curso: data.ano_curso,
     idioma: data.idioma || 'es',
   };
+  // genero só entra no payload quando informado ('F'|'M') — o cadastro inicial não o apaga
+  if (data.genero !== undefined) payload.genero = amGeneroNorm(data.genero);
 
   if (!existing || !existing.plano || (existing.plano === 'trial' && !existing.trial_end)) {
     payload.plano = 'trial';
@@ -190,6 +192,7 @@ async function authSaveProfile(data) {
 
   if (error) console.error('Profile save error:', error);
   _profileCache = null; // invalida cache após gravar (ver profileGet)
+  return error ? { ok: false, error } : { ok: true };
 }
 
 /**
@@ -285,16 +288,154 @@ async function profileAcceptTerms() {
 /**
  * Salvar tipo de usuário (medico | estudante)
  */
-async function profileSetTipoUsuario(tipo) {
+async function profileSetTipoUsuario(tipo, genero) {
   const user = await authGetUser();
   if (!user) return { ok: false, error: 'no_user' };
-  const { data, error } = await sb.from('profiles').update({ tipo_usuario: tipo }).eq('id', user.id).select();
+  const upd = { tipo_usuario: tipo };
+  if (tipo === 'medico' && amGeneroNorm(genero)) upd.genero = amGeneroNorm(genero); // 'F' | 'M'
+  const { data, error } = await sb.from('profiles').update(upd).eq('id', user.id).select();
   if (error) { console.error('Set tipo_usuario error:', error); return { ok: false, error }; }
   if (!data || data.length === 0) {
     console.error('Set tipo_usuario: 0 linhas atualizadas (RLS bloqueou ou perfil não existe) — user.id=', user.id);
     return { ok: false, error: 'zero_rows_updated' };
   }
+  _profileCache = null;
   return { ok: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TRATAMENTO (Dr./Dra.) — só médicos recebem título; estudantes só o nome
+// ═══════════════════════════════════════════════════════════════════════════
+
+// AM_TRATAMENTO_BEGIN (bloco puro — testado em test/tratamento.test.js)
+function amGeneroNorm(g) {
+  const v = String(g == null ? '' : g).trim().toUpperCase();
+  return (v === 'F' || v === 'M') ? v : null;
+}
+
+/** médico+F → "Dra."; médico+M → "Dr."; médico sem gênero → "Dr(a)."; demais → "" */
+function amTratamento(perfil) {
+  if (!perfil || perfil.tipo_usuario !== 'medico') return '';
+  const g = amGeneroNorm(perfil.genero);
+  return g === 'F' ? 'Dra.' : g === 'M' ? 'Dr.' : 'Dr(a).';
+}
+
+/** Nome sem título digitado pelo usuário ("Dr. Ana" → "Ana"), 1ª letra maiúscula. */
+function amNomeBase(perfil) {
+  const p = perfil || {};
+  const strip = (s) => String(s == null ? '' : s).trim().replace(/^(?:(?:dr\(a\)|dra|dr)\.?\s+)+/i, '').trim();
+  let n = strip(p.nome);
+  if (!n) n = strip(p.email ? String(p.email).split('@')[0] : '');
+  if (!n) n = 'Usuário';
+  return n.charAt(0).toUpperCase() + n.slice(1);
+}
+
+/** "Dra. Fernanda" / "Dr. João" / "Dr(a). Ana" / "Maria" (estudante) — nunca título duplicado. */
+function amNomeExibicao(perfil) {
+  const t = amTratamento(perfil);
+  return (t ? t + ' ' : '') + amNomeBase(perfil);
+}
+// AM_TRATAMENTO_END
+
+/** Grava o gênero (F|M) — o check constraint do banco só aceita esses valores. */
+async function profileSetGenero(genero) {
+  const g = amGeneroNorm(genero);
+  if (!g) return { ok: false, error: 'invalid_genero' };
+  const user = await authGetUser();
+  if (!user) return { ok: false, error: 'no_user' };
+  const { data, error } = await sb.from('profiles').update({ genero: g }).eq('id', user.id).select();
+  if (error) { console.error('Set genero error:', error); return { ok: false, error }; }
+  if (!data || data.length === 0) return { ok: false, error: 'zero_rows_updated' };
+  _profileCache = null;
+  return { ok: true };
+}
+
+function amGeneroErroMsg(lang, r) {
+  const zero = r && r.error === 'zero_rows_updated';
+  return lang === 'es'
+    ? (zero ? 'No se pudo guardar (perfil no encontrado). Inténtalo de nuevo.' : 'No se pudo guardar tu tratamiento. Revisa tu conexión e inténtalo de nuevo.')
+    : (zero ? 'Não foi possível salvar (perfil não encontrado). Tente novamente.' : 'Não foi possível salvar seu tratamento. Verifique a conexão e tente novamente.');
+}
+
+/** HTML do radio group acessível (fieldset/legend, alvos ≥44px, ES/PT). */
+function amGeneroFieldsetHtml(lang, name, value) {
+  const es = lang === 'es';
+  const opt = (v, label, sub) =>
+    '<label class="am-genero-opt"><input type="radio" name="' + name + '" value="' + v + '"' + (value === v ? ' checked' : '') + '>' +
+    '<span><strong>' + label + '</strong> <span class="am-genero-sub">(' + sub + ')</span></span></label>';
+  return '<fieldset class="am-genero" aria-required="true">' +
+    '<legend>' + (es ? 'Tratamiento / Género' : 'Tratamento / Gênero') + ' <span aria-hidden="true">*</span></legend>' +
+    '<div class="am-genero-opts">' +
+    opt('F', 'Dra.', es ? 'femenino' : 'feminino') +
+    opt('M', 'Dr.', es ? 'masculino' : 'masculino') +
+    '</div></fieldset>';
+}
+
+/** Modal para completar o tratamento (usado pelo aviso do dashboard). */
+function amAskGenero(onDone) {
+  if (document.getElementById('am-genero-modal')) return;
+  const lang = document.documentElement.dataset.lang === 'es' ? 'es' : 'pt';
+  const es = lang === 'es';
+  const opener = document.activeElement;
+  const ov = document.createElement('div');
+  ov.id = 'am-genero-modal';
+  ov.className = 'am-genero-overlay';
+  ov.innerHTML = '<div class="am-genero-card" role="dialog" aria-modal="true" aria-labelledby="am-genero-title">' +
+    '<h2 id="am-genero-title">' + (es ? 'Informa tu tratamiento' : 'Informe seu tratamento') + '</h2>' +
+    '<p>' + (es ? 'Usaremos "Dr." o "Dra." en tu saludo y en tu perfil.' : 'Vamos usar "Dr." ou "Dra." na sua saudação e no seu perfil.') + '</p>' +
+    amGeneroFieldsetHtml(lang, 'am-genero-modal-r', null) +
+    '<p class="am-genero-msg" role="alert" aria-live="assertive" hidden></p>' +
+    '<div class="am-genero-actions"><button type="button" class="am-genero-cancel">' + (es ? 'Cancelar' : 'Cancelar') + '</button>' +
+    '<button type="button" class="am-genero-save">' + (es ? 'Guardar' : 'Salvar') + '</button></div></div>';
+  document.body.appendChild(ov);
+  const msg = ov.querySelector('.am-genero-msg');
+  const save = ov.querySelector('.am-genero-save');
+  const close = () => { ov.remove(); try { opener && opener.focus && opener.focus(); } catch (e) {} };
+  ov.querySelector('.am-genero-cancel').addEventListener('click', close);
+  ov.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+  save.addEventListener('click', async () => {
+    const sel = ov.querySelector('input[name="am-genero-modal-r"]:checked');
+    if (!sel) { msg.hidden = false; msg.textContent = es ? 'Elige "Dra." o "Dr." para continuar.' : 'Escolha "Dra." ou "Dr." para continuar.'; return; }
+    save.disabled = true; save.textContent = es ? 'Guardando…' : 'Salvando…';
+    const r = await profileSetGenero(sel.value);
+    if (!r.ok) {
+      save.disabled = false; save.textContent = es ? 'Guardar' : 'Salvar';
+      msg.hidden = false; msg.textContent = amGeneroErroMsg(lang, r);
+      return;
+    }
+    ov.remove();
+    const av = document.getElementById('am-genero-aviso'); if (av) av.remove();
+    await uiUpdateUserInfo();
+    if (typeof onDone === 'function') onDone();
+  });
+  const first = ov.querySelector('input[type=radio]'); if (first) first.focus();
+}
+
+/** Aviso discreto e dispensável (dashboard) para médicos sem gênero cadastrado. */
+function amGeneroAvisoShow(profile) {
+  const need = profile && profile.tipo_usuario === 'medico' && !amGeneroNorm(profile.genero);
+  const existing = document.getElementById('am-genero-aviso');
+  if (!need) { if (existing) existing.remove(); return; }
+  try { if (sessionStorage.getItem('am-genero-aviso-off') === '1') return; } catch (e) {}
+  if (existing) return;
+  const hero = document.getElementById('dash-hero');
+  if (!hero || !hero.parentNode) return;
+  const el = document.createElement('div');
+  el.id = 'am-genero-aviso';
+  el.className = 'am-genero-aviso';
+  el.setAttribute('role', 'status');
+  el.innerHTML =
+    '<span class="pt">Informe seu tratamento (Dr. ou Dra.) para personalizar sua saudação.</span>' +
+    '<span class="es">Informa tu tratamiento (Dr. o Dra.) para personalizar tu saludo.</span>' +
+    '<button type="button" class="am-genero-aviso-go"><span class="pt">Informar tratamento</span><span class="es">Informar tratamiento</span></button>' +
+    '<button type="button" class="am-genero-aviso-x" aria-label="' + (document.documentElement.dataset.lang === 'es' ? 'Descartar aviso' : 'Dispensar aviso') + '">&times;</button>';
+  hero.parentNode.insertBefore(el, hero);
+  el.querySelector('.am-genero-aviso-go').addEventListener('click', () => amAskGenero());
+  el.querySelector('.am-genero-aviso-x').addEventListener('click', () => {
+    try { sessionStorage.setItem('am-genero-aviso-off', '1'); } catch (e) {}
+    el.remove();
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -422,6 +563,8 @@ async function onboardingCheckAndShow(profile) {
       b.addEventListener('mouseenter', () => { b.style.borderColor = '#0e7490'; });
       b.addEventListener('mouseleave', () => { b.style.borderColor = 'rgba(13,45,61,0.16)'; });
       b.addEventListener('click', async () => {
+        // Médico: antes de gravar, pergunta o tratamento (Dr./Dra.) — gravado junto com o tipo
+        if (b.dataset.tipo === 'medico') { renderGenero(); return; }
         b.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
         const r = await profileSetTipoUsuario(b.dataset.tipo);
         if (!r.ok) {
@@ -433,6 +576,48 @@ async function onboardingCheckAndShow(profile) {
         overlay.remove();
       });
     });
+  }
+
+  // Passo extra só para médicos: tratamento (Dr./Dra.) obrigatório; grava tipo + genero juntos.
+  function renderGenero() {
+    card.innerHTML = `
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:20px;margin-bottom:12px">
+        ${lang==='pt' ? 'Como devemos tratar você?' : '¿Cómo debemos tratarte?'}
+      </h2>
+      <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:14px">
+        ${lang==='pt' ? 'Usaremos "Dr." ou "Dra." na sua saudação e no seu perfil.' : 'Usaremos "Dr." o "Dra." en tu saludo y en tu perfil.'}
+      </p>
+      ${amGeneroFieldsetHtml(lang, 'og-genero', null)}
+      <p class="og-genero-msg am-genero-msg" role="alert" aria-live="assertive" hidden></p>
+      <div class="am-genero-actions">
+        <button type="button" class="am-genero-cancel og-genero-back">${lang==='pt' ? 'Voltar' : 'Volver'}</button>
+        <button type="button" class="am-genero-save og-genero-save">${lang==='pt' ? 'Continuar' : 'Continuar'}</button>
+      </div>`;
+    const msg = card.querySelector('.og-genero-msg');
+    const save = card.querySelector('.og-genero-save');
+    card.querySelectorAll('input[name="og-genero"]').forEach(i => i.addEventListener('change', () => { msg.hidden = true; }));
+    card.querySelector('.og-genero-back').addEventListener('click', renderTipo);
+    save.addEventListener('click', async () => {
+      const sel = card.querySelector('input[name="og-genero"]:checked');
+      if (!sel) {
+        msg.hidden = false;
+        msg.textContent = lang==='pt' ? 'Escolha "Dra." ou "Dr." para continuar.' : 'Elige "Dra." o "Dr." para continuar.';
+        return;
+      }
+      save.disabled = true;
+      save.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
+      const r = await profileSetTipoUsuario('medico', sel.value);
+      if (!r.ok) {
+        save.disabled = false;
+        save.textContent = lang==='pt' ? 'Continuar' : 'Continuar';
+        msg.hidden = false;
+        msg.textContent = amGeneroErroMsg(lang, r); // mantém a seleção; nada é perdido
+        return;
+      }
+      overlay.remove();
+      uiUpdateUserInfo();
+    });
+    const first = card.querySelector('input[type=radio]'); if (first) first.focus();
   }
 
   if (needsTerms) renderTerms();
@@ -723,12 +908,10 @@ async function uiUpdateUserInfo() {
   const profile = await profileGet();
   if (!profile) return;
 
-  let nomeBase = profile.nome || profile.email?.split('@')[0] || 'Usuário';
-  nomeBase = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
-
-  // Prefixo Dr. antes do nome
-  // Só médicos recebem o título; estudantes (e perfis sem tipo) usam apenas o nome.
-  const nome = (profile.tipo_usuario === 'medico' ? 'Dr(a). ' : '') + nomeBase;
+  // Só médicos recebem título (Dra./Dr./Dr(a).); estudantes e perfis sem tipo usam só o nome.
+  // amNomeBase remove "Dr."/"Dra." já digitado no nome → nunca "Dra. Dra. Ana".
+  const nomeBase = amNomeBase(profile);
+  const nome = amNomeExibicao(profile);
 
   // Cache local p/ exibição instantânea do nome (elimina o "delay" ao recarregar)
   try { localStorage.setItem('am-uname', nome); } catch(e) {}
@@ -744,6 +927,9 @@ async function uiUpdateUserInfo() {
   const saudEs = document.getElementById('page-title-es');
   if (saudPt) saudPt.textContent = 'Olá, ' + nome + ' 👋';
   if (saudEs) saudEs.textContent = 'Hola, ' + nome + ' 👋';
+
+  // Aviso para médicos antigos sem gênero (só no dashboard)
+  if (PAGE === 'dashboard') amGeneroAvisoShow(profile);
 
   // Avatar com inicial (após o prefixo, usar inicial do nome base)
   document.querySelectorAll('.sb-avatar, .user-avatar').forEach(el => {
@@ -1325,6 +1511,15 @@ function showSaveFeedback() {
       setVal('cfg-ano-curso', profile.ano_curso);
       setVal('cfg-idioma', profile.idioma || lang);
 
+      // Tratamento (Dr./Dra.) — só médicos
+      const gField = document.getElementById('cfg-genero-field');
+      if (gField && profile.tipo_usuario === 'medico') {
+        gField.hidden = false;
+        const g = amGeneroNorm(profile.genero);
+        const r = g && gField.querySelector('input[name="cfg-genero"][value="' + g + '"]');
+        if (r) r.checked = true;
+      }
+
       const planoEl = document.getElementById('cfg-plano');
       if (planoEl) {
         if (profile.plano === 'pro') {
@@ -1342,18 +1537,44 @@ function showSaveFeedback() {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('cfg-save-btn');
-        if (btn) { btn.disabled = true; btn.textContent = lang === 'pt' ? 'Salvando...' : 'Guardando...'; }
+        const st = document.getElementById('cfg-status');
+        const L = document.documentElement.dataset.lang === 'es' ? 'es' : 'pt';
+        const say = (kind, pt, es) => {
+          if (!st) return;
+          st.hidden = false;
+          st.className = 'cfg-status ' + kind;
+          st.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+          st.textContent = L === 'es' ? es : pt;
+        };
+        const gField = document.getElementById('cfg-genero-field');
+        const isMed = gField && !gField.hidden;
+        const gSel = isMed && gField.querySelector('input[name="cfg-genero"]:checked');
+        if (isMed && !gSel) {
+          say('error', 'Escolha seu tratamento: "Dra." ou "Dr.".', 'Elige tu tratamiento: "Dra." o "Dr.".');
+          const f = gField.querySelector('input[type=radio]'); if (f) f.focus();
+          return;
+        }
+        if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
+        say('info', 'Salvando…', 'Guardando…');
 
-        await authSaveProfile({
+        const payload = {
           nome: document.getElementById('cfg-nome')?.value,
           sobrenome: document.getElementById('cfg-sobrenome')?.value,
           universidade: document.getElementById('cfg-universidade')?.value,
           ano_curso: document.getElementById('cfg-ano-curso')?.value,
           idioma: document.getElementById('cfg-idioma')?.value,
-        });
+        };
+        if (gSel) payload.genero = gSel.value;
+        const res = await authSaveProfile(payload);
 
-        if (btn) { btn.disabled = false; btn.textContent = lang === 'pt' ? 'Salvo ✓' : 'Guardado ✓'; }
-        setTimeout(() => { if (btn) btn.textContent = lang === 'pt' ? 'Salvar alterações' : 'Guardar cambios'; }, 2000);
+        if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
+        if (res && res.ok) {
+          say('ok', 'Alterações salvas.', 'Cambios guardados.');
+          await uiUpdateUserInfo();
+        } else {
+          // Campos preenchidos permanecem no formulário — nada é perdido
+          say('error', 'Não foi possível salvar. Verifique a conexão e tente novamente.', 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
+        }
       });
     }
 
@@ -1503,3 +1724,7 @@ window.hcListAll          = hcListAll;
 window.uiLoadRecentHCs    = uiLoadRecentHCs;
 window.profileCheckAccess = profileCheckAccess;
 window.onboardingCheckAndShow = onboardingCheckAndShow;
+window.amTratamento       = amTratamento;
+window.amNomeExibicao     = amNomeExibicao;
+window.amAskGenero        = amAskGenero;
+window.profileSetGenero   = profileSetGenero;

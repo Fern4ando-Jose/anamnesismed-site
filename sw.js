@@ -13,7 +13,7 @@
  * VERSÃO DO CACHE: CACHE_VERSION é carimbado por `node scripts/versionar-assets.mjs`
  * (hash de todo o casca). Mudou o site → muda a versão → caches antigos são apagados no activate.
  */
-const CACHE_VERSION = 'am-pwa-483670b6ae';
+const CACHE_VERSION = 'am-pwa-0d2f02fa3c';
 const CACHE_PREFIX = 'am-pwa-';
 const OFFLINE_URL = '/offline.html';
 
