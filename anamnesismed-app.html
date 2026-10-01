@@ -369,7 +369,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .fab-item{display:flex;align-items:center;gap:8px}
 .conduta-btn [data-am-icon]{vertical-align:-3px;margin-right:6px}
 /* celular: PDF e Salvar já estão no cabeçalho da HC e (PDF) na barra inferior — o FAB fica só com Referências e não cobre campos */
-@media(max-width:1180px){.fab-item-sec{display:none}}
+@media(max-width:1280px){.fab-item-sec{display:none}} /* PDF/Salvar já estão no cabeçalho da HC; até 1280px (inclui tablet paisagem de 1180) os botões flutuantes tapavam campos */
 
 /* ── MOBILE RESPONSIVENESS ── */
 @media(max-width:768px){
