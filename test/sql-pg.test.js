@@ -182,6 +182,54 @@ test('tabela contas_em_exclusao (asserts reais)', { skip }, () => {
   rodaSqlTeste('2026-10-03-contas-em-exclusao.test.sql');
 });
 
+test('exclusão de conta: TABELAS cobre toda tabela com FK p/ auth.users e a sequência apaga o usuário', { skip }, () => {
+  const { TABELAS } = require('../api/excluir-conta');
+  const q = (sql) => {
+    const r = pg('psql', psqlArgs('am', ['-t', '-A', '-F', '|', '-c', sql]));
+    assert.equal(r.status, 0, r.stderr);
+    return r.stdout.trim().split('\n').filter(Boolean);
+  };
+  // Toda tabela de public com FK para auth.users: ou está em TABELAS, ou a FK é ON DELETE CASCADE.
+  const fks = q(`select cl.relname, a.attname, c.confdeltype from pg_constraint c
+    join pg_class cl on cl.oid = c.conrelid join pg_namespace n on n.oid = cl.relnamespace
+    join pg_attribute a on a.attrelid = c.conrelid and a.attnum = any (c.conkey)
+    where c.contype = 'f' and n.nspname = 'public' and c.confrelid = 'auth.users'::regclass`);
+  assert.ok(fks.length >= 5, 'FKs encontradas: ' + fks.join(';'));
+  for (const linha of fks) {
+    const [tabela, coluna, tipo] = linha.split('|');
+    const coberta = TABELAS.some(([t, c]) => t === tabela && c === coluna);
+    assert.ok(coberta || tipo === 'c', `tabela ${tabela}.${coluna} referencia auth.users sem cascade e NÃO está em TABELAS de api/excluir-conta.js`);
+  }
+  // Toda tabela de TABELAS existe.
+  for (const [t] of TABELAS) assert.equal(q(`select to_regclass('public.${t}') is not null`)[0], 't', 'tabela ausente: ' + t);
+
+  // Simula a exclusão: uma linha do usuário em cada tabela com user_id, apaga na ordem de TABELAS, depois auth.users.
+  const uid = 'dddddddd-0000-0000-0000-000000000001';
+  const outro = 'dddddddd-0000-0000-0000-000000000002';
+  let sql = `insert into auth.users (id, email) values ('${uid}','del@exemplo.invalid'),('${outro}','outro@exemplo.invalid');`;
+  sql += `insert into public.profiles (id) values ('${uid}'),('${outro}') on conflict (id) do nothing;`;
+  sql += `insert into public.historias_clinicas (user_id) values ('${uid}'),('${outro}');`;
+  for (const linha of fks) {
+    const [tabela, coluna] = linha.split('|');
+    if (['profiles', 'historias_clinicas'].includes(tabela)) continue;
+    const cols = q(`select column_name from information_schema.columns where table_schema='public' and table_name='${tabela}' and is_nullable='NO' and column_default is null and column_name <> '${coluna}'`);
+    const tipos = Object.fromEntries(q(`select column_name, data_type from information_schema.columns where table_schema='public' and table_name='${tabela}'`).map((l) => l.split('|')));
+    const extra = cols.map((c) => ({ c, v: /char|text/.test(tipos[c]) ? "'x'" : /date|timestamp/.test(tipos[c]) ? 'now()' : '0' }));
+    const nomes = [coluna].concat(extra.map((e) => e.c)).join(',');
+    for (const id of [uid, outro]) sql += `insert into public.${tabela} (${nomes}) values ('${id}'${extra.map((e) => ',' + e.v).join('')});`;
+  }
+  let r = pg('psql', psqlArgs('am', ['-c', sql]));
+  assert.equal(r.status, 0, 'seed falhou: ' + r.stderr);
+  const apaga = TABELAS.map(([t, c]) => `delete from public.${t} where ${c}='${uid}';`).join('') + `delete from auth.users where id='${uid}';`;
+  r = pg('psql', psqlArgs('am', ['-c', apaga]));
+  assert.equal(r.status, 0, 'sequência de exclusão falhou (FK sem cascade fora de TABELAS?): ' + r.stderr);
+  for (const linha of fks) {
+    const [tabela, coluna] = linha.split('|');
+    assert.equal(q(`select count(*) from public.${tabela} where ${coluna}='${uid}'`)[0], '0', 'sobrou linha em ' + tabela);
+    assert.equal(q(`select count(*) from public.${tabela} where ${coluna}='${outro}'`)[0], '1', 'apagou dado de OUTRO usuário em ' + tabela);
+  }
+});
+
 test('concorrência: 12 consumos paralelos com limite 5 → exatamente 5 passam e nenhum furo', { skip }, async () => {
   const uid = 'cccccccc-0000-0000-0000-000000000001';
   let r = pg('psql', psqlArgs('am', ['-c', `insert into auth.users (id, email) values ('${uid}','conc@exemplo.invalid')`]));

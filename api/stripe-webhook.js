@@ -18,7 +18,7 @@
 // (500 com log) em vez de derrubar o carregamento da função.
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
-const { temAssinaturaViva, tabelaAusente, STATUS_VIVOS } = require('./_comum');
+const { temAssinaturaViva, contaEmExclusao, STATUS_VIVOS } = require('./_comum');
 
 // Eventos que EXIGEM escrita no banco. Só estes entram em stripe_events: registrar todo
 // tipo que o Stripe enviar (inclusive os que ignoramos) só incharia a tabela e daria
@@ -45,17 +45,9 @@ function descreveErro(error) {
   return (error && (error.code || String(error.message || '').slice(0, 120))) || 'erro desconhecido';
 }
 
-// Conta marcada como "em exclusão" (tabela contas_em_exclusao)? Tabela ausente (migration
-// 2026-10-03 ainda não aplicada) = sem marca, para não travar a ativação de billing; outro erro lança
+// Conta em exclusão? Tabela ausente = sem marca (não trava a ativação de billing); outro erro lança
 // (→ 500 e o Stripe reentrega).
-async function emExclusao(sbAdmin, userId) {
-  const { data, error } = await sbAdmin.from('contas_em_exclusao').select('user_id').eq('user_id', userId).maybeSingle();
-  if (error) {
-    if (tabelaAusente(error)) return false;
-    throw new Error('falha ao ler marca de exclusão: ' + descreveErro(error));
-  }
-  return !!data;
-}
+const emExclusao = (sbAdmin, userId) => contaEmExclusao(sbAdmin, userId, { toleraAusente: true });
 
 // Cancela, BEST EFFORT, a assinatura criada por um checkout cujo perfil não existe mais / está em
 // exclusão (senão o ex-usuário seria cobrado sem ter conta). Nunca lança; só loga IDs (sem PII).

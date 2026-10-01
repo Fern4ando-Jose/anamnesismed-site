@@ -29,7 +29,7 @@
  */
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
-const { STATUS_VIVOS, temAssinaturaViva, tabelaAusente } = require('./_comum');
+const { STATUS_VIVOS, temAssinaturaViva, contaEmExclusao } = require('./_comum');
 
 const PRAZO_MS = 45000;   // deixa folga dentro do maxDuration de 60 s
 const PAGINA_STRIPE = 100;
@@ -40,11 +40,7 @@ const idDe = (v) => (typeof v === 'string' ? v : (v && v.id) || null);
 const log = (o) => console.log(JSON.stringify({ evt: 'reconciliacao_corrige', ...o, ts: new Date().toISOString() }));
 const alerta = (o) => console.error(JSON.stringify({ evt: 'reconciliacao_alerta', ...o, ts: new Date().toISOString() }));
 
-async function emExclusao(sb, userId) {
-  const { data, error } = await sb.from('contas_em_exclusao').select('user_id').eq('user_id', userId).maybeSingle();
-  if (error) { if (tabelaAusente(error)) return false; throw new Error(error.code || 'erro'); }
-  return !!data;
-}
+const emExclusao = (sb, userId) => contaEmExclusao(sb, userId, { toleraAusente: true });
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return res.status(405).json({ error: 'Method not allowed' });

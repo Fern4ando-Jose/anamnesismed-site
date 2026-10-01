@@ -564,6 +564,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
 <!-- MAIN -->
 <main class="main" id="main" tabindex="-1">
+  <h1 class="sr-only"><span class="pt">AnamnesísMed — História clínica</span><span class="es">AnamnesísMed — Historia clínica</span></h1>
   <!-- TOPBAR -->
   <header class="topbar" id="topbar">
     <button type="button" class="hamburger" onclick="toggleSidebar()" aria-label="Menu" aria-expanded="false" aria-controls="sidebar"><span data-am-icon="menu" data-am-size="22"></span></button>
@@ -754,14 +755,14 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
           <div class="hc-panel-content">
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Nome completo</label>
-                <label class="f-label es">Nombre completo</label>
+                <label for="dp-nome" class="f-label pt">Nome completo</label>
+                <label for="dp-nome" class="f-label es">Nombre completo</label>
                 <input class="f-input" type="text" id="dp-nome" placeholder="Nome do paciente" data-ph-pt="Nome do paciente" data-ph-es="Nombre del paciente" oninput="updateProgress()">
               </div>
               <div class="f-row-2">
                 <div class="f-row">
-                  <label class="f-label pt">Sexo</label>
-                  <label class="f-label es">Sexo</label>
+                  <label for="dp-sexo" class="f-label pt">Sexo</label>
+                  <label for="dp-sexo" class="f-label es">Sexo</label>
                   <select class="f-input" id="dp-sexo" onchange="toggleAPGO()">
                     <option value="">—</option>
                     <option value="M" class="pt">Masculino</option>
@@ -771,20 +772,20 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   </select>
                 </div>
                 <div class="f-row">
-                  <label class="f-label pt">Idade</label>
-                  <label class="f-label es">Edad</label>
+                  <label for="dp-idade" class="f-label pt">Idade</label>
+                  <label for="dp-idade" class="f-label es">Edad</label>
                   <input class="f-input" type="number" id="dp-idade" min="0" max="120" placeholder="Anos" data-ph-pt="Anos" data-ph-es="Años">
                 </div>
               </div>
             </div>
             <div class="f-row-3">
               <div class="f-row">
-                <label class="f-label">CI / RG / DNI</label>
+                <label for="dp-ci" class="f-label">CI / RG / DNI</label>
                 <input class="f-input" type="text" id="dp-ci" placeholder="Documento" data-ph-pt="Documento" data-ph-es="Documento">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Data de nascimento</label>
-                <label class="f-label es">Fecha de nacimiento</label>
+                <label for="dp-nasc-d" class="f-label pt">Data de nascimento</label>
+                <label for="dp-nasc-d" class="f-label es">Fecha de nacimiento</label>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:6px">
                   <select class="f-input" id="dp-nasc-d" aria-label="Dia"></select>
                   <select class="f-input" id="dp-nasc-m" aria-label="Mes"></select>
@@ -792,20 +793,20 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 </div>
               </div>
               <div class="f-row">
-                <label class="f-label pt">Nacionalidade</label>
-                <label class="f-label es">Nacionalidad</label>
+                <label for="dp-nac" class="f-label pt">Nacionalidade</label>
+                <label for="dp-nac" class="f-label es">Nacionalidad</label>
                 <input class="f-input" type="text" id="dp-nac" placeholder="Ex: Paraguaia" data-ph-pt="Ex: Paraguaia" data-ph-es="Ej: Paraguaya">
               </div>
             </div>
             <div class="f-row-3">
               <div class="f-row">
-                <label class="f-label pt">Ocupação</label>
-                <label class="f-label es">Ocupación</label>
+                <label for="dp-ocup" class="f-label pt">Ocupação</label>
+                <label for="dp-ocup" class="f-label es">Ocupación</label>
                 <input class="f-input" type="text" id="dp-ocup" placeholder="">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Estado Civil</label>
-                <label class="f-label es">Estado Civil</label>
+                <label for="dp-ecivil" class="f-label pt">Estado Civil</label>
+                <label for="dp-ecivil" class="f-label es">Estado Civil</label>
                 <select class="f-input" id="dp-ecivil">
                   <option value="">—</option>
                   <option class="pt">Solteiro(a)</option><option class="es">Soltero(a)</option>
@@ -816,8 +817,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 </select>
               </div>
               <div class="f-row">
-                <label class="f-label pt">Escolaridade</label>
-                <label class="f-label es">Escolaridad</label>
+                <label for="dp-escol" class="f-label pt">Escolaridade</label>
+                <label for="dp-escol" class="f-label es">Escolaridad</label>
                 <select class="f-input" id="dp-escol">
                   <option value="">—</option>
                   <option class="pt">Primária</option><option class="es">Primaria</option>
@@ -828,30 +829,30 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             </div>
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Procedência</label>
-                <label class="f-label es">Procedencia</label>
+                <label for="dp-proc" class="f-label pt">Procedência</label>
+                <label for="dp-proc" class="f-label es">Procedencia</label>
                 <input class="f-input" type="text" id="dp-proc" placeholder="">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Residência</label>
-                <label class="f-label es">Residencia</label>
+                <label for="dp-res" class="f-label pt">Residência</label>
+                <label for="dp-res" class="f-label es">Residencia</label>
                 <input class="f-input" type="text" id="dp-res" placeholder="">
               </div>
             </div>
             <div class="f-row-3">
               <div class="f-row">
-                <label class="f-label pt">Telefone / Celular</label>
-                <label class="f-label es">Teléfono / Celular</label>
+                <label for="dp-tel" class="f-label pt">Telefone / Celular</label>
+                <label for="dp-tel" class="f-label es">Teléfono / Celular</label>
                 <input class="f-input" type="tel" id="dp-tel" placeholder="">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Data de ingresso</label>
-                <label class="f-label es">Fecha de ingreso</label>
+                <label for="dp-dtingresso" class="f-label pt">Data de ingresso</label>
+                <label for="dp-dtingresso" class="f-label es">Fecha de ingreso</label>
                 <input class="f-input" type="date" id="dp-dtingresso">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Hora de ingresso</label>
-                <label class="f-label es">Hora de ingreso</label>
+                <label for="dp-hringresso" class="f-label pt">Hora de ingresso</label>
+                <label for="dp-hringresso" class="f-label es">Hora de ingreso</label>
                 <input class="f-input" type="time" id="dp-hringresso">
               </div>
             </div>
@@ -860,13 +861,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl es">Acompañante / Responsable</div>
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Nome do acompanhante</label>
-                <label class="f-label es">Nombre del acompañante</label>
+                <label for="dp-acomp-nome" class="f-label pt">Nome do acompanhante</label>
+                <label for="dp-acomp-nome" class="f-label es">Nombre del acompañante</label>
                 <input class="f-input" type="text" id="dp-acomp-nome">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Vínculo com o paciente</label>
-                <label class="f-label es">Vínculo con el paciente</label>
+                <label for="dp-acomp-vinculo" class="f-label pt">Vínculo com o paciente</label>
+                <label for="dp-acomp-vinculo" class="f-label es">Vínculo con el paciente</label>
                 <input class="f-input" type="text" id="dp-acomp-vinculo" placeholder="Ex: cônjuge, filho(a)" data-ph-pt="Ex: cônjuge, filho(a)" data-ph-es="Ej: cónyuge, hijo(a)">
               </div>
             </div>
@@ -905,8 +906,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row" style="margin-top:8px">
-              <label class="f-label pt">Aportado por (quem fornece a informação)</label>
-              <label class="f-label es">Aportado por (quién aporta la información)</label>
+              <label for="dp-aportado" class="f-label pt">Aportado por (quem fornece a informação)</label>
+              <label for="dp-aportado" class="f-label es">Aportado por (quién aporta la información)</label>
               <input class="f-input" type="text" id="dp-aportado" placeholder="Ex: próprio paciente, familiar, prontuário..." data-ph-pt="Ex: próprio paciente, familiar, prontuário..." data-ph-es="Ej: el propio paciente, familiar, historia clínica...">
             </div>
           </div>
@@ -927,8 +928,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row" style="position:relative">
-              <label class="f-label pt">a) Queixa principal</label>
-              <label class="f-label es">a) Queja principal</label>
+              <label for="mc-a" class="f-label pt">a) Queixa principal</label>
+              <label for="mc-a" class="f-label es">a) Queja principal</label>
               <div style="position:relative">
                 <input class="f-input" type="text" id="mc-a" placeholder="Digite ou selecione o motivo..." data-ph-pt="Digite ou selecione o motivo..." data-ph-es="Escriba o seleccione el motivo..." autocomplete="off"
                   oninput="onMCInput(this.value)" style="padding-right:32px">
@@ -948,8 +949,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <small style="margin-left:10px;font-size:12px;color:var(--muted)" class="es">AEA y guías actualizados para este motivo</small>
             </div>
             <div class="f-row" style="position:relative">
-              <label class="f-label pt">b) Segunda queixa (se houver)</label>
-              <label class="f-label es">b) Segunda queja (si hubiera)</label>
+              <label for="mc-b" class="f-label pt">b) Segunda queixa (se houver)</label>
+              <label for="mc-b" class="f-label es">b) Segunda queja (si hubiera)</label>
               <input class="f-input" type="text" id="mc-b"
                 data-ph-pt="Digite ou selecione o 2º motivo..."
                 data-ph-es="Escriba o seleccione el 2.º motivo..."
@@ -967,8 +968,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row" style="position:relative">
-              <label class="f-label pt">c) Terceira queixa (se houver)</label>
-              <label class="f-label es">c) Tercera queja (si hubiera)</label>
+              <label for="mc-c" class="f-label pt">c) Terceira queixa (se houver)</label>
+              <label for="mc-c" class="f-label es">c) Tercera queja (si hubiera)</label>
               <input class="f-input" type="text" id="mc-c"
                 data-ph-pt="Digite ou selecione o 3º motivo..."
                 data-ph-es="Escriba o seleccione el 3.º motivo..."
@@ -986,8 +987,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Tempo de evolução da queixa principal</label>
-              <label class="f-label es">Tiempo de evolución de la queja principal</label>
+              <label for="mc-tempo-n" class="f-label pt">Tempo de evolução da queixa principal</label>
+              <label for="mc-tempo-n" class="f-label es">Tiempo de evolución de la queja principal</label>
               <div class="f-row-2">
                 <input class="f-input" type="number" id="mc-tempo-n" min="0" placeholder="Nº">
                 <select class="f-input" id="mc-tempo-u">
@@ -1023,8 +1024,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div id="aea-mc3-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
 
             <div class="f-row" style="margin-top:8px">
-              <label class="f-label pt">Relato livre (AEA em texto)</label>
-              <label class="f-label es">Relato libre (AEA en texto)</label>
+              <label for="aea-texto" class="f-label pt">Relato livre (AEA em texto)</label>
+              <label for="aea-texto" class="f-label es">Relato libre (AEA en texto)</label>
               <textarea class="f-input" id="aea-texto" rows="4" placeholder="Descreva a história da doença atual..." data-ph-pt="Descreva a história da doença atual..." data-ph-es="Describa la historia de la enfermedad actual..."></textarea>
             </div>
 
@@ -1059,8 +1060,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   <span class="pt">desfazer e voltar ao anterior</span><span class="es">deshacer y volver al anterior</span>
                 </a>
               </div>
-              <label class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
-              <label class="f-label es">Narrativa de la HC (revise antes de exportar)</label>
+              <label for="aea-narrativa" class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
+              <label for="aea-narrativa" class="f-label es">Narrativa de la HC (revise antes de exportar)</label>
               <textarea class="f-input" id="aea-narrativa" rows="6" placeholder="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-pt="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-es="Haga clic en “Generar HC” para redactar la narrativa a partir de los motivos, tiempo de evolución y relato libre. Puede editarla antes de exportar."></textarea>
             </div>
           </div>
@@ -1092,8 +1093,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Descreva o episódio anterior (quando, como, tratamento, resolução)</label>
-              <label class="f-label es">Describa el episodio anterior (cuándo, cómo, tratamiento, resolución)</label>
+              <label for="area-desc" class="f-label pt">Descreva o episódio anterior (quando, como, tratamento, resolução)</label>
+              <label for="area-desc" class="f-label es">Describa el episodio anterior (cuándo, cómo, tratamiento, resolución)</label>
               <textarea class="f-input" id="area-desc" rows="3" placeholder=""></textarea>
             </div>
           </div>
@@ -1240,18 +1241,18 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl pt">Cirurgias / Traumas / Internações</div>
             <div class="f-section-lbl es">Cirugías / Traumas / Internaciones</div>
             <div class="f-row">
-              <label class="f-label pt">Antecedentes cirúrgicos</label>
-              <label class="f-label es">Antecedentes quirúrgicos</label>
+              <label for="app-cirurg" class="f-label pt">Antecedentes cirúrgicos</label>
+              <label for="app-cirurg" class="f-label es">Antecedentes quirúrgicos</label>
               <input class="f-input" type="text" id="app-cirurg" placeholder="Tipo, ano, local..." data-ph-pt="Tipo, ano, local..." data-ph-es="Tipo, año, lugar...">
             </div>
             <div class="f-row">
-              <label class="f-label pt">Antecedentes traumáticos</label>
-              <label class="f-label es">Antecedentes traumáticos</label>
+              <label for="app-trauma" class="f-label pt">Antecedentes traumáticos</label>
+              <label for="app-trauma" class="f-label es">Antecedentes traumáticos</label>
               <input class="f-input" type="text" id="app-trauma" placeholder="">
             </div>
             <div class="f-row">
-              <label class="f-label pt">Internações prévias</label>
-              <label class="f-label es">Internaciones previas</label>
+              <label for="app-intern" class="f-label pt">Internações prévias</label>
+              <label for="app-intern" class="f-label es">Internaciones previas</label>
               <input class="f-input" type="text" id="app-intern" placeholder="Motivo, local, ano..." data-ph-pt="Motivo, local, ano..." data-ph-es="Motivo, lugar, año...">
             </div>
 
@@ -1281,14 +1282,14 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl pt">Medicação em uso</div>
             <div class="f-section-lbl es">Medicación en uso</div>
             <div class="f-row">
-              <label class="f-label pt">Medicamentos de uso contínuo / recente (nome, dose, frequência)</label>
-              <label class="f-label es">Medicamentos de uso continuo / reciente (nombre, dosis, frecuencia)</label>
+              <label for="app-medicacao" class="f-label pt">Medicamentos de uso contínuo / recente (nome, dose, frequência)</label>
+              <label for="app-medicacao" class="f-label es">Medicamentos de uso continuo / reciente (nombre, dosis, frecuencia)</label>
               <textarea class="f-input" id="app-medicacao" rows="2" placeholder="Ex: Losartana 50mg 1x/dia; AAS 100mg..." data-ph-pt="Ex: Losartana 50mg 1x/dia; AAS 100mg..." data-ph-es="Ej: Losartán 50mg 1x/día; AAS 100mg..."></textarea>
             </div>
 
             <div class="f-row" style="margin-top:10px">
-              <label class="f-label pt">Outras patologias (texto livre)</label>
-              <label class="f-label es">Otras patologías (texto libre)</label>
+              <label for="app-outras" class="f-label pt">Outras patologias (texto livre)</label>
+              <label for="app-outras" class="f-label es">Otras patologías (texto libre)</label>
               <textarea class="f-input" id="app-outras" rows="2" placeholder=""></textarea>
             </div>
           </div>
@@ -1308,15 +1309,15 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row-3">
-              <div class="f-row"><label class="f-label pt">Menarca (anos)</label><label class="f-label es">Menarquía (años)</label><input class="f-input" type="number" id="apgo-menarca" placeholder=""></div>
-              <div class="f-row"><label class="f-label pt">Regularidade</label><label class="f-label es">Regularidad</label>
+              <div class="f-row"><label for="apgo-menarca" class="f-label pt">Menarca (anos)</label><label for="apgo-menarca" class="f-label es">Menarquía (años)</label><input class="f-input" type="number" id="apgo-menarca" placeholder=""></div>
+              <div class="f-row"><label for="apgo-reg" class="f-label pt">Regularidade</label><label for="apgo-reg" class="f-label es">Regularidad</label>
                 <select class="f-input" id="apgo-reg">
                   <option value="">—</option>
                   <option class="pt">Regular</option><option class="es">Regular</option>
                   <option class="pt">Irregular</option><option class="es">Irregular</option>
                 </select>
               </div>
-              <div class="f-row"><label class="f-label">FUM</label><input class="f-input" type="date" id="apgo-fum"></div>
+              <div class="f-row"><label for="apgo-fum" class="f-label">FUM</label><input class="f-input" type="date" id="apgo-fum"></div>
             </div>
             <div class="f-checks">
               <div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span class="pt">Coágulos</span><span class="es">Coágulos</span></div>
@@ -1328,10 +1329,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             </div>
             <div class="f-section-lbl pt">Obstétrico</div><div class="f-section-lbl es">Obstétrico</div>
             <div class="f-row-4">
-              <div class="f-row"><label class="f-label pt">Gestações</label><label class="f-label es">Gestaciones</label><input class="f-input" type="number" id="apgo-gest" min="0"></div>
-              <div class="f-row"><label class="f-label pt">Partos normais</label><label class="f-label es">Partos vaginales</label><input class="f-input" type="number" id="apgo-pnorm" min="0"></div>
-              <div class="f-row"><label class="f-label pt">Cesáreas</label><label class="f-label es">Cesáreas</label><input class="f-input" type="number" id="apgo-cesar" min="0"></div>
-              <div class="f-row"><label class="f-label pt">Abortos</label><label class="f-label es">Abortos</label><input class="f-input" type="number" id="apgo-abort" min="0"></div>
+              <div class="f-row"><label for="apgo-gest" class="f-label pt">Gestações</label><label for="apgo-gest" class="f-label es">Gestaciones</label><input class="f-input" type="number" id="apgo-gest" min="0"></div>
+              <div class="f-row"><label for="apgo-pnorm" class="f-label pt">Partos normais</label><label for="apgo-pnorm" class="f-label es">Partos vaginales</label><input class="f-input" type="number" id="apgo-pnorm" min="0"></div>
+              <div class="f-row"><label for="apgo-cesar" class="f-label pt">Cesáreas</label><label for="apgo-cesar" class="f-label es">Cesáreas</label><input class="f-input" type="number" id="apgo-cesar" min="0"></div>
+              <div class="f-row"><label for="apgo-abort" class="f-label pt">Abortos</label><label for="apgo-abort" class="f-label es">Abortos</label><input class="f-input" type="number" id="apgo-abort" min="0"></div>
             </div>
             <div class="f-checks">
               <div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span class="pt">Método anticoncepcional em uso</span><span class="es">Método anticonceptivo en uso</span></div>
@@ -1378,14 +1379,14 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row-2">
-              <div><label class="f-label pt">Irmãos (nº / ♂ / ♀)</label><label class="f-label es">Hermanos (nº / ♂ / ♀)</label>
+              <div><label for="apf-irm-tot" class="f-label pt">Irmãos (nº / ♂ / ♀)</label><label for="apf-irm-tot" class="f-label es">Hermanos (nº / ♂ / ♀)</label>
                 <div class="f-row-3">
                   <input class="f-input" type="number" placeholder="Total" data-ph-pt="Total" data-ph-es="Total" id="apf-irm-tot">
                   <input class="f-input" type="number" placeholder="♂" id="apf-irm-m">
                   <input class="f-input" type="number" placeholder="♀" id="apf-irm-f">
                 </div>
               </div>
-              <div><label class="f-label pt">Filhos (nº / ♂ / ♀)</label><label class="f-label es">Hijos (nº / ♂ / ♀)</label>
+              <div><label for="apf-fil-tot" class="f-label pt">Filhos (nº / ♂ / ♀)</label><label for="apf-fil-tot" class="f-label es">Hijos (nº / ♂ / ♀)</label>
                 <div class="f-row-3">
                   <input class="f-input" type="number" placeholder="Total" data-ph-pt="Total" data-ph-es="Total" id="apf-fil-tot">
                   <input class="f-input" type="number" placeholder="♂" id="apf-fil-m">
@@ -1407,8 +1408,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span class="pt">Doença mental</span><span class="es">Enfermedad mental</span></div>
             </div>
             <div class="f-row" style="margin-top:8px">
-              <label class="f-label pt">Outros antecedentes familiares</label>
-              <label class="f-label es">Otros antecedentes familiares</label>
+              <label for="apf-outros" class="f-label pt">Outros antecedentes familiares</label>
+              <label for="apf-outros" class="f-label es">Otros antecedentes familiares</label>
               <input class="f-input" type="text" id="apf-outros">
             </div>
           </div>
@@ -1428,8 +1429,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row">
-              <label class="f-label pt">Internações / consultas hospitalares anteriores relevantes</label>
-              <label class="f-label es">Internaciones / consultas hospitalarias anteriores relevantes</label>
+              <label for="adm-texto" class="f-label pt">Internações / consultas hospitalares anteriores relevantes</label>
+              <label for="adm-texto" class="f-label es">Internaciones / consultas hospitalarias anteriores relevantes</label>
               <textarea class="f-input" id="adm-texto" rows="4" placeholder="Data, local, motivo, diagnóstico, tratamento, alta..." data-ph-pt="Data, local, motivo, diagnóstico, tratamento, alta..." data-ph-es="Fecha, lugar, motivo, diagnóstico, tratamiento, alta..."></textarea>
             </div>
           </div>
@@ -1482,16 +1483,16 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             </div>
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Diurese</label><label class="f-label es">Diuresis</label>
+                <label for="hab-diurese" class="f-label pt">Diurese</label><label for="hab-diurese" class="f-label es">Diuresis</label>
                 <input class="f-input" type="text" id="hab-diurese" placeholder="Volume, frequência, características..." data-ph-pt="Volume, frequência, características..." data-ph-es="Volumen, frecuencia, características...">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Catarse (evacuações)</label><label class="f-label es">Catarsis (evacuaciones)</label>
+                <label for="hab-catarse" class="f-label pt">Catarse (evacuações)</label><label for="hab-catarse" class="f-label es">Catarsis (evacuaciones)</label>
                 <input class="f-input" type="text" id="hab-catarse" placeholder="Frequência, consistência, cor..." data-ph-pt="Frequência, consistência, cor..." data-ph-es="Frecuencia, consistencia, color...">
               </div>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Sono</label><label class="f-label es">Sueño</label>
+              <label for="hab-sono-h" class="f-label pt">Sono</label><label for="hab-sono-h" class="f-label es">Sueño</label>
               <div class="f-row-2">
                 <input class="f-input" type="number" id="hab-sono-h" placeholder="Horas/noite" data-ph-pt="Horas/noite" data-ph-es="Horas/noche" min="0" max="24">
                 <div class="f-radios" id="hab-sono-q">
@@ -1567,9 +1568,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row-3">
-              <div><label class="f-label pt">Pessoas na casa</label><label class="f-label es">Personas en casa</label><input class="f-input" type="number" id="case-pessoas" min="0"></div>
-              <div><label class="f-label pt">Nº de cômodos</label><label class="f-label es">Nº de habitaciones</label><input class="f-input" type="number" id="case-comodos" min="0"></div>
-              <div><label class="f-label pt">Água</label><label class="f-label es">Agua</label>
+              <div><label for="case-pessoas" class="f-label pt">Pessoas na casa</label><label for="case-pessoas" class="f-label es">Personas en casa</label><input class="f-input" type="number" id="case-pessoas" min="0"></div>
+              <div><label for="case-comodos" class="f-label pt">Nº de cômodos</label><label for="case-comodos" class="f-label es">Nº de habitaciones</label><input class="f-input" type="number" id="case-comodos" min="0"></div>
+              <div><label for="case-agua" class="f-label pt">Água</label><label for="case-agua" class="f-label es">Agua</label>
                 <select class="f-input" id="case-agua">
                   <option value="">—</option>
                   <option class="pt">Encanada/ESSAP</option><option class="es">Red pública</option>
@@ -1724,21 +1725,21 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl pt">Sinais vitais</div>
             <div class="f-section-lbl es">Signos vitales</div>
             <div class="f-row-4">
-              <div><label class="f-label pt">PA (mmHg)</label><label class="f-label es">PA (mmHg)</label><input class="f-input" type="text" id="sv-pa" placeholder="120/80"></div>
-              <div><label class="f-label pt">FC (bpm)</label><label class="f-label es">FC (lpm)</label><input class="f-input" type="number" id="sv-fc" placeholder="80"></div>
-              <div><label class="f-label pt">FR (irpm)</label><label class="f-label es">FR (rpm)</label><input class="f-input" type="number" id="sv-fr" placeholder="18"></div>
-              <div><label class="f-label pt">Temp (°C)</label><label class="f-label es">Temp (°C)</label><input class="f-input" type="number" id="sv-temp" step="0.1" placeholder="36.5"></div>
+              <div><label for="sv-pa" class="f-label pt">PA (mmHg)</label><label for="sv-pa" class="f-label es">PA (mmHg)</label><input class="f-input" type="text" id="sv-pa" placeholder="120/80"></div>
+              <div><label for="sv-fc" class="f-label pt">FC (bpm)</label><label for="sv-fc" class="f-label es">FC (lpm)</label><input class="f-input" type="number" id="sv-fc" placeholder="80"></div>
+              <div><label for="sv-fr" class="f-label pt">FR (irpm)</label><label for="sv-fr" class="f-label es">FR (rpm)</label><input class="f-input" type="number" id="sv-fr" placeholder="18"></div>
+              <div><label for="sv-temp" class="f-label pt">Temp (°C)</label><label for="sv-temp" class="f-label es">Temp (°C)</label><input class="f-input" type="number" id="sv-temp" step="0.1" placeholder="36.5"></div>
             </div>
             <div class="f-row-4">
-              <div><label class="f-label pt">SpO₂ (%)</label><label class="f-label es">SpO₂ (%)</label><input class="f-input" type="number" id="sv-spo2" placeholder="98"></div>
-              <div><label class="f-label pt">Peso (kg)</label><label class="f-label es">Peso (kg)</label><input class="f-input" type="number" id="sv-peso" step="0.1" placeholder=""></div>
-              <div><label class="f-label pt">Altura (cm)</label><label class="f-label es">Talla (cm)</label><input class="f-input" type="number" id="sv-altura" placeholder=""></div>
-              <div><label class="f-label">IMC</label><input class="f-input" type="text" id="sv-imc" readonly placeholder="Auto" style="background:var(--cream)"></div>
+              <div><label for="sv-spo2" class="f-label pt">SpO₂ (%)</label><label for="sv-spo2" class="f-label es">SpO₂ (%)</label><input class="f-input" type="number" id="sv-spo2" placeholder="98"></div>
+              <div><label for="sv-peso" class="f-label pt">Peso (kg)</label><label for="sv-peso" class="f-label es">Peso (kg)</label><input class="f-input" type="number" id="sv-peso" step="0.1" placeholder=""></div>
+              <div><label for="sv-altura" class="f-label pt">Altura (cm)</label><label for="sv-altura" class="f-label es">Talla (cm)</label><input class="f-input" type="number" id="sv-altura" placeholder=""></div>
+              <div><label for="sv-imc" class="f-label">IMC</label><input class="f-input" type="text" id="sv-imc" readonly placeholder="Auto" style="background:var(--cream)"></div>
             </div>
 
             <div class="f-row">
-              <label class="f-label pt">Chama atenção / Achados do exame geral</label>
-              <label class="f-label es">Llama la atención / Hallazgos del examen general</label>
+              <label for="exfis-geral" class="f-label pt">Chama atenção / Achados do exame geral</label>
+              <label for="exfis-geral" class="f-label es">Llama la atención / Hallazgos del examen general</label>
               <textarea class="f-input" id="exfis-geral" rows="3" placeholder="Cicatrizes, drenos, aparelhos, alterações visíveis..." data-ph-pt="Cicatrizes, drenos, aparelhos, alterações visíveis..." data-ph-es="Cicatrices, drenajes, dispositivos, alteraciones visibles..."></textarea>
             </div>
           </div>
@@ -1758,18 +1759,18 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row">
-              <label class="f-label pt">Principais achados positivos da HC e exame físico</label>
-              <label class="f-label es">Principales hallazgos positivos de la HC y examen físico</label>
+              <label for="sum-achados" class="f-label pt">Principais achados positivos da HC e exame físico</label>
+              <label for="sum-achados" class="f-label es">Principales hallazgos positivos de la HC y examen físico</label>
               <textarea class="f-input" id="sum-achados" rows="4" placeholder="Liste os achados mais relevantes..." data-ph-pt="Liste os achados mais relevantes..." data-ph-es="Liste los hallazgos más relevantes..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Síndrome(s) identificada(s)</label>
-              <label class="f-label es">Síndrome(s) identificada(s)</label>
+              <label for="sum-sindromes" class="f-label pt">Síndrome(s) identificada(s)</label>
+              <label for="sum-sindromes" class="f-label es">Síndrome(s) identificada(s)</label>
               <input class="f-input" type="text" id="sum-sindromes" placeholder="Ex: Síndrome febril, síndrome de condensação pulmonar..." data-ph-pt="Ex: Síndrome febril, síndrome de condensação pulmonar..." data-ph-es="Ej: síndrome febril, síndrome de condensación pulmonar...">
             </div>
             <div class="f-row">
-              <label class="f-label pt">Hipótese(s) diagnóstica(s)</label>
-              <label class="f-label es">Hipótesis diagnóstica(s)</label>
+              <label for="sum-hipoteses" class="f-label pt">Hipótese(s) diagnóstica(s)</label>
+              <label for="sum-hipoteses" class="f-label es">Hipótesis diagnóstica(s)</label>
               <textarea class="f-input" id="sum-hipoteses" rows="3" placeholder="1º Hipótese, 2º Hipótese..." data-ph-pt="1º Hipótese, 2º Hipótese..." data-ph-es="1ª Hipótesis, 2ª Hipótesis..."></textarea>
             </div>
           </div>
@@ -1789,23 +1790,23 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row">
-              <label class="f-label pt">Exames solicitados</label>
-              <label class="f-label es">Exámenes solicitados</label>
+              <label for="plan-exames" class="f-label pt">Exames solicitados</label>
+              <label for="plan-exames" class="f-label es">Exámenes solicitados</label>
               <textarea class="f-input" id="plan-exames" rows="3" placeholder="Hemograma, PCR, Rx tórax, ECG..." data-ph-pt="Hemograma, PCR, Rx tórax, ECG..." data-ph-es="Hemograma, PCR, radiografía de tórax, ECG..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Tratamento / Prescrição</label>
-              <label class="f-label es">Tratamiento / Prescripción</label>
+              <label for="plan-trat" class="f-label pt">Tratamento / Prescrição</label>
+              <label for="plan-trat" class="f-label es">Tratamiento / Prescripción</label>
               <textarea class="f-input" id="plan-trat" rows="3" placeholder="Medicação, dose, via, frequência, duração..." data-ph-pt="Medicação, dose, via, frequência, duração..." data-ph-es="Medicación, dosis, vía, frecuencia, duración..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Conduta / Plano</label>
-              <label class="f-label es">Conducta / Plan</label>
+              <label for="plan-conduta" class="f-label pt">Conduta / Plano</label>
+              <label for="plan-conduta" class="f-label es">Conducta / Plan</label>
               <textarea class="f-input" id="plan-conduta" rows="3" placeholder="Internação, alta, retorno, encaminhamentos..." data-ph-pt="Internação, alta, retorno, encaminhamentos..." data-ph-es="Internación, alta, control, derivaciones..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Observações / Evolução</label>
-              <label class="f-label es">Observaciones / Evolución</label>
+              <label for="plan-obs" class="f-label pt">Observações / Evolução</label>
+              <label for="plan-obs" class="f-label es">Observaciones / Evolución</label>
               <textarea class="f-input" id="plan-obs" rows="2" placeholder=""></textarea>
             </div>
             <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">

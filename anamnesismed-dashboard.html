@@ -256,10 +256,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="stat-value" id="stat-motivos-value">&#x2014;</div>
         <div class="stat-delta pt" id="stat-motivos-delta-pt"></div><div class="stat-delta es" id="stat-motivos-delta-es"></div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" id="stat-plano-card" data-plano="trial">
         <div class="stat-card-top"><span class="stat-label pt">Plano</span><span class="stat-label es">Plan</span><span class="stat-icon" style="background:rgba(255,92,73,.12);color:var(--accent)" data-am-icon="sparkles" data-am-size="16"></span></div>
-        <div class="stat-value" style="font-family:var(--serif);font-size:20px;margin-top:3px"><span class="pt">Teste</span><span class="es">Prueba</span></div>
-        <div class="stat-delta" style="color:var(--accent)">
+        <div class="stat-value" style="font-family:var(--serif);font-size:20px;margin-top:3px">
+          <span class="pt"><span class="pl pl-trial">Teste</span><span class="pl pl-pro">Pro</span><span class="pl pl-estudante">Estudante</span></span>
+          <span class="es"><span class="pl pl-trial">Prueba</span><span class="pl pl-pro">Pro</span><span class="pl pl-estudante">Estudiante</span></span>
+        </div>
+        <div class="stat-delta up pl-up">
           <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="pt">Upgrade &#x2192;</a>
           <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="es">Upgrade &#x2192;</a>
         </div>

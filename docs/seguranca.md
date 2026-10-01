@@ -66,10 +66,15 @@ exigir e-mail confirmado, ou passar a exigir `pro`/trial ativo (`trial_end > now
 | Funções SQL | `SECURITY DEFINER`/triggers com `search_path = public, pg_temp` (migration 2026-10-02) |
 | Webhook Stripe | Assinatura validada; idempotência só para tipos que escrevem; falha de escrita → 5xx + reversão da idempotência (Stripe retenta) |
 | Checkout | Identidade vem do token; bloqueia quem já tem assinatura viva (409); reaproveita o `customer` |
-| Cron | `CRON_SECRET` obrigatório (503 sem ele, 401 com Bearer errado) |
+| Cron | `CRON_SECRET` obrigatório (503 sem ele, 401 com Bearer errado) em `/api/manter-banco-vivo` e `/api/reconciliar-assinaturas` |
+| Rate limit | RPC atômica `consumir_limite` (tabela `rate_limits`, só `service_role`), **fail-closed** (503 se ausente; 429 + `Retry-After` ao estourar). Limites por usuário/hora em `LIMITES` de `api/_comum.js`: exportar-dados 5, excluir-conta 3, checkout 20, portal-cliente 20 |
+| Conta em exclusão | `/api/excluir-conta` marca `contas_em_exclusao` (sem FK; sobrevive ao login) antes de qualquer efeito; checkout recusa (409); webhook trata checkout tardio/perfil inexistente como sucesso idempotente (200 + log `[ALERTA stripe]`) e cancela, best effort, a assinatura recém-criada |
+| Webhook (billing) | Só ativa `pro` com `mode=subscription` e `payment_status` paid/no_payment_required; rebaixa só se o customer não tiver OUTRA assinatura viva (active/trialing/past_due) |
+| Reconciliação | `/api/reconciliar-assinaturas` compara `profiles` x Stripe e corrige divergências. **Não está em `crons` do `vercel.json` de propósito**: agende no Vercel/externo quando quiser, enviando `Authorization: Bearer <CRON_SECRET>` |
+| Helpers | `api/_comum.js` centraliza auth, CORS, rate limit, cota, `STATUS_VIVOS`, `temAssinaturaViva`, `contaEmExclusao` |
 | LGPD | `/api/exportar-dados`, `/api/excluir-conta` (ver `docs/lgpd.md`) |
 | Dependências | `npm audit --audit-level=high` falha o CI |
-| Testes de SQL | `test/sql-migrations.test.js` (estático), `test/sql-pg.test.js` (Postgres real, quando disponível), `supabase-migrations/tests/*.sql` (SQL Editor) |
+| Testes de SQL | `test/sql-migrations.test.js` (estático), `test/sql-pg.test.js` (Postgres real, quando disponível; inclui checagem de que toda tabela com FK para `auth.users` está em `TABELAS` de `api/excluir-conta.js` ou tem cascade), `supabase-migrations/tests/*.sql` (SQL Editor) |
 
 ## 4. Dependências (`npm audit`)
 

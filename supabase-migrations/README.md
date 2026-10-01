@@ -45,7 +45,17 @@ Functions, sem processo de migração no deploy).
 | `2026-10-01-uso-atomico-rpc` | função `consumir_cota_ia` (cota diária atômica) | `down/` (⚠️ fail-closed nas rotas de IA) |
 | `2026-10-02-devolver-cota-e-search-path` | função `devolver_cota_ia` + `search_path = public, pg_temp` em todas as funções SECURITY DEFINER/triggers | `down/` (⚠️ reabre risco de search_path) |
 | `2026-10-02-revoke-handle-new-user` | revoga EXECUTE de `handle_new_user()` para anon/authenticated (Advisor 0028/0029) | `down/` (⚠️ reabre a chamada pela API) |
+| `2026-10-03-consumir-limite` | tabela `rate_limits` + RPC `consumir_limite` (rate limit por usuário/ação; fail-closed nas rotas) | `down/` (⚠️ rotas limitadas passam a responder 503) |
+| `2026-10-03-contas-em-exclusao` | tabela `contas_em_exclusao` (marca sem FK; checkout/webhook a consultam) | `down/` (⚠️ exclusão passa a falhar com 503) |
 | `2026-10-02-profiles-genero` | coluna `profiles.genero` ('F'/'M', opcional) para o tratamento Dra./Dr. de médicos | `down/` (perde o gênero informado) |
+
+### Ação manual do dono — 2026-10-03
+
+7. Rodar `2026-10-03-consumir-limite.sql` e `2026-10-03-contas-em-exclusao.sql` (idempotentes) e conferir com
+   `tests/2026-10-03-*.test.sql`. Sem a primeira, exportar/excluir/checkout/portal respondem 503 (fail-closed);
+   sem a segunda, `/api/excluir-conta` e o checkout respondem 503.
+8. `CRON_SECRET` também protege `/api/reconciliar-assinaturas` (503 sem ele). A rota **não** está no `crons`
+   do `vercel.json`; agende-a quando quiser (Bearer `CRON_SECRET`).
 
 ### Ações manuais do dono (SQL Editor) — correção de segurança de 2026-10-01
 
@@ -84,7 +94,7 @@ Functions, sem processo de migração no deploy).
 Documento completo: [`docs/lgpd.md`](../docs/lgpd.md). Resumo do que é código e do que é do dono:
 
 - **Exportação** (art. 18, II/V): `GET /api/exportar-dados` (Bearer) — JSON com perfil, HCs e PDFs do próprio usuário.
-- **Exclusão** (art. 18, VI): `POST /api/excluir-conta` (Bearer + `{"confirmar": true}`) — cancela a assinatura no
+- **Exclusão** (art. 18, VI): `POST /api/excluir-conta` (Bearer + `{"confirmar": true}`) — marca a conta como "em exclusão", cancela a assinatura no
   Stripe, apaga `historias_clinicas`, `pdf_exports`, tabelas de uso, `profiles` e o usuário no Auth; retomável e
   idempotente. Procedimento manual (painel → Authentication → Users) continua possível, mas
   `historias_clinicas.user_id` **não** tem `on delete cascade` — apague as HCs antes, ou use o endpoint.

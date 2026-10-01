@@ -150,3 +150,5 @@ module.exports = async (req, res) => {
   console.log(JSON.stringify({ evt: 'conta_excluida', stripe: !!stripeId, ts: new Date().toISOString() }));
   return res.status(200).json({ ok: true });
 };
+
+module.exports.TABELAS = TABELAS;

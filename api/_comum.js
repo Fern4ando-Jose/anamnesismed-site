@@ -130,10 +130,15 @@ async function temAssinaturaViva(stripe, customerId, ignorarId) {
 }
 
 // A conta está marcada como "em exclusão"? (tabela contas_em_exclusao, só service_role.)
-// Retorna true/false; LANÇA se não der para saber (tabela ausente inclusive) — quem chama falha fechado.
-async function contaEmExclusao(sbAdmin, userId) {
+// Retorna true/false; LANÇA se não der para saber — quem chama falha fechado.
+// `{ toleraAusente: true }`: tabela inexistente (migration não aplicada) = sem marca (webhook/cron,
+// para não travar billing); sem a opção, tabela ausente também lança.
+async function contaEmExclusao(sbAdmin, userId, opcoes) {
   const { data, error } = await sbAdmin.from('contas_em_exclusao').select('user_id').eq('user_id', userId).maybeSingle();
-  if (error) throw new Error(error.code || 'erro ao ler contas_em_exclusao');
+  if (error) {
+    if (opcoes && opcoes.toleraAusente && tabelaAusente(error)) return false;
+    throw new Error(error.code || 'erro ao ler contas_em_exclusao');
+  }
   return !!data;
 }
 
