@@ -42,6 +42,10 @@
     '',
     '    <div class="nav-section-label pt" style="margin-top:4px">Ferramentas</div>',
     '    <div class="nav-section-label es" style="margin-top:4px">Herramientas</div>',
+    '    <a href="anamnesismed-referencias.html" class="nav-item" id="nav-guia">',
+    '      <span class="nav-icon">' + amIcon('book', 18) + '</span>',
+    '      <span class="pt">Guia de estudo</span><span class="es">Gu&#xED;a de estudio</span>',
+    '    </a>',
     '    <a href="anamnesismed-mnemonicas.html" class="nav-item" id="nav-mnemonicas">',
     '      <span class="nav-icon">' + amIcon('brain', 18) + '</span>',
     '      <span class="pt">Mnem&#xF4;nicas</span><span class="es">Mnemot&#xE9;cnicas</span>',
@@ -61,6 +65,10 @@
     '  </nav>',
     '',
     '  <div class="sidebar-foot">',
+    '    <button type="button" class="nav-item sb-toggle" id="sb-toggle" aria-controls="sidebar" aria-expanded="true">',
+    '      <span class="nav-icon"><svg class="am-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg></span>',
+    '      <span class="pt" data-sbt="pt">Recolher menu</span><span class="es" data-sbt="es">Contraer men&#xFA;</span>',
+    '    </button>',
     '    <a href="anamnesismed-config.html" class="user-info" style="text-decoration:none">',
     '      <div class="user-av user-avatar">' + amIcon('user', 16) + '</div>',
     '      <div style="flex:1;min-width:0;overflow:hidden">',
@@ -82,6 +90,7 @@
   /* Dica (title) em cada item: no tablet a barra vira trilho de ícones e o rótulo some da tela. */
   function _titulos() {
     root.querySelectorAll('.nav-item,.esp-nav-item,.sidebar-foot .user-info').forEach(function (a) {
+      if (a.id === 'sb-toggle') return; /* título dinâmico (recolher/expandir) */
       if (a.getAttribute('title') || a.getAttribute('data-tip')) return;
       var t = Array.prototype.map.call(a.querySelectorAll('.pt,.es'), function (n) { return (n.textContent || '').trim(); })
         .filter(function (x, i, arr) { return x && arr.indexOf(x) === i; }).join(' / ');
@@ -96,9 +105,9 @@
     var tip = document.createElement('div');
     tip.className = 'sb-tip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true;
     document.body.appendChild(tip);
-    var rail = window.matchMedia('(min-width:769px) and (max-width:1180px)');
+    var hideT = null;
     function show(el) {
-      if (!rail.matches) return;
+      if (!document.documentElement.classList.contains('sb-collapsed') || !window.matchMedia('(min-width:769px)').matches) return;
       var t = el.getAttribute('title') || el.getAttribute('data-tip');
       if (!t) return;
       if (el.getAttribute('title')) { el.setAttribute('data-tip', t); el.removeAttribute('title'); }
@@ -115,6 +124,18 @@
     root.addEventListener('pointerleave', hide, true);
     root.addEventListener('focusout', hide);
     root.addEventListener('click', hide);
+    /* Toque: pressionar e segurar (~450ms) mostra a dica do ícone por 2s sem acionar o link. */
+    var lpT = null, lpShown = false;
+    root.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'touch' || !e.target.closest) return;
+      var el = e.target.closest('.nav-item,.esp-nav-item,.user-info'); if (!el) return;
+      lpShown = false; clearTimeout(lpT);
+      lpT = setTimeout(function () { show(el); lpShown = !tip.hidden; clearTimeout(hideT); hideT = setTimeout(hide, 2000); }, 450);
+    });
+    ['pointerup', 'pointercancel', 'pointermove'].forEach(function (ev) { root.addEventListener(ev, function () { clearTimeout(lpT); }); });
+    root.addEventListener('click', function (e) { if (lpShown) { e.preventDefault(); lpShown = false; } }, true);
+    root.addEventListener('contextmenu', function (e) { if (e.target.closest && e.target.closest('.nav-item,.esp-nav-item,.user-info')) e.preventDefault(); });
+    window._sbTipHide = hide;
   })();
 
   /* ── TOGGLE ── */
@@ -161,6 +182,68 @@
     if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('open')) window.closeSidebar();
   });
   _syncBodyState();
+
+  /* ── RECOLHER / EXPANDIR (>=769px) ──
+     Regra: índice/demais páginas -> preferência do usuário (localStorage 'am-sb'), padrão = expandida no
+     desktop e trilho no tablet. Tela de HC (#screen-hc.active) -> recolhe sozinha para o trilho; o usuário
+     pode expandir (vale só enquanto estiver naquela HC, não é gravado); ao voltar ao índice, restaura a
+     preferência. O botão do rodapé grava a preferência quando acionado fora da HC. */
+  (function () {
+    var KEY = 'am-sb', html = document.documentElement;
+    var btn = document.getElementById('sb-toggle');
+    var hcEl = document.getElementById('screen-hc');
+    var wide = window.matchMedia('(min-width:769px)');
+    var tabletMq = window.matchMedia('(max-width:1180px)');
+    var inHC = false, hcOverride = null, started = false;
+    function getPref() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+    function setPref(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+    function collapsed() {
+      if (inHC) return hcOverride === null ? true : hcOverride;
+      var p = getPref();
+      if (p === 'collapsed') return true;
+      if (p === 'expanded') return false;
+      return tabletMq.matches;
+    }
+    function apply() {
+      var c = collapsed() && wide.matches;
+      html.classList.toggle('sb-collapsed', c);
+      if (!btn) return;
+      btn.setAttribute('aria-expanded', c ? 'false' : 'true');
+      var t = c ? 'Expandir menu / Expandir menú' : 'Recolher menu / Contraer menú';
+      btn.removeAttribute('data-tip'); btn.setAttribute('title', t);
+      var p = btn.querySelector('[data-sbt="pt"]'), e = btn.querySelector('[data-sbt="es"]');
+      if (p) p.textContent = c ? 'Expandir menu' : 'Recolher menu';
+      if (e) e.textContent = c ? 'Expandir menú' : 'Contraer menú';
+      if (!started) { started = true; (window.requestAnimationFrame || setTimeout)(function () { html.classList.add('sb-anim'); }); }
+    }
+    function syncCtx() {
+      var now = !!(hcEl && hcEl.classList.contains('active'));
+      if (now !== inHC) { inHC = now; hcOverride = null; apply(); if (window._sbTipHide) window._sbTipHide(); }
+    }
+    if (btn) btn.addEventListener('click', function () {
+      var next = !html.classList.contains('sb-collapsed');
+      if (inHC) hcOverride = next; else setPref(next ? 'collapsed' : 'expanded');
+      apply();
+      if (window._sbTipHide) window._sbTipHide();
+    });
+    inHC = !!(hcEl && hcEl.classList.contains('active'));
+    apply();
+    if (hcEl) try { new MutationObserver(syncCtx).observe(hcEl, { attributes: true, attributeFilter: ['class'] }); } catch (e) {}
+    [wide, tabletMq].forEach(function (m) { if (m.addEventListener) m.addEventListener('change', apply); else if (m.addListener) m.addListener(apply); });
+  })();
+
+  /* Item "Guia de estudo": na tela do app abre as referências do motivo em nova aba (a HC em andamento não se perde). */
+  (function () {
+    var g = document.getElementById('nav-guia');
+    if (!g) return;
+    g.addEventListener('click', function (e) {
+      var hc = document.getElementById('screen-hc');
+      if (hc && hc.classList.contains('active') && typeof window.openRefMotivo === 'function') {
+        e.preventDefault(); window.openRefMotivo();
+        if (window.closeSidebar) window.closeSidebar();
+      }
+    });
+  })();
 
   /* ── NOME INSTANTÂNEO (cache local — elimina o delay até o Supabase resolver) ── */
   try {
@@ -231,7 +314,8 @@
   var rules = {
     'nav-inicio':     path.includes('dashboard') && view !== 'hcs',
     'nav-hcs':        path.includes('dashboard') && view === 'hcs',
-    'nav-explorar':   path.includes('explorar') || path.includes('especialidades') || path.includes('ref-respiratorio'),
+    'nav-explorar':   path.includes('explorar') || path.includes('especialidades'),
+    'nav-guia':       path.includes('referencias') || path.includes('-ref-'),
     'nav-mnemonicas': path.includes('mnemonicas'),
     'nav-config':     path.includes('config')
   };

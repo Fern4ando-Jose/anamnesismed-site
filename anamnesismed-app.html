@@ -335,7 +335,6 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .bottom-nav-inner{display:flex;justify-content:space-around}
 .bnav-item{background:none;border:0;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 12px;cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);user-select:none;transition:color .15s}
 .bnav-item.active{color:var(--primary)}
-.bnav-item.bnav-disabled{opacity:.3;pointer-events:none}
 .bnav-icon{font-size:18px}
 
 /* Hamburger / overlay */
@@ -344,32 +343,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ── FLOATING ACTION BUTTON ── */
-.fab-wrap{
-  position:fixed;bottom:80px;right:18px;z-index:250;
-  display:none;flex-direction:column;gap:8px;align-items:flex-end
-}
-.hc-screen.active ~ * .fab-wrap,
-.fab-wrap.visible{display:flex}
-.fab-btn{
-  width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-  box-shadow:0 4px 16px rgba(13,45,61,.25);transition:all .2s
-}
-.fab-btn:hover{transform:scale(1.1)}
-.fab-primary{background:var(--primary);color:#fff;width:52px;height:52px;font-size:22px}
-.fab-secondary{background:var(--bg-card);color:var(--ink)}
-.fab-label{
-  background:rgba(13,45,61,.85);color:#fff;
-  font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;
-  white-space:nowrap;pointer-events:none;
-  opacity:0;transform:translateX(10px);transition:opacity .15s,transform .15s
-}
-.fab-item:hover .fab-label{opacity:1;transform:none}
-.fab-item{display:flex;align-items:center;gap:8px}
 .conduta-btn [data-am-icon]{vertical-align:-3px;margin-right:6px}
-/* celular: PDF e Salvar já estão no cabeçalho da HC e (PDF) na barra inferior — o FAB fica só com Referências e não cobre campos */
-@media(max-width:1280px){.fab-item-sec{display:none}} /* PDF/Salvar já estão no cabeçalho da HC; até 1280px (inclui tablet paisagem de 1180) os botões flutuantes tapavam campos */
+/* PDF e Salvar/Guardar existem UMA vez só: botões do cabeçalho da HC (todos os breakpoints). Sem botões flutuantes; o atalho do guia virou item do menu principal (sidebar/trilho/gaveta/bottom-nav). */
 
 /* ── MOBILE RESPONSIVENESS ── */
 @media(max-width:768px){
@@ -404,7 +379,6 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .ddx-table th,.score-table th{letter-spacing:.3px}
   .score-table{font-size:12px}
   .mnem-kw{font-size:20px}
-  .fab-wrap{bottom:75px;right:14px}
   /* alvos de toque maiores no mobile (dedo ~44px) */
   .yn-btn{padding:8px 14px;font-size:12px}
   .f-radio{padding:8px 14px;font-size:12px}
@@ -445,14 +419,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .hamburger{min-width:44px;min-height:44px;display:none;align-items:center;justify-content:center}
   .topbar-back,.btn-new{padding-top:0;padding-bottom:0;font-size:13px;align-items:center}
   .hc-header-top .conduta-btn{min-height:44px;padding:0 16px!important;font-size:13px!important;align-items:center;margin:0}
-  .fab-btn{width:56px;height:56px}
-  .fab-primary{width:60px;height:60px}
-  .fab-wrap{right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px))}
   .main{padding-right:env(safe-area-inset-right,0px)}
 }
 @media (max-width:768px){
   .hamburger{display:flex}
-  .fab-wrap{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
   .bnav-item{min-width:64px;justify-content:center;font-size:12px}
   .bottom-nav{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 }
@@ -531,7 +501,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .guide-tab{min-height:48px}
 }
 @media print{
-  .sidebar,.topbar,.guide-tabs,.bottom-nav,.hc-progress,.hamburger,.fab-wrap{display:none!important}
+  .sidebar,.topbar,.guide-tabs,.bottom-nav,.hc-progress,.hamburger{display:none!important}
   .main{margin-left:0}
   .hc-sections{padding:0}
   .hc-panel-body{max-height:none!important}
@@ -1839,12 +1809,6 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <textarea class="f-input" id="plan-obs" rows="2" placeholder=""></textarea>
             </div>
             <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-              <button class="conduta-btn conduta-btn-primary" onclick="exportPDF()">
-                <span data-am-icon="file" data-am-size="16" aria-hidden="true"></span> <span class="pt">Exportar PDF completo</span><span class="es">Exportar PDF completo</span>
-              </button>
-              <button class="conduta-btn conduta-btn-secondary" onclick="saveHC()">
-                <span data-am-icon="save" data-am-size="16" aria-hidden="true"></span> <span class="pt">Salvar HC</span><span class="es">Guardar HC</span>
-              </button>
               <button class="conduta-btn conduta-btn-pdf" onclick="newHC()">
                 <span data-am-icon="plus" data-am-size="16" aria-hidden="true"></span> <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
               </button>
@@ -1857,25 +1821,6 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   </div><!-- /hc-screen -->
 
 </main><!-- /main -->
-
-<!-- FLOATING ACTION BUTTON (visível só na tela HC) -->
-<div class="fab-wrap" id="fab-wrap">
-  <div class="fab-item fab-item-sec">
-    <span class="fab-label pt">Imprimir / PDF</span>
-    <span class="fab-label es">Imprimir / PDF</span>
-    <button type="button" class="fab-btn fab-secondary" onclick="exportPDF()" title="PDF" aria-label="Imprimir / PDF"><span data-am-icon="file" data-am-size="22" aria-hidden="true"></span></button>
-  </div>
-  <div class="fab-item fab-item-sec">
-    <span class="fab-label pt">Salvar HC</span>
-    <span class="fab-label es">Guardar HC</span>
-    <button type="button" class="fab-btn fab-secondary" onclick="saveHC()" title="Salvar / Guardar" aria-label="Salvar HC / Guardar HC"><span data-am-icon="save" data-am-size="22" aria-hidden="true"></span></button>
-  </div>
-  <div class="fab-item">
-    <span class="fab-label pt">Referências do motivo</span>
-    <span class="fab-label es">Referencias del motivo</span>
-    <button type="button" class="fab-btn fab-primary" onclick="openRefMotivo()" title="Referências clínicas / Referencias clínicas" aria-label="Referências do motivo / Referencias del motivo"><span data-am-icon="book" data-am-size="22"></span></button>
-  </div>
-</div>
 
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav" aria-label="Navegação / Navegación">
@@ -1892,8 +1837,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
       <span class="bnav-icon" data-am-icon="clipboard" data-am-size="22"></span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
     </button>
-    <button type="button" class="bnav-item" onclick="exportPDF()">
-      <span class="bnav-icon" data-am-icon="file" data-am-size="22"></span>PDF
+    <button type="button" class="bnav-item" id="bnav-guia" onclick="goGuia()">
+      <span class="bnav-icon" data-am-icon="book" data-am-size="22"></span>
+      <span class="pt">Guia</span><span class="es">Guía</span>
     </button>
   </div>
 </nav>
@@ -1925,6 +1871,8 @@ function setLang(l){
 
 // ── SIDEBAR ───────────────────────────────────────────
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
+// Guia de estudo (item do menu / bottom-nav): na HC abre as referências do motivo em nova aba; no índice, navega.
+function goGuia(){ var hc=document.getElementById('screen-hc'); if(hc && hc.classList.contains('active')) openRefMotivo(); else window.location.href='anamnesismed-referencias.html'; }
 function goToDashboard(view){ if(!confirmDiscardHC()) return; window.location.href='anamnesismed-dashboard.html'+(view?'?view='+view:'');}
 // #8 — "Início" no app: dentro de uma HC volta para a seleção de motivos; quando já
 // está na seleção (nada a voltar dentro do app), vai para o Início real (dashboard).
@@ -2035,16 +1983,10 @@ function showScreen(s){
   document.getElementById('screen-index').classList.toggle('active',s==='index');
   document.getElementById('screen-hc').classList.toggle('active',s==='hc');
   document.getElementById('tb-sep').style.display=s==='hc'?'inline':'none';
-  // FAB só aparece na tela HC
-  var fab = document.getElementById('fab-wrap');
-  if(fab) fab.classList.toggle('visible', s==='hc');
   // Atualiza active state do bnav (Inicio = index, sem active na tela HC)
   document.querySelectorAll('.bnav-item').forEach(function(el,i){
     el.classList.toggle('active', s==='index' && i===0);
   });
-  // PDF bnav só habilitado dentro de uma HC
-  var pdfBtn = document.querySelectorAll('.bnav-item')[3];
-  if(pdfBtn) pdfBtn.classList.toggle('bnav-disabled', s!=='hc');
   // Limpa tb-motivo ao voltar para o index
   if(s==='index'){
     var tbm = document.getElementById('tb-motivo');
@@ -3051,6 +2993,6 @@ function openRefMotivo(){
   setup(document.getElementById('guide-tabs'));
 })();
 </script>
-<script src="sidebar.js?v=a7d46540"></script>
+<script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>
