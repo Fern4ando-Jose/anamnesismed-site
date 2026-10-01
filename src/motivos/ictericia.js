@@ -2,7 +2,7 @@
 AM.motivo("ictericia", {
   "name": "Icterícia",
   "nameEs": "Ictericia",
-  "icon": "🟡",
+  "icon": "👁️",
   "color": "mc-secondary",
   "rasHighlight": [
     "digest",

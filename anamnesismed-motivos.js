@@ -1339,7 +1339,7 @@ const MOTIVOS = {
           "id": "dor-abdominal",
           "name": "Dor Abdominal",
           "nameEs": "Dolor Abdominal",
-          "icon": "🫀",
+          "icon": "🫃",
           "color": "mc-accent",
           "isPain": true,
           "aeaGuide": [
@@ -1543,7 +1543,7 @@ const MOTIVOS = {
           "id": "ictericia",
           "name": "Icterícia",
           "nameEs": "Ictericia",
-          "icon": "🟡",
+          "icon": "👁️",
           "color": "mc-secondary",
           "aeaGuide": [
             {
@@ -3955,7 +3955,7 @@ const MOTIVOS = {
           "id": "ictericia",
           "name": "Icterícia",
           "nameEs": "Ictericia",
-          "icon": "🟡",
+          "icon": "👁️",
           "color": "mc-secondary",
           "aeaGuide": [
             {

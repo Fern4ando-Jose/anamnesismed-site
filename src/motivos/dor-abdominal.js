@@ -2,7 +2,7 @@
 AM.motivo("dor-abdominal", {
   "name": "Dor Abdominal",
   "nameEs": "Dolor Abdominal",
-  "icon": "🫀",
+  "icon": "🫃",
   "color": "mc-accent",
   "isPain": true,
   "rasHighlight": [
