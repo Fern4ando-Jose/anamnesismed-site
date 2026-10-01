@@ -203,7 +203,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </div>
       <div class="search-wrap">
         <span class="search-icon">&#x1F50D;</span>
-        <input type="text" class="search-input" id="motivo-search" autocomplete="off"
+        <input type="text" class="search-input" id="motivo-search" autocomplete="off" aria-label="Buscar motivo"
           placeholder="Buscar motivo..." data-ph-pt="Buscar motivo..." data-ph-es="Buscar motivo...">
         <div class="search-results" id="search-results"></div>
       </div>
@@ -381,6 +381,7 @@ function setLang(lang){
   document.getElementById("btn-pt").classList.toggle("active",lang==="pt");
   renderMosaic();
   var si = document.getElementById("motivo-search");
+  if(si) si.setAttribute("aria-label", "Buscar motivo de consulta");
   if(si) runSearch(si.value);
   try{ localStorage.setItem("am-lang",lang); }catch(e){}
 }
@@ -418,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
-<script src="supabase-integration.js?v=56f42252" defer></script>
+<script src="supabase-integration.js?v=628b1cd6" defer></script>
 <script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

@@ -903,6 +903,30 @@ async function guardCheckAccess() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
+ * Nome do motivo nos DOIS idiomas, resolvido por motivo_id em MOTIVOS (anamnesismed-motivos.js).
+ * O HC grava o nome no idioma em que foi criada (hc.motivo); aqui a tela sempre mostra o idioma ativo.
+ * Sem MOTIVOS carregado (ou id desconhecido) cai no nome gravado, igual nos dois idiomas.
+ */
+let _motivoNomeMap = null;
+function amMotivoNomes(id, fallback) {
+  if (!_motivoNomeMap) {
+    _motivoNomeMap = {};
+    try {
+      if (typeof MOTIVOS !== 'undefined') {
+        Object.keys(MOTIVOS).forEach(esp => (MOTIVOS[esp] || []).forEach(cat => (cat.items || []).forEach(it => {
+          if (!_motivoNomeMap[it.id]) _motivoNomeMap[it.id] = { pt: it.name, es: it.nameEs || it.name };
+        })));
+      }
+    } catch (e) { _motivoNomeMap = {}; }
+  }
+  const m = id && _motivoNomeMap[id];
+  const base = fallback || id || '';
+  return m ? { pt: m.pt, es: m.es } : { pt: base, es: base };
+}
+window.amMotivoNomes = amMotivoNomes;
+const _amBi = (pt, es) => `<span class="pt">${escHtml(pt)}</span><span class="es">${escHtml(es)}</span>`;
+
+/**
  * Preenche o nome do usuário em todos os lugares da UI
  */
 async function uiUpdateUserInfo() {
@@ -1021,7 +1045,9 @@ async function uiLoadRecentHCs(limit, preHcs) {
     const color = specColors[hc.especialidade] || '#6b7c8a';
     const st = statusLabels[hc.status] || statusLabels.rascunho;
     const _d = new Date(hc.atualizado_em || hc.criado_em);
-    const date = isNaN(_d.getTime()) ? '—' : _d.toLocaleDateString('pt-BR'); // nunca mostra "Invalid Date"
+    const date = isNaN(_d.getTime()) ? '—' // nunca mostra "Invalid Date"
+      : `<span class="pt">${_d.toLocaleDateString('pt-BR')}</span><span class="es">${_d.toLocaleDateString('es-ES')}</span>`;
+    const mn = amMotivoNomes(hc.motivo_id, hc.motivo);
     const nomePaciente = (hc.dados && hc.dados.campos && hc.dados.campos['dp-nome']) || '';
     const specLabel = hc.especialidade === 'clinica'
       ? '<span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>'
@@ -1031,7 +1057,7 @@ async function uiLoadRecentHCs(limit, preHcs) {
     <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();this.click()}" style="cursor:pointer">
       <div class="hc-color" style="background:${color}"></div>
       <div class="hc-info">
-        <div class="hc-name">${escHtml(hc.motivo || hc.motivo_id)}${nomePaciente ? ' — ' + escHtml(nomePaciente) : ''}</div>
+        <div class="hc-name">${_amBi(mn.pt, mn.es)}${nomePaciente ? ' — ' + escHtml(nomePaciente) : ''}</div>
         <div class="hc-meta">
           <span>${specLabel}</span>
           <span class="hc-dot"></span>
@@ -1163,7 +1189,9 @@ async function uiLoadStats(preHcs, prePdf) {
   }
 
   // Motivos consultados (distintos)
-  const motivosUnicos = [...new Set(hcs.map(hc => hc.motivo || hc.motivo_id).filter(Boolean))];
+  const motivosMap = new Map();
+  hcs.forEach(hc => { const k = hc.motivo_id || hc.motivo; if (k && !motivosMap.has(k)) motivosMap.set(k, amMotivoNomes(hc.motivo_id, hc.motivo)); });
+  const motivosUnicos = [...motivosMap.values()];
   const motivosValueEl = document.getElementById('stat-motivos-value');
   if (motivosValueEl) motivosValueEl.textContent = String(motivosUnicos.length);
 
@@ -1176,8 +1204,8 @@ async function uiLoadStats(preHcs, prePdf) {
     } else {
       const primeiro = motivosUnicos[0];
       const resto = motivosUnicos.length - 1;
-      motivosDeltaPt.textContent = resto > 0 ? `${primeiro} + ${resto} mais` : primeiro;
-      motivosDeltaEs.textContent = resto > 0 ? `${primeiro} + ${resto} más` : primeiro;
+      motivosDeltaPt.textContent = resto > 0 ? `${primeiro.pt} + ${resto} mais` : primeiro.pt;
+      motivosDeltaEs.textContent = resto > 0 ? `${primeiro.es} + ${resto} más` : primeiro.es;
     }
   }
 }
@@ -1213,7 +1241,7 @@ async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
 
   const eventos = [];
   hcs.forEach(hc => {
-    const nome = hc.motivo || hc.motivo_id || '—';
+    const nome = amMotivoNomes(hc.motivo_id, hc.motivo || '—');
     const criado = hc.criado_em;
     const atualizado = hc.atualizado_em;
     if (atualizado && atualizado !== criado) {
@@ -1231,7 +1259,7 @@ async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
       const key = exp.motivoId || exp.motivo || 'unknown';
       if (!pdfSeen.has(key)) {
         pdfSeen.add(key);
-        eventos.push({ tipo: 'exported', motivo: exp.motivo, ts: exp.ts });
+        eventos.push({ tipo: 'exported', motivo: amMotivoNomes(exp.motivoId, exp.motivo || ''), ts: exp.ts });
       }
     });
 
@@ -1258,13 +1286,15 @@ async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
   list.innerHTML = recentes.map(ev => {
     const lab = labels[ev.tipo] || labels.created;
     const time = activityFormatTime(ev.ts);
-    const motivoTxt = ev.motivo ? ` — ${escHtml(ev.motivo)}` : '';
+    const mt = ev.motivo || { pt: '', es: '' };
+    const motivoPt = mt.pt ? ` — ${escHtml(mt.pt)}` : '';
+    const motivoEs = mt.es ? ` — ${escHtml(mt.es)}` : '';
     return `
       <div class="act-item">
         <div class="act-dot ${lab.dot}"></div>
         <div>
-          <div class="act-text pt"><strong>${lab.pt}</strong>${motivoTxt}</div>
-          <div class="act-text es"><strong>${lab.es}</strong>${motivoTxt}</div>
+          <div class="act-text pt"><strong>${lab.pt}</strong>${motivoPt}</div>
+          <div class="act-text es"><strong>${lab.es}</strong>${motivoEs}</div>
           <div class="act-time pt">${time.pt}</div>
           <div class="act-time es">${time.es}</div>
         </div>

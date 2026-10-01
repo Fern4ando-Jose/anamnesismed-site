@@ -209,7 +209,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .topbar{padding:0 14px;height:52px}
   .motivos-grid{grid-template-columns:1fr}
   .hamburger{display:flex}
-  .topbar-back span{display:none}
+  .topbar-back span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
   .topbar-back::before{content:'←'}
   .panel-esp-title{font-size:20px}
 }
@@ -536,7 +536,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
-<script src="supabase-integration.js?v=56f42252" defer></script>
+<script src="supabase-integration.js?v=628b1cd6" defer></script>
 <script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

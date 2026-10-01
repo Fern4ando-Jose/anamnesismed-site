@@ -65,9 +65,9 @@ nav.scrolled{box-shadow:0 2px 24px rgba(10,26,36,0.07)}
 .lang-btn{padding:4px 11px;font-size:12px;font-weight:700;font-family:var(--sans);letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 .lang-btn:focus-visible{outline:2px solid var(--primary-dark);outline-offset:-3px}.lang-btn.active:focus-visible{outline-color:#5ED6E3}
-.btn-outline{padding:8px 18px;font-size:14px;font-weight:600;color:var(--ink);border:1.5px solid var(--line-md);border-radius:var(--r);text-decoration:none;transition:all .2s;white-space:nowrap}
+.btn-outline{display:inline-flex;align-items:center;min-height:44px;padding:8px 18px;font-size:14px;font-weight:600;color:var(--ink);border:1.5px solid var(--line-md);border-radius:var(--r);text-decoration:none;transition:all .2s;white-space:nowrap}
 .btn-outline:hover{border-color:var(--primary-dark);color:var(--teal-text)}
-.btn-primary{padding:9px 22px;font-size:14px;font-weight:700;color:#fff;background:var(--primary-dark);border:none;border-radius:var(--r);text-decoration:none;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-primary{display:inline-flex;align-items:center;min-height:44px;padding:9px 22px;font-size:14px;font-weight:700;color:#fff;background:var(--primary-dark);border:none;border-radius:var(--r);text-decoration:none;cursor:pointer;transition:all .2s;white-space:nowrap}
 .btn-primary:hover{background:var(--primary-deep);transform:translateY(-1px)}
 
 /* HERO */
@@ -183,7 +183,7 @@ section{padding:80px 64px}
 .pf{font-size:14px;color:var(--muted);display:flex;gap:9px;align-items:flex-start;line-height:1.5}
 .pf::before{content:"✓";color:var(--teal-text);font-weight:700;flex-shrink:0}
 .pf.off::before{content:"○";color:var(--muted)}
-.pf.off{color:var(--muted);opacity:.85}
+.pf.off{color:var(--muted)}
 .plan-cta{display:block;text-align:center;padding:13px;font-size:15px;font-weight:700;border-radius:var(--r);text-decoration:none;transition:all .2s;cursor:pointer;border:none;font-family:var(--sans)}
 .cta-ghost{color:var(--teal-text);background:transparent;border:1.5px solid var(--primary)}
 .cta-ghost:hover{background:var(--primary-deep);color:#fff}
@@ -578,8 +578,8 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
         <div class="pf pt">Exportação em lote de HCs</div><div class="pf es">Exportación en lote de HC</div>
         <div class="pf pt">Integrações futuras (EMR)</div><div class="pf es">Integraciones futuras (EMR)</div>
       </div>
-      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost pt" style="color:var(--secondary);border-color:var(--secondary)" onmouseover="this.style.background='var(--secondary)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--secondary)'">Assinar por $4,99 →</a>
-      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost es" style="color:var(--secondary);border-color:var(--secondary)" onmouseover="this.style.background='var(--secondary)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--secondary)'">Suscribirse por $4,99 →</a>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost pt" style="color:var(--teal-text);border-color:var(--teal-text)" onmouseover="this.style.background='var(--teal-text)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--teal-text)'">Assinar por $4,99 →</a>
+      <a href="anamnesismed-auth.html" class="plan-cta cta-ghost es" style="color:var(--teal-text);border-color:var(--teal-text)" onmouseover="this.style.background='var(--teal-text)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--teal-text)'">Suscribirse por $4,99 →</a>
     </div>
   </div>
   <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:18px" class="pt">* Verificação de vínculo acadêmico necessária para o plano Estudante</p>
@@ -728,6 +728,6 @@ function setLang(l){
 })();
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=56f42252"></script>
+<script src="supabase-integration.js?v=628b1cd6"></script>
 </body>
 </html>

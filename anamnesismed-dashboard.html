@@ -162,7 +162,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--ink);border-top:1px solid rgba(255,255,255,.07);padding:8px 0 env(safe-area-inset-bottom)}
 .mobile-nav-items{display:flex;justify-content:space-around}
 .mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;font-size:12px;font-weight:500;color:#8fa9af;cursor:pointer;border:none;background:none;transition:color .2s;text-decoration:none}
-.mn-item.active{color:var(--primary)}
+.mn-item.active{color:var(--teal-on-dark)}
 .mn-icon{font-size:20px}
 
 /* RESPONSIVE */
@@ -216,7 +216,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </div>
       <div class="search-wrap">
         <span class="search-icon">&#x1F50D;</span>
-        <input type="search" class="search-input" placeholder="Buscar HCs..." id="search">
+        <input type="search" class="search-input" placeholder="Buscar HCs..." id="search" aria-label="Buscar HCs">
       </div>
       <button type="button" class="pwa-btn pwa-ui" data-pwa-install hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg><span class="pt">Instalar app</span><span class="es">Instalar la app</span></button>
       <a href="anamnesismed-app.html?novo=1" class="btn-new"><span>+</span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
@@ -235,7 +235,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <h1 class="hero-greet pt" id="page-title">Ol&#xE1;</h1>
       <h1 class="hero-greet es" id="page-title-es">Hola</h1>
       <p class="hero-sub pt">Cada hist&#xF3;ria cl&#xED;nica completa, guiada passo a passo. Comece uma nova ou continue de onde parou.</p>
-      <p class="hero-sub es">Cada historia cl&#xED;nica completa, guiada paso a paso. Empez&#xE1; una nueva o segu&#xED; donde la dejaste.</p>
+      <p class="hero-sub es">Cada historia cl&#xED;nica completa, guiada paso a paso. Empieza una nueva o sigue donde la dejaste.</p>
       <a href="anamnesismed-app.html?novo=1" class="hero-cta"><span>+</span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
     </section>
 
@@ -363,6 +363,7 @@ function setLang(l){
   document.documentElement.setAttribute('data-lang',l);
   document.getElementById('btn-es').classList.toggle('active',l==='es');
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');
+  var _s=document.getElementById('search'); if(_s){ _s.setAttribute('aria-label',l==='pt'?'Buscar histórias clínicas':'Buscar historias clínicas'); }
   try{localStorage.setItem('am-lang',l)}catch(e){}
 }
 /* Busca de HCs: filtra a lista já carregada (window.__hcsAll) por motivo/paciente */
@@ -432,8 +433,9 @@ function setView(v){
   document.getElementById('page-sub-es').textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
 })();
 </script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=56f42252"></script>
+<script src="supabase-integration.js?v=628b1cd6"></script>
 <script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

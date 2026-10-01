@@ -46,7 +46,8 @@ function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
       html += '<button class="yn-btn" onclick="ynBtnSel(this,\''+id+'\',\'nao\')"><span class="pt">Não</span><span class="es">No</span></button>';
       html += '</div>';
     } else if(q.type==='input'){
-      html += '<input class="f-input" type="text" id="'+id+'" placeholder="'+(lang==='es'?(q.ph2||q.ph||''):(q.ph||''))+'">';
+      var _al = function(t){return String(t||'').replace(/<[^>]*>/g,'').replace(/"/g,'&quot;');};
+      html += '<input class="f-input" type="text" id="'+id+'" placeholder="'+(lang==='es'?(q.ph2||q.ph||''):(q.ph||''))+'" aria-label="'+_al(lang==='es'?(q.qEs||q.q):q.q)+'" data-al-pt="'+_al(q.q)+'" data-al-es="'+_al(q.qEs||q.q)+'">';
     }
     html += '</div>';
   });

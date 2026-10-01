@@ -164,7 +164,7 @@ table.sx tbody tr:hover td:first-child{background:#f1edfb}
   .main{margin-left:0}
   .hamburger{display:flex}
   .topbar{padding:0 14px}
-  .topbar-back span{display:none}
+  .topbar-back span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
   .topbar-back::before{content:'←'}
   .hero{padding:18px 16px}.hero-title{font-size:20px}
   .wrap{padding:18px 14px 80px}
@@ -519,7 +519,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
-<script src="supabase-integration.js?v=56f42252" defer></script>
+<script src="supabase-integration.js?v=628b1cd6" defer></script>
 <script src="am-icons.js?v=3383aef7"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <script src="sidebar.js?v=3eecb789"></script>
