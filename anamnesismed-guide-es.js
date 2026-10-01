@@ -7,7 +7,7 @@ var GUIDE_ES = {
         "rows": [
           [
             "Anorexia",
-            ">90% de los casos"
+            "Muy frecuente (síntoma precoz)"
           ],
           [
             "Migración del dolor",
@@ -35,7 +35,7 @@ var GUIDE_ES = {
           ],
           [
             "Inestabilidad",
-            "FC↑, T>38,5°C, Leuco>18.000 → perforación"
+            "FC↑, fiebre alta, leucocitosis marcada → sospechar perforación"
           ],
           [
             "Tacto rectal",
@@ -48,48 +48,48 @@ var GUIDE_ES = {
         ]
       },
       {
-        "kw": "A. MAESTRO",
+        "kw": "MANTRELS",
         "name": "Escala de Alvarado (10 puntos)",
         "rows": [
+          [
+            "Migración del dolor a la FID",
+            "1 punto",
+            "M"
+          ],
           [
             "Anorexia",
             "1 punto",
             "A"
           ],
           [
-            "Migración del dolor a FID",
+            "Náuseas/vómitos",
             "1 punto",
-            "M"
+            "N"
           ],
           [
-            "Aumento de leucocitos (Leucocitosis)",
+            "Tenderness — dolor a la palpación en la FID",
             "2 puntos",
-            "A"
+            "T"
           ],
           [
-            "Entumecimiento / dolor a la descompresión",
+            "Rebound — dolor a la descompresión súbita (Blumberg)",
+            "1 punto",
+            "R"
+          ],
+          [
+            "Elevación de la temperatura (> 37,3 °C)",
             "1 punto",
             "E"
           ],
           [
-            "Signo de rebote (Blumberg)",
+            "Leucocitosis (> 10.000/mm³)",
+            "2 puntos",
+            "L"
+          ],
+          [
+            "Shift to the left — desviación a la izquierda en el hemograma",
             "1 punto",
             "S"
-          ],
-          [
-            "Temperatura elevada (Fiebre)",
-            "1 punto",
-            "T"
-          ],
-          [
-            "Rigidez / dolor exquisito en FID",
-            "2 puntos",
-            "R"
-          ],
-          [
-            "Orientación a la izquierda (Desviación)",
-            "1 punto",
-            "O"
           ]
         ]
       }
@@ -211,7 +211,7 @@ var GUIDE_ES = {
         "abnormal": "Dolor intenso y generalizado a la descompresión súbita — afectación de todo el peritoneo parietal (Guéneau de Mussy +)"
       },
       {
-        "title": "Signo de Chandelier (grito de Laffont)",
+        "title": "Signo de Chandelier (dolor a la movilización del cuello uterino)",
         "subtitle": "Foco inflamatorio pélvico (DDx o apendicitis pélvica)",
         "steps": [
           "Paciente en posición ginecológica",
@@ -320,7 +320,7 @@ var GUIDE_ES = {
             "1"
           ]
         ],
-        "note": "1-4: Baja | 5-6: Observación | 7-8: Probable → cirugía | 9-10: Alta → cirugía inmediata"
+        "note": "1-4: Baja | 5-6: Observación | 7-8: Probable → evaluación quirúrgica | 9-10: Alta → cirugía | Mujeres, niños y ancianos: confirmar con imagen"
       },
       {
         "title": "AIR Score",
@@ -338,27 +338,35 @@ var GUIDE_ES = {
             "1"
           ],
           [
-            "Defensa FID leve",
+            "Rebote o defensa muscular — leve",
             "1"
           ],
           [
-            "Defensa FID moderada/grave",
+            "Rebote o defensa muscular — moderada",
             "2"
           ],
           [
-            "Rebote FID",
-            "1"
+            "Rebote o defensa muscular — fuerte",
+            "3"
           ],
           [
             "Temperatura ≥38,5°C",
             "1"
           ],
           [
-            "Leuco 10.000-14.900",
+            "Leucocitos 10.000-14.900",
             "1"
           ],
           [
-            "Leuco ≥15.000",
+            "Leucocitos ≥15.000",
+            "2"
+          ],
+          [
+            "Neutrófilos 70-84%",
+            "1"
+          ],
+          [
+            "Neutrófilos ≥85%",
             "2"
           ],
           [
@@ -379,15 +387,15 @@ var GUIDE_ES = {
         "β-HCG (mujeres)",
         "Orina rutina",
         "USG abdominal (1ª línea)",
-        "TC abdomen+pelvis c/ contraste (gold standard)",
-        "Rx abdomen (neumoperitoneo)"
+        "TC abdomen+pelvis c/ contraste (si la ecografía no es concluyente o hay duda)",
+        "Rx abdomen (solo si se sospecha perforación u obstrucción)"
       ],
       "drugs": [
         "NPO + hidratación EV",
-        "Dipirona/Tramadol EV (no retrasa el diagnóstico)",
+        "Analgesia EV, incluido opioide (no enmascara ni retrasa el diagnóstico)",
         "Ondansetrón 4-8mg EV",
-        "ATB prequirúrgico: Cefazolina 2g EV 30min antes",
-        "Perforada: Metronidazol 500mg + Ceftriaxona 2g EV"
+        "ATB prequirúrgico hasta 60 min antes de la incisión: Cefazolina 2g EV + Metronidazol 500mg EV (cobertura de anaerobios)",
+        "Perforada/complicada: Metronidazol 500mg cada 8 h + Ceftriaxona 1-2g cada 24 h EV; duración corta, según el control del foco"
       ],
       "steps": [
         "1. Anamnesis + examen → Alvarado score",

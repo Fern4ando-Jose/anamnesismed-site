@@ -7342,7 +7342,7 @@ const GUIDE_CONTENT = {
           [
             "A",
             "Anorexia",
-            ">90% dos casos"
+            "Muito frequente (sintoma precoce)"
           ],
           [
             "P",
@@ -7377,7 +7377,7 @@ const GUIDE_CONTENT = {
           [
             "I²",
             "Instabilidade",
-            "FC↑, T>38,5°C, Leuco>18.000 → perfuração"
+            "FC↑, febre alta, leucocitose acentuada → suspeitar de perfuração"
           ],
           [
             "T",
@@ -7422,12 +7422,12 @@ const GUIDE_CONTENT = {
           ],
           [
             "E",
-            "Elevação da temperatura (≥ 37,3 °C)",
+            "Elevação da temperatura (> 37,3 °C)",
             "1 ponto"
           ],
           [
             "L",
-            "Leucocitose (≥ 10.000/mm³)",
+            "Leucocitose (> 10.000/mm³)",
             "2 pontos"
           ],
           [
@@ -7555,7 +7555,7 @@ const GUIDE_CONTENT = {
         "abnormal": "Dor intensa e generalizada à descompressão súbita — acometimento de todo o peritônio parietal (Guéneau de Mussy +)"
       },
       {
-        "title": "Sinal de Chandelier (grito de Laffont)",
+        "title": "Sinal de Chandelier (dor à mobilização do colo)",
         "subtitle": "Foco inflamatório pélvico (DDx ou apendicite pélvica)",
         "steps": [
           "Paciente em posição ginecológica",
@@ -7664,7 +7664,7 @@ const GUIDE_CONTENT = {
             "1"
           ]
         ],
-        "note": "1-4: Baixa | 5-6: Observação | 7-8: Provável → cirurgia | 9-10: Alta → cirurgia imediata"
+        "note": "1-4: Baixa | 5-6: Observação | 7-8: Provável → avaliação cirúrgica | 9-10: Alta → cirurgia | Mulheres, crianças e idosos: confirmar com imagem"
       },
       {
         "title": "AIR Score",
@@ -7682,27 +7682,35 @@ const GUIDE_CONTENT = {
             "1"
           ],
           [
-            "Defesa FID leve",
+            "Rebote ou defesa muscular — leve",
             "1"
           ],
           [
-            "Defesa FID moderada/grave",
+            "Rebote ou defesa muscular — moderada",
             "2"
           ],
           [
-            "Rebote FID",
-            "1"
+            "Rebote ou defesa muscular — forte",
+            "3"
           ],
           [
             "Temperatura ≥38,5°C",
             "1"
           ],
           [
-            "Leuco 10.000-14.900",
+            "Leucócitos 10.000-14.900",
             "1"
           ],
           [
-            "Leuco ≥15.000",
+            "Leucócitos ≥15.000",
+            "2"
+          ],
+          [
+            "Neutrófilos 70-84%",
+            "1"
+          ],
+          [
+            "Neutrófilos ≥85%",
             "2"
           ],
           [
@@ -7723,23 +7731,23 @@ const GUIDE_CONTENT = {
         "β-HCG (mulheres)",
         "Urina rotina",
         "USG abdominal (1ª linha)",
-        "TC abdome+pelve c/ contraste (gold standard)",
-        "Rx abdome (pneumoperitônio)"
+        "TC abdome+pelve c/ contraste (se USG inconclusivo ou dúvida)",
+        "Rx abdome (só se suspeita de perfuração ou obstrução)"
       ],
       "drugs": [
         "NPO + hidratação EV",
-        "Dipirona/Tramadol EV (não retarda diagnóstico)",
+        "Analgesia EV, inclusive opioide (não mascara nem retarda o diagnóstico)",
         "Ondansetrona 4-8mg EV",
-        "ATB pré-op: Cefazolina 2g EV 30min antes",
-        "Perfurada: Metronidazol 500mg + Ceftriaxona 2g EV"
+        "ATB pré-op até 60 min antes da incisão: Cefazolina 2g EV + Metronidazol 500mg EV (cobertura de anaeróbios)",
+        "Perfurada/complicada: Metronidazol 500mg 8/8h + Ceftriaxona 1-2g 24/24h EV; duração curta, conforme o controle do foco"
       ],
       "steps": [
         "1. Anamnese + exame → Alvarado score",
         "2. Laboratório + β-HCG + USG",
         "3. NPO + acesso EV + analgesia",
         "4. Alvarado ≤4 + USG normal: alta c/ orientação",
-        "5. Alvarado 5-6: observação 12-24h",
-        "6. Alvarado ≥7 ou TC confirma: apendicectomia laparoscópica <24h"
+        "5. Alvarado 5-6 (ou mulher, criança, idoso): imagem e/ou observação 12-24h",
+        "6. Alvarado ≥7 com quadro clássico, ou imagem confirmando: apendicectomia laparoscópica <24h"
       ]
     }
   },
