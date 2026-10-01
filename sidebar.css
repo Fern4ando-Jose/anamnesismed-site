@@ -12,7 +12,7 @@
   background:var(--ink,#0A1A24);
   border-right:1px solid rgba(255,255,255,.06);
   display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;
+  position:fixed;top:0;left:0;bottom:0;padding-left:env(safe-area-inset-left,0px);
   z-index:100;transition:transform .3s
 }
 .sidebar-head{padding:20px 14px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
@@ -33,22 +33,22 @@
 #nav-recent{display:flex;flex-direction:column;gap:4px}
 .nav-section-label{
   font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.5px;
-  text-transform:uppercase;color:#4f6b72;padding:12px 6px 5px
+  text-transform:uppercase;color:var(--muted-on-dark,#9DB6BD);padding:12px 6px 5px
 }
 .nav-item{
-  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;
+  display:flex;align-items:center;gap:11px;padding:10px 12px;min-height:44px;border-radius:11px;
   border:1px solid rgba(255,255,255,.06);box-shadow:none;
   font-family:var(--sans);font-size:14px;font-weight:500;color:#bcd2d7;
   text-decoration:none;cursor:pointer;background:rgba(255,255,255,.03);
   transition:all .16s;width:100%;text-align:left
 }
 .nav-item:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.12)}
-.nav-item.active{background:var(--primary,#0FA3B1);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(15,163,177,.28)}
+.nav-item.active{background:var(--primary-dark,#0B7C88);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(15,163,177,.28)}
 .nav-icon{font-size:18px;flex-shrink:0;line-height:1;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;opacity:.95}
 .nav-icon svg{display:block}
 .nav-badge{
   margin-left:auto;font-family:var(--mono);font-size:12px;font-weight:600;
-  background:var(--primary,#0FA3B1);color:#fff;padding:2px 8px;border-radius:10px
+  background:var(--primary-dark,#0B7C88);color:#fff;padding:2px 8px;border-radius:10px
 }
 .nav-item.active .nav-badge{background:rgba(255,255,255,.22)}
 .nav-count{
@@ -63,13 +63,13 @@
 
 /* especialidades dinâmicas (renderSidebarEsp) */
 .esp-nav-item{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;
+  display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:44px;border-radius:11px;
   border:1px solid rgba(255,255,255,.06);
   font-family:var(--sans);font-size:14px;font-weight:500;color:#bcd2d7;
   cursor:pointer;background:rgba(255,255,255,.03);transition:all .16s;width:100%;text-align:left;margin-bottom:4px
 }
 .esp-nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
-.esp-nav-item.active{background:var(--primary,#0FA3B1);color:#fff;border-color:transparent}
+.esp-nav-item.active{background:var(--primary-dark,#0B7C88);color:#fff;border-color:transparent}
 .esp-nav-count{
   margin-left:auto;min-width:24px;height:22px;border-radius:20px;padding:0 8px;
   background:rgba(255,255,255,.10);color:#dbeef1;
@@ -78,7 +78,7 @@
 }
 .esp-nav-item.active .esp-nav-count{background:rgba(255,255,255,.22);color:#fff}
 
-.sidebar-foot{padding:10px;border-top:1px solid rgba(255,255,255,.07)}
+.sidebar-foot{padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.07)}
 .sidebar-foot .user-info{
   display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
   border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .16s;
@@ -86,7 +86,7 @@
 }
 .sidebar-foot .user-info:hover{background:rgba(255,255,255,.08)}
 .user-av{
-  width:32px;height:32px;border-radius:50%;background:var(--primary,#0FA3B1);
+  width:32px;height:32px;border-radius:50%;background:var(--primary-dark,#0B7C88);
   display:flex;align-items:center;justify-content:center;
   font-family:var(--serif);font-size:13px;font-weight:600;color:#fff;flex-shrink:0
 }
@@ -97,8 +97,14 @@
 /* botão fechar (mobile) — sobrepõe o estilo claro inline do sidebar.js */
 #sidebar-close-btn{display:none;background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.14)!important;color:#fff!important}
 
+/* Tablet (769–1024px): barra lateral mais estreita para sobrar largura ao conteúdo (as páginas leem --sidebar-w) */
+@media(min-width:769px) and (max-width:1024px){
+  :root{--sidebar-w:208px}
+  .nav-item,.esp-nav-item{padding:10px;gap:9px;font-size:13.5px}
+  .sidebar-head{padding:18px 12px 14px}
+}
 @media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}
+  .sidebar{transform:translateX(-100%);width:min(var(--sidebar-w,240px),86vw);overscroll-behavior:contain}
   .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(10,26,36,.4)}
   #sidebar-close-btn{display:flex!important}
   /* com o sidebar aberto, esconder a barra inferior (evita 2 menus competindo/sobrepostos) */

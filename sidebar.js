@@ -16,7 +16,7 @@
     '      <div class="sidebar-role es" id="sb-plan-es">Prueba</div>',
     '    </div>',
     '    <button type="button" id="sidebar-close-btn" aria-label="Fechar menu / Cerrar menú"',
-    '      style="display:none;align-items:center;justify-content:center;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0">&#x2715;</button>',
+    '      style="display:none;align-items:center;justify-content:center;border-radius:10px;width:44px;height:44px;font-size:16px;cursor:pointer;flex-shrink:0">&#x2715;</button>',
     '  </div>',
     '',
     '  <nav class="sidebar-nav">',
