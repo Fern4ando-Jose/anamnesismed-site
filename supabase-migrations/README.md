@@ -42,6 +42,7 @@ Functions, sem processo de migração no deploy).
 | `2026-07-11-schema-migrations` | tabela de controle | — (base do log) |
 | `2026-10-01-profiles-protege-billing` | policies por operação + trigger que trava `plano`/`trial_end`/`stripe_id` | `down/` (⚠️ reabre escalada de plano) |
 | `2026-10-01-uso-atomico-rpc` | função `consumir_cota_ia` (cota diária atômica) | `down/` (⚠️ fail-closed nas rotas de IA) |
+| `2026-10-02-devolver-cota-e-search-path` | função `devolver_cota_ia` + `search_path = public, pg_temp` em todas as funções SECURITY DEFINER/triggers | `down/` (⚠️ reabre risco de search_path) |
 
 ### Ações manuais do dono (SQL Editor) — correção de segurança de 2026-10-01
 
@@ -53,39 +54,40 @@ Functions, sem processo de migração no deploy).
    `plano`, `trial_end` e `stripe_id` só mudam pelo servidor (webhook do Stripe, service_role).
 3. Definir `CRON_SECRET` nas envs da Vercel (o `/api/manter-banco-vivo` passou a exigi-lo).
 
+### Ação manual do dono — 2026-10-02
+
+4. Rodar `2026-10-02-devolver-cota-e-search-path.sql` (idempotente; exige as migrations de 06-14, 06-28 e
+   10-01). Sem ela o código continua funcionando, mas a cota de IA **não é devolvida** quando o modelo falha
+   (as rotas só logam `[cota] devolver_cota_ia falhou`). Ela também remove, por segurança, a policy `FOR ALL`
+   antiga de `profiles` caso a 2026-06-23 tenha sido re-executada por engano.
+5. Conferir com os testes executáveis (cole no SQL Editor; rodam em transação com ROLLBACK, não deixam dados):
+   `tests/2026-10-01-profiles-protege-billing.test.sql` e `tests/2026-10-02-cota-rpc.test.sql`.
+   Sucesso = aparece a linha `OK ...`; falha = erro `FALHOU: <o que>`. Se o `insert into auth.users` falhar
+   no seu projeto (colunas obrigatórias), ajuste só essa linha do teste.
+6. Envs na Vercel para as rotas novas: `STRIPE_SECRET_KEY` (já existe; `/api/excluir-conta` cancela a assinatura),
+   `SUPABASE_*` e `NEXT_PUBLIC_URL`.
+
+> **Não re-execute migrations antigas** (ex.: `2026-06-23`): não são idempotentes em todas as policies.
+> Dentro do repositório, `npm test` aplica todas as migrations em um Postgres temporário (quando há Postgres
+> na máquina/CI) e roda os mesmos asserts; sem Postgres o teste é pulado e `test/sql-migrations.test.js` faz a
+> verificação estática.
+
 > Confirmar quais já rodaram em produção: `select version, applied_at from public.schema_migrations;`
 > Se o backfill de `2026-07-11-schema-migrations` registrar algo que na verdade não rodou,
 > rode a forward correspondente (é idempotente) para reconciliar.
 
-## LGPD — retenção, exclusão, consentimento e operadores
+## LGPD — retenção, exclusão, exportação, consentimento e operadores
 
-> Dados de saúde (história clínica) são **dados pessoais sensíveis** (LGPD art. 5º, II e art. 11).
-> Este resumo é um ponto de partida técnico — **não é parecer jurídico**. Itens marcados
-> **[DONO]** dependem de decisão/ação do controlador e não estão resolvidos pelo código.
+Documento completo: [`docs/lgpd.md`](../docs/lgpd.md). Resumo do que é código e do que é do dono:
 
-- **Retenção** — Hoje `historias_clinicas` e `pdf_exports` ficam por tempo indeterminado e as tabelas
-  de uso (`*_usage`) crescem sem limpeza. **[DONO]** definir prazo de retenção (e fundamentação) e
-  documentá-lo na política de privacidade; depois, agendar a limpeza (ex.: `delete ... where
-  created_at < now() - interval '...'` via cron/SQL Editor). As tabelas de uso podem ser podadas
-  com segurança (`delete from public.gerar_hc_usage where dia < current_date - 90;`, idem
-  `ai_assistant_usage`).
-- **Exclusão sob pedido (art. 18, VI)** — Todas as tabelas de usuário referenciam `auth.users` com
-  `on delete cascade` (`gerar_hc_usage`, `ai_assistant_usage`; conferir `historias_clinicas`,
-  `pdf_exports` e `profiles`). Procedimento manual: no painel do Supabase → Authentication →
-  Users → excluir o usuário (apaga em cascata); confirmar com `select count(*) from
-  public.historias_clinicas where user_id = '<uuid>';` = 0. Cancelar a assinatura no Stripe antes.
-  **[DONO]** definir canal (e-mail) e prazo de resposta ao titular; ainda não há botão de
-  autoexclusão no app.
-- **Consentimento (art. 7º, I / art. 11, I)** — O app registra `profiles.termos_aceitos` (aceite de
-  termos). **[DONO]** garantir que o texto de termos/privacidade cite explicitamente: coleta de
-  dados de saúde, finalidade, compartilhamento com operadores (Supabase, Vercel, Stripe,
-  Anthropic) e transferência internacional; considerar guardar data/versão do aceite.
-  Recomendação de produto: o usuário deve inserir **dados anonimizados** (sem nome/CPF do
-  paciente) — o `/api/assistente-dx` já assume HC anonimizada pelo front.
-- **Operadores / DPA** — O conteúdo da HC é enviado à API da Anthropic (`/api/gerar-hc`,
-  `/api/assistente-dx`). **[DONO]** aceitar/arquivar o DPA (Data Processing Addendum) da Anthropic
-  e conferir a política de retenção de dados da API (e a opção de zero-data-retention, se
-  aplicável ao contrato). Fazer o mesmo com Supabase, Vercel e Stripe, e registrar a base legal
-  para a transferência internacional (art. 33).
-- **Logs** — As rotas logam só IDs (userId do Supabase), contagem de tokens e status; nunca texto
-  de paciente nem `err.message` do SDK. Manter essa regra em qualquer código novo.
+- **Exportação** (art. 18, II/V): `GET /api/exportar-dados` (Bearer) — JSON com perfil, HCs e PDFs do próprio usuário.
+- **Exclusão** (art. 18, VI): `POST /api/excluir-conta` (Bearer + `{"confirmar": true}`) — cancela a assinatura no
+  Stripe, apaga `historias_clinicas`, `pdf_exports`, tabelas de uso, `profiles` e o usuário no Auth; retomável e
+  idempotente. Procedimento manual (painel → Authentication → Users) continua possível, mas
+  `historias_clinicas.user_id` **não** tem `on delete cascade` — apague as HCs antes, ou use o endpoint.
+- **Retenção** — **[DONO]** definir prazo e publicar; limpeza das tabelas de uso sugerida em `docs/lgpd.md`.
+- **Consentimento** — `profiles.termos_aceitos` (booleano); **[DONO]** conferir textos de termos/privacidade e
+  considerar guardar data/versão do aceite.
+- **DPA com a Anthropic — pendência do DONO** (e Supabase, Vercel, Stripe): aceitar/arquivar e registrar a base
+  legal da transferência internacional (art. 33).
+- **Logs** — só IDs, contagens e códigos de erro; nunca texto de paciente nem `err.message` de SDK/banco.
