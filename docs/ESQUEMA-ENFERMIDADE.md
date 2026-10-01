@@ -123,5 +123,5 @@ Apendicite, pancreatite aguda e colecistite: já existem como motivos com mnemô
 - [x] `scripts/validar-enfermidades.js` + chamada no `verify.sh` + 11 testes
 - [ ] Ordem das especialidades dinâmica (hoje `ESP_ORDER` fixo no `build.js`; especialidades novas exigirão ajuste)
 - [ ] Renderer da guia e do caso (modo estudante), exibição de refs e `revisadoEm`
-- [ ] Piloto: apendicite ✔ rascunho com 1 caso · pancreatite ☐ · colecistite ☐
+- [x] Piloto: apendicite, pancreatite aguda e colecistite aguda — **3 rascunhos**, cada um com 1 caso (`src/enfermidades/`); falta conferência pelos livros
 - [ ] **Conferir a apendicite**: o agente `revisor-conteudo-clinico` já rodou (`docs/auditoria/06-revisao-clinica-apendicite.md`; limitado a resultados de busca, sem livro-texto). Falta o dono conferir pelos livros e decidir as divergências do guia do motivo; só então trocar `verificada` e `status`

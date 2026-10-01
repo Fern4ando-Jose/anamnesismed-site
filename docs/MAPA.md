@@ -39,7 +39,7 @@
 - [x] Esquema `enfermidade` (com `casos[]` dentro) documentado
 - [x] `scripts/build.js` com `AM.enfermidade`; aborta se houver erro; só guias `publicado` vão ao arquivo público
 - [x] Validador (obrigatórios, paridade PT/ES, refs, ids, fármacos, status, casos) ligado ao `scripts/verify.sh` — 11 testes
-- [x] Piloto: `src/enfermidades/apendicite-aguda.js` (**rascunho**, refs ainda não conferidas)
+- [x] Piloto: `apendicite-aguda`, `pancreatite-aguda` e `colecistite-aguda` em `src/enfermidades/` (**rascunhos**, 1 caso cada, refs ainda não conferidas)
 - [ ] Unificar a lista de especialidades (hoje duplicada em `build.js`, `SPEC_META`, `REF_PAGE`) — **toca HTML**, esperar o merge da outra branch
 - [x] Revisão independente da apendicite feita: `docs/auditoria/06-revisao-clinica-apendicite.md` (refs 1–3 existem; ref 0 Sabiston não verificada; limite: sem acesso a texto integral nem livro)
 - [x] **Guia do motivo `src/motivos/apendicite.js` corrigido (autorizado pelo dono)**, PT e ES: tabela do AIR refeita (rebote/defesa = 1 item de 1 a 3; neutrófilos incluídos; soma máx. 12), mnemônico ES do Alvarado trocado por MANTRELS, > em vez de ≥ (temperatura e leucocitose), analgesia sem citar dipirona como estudada, antibiótico pré-op com cobertura de anaeróbios e janela de 60 min, esquema da forma perfurada com intervalos, TC sem "gold standard" e Rx só se suspeita de perfuração/obstrução, "grito de Laffont" removido, cortes sem fonte (leucocitose >18.000, T >38,5, anorexia >90%) removidos, Alvarado não decide cirurgia sozinho em mulher/criança/idoso
