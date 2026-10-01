@@ -40,10 +40,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
 .main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-.hamburger{display:none;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink);padding:4px;flex-shrink:0}
+.hamburger{display:none;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink);padding:4px;flex-shrink:0;min-width:44px;min-height:44px;margin-left:-8px}
 
 /* TOPBAR */
-.topbar{background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
+.topbar{background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
 .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
 .topbar-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
 .topbar-subtitle{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.2px}
@@ -85,7 +85,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* SECTION HEADERS */
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .section-title-sm{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
-.view-all{font-size:13px;font-weight:500;color:#0A6A75;text-decoration:none;cursor:pointer}
+.view-all{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:500;color:#0A6A75;text-decoration:none;cursor:pointer}
 .view-all:hover{text-decoration:underline}
 
 /* HC LIST */
@@ -152,7 +152,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .mn-icon{font-size:20px}
 
 /* RESPONSIVE */
-@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr)}.bottom-grid{grid-template-columns:1fr}}
+@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+/* tablet: aproveita a largura (2x2 nos atalhos; atividade e upgrade lado a lado) */
+@media(min-width:769px) and (max-width:1100px){.quick-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.bottom-grid{grid-template-columns:1fr}}
 @media(max-width:768px){
   .main{margin-left:0}.mobile-nav{display:block}.hamburger{display:flex}
   .content{padding:16px 14px 90px}.topbar{padding:0 14px;height:56px}
@@ -160,10 +163,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .search-wrap{display:none}.btn-new{padding:8px 13px;font-size:13px}
   .stats-row{grid-template-columns:1fr 1fr;gap:10px}.stat-value{font-size:22px}
   .quick-grid{grid-template-columns:1fr}
+  .topbar .btn-new{display:none}/* "Nova HC" já está no hero e na barra inferior */
 }
 @media(max-width:480px){
   .topbar .btn-new span.pt,.topbar .btn-new span.es{display:none}
-  .hc-actions{display:none}.stats-row{grid-template-columns:1fr 1fr}
+  .topbar-subtitle{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hc-status{display:none}
+  .hc-actions{gap:4px}.hc-btn{width:44px;height:44px;padding:0;border-radius:11px}.hc-btn span{display:none!important}
+  .hc-card{padding:10px 8px 10px 14px;gap:10px}
+  .stats-row{grid-template-columns:1fr 1fr}
 }
 </style>
 <link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
@@ -182,7 +190,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     <div class="topbar-left">
       <button class="hamburger" id="menu-btn" onclick="toggleSidebar()" aria-label="Menu"><span data-am-icon="menu" data-am-size="22"></span></button>
       <div>
-        <div class="topbar-title">Inicio</div>
+        <div class="topbar-title"><span class="pt">In&#xED;cio</span><span class="es">Inicio</span></div>
         <div class="topbar-subtitle pt" id="page-sub">&#x2014;</div>
         <div class="topbar-subtitle es" id="page-sub-es">&#x2014;</div>
       </div>
@@ -389,7 +397,7 @@ function setView(v){
 })();
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=00c5670c"></script>
+<script src="supabase-integration.js?v=2ca5652f"></script>
 <script src="sidebar.js?v=4a8f5770"></script>
 </body>
 </html>

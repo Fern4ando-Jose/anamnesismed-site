@@ -727,7 +727,8 @@ async function uiUpdateUserInfo() {
   nomeBase = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
 
   // Prefixo Dr. antes do nome
-  const nome = 'Dr. ' + nomeBase;
+  // Só médicos recebem o título; estudantes (e perfis sem tipo) usam apenas o nome.
+  const nome = (profile.tipo_usuario === 'medico' ? 'Dr(a). ' : '') + nomeBase;
 
   // Cache local p/ exibição instantânea do nome (elimina o "delay" ao recarregar)
   try { localStorage.setItem('am-uname', nome); } catch(e) {}
@@ -835,7 +836,9 @@ async function uiLoadRecentHCs(limit, preHcs) {
     const _d = new Date(hc.atualizado_em || hc.criado_em);
     const date = isNaN(_d.getTime()) ? '—' : _d.toLocaleDateString('pt-BR'); // nunca mostra "Invalid Date"
     const nomePaciente = (hc.dados && hc.dados.campos && hc.dados.campos['dp-nome']) || '';
-    const specLabel = hc.especialidade === 'clinica' ? 'Clínica Médica' : 'Cirugía General';
+    const specLabel = hc.especialidade === 'clinica'
+      ? '<span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>'
+      : '<span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>';
 
     return `
     <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" style="cursor:pointer">
