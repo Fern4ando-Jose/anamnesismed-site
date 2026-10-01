@@ -1,14 +1,19 @@
 /**
  * Vercel Function — POST /api/create-checkout-session
- * Cria sessão de pagamento no Stripe
+ * Cria sessão de pagamento no Stripe para o usuário AUTENTICADO.
+ * Exige `Authorization: Bearer <access_token do Supabase>`; userId e e-mail vêm do token
+ * validado no servidor — o corpo da requisição não é confiável (antes, qualquer um podia
+ * criar um checkout em nome de outro userId, que o webhook então ativaria como 'pro').
  *
  * Env vars necessárias no Vercel:
  *   STRIPE_SECRET_KEY   → sk_live_...
  *   STRIPE_PRICE_ID     → price_...
  *   NEXT_PUBLIC_URL     → https://www.anamnesismed.com
+ *   SUPABASE_URL / SUPABASE_SERVICE_KEY → validação do token
  */
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { exigirAcesso } = require('./_lib/acesso');
 
 module.exports = async (req, res) => {
   // CORS — falha fechado: só o domínio do app (NEXT_PUBLIC_URL), nunca '*'.
@@ -17,15 +22,19 @@ module.exports = async (req, res) => {
   const allowedOrigin = process.env.NEXT_PUBLIC_URL || '';
   if (allowedOrigin) res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { email, userId } = req.body;
-  if (!email || !userId) {
-    return res.status(400).json({ error: 'Email e userId obrigatórios' });
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    return res.status(500).json({ error: 'Supabase não configurado no servidor' });
   }
+
+  const acesso = await exigirAcesso(req, { exigir: 'logado' });
+  if (!acesso.ok) return res.status(acesso.status).json(acesso.body);
+  const { userId, email } = acesso;
+  if (!email) return res.status(400).json({ error: 'Conta sem e-mail' });
 
   try {
     const session = await stripe.checkout.sessions.create({

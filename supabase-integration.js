@@ -1317,12 +1317,16 @@ async function stripeCheckout() {
 
   try {
     // Chama a Vercel Function que cria a sessão no Stripe
+    // O servidor identifica o usuário pelo token (não confia em userId/email do corpo)
+    const token = await authGetToken();
+    if (!token) { window.location.href = 'anamnesismed-auth.html'; return; }
     const res = await fetch('/api/create-checkout-session', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: user.email, userId: user.id })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: '{}'
     });
     const { url } = await res.json();
+    if (!url) throw new Error('checkout sem url (HTTP ' + res.status + ')');
     window.location.href = url; // Redireciona para o Stripe Checkout
   } catch (err) {
     console.error('Stripe checkout error:', err);

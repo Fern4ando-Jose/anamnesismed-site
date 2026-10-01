@@ -7,7 +7,7 @@
  *
  * SEGURANÇA (regra do produto):
  *  - Exige `Authorization: Bearer <access_token do Supabase>`.
- *  - Valida o token no servidor e confirma que o usuário é do plano PAGO ('pro').
+ *  - Valida o token no servidor e confirma que o usuário é de plano PAGO (api/_lib/acesso.js).
  *  - Aplica limite diário por usuário (controle de custo da API).
  *  - A chave da Anthropic NUNCA vai ao front-end — toda a chamada acontece aqui.
  *
@@ -25,7 +25,7 @@
  */
 
 const Anthropic = require('@anthropic-ai/sdk');
-const { createClient } = require('@supabase/supabase-js');
+const { exigirAcesso } = require('./_lib/acesso');
 
 const MODEL = 'claude-sonnet-4-6';
 // 3000 (02/08/2026, 2ª correção do dia): eu havia baixado para 1500 para caber no
@@ -271,31 +271,10 @@ module.exports = async (req, res) => {
   if (!process.env.ANTHROPIC_API_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY não configurada no servidor' });
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return res.status(500).json({ error: 'Supabase não configurado no servidor' });
 
-  // 1) Autenticação — token do Supabase no header Authorization
-  const authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
-  const token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
-  if (!token) return res.status(401).json({ error: msg('Não autenticado', 'No autenticado') });
-
-  const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-
-  let userId = null;
-  try {
-    const { data, error } = await sbAdmin.auth.getUser(token);
-    if (error || !data || !data.user) return res.status(401).json({ error: msg('Sessão inválida', 'Sesión inválida') });
-    userId = data.user.id;
-  } catch (e) {
-    return res.status(401).json({ error: msg('Falha ao validar sessão', 'Error al validar la sesión') });
-  }
-
-  // 2) Plano pago — só 'pro' tem acesso (TODO: incluir trial/segmentar médico×estudante depois)
-  try {
-    const { data: prof, error } = await sbAdmin.from('profiles').select('plano').eq('id', userId).single();
-    if (error || !prof || prof.plano !== 'pro') {
-      return res.status(403).json({ error: msg('Recurso exclusivo do plano pago', 'Recurso exclusivo del plan de pago'), code: 'upgrade' });
-    }
-  } catch (e) {
-    return res.status(403).json({ error: msg('Não foi possível confirmar o plano', 'No se pudo confirmar el plan'), code: 'upgrade' });
-  }
+  // 1) e 2) Autenticação + plano pago — gate compartilhado (api/_lib/acesso.js)
+  const acesso = await exigirAcesso(req, { msg, exigir: 'pago' });
+  if (!acesso.ok) return res.status(acesso.status).json(acesso.body);
+  const { userId, sbAdmin } = acesso;
 
   // 3) Limite diário por usuário (fail-open se a tabela ainda não existir)
   try {

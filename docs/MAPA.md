@@ -18,10 +18,12 @@
 ## FASE 0 — Base e decisões (antes de qualquer funcionalidade)
 
 ### 0.1 Segurança de acesso (P0)
-- [ ] Bloquear escrita de `plano`, `trial_end`, `stripe_id`, `tipo_usuario` pelo cliente (trigger/column privileges; só `service_role` altera plano)
-- [ ] Autenticar `create-checkout-session` (token → userId no servidor; ignorar `userId` do body)
-- [ ] Gate server-side compartilhado `api/_lib/acesso.js` usado por `assistente-dx` e `gerar-hc`
-- **Aceite:** teste mostra que um usuário autenticado **não** consegue se tornar `pro` via API do Supabase nem criar checkout para outro usuário.
+- [x] Bloquear escrita de `plano`, `trial_end`, `stripe_id` pelo cliente — `supabase-migrations/2026-10-01-protege-colunas-plano.sql` (trigger + policies sem DELETE). Testada em Postgres 16 local: antes o usuário comum virava `pro`; depois não. **`tipo_usuario` fica para a Fase 1** (o modal de onboarding ainda grava pelo cliente)
+- [x] Autenticar `create-checkout-session` (userId e e-mail vêm do token; corpo ignorado) + front envia o token
+- [x] Gate server-side compartilhado `api/_lib/acesso.js` usado por `assistente-dx`, `gerar-hc` e checkout. `gerar-hc` agora exige plano pago **ou trial vigente** (trial vencido cai no motor local); falha de banco = 503, não "assine"
+- [ ] **Aplicar a migration no Supabase de produção (ação do dono — SQL Editor)** e rodar a verificação do cabeçalho do arquivo
+- [ ] Rodar o agente `qa-planos-acesso` e tratar os achados
+- **Aceite:** teste mostra que um usuário autenticado **não** consegue se tornar `pro` via API do Supabase nem criar checkout para outro usuário. ✔ no SQL local e em `test/api-acesso-handlers.test.js`; falta confirmar em produção após aplicar a migration.
 
 ### 0.2 Jurídico e LGPD (P0)
 - [ ] Reescrever termos e privacidade: IA generativa, envio à Anthropic, transferência internacional, retenção; remover "não compartilha com terceiros"
@@ -42,9 +44,9 @@
 ### 0.4 Decisões do dono (bloqueiam fases seguintes)
 - [x] Residente conta como **Médico** (decidido pelo dono)
 - [x] Preço e limites: **definir depois da ferramenta 100% pronta** (decidido pelo dono)
-- [ ] Fontes aceitas: proposta em `docs/FONTES-E-ESPECIALIDADES.md` (livros, diretrizes de sociedades, periódicos; sem sites) — aguarda validação do dono
+- [x] Fontes aceitas: `docs/FONTES-E-ESPECIALIDADES.md` §1 (livros, diretrizes, periódicos; citação sem cópia) — **validado pelo dono**; edições a confirmar por área
 - [ ] Posicionamento regulatório após o parecer (educacional × registro)
-- [ ] Lista final das especialidades da 1ª onda: proposta em `docs/FONTES-E-ESPECIALIDADES.md` §2.5 — aguarda validação do dono
+- [x] 1ª onda: cardiologia, endocrinologia, neurologia, infectologia, gineco-obstetrícia, pediatria — **validado pelo dono**
 
 ---
 
