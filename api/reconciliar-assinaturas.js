@@ -193,6 +193,7 @@ module.exports = async (req, res) => {
   }
 
   const ms = Date.now() - t0;
+  if (!completo) console.error(JSON.stringify({ evt: 'reconciliacao_incompleta', motivo: 'tempo_esgotado_antes_de_terminar', proximo, ms, ...r, ts: new Date().toISOString() }));
   console.log(JSON.stringify({ evt: 'reconciliacao', ok: true, completo, ms, ...r, ts: new Date().toISOString() }));
   return res.status(200).json({ ok: true, completo, ms, ...r, ...(completo ? {} : { proximo }) });
 };

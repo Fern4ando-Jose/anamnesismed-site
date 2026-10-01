@@ -159,3 +159,12 @@ test('06-23 é idempotente: drop policy if exists antes de cada create e não re
   assert.ok(sql.indexOf('drop policy if exists "usuario_acessa_proprio_perfil"') >= 0 && sql.indexOf('drop policy if exists "usuario_acessa_proprio_perfil"') < sql.indexOf('create policy "usuario_acessa_proprio_perfil"'));
   assert.match(sql, /version = '2026-10-01-profiles-protege-billing'/);
 });
+
+test('a ÚLTIMA definição de profiles_protege_billing trava o e-mail (UPDATE preserva old.email)', () => {
+  const arqs = fs.readdirSync(MIG).filter((f) => f.endsWith('.sql')).sort();
+  const defs = arqs.filter((f) => /create (or replace )?function public\.profiles_protege_billing\(/.test(norm(le(f))));
+  assert.ok(defs.length >= 2, 'esperava a função definida em várias migrations');
+  const ultima = norm(le(defs[defs.length - 1]));
+  const corpo = ultima.slice(ultima.search(/create (or replace )?function public\.profiles_protege_billing\(/));
+  assert.match(corpo, /new\.email := old\.email/, 'a última definição (' + defs[defs.length - 1] + ') perdeu a trava de e-mail');
+});

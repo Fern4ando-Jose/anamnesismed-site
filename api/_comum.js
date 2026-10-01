@@ -186,6 +186,9 @@ const RETENCAO = [
   ['rate_limits', 'janela_inicio', 2],
   ['contas_em_exclusao', 'iniciado_em', 30],
   ['stripe_events', 'received_at', 90],
+  // `dia` é DATE (não timestamptz); comparar com o ISO completo do corte funciona (cast implícito).
+  ['gerar_hc_usage', 'dia', 90],
+  ['ai_assistant_usage', 'dia', 90],
 ];
 async function limparAntigos(sbAdmin, agora) {
   const base = agora instanceof Date ? agora.getTime() : Date.now();

@@ -86,6 +86,6 @@ test('Bearer correto roda a limpeza de dados antigos; falha na limpeza NÃO derr
     const handler = loadWithMocks(HANDLER, { '@supabase/supabase-js': { createClient: () => sb } });
     const res = makeRes(); await handler(req('Bearer ' + ENV.CRON_SECRET), res);
     assert.equal(res.code, 200);
-    assert.deepEqual(feitos.map((f) => f.t), ['rate_limits', 'contas_em_exclusao', 'stripe_events']);
+    assert.deepEqual(feitos.map((f) => f.t), ['rate_limits', 'contas_em_exclusao', 'stripe_events', 'gerar_hc_usage', 'ai_assistant_usage']);
   });
 });

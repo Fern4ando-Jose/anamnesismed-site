@@ -31,7 +31,8 @@ function setup(opts) {
       },
     }),
   };
-  function Anthropic() {
+  function Anthropic(cfg) {
+    state.cfg = cfg;
     return {
       messages: {
         stream: (p) => {
@@ -86,6 +87,13 @@ test('erro/5xx do SDK → devolve a cota e responde 502 com mensagem fixa', asyn
   assert.equal(res.code, 502);
   assert.ok(!JSON.stringify(res.body).includes('SEGREDO'));
   assert.deepEqual(devolucoes(state).map((c) => c.args), [{ p_user_id: 'u1', p_rota: 'assistente-dx' }]);
+});
+
+test('cliente Anthropic com timeout 55 s e sem retries', async () => {
+  const { handler, state } = setup({});
+  await silencia(() => handler(req(bodyOk), makeRes()));
+  assert.equal(state.cfg.timeout, 55000);
+  assert.equal(state.cfg.maxRetries, 0);
 });
 
 test('timeout do SDK → devolve a cota', async () => {

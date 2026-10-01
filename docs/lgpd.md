@@ -53,7 +53,7 @@ Tabelas só da `service_role` (RLS sem policy + `revoke all` de anon/authenticat
 | `contas_em_exclusao` | `user_id` + data da marca de exclusão (sem e-mail) | **automática**: linhas > 30 dias (o checkout/webhook tardio já não chegam) |
 | `rate_limits` | contador por (usuário, ação) e início da janela | **automática**: janelas > 2 dias (a maior janela usada é 1 h) |
 | `stripe_events` | `event_id`, tipo, `status` (`processing`/`done`) e `processing_desde` (lease de 1 min) | **automática**: > 90 dias (cobre a janela de reentrega do Stripe) |
-| `gerar_hc_usage` / `ai_assistant_usage` | contagem diária de uso de IA por usuário | manual (abaixo) |
+| `gerar_hc_usage` / `ai_assistant_usage` | contagem diária de uso de IA por usuário | **automática**: linhas com `dia` > 90 dias (`RETENCAO` em `api/_comum.js`) |
 
 **Limpeza automática**: o cron diário `/api/manter-banco-vivo` (`0 9 * * *`, protegido por `CRON_SECRET`) roda
 `limparAntigos` (`api/_comum.js`) depois do keepalive, best effort: falha só vira log (sem `err.message`) e nunca derruba o
@@ -61,13 +61,9 @@ keepalive; tabela ausente é ignorada. Roda no mesmo cron para não consumir um 
 limita a quantidade de crons). O cron `/api/reconciliar-assinaturas` (`30 9 * * *`) corrige divergências plano × Stripe.
 
 Hoje `historias_clinicas` e `pdf_exports` ficam por tempo indeterminado (até o usuário excluir a HC ou a
-conta); as tabelas de uso crescem sem limpeza automática. **[DONO]** definir o prazo de retenção (e a
-fundamentação) e publicá-lo na política de privacidade. Limpeza das tabelas de uso, a rodar
-periodicamente no SQL Editor (ou incluir em `RETENCAO`, se decidir):
-```sql
-delete from public.gerar_hc_usage    where dia < current_date - 90;
-delete from public.ai_assistant_usage where dia < current_date - 90;
-```
+conta). **[DONO]** definir o prazo de retenção (e a fundamentação) e publicá-lo na política de privacidade.
+As tabelas de uso (`gerar_hc_usage`, `ai_assistant_usage`) são limpas automaticamente pelo mesmo cron (> 90 dias
+na coluna `dia`, tipo `date`; ver `RETENCAO` em `api/_comum.js`).
 
 ## Consentimento (art. 7º, I / art. 11, I)
 O app registra `profiles.termos_aceitos` (aceite dos termos no cadastro). **[DONO]** garantir que

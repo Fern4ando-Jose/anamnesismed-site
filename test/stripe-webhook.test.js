@@ -60,7 +60,12 @@ function makeSupabaseMock(insertResult, opts) {
             return { data: null, error: null };
           });
         },
-        delete: () => ({ eq: async (col, val) => { calls.push({ op: 'delete', table, col, val }); return opts.deleteResult || { error: null }; } }),
+        delete: () => {
+          const rec = { op: 'delete', table, filtros: [] };
+          const c = { eq: (col, val) => { rec.filtros.push([col, val]); if (rec.col === undefined) { rec.col = col; rec.val = val; } return c; },
+            then: (ok, err) => { calls.push(rec); return Promise.resolve(opts.deleteResult || { error: null }).then(ok, err); } };
+          return c;
+        },
       }),
     }),
   };
@@ -263,6 +268,8 @@ test('ativação pro com erro no update → 500, reverte idempotência, log sem 
   try { await handler(makeReq(event), res); } finally { mudo.restaura(); }
   assert.equal(res.code, 500);
   const del = supa.calls.find((c) => c.op === 'delete' && c.table === 'stripe_events');
+  assert.deepEqual(del.filtros.map((f) => f[0]), ['event_id', 'processing_desde'], 'reversão só apaga a linha se o lease ainda for meu');
+  assert.equal(del.filtros[1][1], supa.calls.find((c) => c.op === 'insert' && c.table === 'stripe_events').row.processing_desde);
   assert.ok(del, 'deve reverter o registro de idempotência');
   assert.equal(del.val, 'evt_fail1');
   assert.ok(!mudo.linhas.join('\n').includes('texto@secreto.com'), 'log não pode vazar a mensagem crua do banco');

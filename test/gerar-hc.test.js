@@ -25,7 +25,8 @@ function setup(opts) {
       },
     }),
   };
-  function Anthropic() {
+  function Anthropic(cfg) {
+    state.cfg = cfg;
     return { messages: { create: async (p) => { state.created.push(p); if (opts.anthropicErr) throw opts.anthropicErr; return { content: [{ type: 'text', text: 'Paciente feminino.' }], usage: {} }; } } };
   }
   const handler = loadWithMocks(HANDLER, { '@anthropic-ai/sdk': Anthropic, '@supabase/supabase-js': supa });
@@ -214,4 +215,11 @@ test('limitador de rajada indisponível → 503 fail-closed, sem cota nem modelo
   assert.equal(res.code, 503);
   assert.equal(state.rpcCalls.filter((c) => c.fn === 'consumir_cota_ia').length, 0);
   assert.equal(state.created.length, 0);
+});
+
+test('cliente Anthropic com timeout 25 s e sem retries (erro cai no catch antes da Vercel cortar)', async () => {
+  const { handler, state } = setup({});
+  await handler(req(bodyOk), makeRes());
+  assert.equal(state.cfg.timeout, 25000);
+  assert.equal(state.cfg.maxRetries, 0);
 });

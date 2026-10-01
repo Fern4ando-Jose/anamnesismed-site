@@ -62,8 +62,8 @@ async function lerBody(req, max) {
 // 2026-10-04-stripe-events-lease) ───────────────────────────────────────────────────────────────────
 // Devolve 'ok' (este worker processa), 'duplicado' (já concluído) ou 'ocupado' (outro worker processa há < 1 min).
 // LANÇA em qualquer erro de banco que não seja a violação de PK (23505): FALHA FECHADA → 5xx e o Stripe reentrega.
-async function reivindica(sbAdmin, event) {
-  const ins = await sbAdmin.from('stripe_events').insert({ event_id: event.id, type: event.type });
+async function reivindica(sbAdmin, event, lease) {
+  const ins = await sbAdmin.from('stripe_events').insert({ event_id: event.id, type: event.type, processing_desde: lease });
   if (!ins.error) return 'ok';
   if (ins.error.code !== '23505') throw falhaSegura('idempotência indisponível: ' + descreveErro(ins.error));
 
@@ -80,7 +80,7 @@ async function reivindica(sbAdmin, event) {
 
   // Lease vencido (worker anterior morreu): assume com compare-and-swap no processing_desde.
   const novo = await sbAdmin.from('stripe_events')
-    .update({ processing_desde: new Date().toISOString() })
+    .update({ processing_desde: lease })
     .eq('event_id', event.id).eq('status', 'processing').eq('processing_desde', data.processing_desde)
     .select('event_id');
   if (novo.error) throw falhaSegura('retomada do lease falhou: ' + descreveErro(novo.error));
@@ -156,8 +156,11 @@ module.exports = async (req, res) => {
   // responde 5xx e o Stripe reentrega — a assinatura já foi validada, então não há risco de forja, mas
   // processar sem dedup/lease permitiria corridas.
   let posse;
+  // Carimbo do MEU lease: a reversão em caso de erro só apaga a linha se ela ainda for minha
+  // (outro worker pode ter assumido o lease vencido e não pode perder a posse).
+  const meuLease = new Date().toISOString();
   try {
-    posse = await reivindica(sbAdmin, event);
+    posse = await reivindica(sbAdmin, event, meuLease);
   } catch (e) {
     console.error('[stripe-webhook] idempotência indisponível (falha fechada, o Stripe reentrega):', descreveErro(e));
     return res.status(503).json({ error: 'Idempotência indisponível' });
@@ -280,7 +283,7 @@ module.exports = async (req, res) => {
       // Rebaixa SOMENTE quando a assinatura realmente acabou: deleted, ou updated com status unpaid/canceled.
       // eslint-disable-next-line no-fallthrough
       case 'customer.subscription.deleted': {
-        const customerId = obj.customer;
+        const customerId = idDe(obj.customer);
         if (customerId) {
           // Assinatura ANTIGA encerrada não rebaixa quem já tem OUTRA assinatura viva (reassinou, ou
           // há duas no mesmo customer). Falha ao consultar o Stripe → throw → 500 (reentrega).
@@ -308,7 +311,7 @@ module.exports = async (req, res) => {
     // imediatamente. Se a remoção também falhar, o lease (1 min) deixa outra entrega assumir o evento.
     console.error('[stripe-webhook] erro ao processar', event.type, descreveErro(err));
     try {
-      const del = await sbAdmin.from('stripe_events').delete().eq('event_id', event.id);
+      const del = await sbAdmin.from('stripe_events').delete().eq('event_id', event.id).eq('processing_desde', meuLease);
       if (del && del.error) console.error('[ALERTA stripe] não foi possível reverter a idempotência de', event.id, '— o lease de 1 min libera a reentrega:', descreveErro(del.error));
     } catch (_) { console.error('[ALERTA stripe] exceção ao reverter a idempotência de', event.id); }
     return res.status(500).json({ error: 'Erro ao processar evento' });

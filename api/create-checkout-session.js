@@ -65,11 +65,10 @@ module.exports = async (req, res) => {
   try {
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-    // Quem já é `pro` com assinatura VIVA no Stripe não pode assinar de novo (cobrança em
-    // dobro). `past_due` conta como viva: o caminho certo é atualizar o cartão, não assinar outra vez.
-    // Se for `pro` mas o Stripe não mostra assinatura viva (plano concedido à mão ou desatualizado),
-    // deixa seguir. Falha ao consultar o Stripe também é fail-closed.
-    if (plano === 'pro' && stripeId) {
+    // Quem já tem assinatura VIVA no Stripe (qualquer `plano` local: o perfil pode estar desatualizado)
+    // não pode assinar de novo (cobrança em dobro). `past_due` conta como viva: o caminho certo é atualizar o cartão, não assinar outra vez.
+    // Se o Stripe não mostra assinatura viva (plano concedido à mão ou desatualizado), deixa seguir. Falha ao consultar o Stripe também é fail-closed.
+    if (stripeId) {
       const lista = await stripe.subscriptions.list({ customer: stripeId, status: 'all', limit: 20 });
       const viva = ((lista && lista.data) || []).some((sub) => STATUS_VIVOS.includes(sub.status));
       if (viva) {

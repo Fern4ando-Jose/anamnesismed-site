@@ -100,6 +100,16 @@ test('pro com assinatura ativa → 409 claro e NÃO cria sessão', async () => {
   }
 });
 
+test('plano local desatualizado (trial) mas com assinatura viva no Stripe → 409 e NÃO cria sessão', async () => {
+  const { handler, created, listCalls } = setup({ id: 'u1', email: 'a@b.com' }, { perfil: { plano: 'trial', stripe_id: 'cus_1' }, subs: [{ status: 'active' }] });
+  const res = makeRes();
+  await handler(withTok({}), res);
+  assert.equal(res.code, 409);
+  assert.equal(res.body.code, 'already_subscribed');
+  assert.equal(created.length, 0);
+  assert.equal(listCalls[0].customer, 'cus_1');
+});
+
 test('pro mas Stripe só mostra assinatura cancelada → deixa assinar de novo', async () => {
   const { handler, created } = setup({ id: 'u1', email: 'a@b.com' }, { perfil: { plano: 'pro', stripe_id: 'cus_1' }, subs: [{ status: 'canceled' }] });
   const res = makeRes();

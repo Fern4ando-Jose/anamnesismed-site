@@ -338,7 +338,7 @@ module.exports = async (req, res) => {
   // `stream()`, que mantém a conexão viva recebendo os pedaços à medida que saem
   // em vez de esperar tudo de uma vez. O formato devolvido ao cliente é o mesmo.
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 55000, maxRetries: 0 });
     const response = await client.messages.stream({
       model: MODEL,
       max_tokens: MAX_TOKENS,

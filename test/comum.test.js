@@ -156,16 +156,17 @@ test('limparAntigos: apaga rate_limits >2d, contas_em_exclusao >30d e stripe_eve
     return { error: null, count: 3 };
   } }) }) });
   let r = await C.limparAntigos(sb(), agora);
-  assert.deepEqual(r, { rate_limits: 3, contas_em_exclusao: 3, stripe_events: 3 });
+  assert.deepEqual(r, { rate_limits: 3, contas_em_exclusao: 3, stripe_events: 3, gerar_hc_usage: 3, ai_assistant_usage: 3 });
   const dias = (t) => Math.round((agora - new Date(feitos.find((f) => f.t === t).corte)) / 86400000);
   assert.equal(dias('rate_limits'), 2); assert.equal(dias('contas_em_exclusao'), 30); assert.equal(dias('stripe_events'), 90);
-  assert.deepEqual(feitos.map((f) => f.col), ['janela_inicio', 'iniciado_em', 'received_at']);
+  assert.equal(dias('gerar_hc_usage'), 90); assert.equal(dias('ai_assistant_usage'), 90);
+  assert.deepEqual(feitos.map((f) => f.col), ['janela_inicio', 'iniciado_em', 'received_at', 'dia', 'dia']);
   assert.deepEqual(feitos[0].o, { count: 'exact' });
 
   const logs = await quieto(async () => {
     r = await C.limparAntigos(sb({ rate_limits: { code: '42P01' }, contas_em_exclusao: { code: '57014', message: 'SEGREDO' }, stripe_events: 'throw' }), agora);
   });
-  assert.deepEqual(r, { rate_limits: null, contas_em_exclusao: null, stripe_events: null });
+  assert.deepEqual(r, { rate_limits: null, contas_em_exclusao: null, stripe_events: null, gerar_hc_usage: 3, ai_assistant_usage: 3 });
   assert.ok(!logs.join('\n').includes('SEGREDO'));
   assert.equal(logs.filter((l) => l.includes('rate_limits')).length, 0, 'tabela ausente não gera alerta');
 });

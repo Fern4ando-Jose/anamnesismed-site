@@ -223,7 +223,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    var client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    var client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 25000, maxRetries: 0 });
     var response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
