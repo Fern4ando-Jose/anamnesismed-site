@@ -92,3 +92,10 @@ html{overscroll-behavior-y:contain}
   .btn-new,.btn-upgrade,.hero-cta,.topbar-back,.tab-btn,.esp-card{min-height:44px}
 }
 @media (max-width:768px){.topbar .pwa-btn{display:none!important}}
+
+/* ── Alvos de toque restantes (QA visual): hambúrguer, voltar, abas secundárias, busca, botões de perigo ── */
+@media (pointer:coarse),(max-width:1180px){
+  .hamburger{min-width:44px;min-height:44px}
+  .topbar-back{min-width:44px}
+  .secnav-btn,.search-box,.btn-danger{min-height:44px}
+}

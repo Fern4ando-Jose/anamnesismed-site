@@ -151,8 +151,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .hamburger{display:flex}
   /* saudação some no mobile (estourava o topbar e colidia com busca/idioma) */
   .topbar-left > div{display:none}
-  .search-input{width:150px}
-  .search-input:focus{width:150px}
+  .search-input,.search-input:focus{width:100%}
+  .topbar-right{flex:1;min-width:0;justify-content:flex-end;gap:8px}
+  .search-wrap{flex:1 1 0;min-width:0}
+  .topbar-back{display:none}/* o menu e a barra inferior já levam ao Início */
   .btn-new span.pt,.btn-new span.es{display:none}
   .hub-title{font-size:20px}
   .mosaic,.tools-grid{grid-template-columns:1fr}
@@ -162,7 +164,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 }
 </style>
 <link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
-<link rel="stylesheet" href="anamnesismed-components.css?v=5f8a338c">
+<link rel="stylesheet" href="anamnesismed-components.css?v=6f7f6402">
 <link rel="stylesheet" href="sidebar.css?v=ed01236a">
 <script src="/pwa.js?v=ca447f53" defer></script>
 </head>
