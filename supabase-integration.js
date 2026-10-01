@@ -1067,7 +1067,7 @@ function showSaveFeedback() {
     badge.id = 'save-badge';
     badge.style.cssText = `
       position:fixed;bottom:80px;right:16px;z-index:500;
-      background:#1e6b3c;color:#fff;font-size:11px;font-weight:700;
+      background:#1e6b3c;color:#fff;font-size:12px;font-weight:700;
       padding:6px 12px;border-radius:20px;
       opacity:0;transition:opacity .3s;font-family:'JetBrains Mono',ui-monospace,monospace`;
     badge.textContent = '✓ Salvo';

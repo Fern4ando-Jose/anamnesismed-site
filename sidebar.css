@@ -22,7 +22,7 @@
 }
 .sidebar-logo span{color:var(--primary,#0FA3B1)}
 .sidebar-role{
-  font-family:var(--mono);font-size:10px;color:#6f8b92;
+  font-family:var(--mono);font-size:12px;color:#6f8b92;
   letter-spacing:.6px;text-transform:uppercase
 }
 
@@ -32,7 +32,7 @@
    do .sidebar-nav, então não herdam o gap) — replicamos o mesmo espaçamento aqui */
 #nav-recent{display:flex;flex-direction:column;gap:4px}
 .nav-section-label{
-  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.5px;
   text-transform:uppercase;color:#4f6b72;padding:12px 6px 5px
 }
 .nav-item{
@@ -47,7 +47,7 @@
 .nav-icon{font-size:18px;flex-shrink:0;line-height:1;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;opacity:.95}
 .nav-icon svg{display:block}
 .nav-badge{
-  margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;
+  margin-left:auto;font-family:var(--mono);font-size:12px;font-weight:600;
   background:var(--primary,#0FA3B1);color:#fff;padding:2px 8px;border-radius:10px
 }
 .nav-item.active .nav-badge{background:rgba(255,255,255,.22)}
@@ -55,7 +55,7 @@
   margin-left:auto;min-width:24px;height:22px;border-radius:20px;padding:0 8px;
   background:rgba(255,255,255,.10);color:#dbeef1;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:11px;font-weight:600;flex-shrink:0
+  font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0
 }
 .nav-item.active .nav-count{background:rgba(255,255,255,.22);color:#fff}
 .nav-item-logout{color:#ff8b80!important;border-color:rgba(255,92,73,.20)!important;background:rgba(255,92,73,.06)!important;box-shadow:none!important}
@@ -74,7 +74,7 @@
   margin-left:auto;min-width:24px;height:22px;border-radius:20px;padding:0 8px;
   background:rgba(255,255,255,.10);color:#dbeef1;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:11px;font-weight:600;flex-shrink:0
+  font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0
 }
 .esp-nav-item.active .esp-nav-count{background:rgba(255,255,255,.22);color:#fff}
 
@@ -91,7 +91,7 @@
   font-family:var(--serif);font-size:13px;font-weight:600;color:#fff;flex-shrink:0
 }
 .user-name{font-family:var(--sans);font-size:13px;font-weight:500;color:#fff}
-.user-plan{font-family:var(--mono);font-size:10px;color:#7e9aa0;margin-top:1px;letter-spacing:.3px}
+.user-plan{font-family:var(--mono);font-size:12px;color:#7e9aa0;margin-top:1px;letter-spacing:.3px}
 .user-caret{margin-left:auto;font-size:18px;color:#7e9aa0}
 
 /* botão fechar (mobile) — sobrepõe o estilo claro inline do sidebar.js */

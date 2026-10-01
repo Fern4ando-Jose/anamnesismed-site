@@ -59,22 +59,64 @@ module.exports = async (req, res) => {
   }
   if (!userId || !email) return res.status(400).json({ error: 'Usuário sem email válido' });
 
+  // Perfil do usuário (service_role): plano atual e customer do Stripe, se já houver.
+  // FAIL-CLOSED: se não der para ler, não cria checkout (evita cobrança em duplicidade).
+  let plano = null;
+  let stripeId = null;
+  try {
+    const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+    const { data: prof, error } = await sbAdmin.from('profiles').select('plano, stripe_id').eq('id', userId).maybeSingle();
+    if (error) throw new Error(error.code || 'erro ao ler perfil');
+    if (prof) { plano = prof.plano || null; stripeId = prof.stripe_id || null; }
+  } catch (e) {
+    console.error('[create-checkout-session] não foi possível ler o perfil:', String(e && e.message).slice(0, 120));
+    return res.status(503).json({ error: 'Não foi possível verificar sua assinatura agora. Tente novamente em instantes.' });
+  }
+
   try {
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-    const session = await stripe.checkout.sessions.create({
+
+    // Quem já é `pro` com assinatura VIVA no Stripe não pode assinar de novo (cobrança em
+    // dobro). `past_due` conta como viva: o caminho certo é atualizar o cartão, não assinar outra vez.
+    // Se for `pro` mas o Stripe não mostra assinatura viva (plano concedido à mão ou desatualizado),
+    // deixa seguir. Falha ao consultar o Stripe também é fail-closed.
+    if (plano === 'pro' && stripeId) {
+      const lista = await stripe.subscriptions.list({ customer: stripeId, status: 'all', limit: 20 });
+      const viva = ((lista && lista.data) || []).some((sub) => ['active', 'trialing', 'past_due'].includes(sub.status));
+      if (viva) {
+        return res.status(409).json({ error: 'Você já possui uma assinatura ativa. Gerencie-a pela página de configurações.', code: 'already_subscribed' });
+      }
+    }
+
+    const base = {
       payment_method_types: ['card'],
       mode: 'subscription',
-      customer_email: email,
       line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
       metadata: { userId },
       success_url: `${process.env.NEXT_PUBLIC_URL}/anamnesismed-dashboard.html?payment=success`,
       cancel_url:  `${process.env.NEXT_PUBLIC_URL}/anamnesismed-landing.html#pricing`,
       allow_promotion_codes: true,
-    });
+    };
+
+    let session;
+    if (stripeId) {
+      // Reaproveita o customer existente (histórico/cartões/faturas no mesmo cadastro, sem
+      // duplicar clientes). `customer` e `customer_email` são mutuamente exclusivos no Stripe.
+      try {
+        session = await stripe.checkout.sessions.create({ ...base, customer: stripeId });
+      } catch (e) {
+        // stripe_id órfão (customer apagado no Stripe): cai para e-mail em vez de travar o checkout.
+        if (e && e.code === 'resource_missing') session = await stripe.checkout.sessions.create({ ...base, customer_email: email });
+        else throw e;
+      }
+    } else {
+      session = await stripe.checkout.sessions.create({ ...base, customer_email: email });
+    }
 
     res.status(200).json({ url: session.url });
   } catch (err) {
-    console.error('Stripe checkout error:', err);
+    // Sem o objeto de erro inteiro: pode carregar request/headers da API do Stripe.
+    console.error('Stripe checkout error:', JSON.stringify({ type: err && err.type, code: err && err.code, status: err && err.statusCode }));
     res.status(500).json({ error: 'Não foi possível iniciar o pagamento' });
   }
 };

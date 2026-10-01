@@ -16,14 +16,27 @@ process.env.SUPABASE_URL = 'https://dummy.supabase.co';
 process.env.SUPABASE_SERVICE_KEY = 'service_dummy';
 
 // ── Mock do Supabase: registra todas as chamadas para asserção ────────────────
-function makeSupabaseMock(insertResult) {
+// opts.updateResult: o que o `update` devolve (default: 1 linha afetada, sem erro).
+// opts.deleteResult: o que o `delete` devolve (default: sem erro).
+// `update().eq()` é aguardável direto (rebaixe) e também aceita `.select()` (ativação),
+// como no supabase-js.
+function makeSupabaseMock(insertResult, opts) {
+  opts = opts || {};
   const calls = [];
   const exports = {
     createClient: () => ({
       from: (table) => ({
         insert: async (row) => { calls.push({ op: 'insert', table, row }); return insertResult; },
-        update: (vals) => ({ eq: async (col, val) => { calls.push({ op: 'update', table, vals, col, val }); return { error: null }; } }),
-        delete: () => ({ eq: async (col, val) => { calls.push({ op: 'delete', table, col, val }); return { error: null }; } }),
+        update: (vals) => ({
+          eq: (col, val) => {
+            calls.push({ op: 'update', table, vals, col, val });
+            const r = opts.updateResult || { data: [{ id: 'x' }], error: null };
+            const p = Promise.resolve(r);
+            p.select = () => Promise.resolve(r);
+            return p;
+          },
+        }),
+        delete: () => ({ eq: async (col, val) => { calls.push({ op: 'delete', table, col, val }); return opts.deleteResult || { error: null }; } }),
       }),
     }),
   };
@@ -186,6 +199,91 @@ test('env ausente → 500 claro, sem criar clients nem tocar o banco', async () 
   } finally {
     process.env.STRIPE_WEBHOOK_SECRET = guardado;
   }
+});
+
+// ── Escritas no Supabase que falham → 5xx + reverte idempotência (Stripe retenta) ─
+function mockSilencioso() {
+  const orig = { error: console.error, warn: console.warn, log: console.log };
+  const linhas = [];
+  console.error = (...a) => linhas.push(a.join(' '));
+  console.warn = () => {}; console.log = () => {};
+  return { linhas, restaura: () => { console.error = orig.error; console.warn = orig.warn; console.log = orig.log; } };
+}
+
+test('ativação pro com erro no update → 500, reverte idempotência, log sem dado sensível', async () => {
+  const event = { id: 'evt_fail1', type: 'checkout.session.completed', data: { object: { metadata: { userId: 'u1' }, customer: 'cus_1' } } };
+  const supa = makeSupabaseMock({ error: null }, { updateResult: { data: null, error: { code: '57014', message: 'timeout com texto@secreto.com' } } });
+  const handler = loadHandler(makeStripeMock(event), supa.exports);
+  const res = makeRes();
+  const mudo = mockSilencioso();
+  try { await handler(makeReq(event), res); } finally { mudo.restaura(); }
+  assert.equal(res.code, 500);
+  const del = supa.calls.find((c) => c.op === 'delete' && c.table === 'stripe_events');
+  assert.ok(del, 'deve reverter o registro de idempotência');
+  assert.equal(del.val, 'evt_fail1');
+  assert.ok(!mudo.linhas.join('\n').includes('texto@secreto.com'), 'log não pode vazar a mensagem crua do banco');
+});
+
+test('ativação pro sem nenhuma linha afetada (perfil inexistente) → 500 e reverte', async () => {
+  const event = { id: 'evt_fail2', type: 'checkout.session.completed', data: { object: { metadata: { userId: 'fantasma' }, customer: 'cus_1' } } };
+  const supa = makeSupabaseMock({ error: null }, { updateResult: { data: [], error: null } });
+  const handler = loadHandler(makeStripeMock(event), supa.exports);
+  const res = makeRes();
+  const mudo = mockSilencioso();
+  try { await handler(makeReq(event), res); } finally { mudo.restaura(); }
+  assert.equal(res.code, 500);
+  assert.ok(supa.calls.find((c) => c.op === 'delete' && c.table === 'stripe_events'));
+});
+
+test('rebaixe com erro no update → 500 e reverte idempotência; zero linhas NÃO é erro', async () => {
+  const event = { id: 'evt_fail3', type: 'customer.subscription.deleted', data: { object: { customer: 'cus_9' } } };
+  let supa = makeSupabaseMock({ error: null }, { updateResult: { error: { code: '08006', message: 'conexão' } } });
+  let handler = loadHandler(makeStripeMock(event), supa.exports);
+  let res = makeRes();
+  let mudo = mockSilencioso();
+  try { await handler(makeReq(event), res); } finally { mudo.restaura(); }
+  assert.equal(res.code, 500);
+  assert.ok(supa.calls.find((c) => c.op === 'delete' && c.table === 'stripe_events'));
+
+  // customer desconhecido / conta já excluída: nenhuma linha, sem erro → 200
+  supa = makeSupabaseMock({ error: null }, { updateResult: { data: [], error: null } });
+  handler = loadHandler(makeStripeMock(event), supa.exports);
+  res = makeRes();
+  mudo = mockSilencioso();
+  try { await handler(makeReq(event), res); } finally { mudo.restaura(); }
+  assert.equal(res.code, 200);
+});
+
+test('falha ao reverter a idempotência é logada como ALERTA e ainda responde 500', async () => {
+  const event = { id: 'evt_fail4', type: 'checkout.session.completed', data: { object: { metadata: { userId: 'u1' }, customer: 'cus_1' } } };
+  const supa = makeSupabaseMock({ error: null }, { updateResult: { data: null, error: { code: 'XX000', message: 'x' } }, deleteResult: { error: { code: 'XX001', message: 'y' } } });
+  const handler = loadHandler(makeStripeMock(event), supa.exports);
+  const res = makeRes();
+  const mudo = mockSilencioso();
+  try { await handler(makeReq(event), res); } finally { mudo.restaura(); }
+  assert.equal(res.code, 500);
+  assert.ok(mudo.linhas.some((l) => l.includes('ALERTA stripe')));
+});
+
+// ── Só tipos tratados entram em stripe_events ─────────────────────────────────
+test('tipos não tratados → 200 SEM registrar em stripe_events nem tocar profiles', async () => {
+  const tipos = [
+    { id: 'evt_a', type: 'customer.created', data: { object: {} } },
+    { id: 'evt_b', type: 'invoice.payment_failed', data: { object: { customer: 'cus_9' } } },
+    { id: 'evt_c', type: 'customer.subscription.updated', data: { object: { customer: 'cus_9', status: 'active' } } },
+  ];
+  for (const ev of tipos) {
+    const { res, calls } = await rodaEvento(ev);
+    assert.equal(res.code, 200, ev.type);
+    assert.equal(calls.length, 0, ev.type + ' não deve tocar o banco');
+  }
+});
+
+test('tipos tratados registram em stripe_events antes de escrever', async () => {
+  const ev = { id: 'evt_t', type: 'customer.subscription.deleted', data: { object: { customer: 'cus_9' } } };
+  const { calls } = await rodaEvento(ev);
+  assert.equal(calls[0].op, 'insert');
+  assert.equal(calls[0].table, 'stripe_events');
 });
 
 test('exporta config com bodyParser desligado', () => {

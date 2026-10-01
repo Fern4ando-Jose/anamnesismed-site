@@ -108,23 +108,23 @@ function _exportPDFImpl(){
   w.document.write('body{font-family:Arial,sans-serif;font-size:12px;color:#0d2d3d;padding:30px}');
   w.document.write('h1{font-size:18px;font-weight:700;margin-bottom:4px;color:#0d2d3d}');
   w.document.write('h2{font-size:13px;font-weight:700;background:#0d2d3d;color:#fff;padding:5px 8px;margin:16px 0 6px;border-radius:3px}');
-  w.document.write('h3{font-size:11px;font-weight:700;color:#0B7C88;text-transform:uppercase;letter-spacing:1px;margin:12px 0 4px}');
+  w.document.write('h3{font-size:12px;font-weight:700;color:#0B7C88;text-transform:uppercase;letter-spacing:1px;margin:12px 0 4px}');
   w.document.write('.header{border-bottom:2px solid #0B7C88;padding-bottom:10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-start}');
   w.document.write('.logo{font-size:16px;font-weight:700;color:#0d2d3d}.logo span{color:#0B7C88}');
   w.document.write('table.dados{width:100%;border-collapse:collapse;margin-bottom:14px;table-layout:fixed}');
-  w.document.write('table.dados td{border:1px solid #ddd;padding:5px 8px;font-size:11px;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word}');
+  w.document.write('table.dados td{border:1px solid #ddd;padding:5px 8px;font-size:12px;vertical-align:top;word-wrap:break-word;overflow-wrap:break-word}');
   w.document.write('table.dados td:nth-child(1),table.dados td:nth-child(3){font-weight:700;background:#f0f4f8;color:#0d2d3d;width:17%}');
   w.document.write('table.dados td:nth-child(2),table.dados td:nth-child(4){width:33%}');
   w.document.write('p{margin-bottom:6px;line-height:1.6}');
-  w.document.write('.field{margin-bottom:8px}.field-label{font-weight:700;font-size:10px;text-transform:uppercase;color:#4b6070;display:block;margin-bottom:2px}');
-  w.document.write('.footer{border-top:1px solid #ddd;margin-top:24px;padding-top:8px;font-size:10px;color:#4b6070;display:flex;justify-content:space-between}');
+  w.document.write('.field{margin-bottom:8px}.field-label{font-weight:700;font-size:12px;text-transform:uppercase;color:#4b6070;display:block;margin-bottom:2px}');
+  w.document.write('.footer{border-top:1px solid #ddd;margin-top:24px;padding-top:8px;font-size:12px;color:#4b6070;display:flex;justify-content:space-between}');
   w.document.write('@media print{button{display:none}}');
   w.document.write('</style></head><body>');
   
   // Header
   w.document.write('<div class="header">');
-  w.document.write('<div><div class="logo">Anamnesis<span>Med</span></div><p style="font-size:10px;color:#4b6070;margin-top:2px">História Clínica — Documento gerado em '+new Date().toLocaleDateString('pt-BR')+'</p></div>');
-  w.document.write('<div style="text-align:right;font-size:10px;color:#4b6070"><strong>Motivo:</strong> '+esc(mNom)+'<br><strong>Data:</strong> '+new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>');
+  w.document.write('<div><div class="logo">Anamnesis<span>Med</span></div><p style="font-size:12px;color:#4b6070;margin-top:2px">História Clínica — Documento gerado em '+new Date().toLocaleDateString('pt-BR')+'</p></div>');
+  w.document.write('<div style="text-align:right;font-size:12px;color:#4b6070"><strong>Motivo:</strong> '+esc(mNom)+'<br><strong>Data:</strong> '+new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>');
   w.document.write('</div>');
   
   // DADOS PESSOAIS — TABELA

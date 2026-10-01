@@ -32,8 +32,8 @@ function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
       });
       html += '</div>';
     } else if(q.type==='multi'){
-      html += '<div class="aea-q-hint pt" style="font-size:11px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Selecione quantas opções forem aplicáveis</div>';
-      html += '<div class="aea-q-hint es" style="font-size:11px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Seleccione todas las opciones que correspondan</div>';
+      html += '<div class="aea-q-hint pt" style="font-size:12px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Selecione quantas opções forem aplicáveis</div>';
+      html += '<div class="aea-q-hint es" style="font-size:12px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Seleccione todas las opciones que correspondan</div>';
       html += '<div class="f-radios" id="'+id+'">';
       q.opts.forEach(function(o,oi){
         var oEs = (q.optsEs && q.optsEs[oi]) || o;
@@ -248,7 +248,7 @@ function buildCondutaHTML(gc){
   if(c.exames&&c.exames.length){
     html+='<div class="score-title pt">Exames a solicitar</div><div class="score-title es">Exámenes a solicitar</div>';
     html+='<div class="f-checks f-checks-3" style="margin-bottom:12px">';
-    c.exames.forEach(function(ex,xi){var exEs=(c.examesEs&&c.examesEs[xi]);html+='<div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span style="font-size:11px">'+bi(ex,exEs)+'</span></div>';});
+    c.exames.forEach(function(ex,xi){var exEs=(c.examesEs&&c.examesEs[xi]);html+='<div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span style="font-size:12px">'+bi(ex,exEs)+'</span></div>';});
     html+='</div>';
   }
   if(c.drugs&&c.drugs.length){

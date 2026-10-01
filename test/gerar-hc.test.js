@@ -17,7 +17,11 @@ function setup(opts) {
   const supa = {
     createClient: () => ({
       auth: { getUser: async () => (opts.user === null ? { data: null, error: { message: 'bad' } } : { data: { user: { id: 'u1' } }, error: null }) },
-      rpc: async (fn, args) => { state.rpcCalls.push({ fn, args }); return opts.rpc || { data: 1, error: null }; },
+      rpc: async (fn, args) => {
+        state.rpcCalls.push({ fn, args });
+        if (fn === 'devolver_cota_ia') { if (opts.rpcDevolverErro) throw new Error('rede'); return { data: 0, error: null }; }
+        return opts.rpc || { data: 1, error: null };
+      },
     }),
   };
   function Anthropic() {
@@ -122,4 +126,68 @@ test('erro do SDK não vaza err.message ao cliente', async () => {
   assert.ok(res.code >= 500);
   assert.ok(!JSON.stringify(res.body).includes('SEGREDO'));
   assert.equal(res.body.error, 'Erro ao gerar a HC');
+});
+
+// ── Devolução de cota quando o modelo falha ───────────────────────────────────
+// A cota é consumida ANTES da chamada (atômica); se o modelo falha o usuário não recebeu
+// o serviço, então a RPC `devolver_cota_ia` devolve a unidade — sem mascarar o erro original.
+function silencia(fn) {
+  const o = console.error; console.error = () => {};
+  return fn().finally(() => { console.error = o; });
+}
+
+test('erro/5xx do SDK → devolve a cota (RPC devolver_cota_ia) e mantém o erro original', async () => {
+  const err = new Error('boom'); err.status = 529;
+  const { handler, state } = setup({ anthropicErr: err });
+  const res = makeRes();
+  await silencia(() => handler(req(bodyOk), res));
+  assert.equal(res.code, 502);
+  assert.equal(res.body.error, 'Erro ao gerar a HC');
+  const dev = state.rpcCalls.filter((c) => c.fn === 'devolver_cota_ia');
+  assert.equal(dev.length, 1);
+  assert.deepEqual(dev[0].args, { p_user_id: 'u1', p_rota: 'gerar-hc' });
+});
+
+test('timeout do SDK (sem status) → devolve a cota', async () => {
+  const err = new Error('Request timed out.'); err.name = 'APIConnectionTimeoutError';
+  const { handler, state } = setup({ anthropicErr: err });
+  const res = makeRes();
+  await silencia(() => handler(req(bodyOk), res));
+  assert.ok(res.code >= 500);
+  assert.equal(state.rpcCalls.filter((c) => c.fn === 'devolver_cota_ia').length, 1);
+});
+
+test('429 do SDK → 503 "sobrecarregado" e devolve a cota', async () => {
+  const err = new Error('rate'); err.status = 429;
+  const { handler, state } = setup({ anthropicErr: err });
+  const res = makeRes();
+  await silencia(() => handler(req(bodyOk), res));
+  assert.equal(res.code, 503);
+  assert.equal(state.rpcCalls.filter((c) => c.fn === 'devolver_cota_ia').length, 1);
+});
+
+test('falha na própria devolução NÃO mascara o erro original da rota', async () => {
+  const err = new Error('boom'); err.status = 500;
+  const { handler } = setup({ anthropicErr: err, rpcDevolverErro: true });
+  const res = makeRes();
+  await silencia(() => handler(req(bodyOk), res));
+  assert.equal(res.code, 502);
+  assert.equal(res.body.error, 'Erro ao gerar a HC');
+});
+
+test('sucesso NÃO devolve cota', async () => {
+  const { handler, state } = setup();
+  const res = makeRes();
+  await handler(req(bodyOk), res);
+  assert.equal(res.code, 200);
+  assert.equal(state.rpcCalls.filter((c) => c.fn === 'devolver_cota_ia').length, 0);
+});
+
+test('limite atingido (429) e RPC de cota indisponível NÃO devolvem nada (nada foi consumido)', async () => {
+  for (const rpc of [{ data: -1, error: null }, { data: null, error: { code: '42883' } }]) {
+    const { handler, state } = setup({ rpc });
+    const res = makeRes();
+    await silencia(() => handler(req(bodyOk), res));
+    assert.equal(state.rpcCalls.filter((c) => c.fn === 'devolver_cota_ia').length, 0);
+  }
 });
