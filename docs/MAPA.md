@@ -40,11 +40,11 @@
 - **Aceite:** `verify.sh` falha se uma enfermidade não tiver referência ou tradução.
 
 ### 0.4 Decisões do dono (bloqueiam fases seguintes)
-- [ ] Residente conta como Médico ou Estudante?
-- [ ] Preço e limites diários da IA do plano Médico e do Estudante
-- [ ] Fontes aceitas para conteúdo (livros próprios + quais diretrizes) e formato de citação
+- [x] Residente conta como **Médico** (decidido pelo dono)
+- [x] Preço e limites: **definir depois da ferramenta 100% pronta** (decidido pelo dono)
+- [ ] Fontes aceitas: proposta em `docs/FONTES-E-ESPECIALIDADES.md` (livros, diretrizes de sociedades, periódicos; sem sites) — aguarda validação do dono
 - [ ] Posicionamento regulatório após o parecer (educacional × registro)
-- [ ] Lista final das especialidades da 1ª onda
+- [ ] Lista final das especialidades da 1ª onda: proposta em `docs/FONTES-E-ESPECIALIDADES.md` §2.5 — aguarda validação do dono
 
 ---
 
