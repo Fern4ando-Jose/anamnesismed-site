@@ -29,13 +29,13 @@
   --sans:'Inter',system-ui,sans-serif;
   --sidebar-w:240px
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;display:flex}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
 
 /* ── SIDEBAR ── */
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -68,7 +68,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* ── EMPTY STATE ── */
 .empty-state{
   display:flex;flex-direction:column;align-items:center;
-  justify-content:center;min-height:60vh;
+  justify-content:center;min-height:60vh;min-height:60dvh;
   text-align:center;gap:12px
 }
 .es-icon{font-size:52px}
@@ -172,7 +172,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   background:var(--bg-card);border-radius:16px 16px 0 0;
   z-index:160;transform:translateY(100%);
   transition:transform .3s cubic-bezier(.32,.72,0,1);
-  max-height:70vh;overflow:hidden;display:flex;flex-direction:column
+  max-height:70vh;max-height:70dvh;overflow:hidden;display:flex;flex-direction:column
 }
 .esp-drawer.open{transform:translateY(0)}
 .esp-drawer-head{
@@ -220,7 +220,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 </style>
   <link rel="stylesheet" href="anamnesismed-theme.css?v=1c9b2bef">
 <link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
-<link rel="stylesheet" href="sidebar.css?v=466ffc2c">
+<link rel="stylesheet" href="sidebar.css?v=06dc8cb3">
 </head>
 <body>
 <a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>

@@ -46,7 +46,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14p
 
 /* ── SIDEBAR ── */
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);min-width:0;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 .topbar{
   position:sticky;top:0;z-index:100;
   background:rgba(240,244,248,.93);backdrop-filter:blur(14px);
@@ -97,7 +97,7 @@ html.deep-hc #screen-index{display:none!important}
 .motivo-sub{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── HC SCREEN ── */
-.hc-screen{display:none;flex-direction:column;min-height:calc(100vh - 53px)}
+.hc-screen{display:none;flex-direction:column;min-height:calc(100vh - 53px);min-height:calc(100dvh - 53px)}
 .hc-screen.active{display:flex}
 
 /* Motivo header */
@@ -463,7 +463,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 </style>
   <link rel="stylesheet" href="anamnesismed-theme.css?v=1c9b2bef">
 <link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
-<link rel="stylesheet" href="sidebar.css?v=466ffc2c">
+<link rel="stylesheet" href="sidebar.css?v=06dc8cb3">
 </head>
 <body>
 <a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
