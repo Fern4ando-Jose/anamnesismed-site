@@ -817,6 +817,7 @@ async function hcListAll(limit = 20) {
     .order('atualizado_em', { ascending: false })
     .limit(limit);
 
+  window.__hcsError = !!error; // o dashboard distingue "falhou" de "não tem HC"
   if (error) { console.error('HC list error:', error); return []; }
   return data || [];
 }
@@ -1457,14 +1458,40 @@ function showSaveFeedback() {
     // Atualizar UI — busca HCs e PDFs UMA vez e em paralelo, reaproveitando nas 3
     // funções (antes: 3 buscas sequenciais de historias + 2 de PDFs => dashboard lento).
     uiUpdateUserInfo();   // nome aparece assim que a sessão resolve (não bloqueia a lista)
-    const [hcsAll, pdfAll] = await Promise.all([
-      hcListAll(100),
-      window.pdfExportList ? window.pdfExportList() : Promise.resolve([])
-    ]);
-    window.__hcsAll = hcsAll; // cache reusado pelo setView (evita refetch ao trocar de view)
-    uiLoadRecentHCs(window.currentDashView === 'hcs' ? 100 : 5, hcsAll);
-    uiLoadStats(hcsAll, pdfAll);
-    uiLoadRecentActivity(6, hcsAll, pdfAll);
+    window.amDashLoad = async function () {
+      window.__hcsError = false;
+      const [hcsAll, pdfAll] = await Promise.all([
+        hcListAll(100),
+        window.pdfExportList ? window.pdfExportList() : Promise.resolve([])
+      ]);
+      if (window.__hcsError) { // falha de carga: mensagem + "Tentar novamente" (não mostra "Sem HC" e zeros)
+        window.__hcsAll = null;
+        const c = document.querySelector('.hc-list');
+        if (c) c.innerHTML = `
+          <div class="empty-state error-state" role="alert">
+            <div class="empty-title es">No se pudieron cargar tus historias clínicas</div>
+            <div class="empty-title pt">Não foi possível carregar suas histórias clínicas</div>
+            <div class="empty-sub es">Revisa tu conexión e inténtalo de nuevo.</div>
+            <div class="empty-sub pt">Verifique sua conexão e tente novamente.</div>
+            <button type="button" class="empty-btn es" onclick="window.amDashLoad()">Intentar de nuevo</button>
+            <button type="button" class="empty-btn pt" onclick="window.amDashLoad()">Tentar novamente</button>
+          </div>`;
+        ['stat-hcs-value', 'stat-pdfs-value', 'stat-motivos-value'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '—'; });
+        return;
+      }
+      window.__hcsAll = hcsAll; // cache reusado pelo setView (evita refetch ao trocar de view)
+      uiLoadRecentHCs(window.currentDashView === 'hcs' ? 100 : 5, hcsAll);
+      uiLoadStats(hcsAll, pdfAll);
+      uiLoadRecentActivity(6, hcsAll, pdfAll);
+    };
+    // Card "Plano": lê o plano real do perfil (pro / estudante / teste)
+    try {
+      const prof = await profileGet();
+      const k = !prof ? 'trial' : (prof.plano === 'pro' ? 'pro' : (prof.tipo_usuario === 'estudante' ? 'estudante' : 'trial'));
+      const pc = document.getElementById('stat-plano-card');
+      if (pc) pc.dataset.plano = k;
+    } catch (e) { console.warn('plano card:', e); }
+    await window.amDashLoad();
 
     // Deep-link: retorno do Stripe Checkout (?payment=success) — mostra confirmação,
     // re-checa o plano (o webhook pode ter atualizado o acesso) e limpa a URL

@@ -13,7 +13,7 @@
  * VERSÃO DO CACHE: CACHE_VERSION é carimbado por `node scripts/versionar-assets.mjs`
  * (hash de todo o casca). Mudou o site → muda a versão → caches antigos são apagados no activate.
  */
-const CACHE_VERSION = 'am-pwa-36b719d397';
+const CACHE_VERSION = 'am-pwa-3810de5dba';
 const CACHE_PREFIX = 'am-pwa-';
 const OFFLINE_URL = '/offline.html';
 
@@ -140,7 +140,10 @@ async function assetVersionado(request, url) {
   if (hit) return hit;
   try {
     const res = await fetch(request);
-    if (podeGuardar(res)) cache.put(chave, res.clone()).catch(() => {});
+    if (podeGuardar(res)) {
+      /* uma cópia só por asset: a versionada substitui a pré-guardada sem ?v (não duplica no cache) */
+      cache.put(chave, res.clone()).then(() => cache.delete(chaveDe(url, false))).catch(() => {});
+    }
     return res;
   } catch (e) {
     /* offline: aceita a cópia pré-guardada (sem ?v) */

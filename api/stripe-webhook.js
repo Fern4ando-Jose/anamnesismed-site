@@ -18,6 +18,7 @@
 // (500 com log) em vez de derrubar o carregamento da função.
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
+const { temAssinaturaViva, tabelaAusente, STATUS_VIVOS } = require('./_comum');
 
 // Eventos que EXIGEM escrita no banco. Só estes entram em stripe_events: registrar todo
 // tipo que o Stripe enviar (inclusive os que ignoramos) só incharia a tabela e daria
@@ -42,6 +43,39 @@ function eventoExigeEscrita(event) {
 // Mensagem de erro do Supabase sem risco de vazar dado: só código + trecho curto.
 function descreveErro(error) {
   return (error && (error.code || String(error.message || '').slice(0, 120))) || 'erro desconhecido';
+}
+
+// Conta marcada como "em exclusão" (tabela contas_em_exclusao)? Tabela ausente (migration
+// 2026-10-03 ainda não aplicada) = sem marca, para não travar a ativação de billing; outro erro lança
+// (→ 500 e o Stripe reentrega).
+async function emExclusao(sbAdmin, userId) {
+  const { data, error } = await sbAdmin.from('contas_em_exclusao').select('user_id').eq('user_id', userId).maybeSingle();
+  if (error) {
+    if (tabelaAusente(error)) return false;
+    throw new Error('falha ao ler marca de exclusão: ' + descreveErro(error));
+  }
+  return !!data;
+}
+
+// Cancela, BEST EFFORT, a assinatura criada por um checkout cujo perfil não existe mais / está em
+// exclusão (senão o ex-usuário seria cobrado sem ter conta). Nunca lança; só loga IDs (sem PII).
+async function cancelaAssinaturaOrfa(stripe, obj) {
+  try {
+    const ids = new Set();
+    if (typeof obj.subscription === 'string' && obj.subscription) ids.add(obj.subscription);
+    else if (obj.subscription && obj.subscription.id) ids.add(obj.subscription.id);
+    if (!ids.size && typeof obj.customer === 'string' && obj.customer) {
+      const lista = await stripe.subscriptions.list({ customer: obj.customer, status: 'all', limit: 100 });
+      for (const sub of ((lista && lista.data) || [])) if (STATUS_VIVOS.includes(sub.status)) ids.add(sub.id);
+    }
+    for (const id of ids) {
+      try { await stripe.subscriptions.cancel(id); } catch (e) { if (!(e && e.code === 'resource_missing')) throw e; }
+    }
+    return ids.size;
+  } catch (e) {
+    console.error('[ALERTA stripe] não foi possível cancelar a assinatura órfã — cancele manualmente no Stripe. customer', obj && obj.customer, JSON.stringify({ type: e && e.type, code: e && e.code }));
+    return -1;
+  }
 }
 
 module.exports = async (req, res) => {
@@ -101,18 +135,42 @@ module.exports = async (req, res) => {
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
+        // Só assinatura PAGA ativa o plano: confere `mode` e `payment_status` (um checkout em
+        // outro modo, ou concluído sem pagamento, não pode virar `pro`). `no_payment_required`
+        // cobre assinatura com período de teste.
+        if (obj.mode !== 'subscription') {
+          console.warn(`[stripe-webhook] checkout.session.completed com mode=${obj.mode} (esperado subscription) — nada ativado`);
+          break;
+        }
+        if (obj.payment_status !== 'paid' && obj.payment_status !== 'no_payment_required') {
+          console.warn(`[stripe-webhook] checkout.session.completed com payment_status=${obj.payment_status} — nada ativado`);
+          break;
+        }
         const userId = obj.metadata?.userId;
         if (userId) {
+          // Conta sendo excluída (ou já excluída): NÃO ativa; devolve sucesso idempotente (200),
+          // porque reentregar não adianta, e cancela a assinatura que o checkout acabou de criar.
+          if (await emExclusao(sbAdmin, userId)) {
+            const n = await cancelaAssinaturaOrfa(stripe, obj);
+            console.error(`[ALERTA stripe] checkout concluído para conta em exclusão (user ${userId}, customer ${obj.customer}) — não ativado; assinaturas canceladas: ${n}`);
+            break;
+          }
           // `update` do supabase-js NÃO lança: devolve { error }. Sem checar, um erro (ou
           // nenhuma linha afetada) devolvia 200 ao Stripe, que não retentava — cliente
-          // pagou e ficou sem o plano. Qualquer falha aqui vira throw → 5xx + reversão da
+          // pagou e ficou sem o plano. Erro de banco vira throw → 5xx + reversão da
           // idempotência (catch abaixo), e o Stripe reentrega.
           const { data: linhas, error } = await sbAdmin.from('profiles')
             .update({ plano: 'pro', stripe_id: obj.customer })
             .eq('id', userId)
             .select('id');
           if (error) throw new Error('falha ao ativar plano pro: ' + descreveErro(error));
-          if (!Array.isArray(linhas) || linhas.length === 0) throw new Error('perfil não encontrado para ativar o plano pro');
+          if (!Array.isArray(linhas) || linhas.length === 0) {
+            // Perfil inexistente (conta já excluída): reentregar não resolve — responder 500 faria o
+            // Stripe insistir por dias. Sucesso idempotente + ALERTA + cancela a assinatura criada.
+            const n = await cancelaAssinaturaOrfa(stripe, obj);
+            console.error(`[ALERTA stripe] checkout concluído sem perfil (user ${userId}, customer ${obj.customer}) — não ativado; assinaturas canceladas: ${n}`);
+            break;
+          }
           console.log(`✅ Usuário ${userId} ativado como pro`);
         } else {
           console.warn('[stripe-webhook] checkout.session.completed sem metadata.userId — nada ativado');
@@ -130,6 +188,12 @@ module.exports = async (req, res) => {
       case 'customer.subscription.deleted': {
         const customerId = obj.customer;
         if (customerId) {
+          // Assinatura ANTIGA encerrada não rebaixa quem já tem OUTRA assinatura viva (reassinou, ou
+          // há duas no mesmo customer). Falha ao consultar o Stripe → throw → 500 (reentrega).
+          if (await temAssinaturaViva(stripe, customerId, obj.id)) {
+            console.log(`ℹ️  Assinatura ${obj.id} encerrada (${event.type}), mas customer ${customerId} tem outra viva — plano mantido`);
+            break;
+          }
           // Mesma regra: checa o `error` (não lança). Zero linhas é legítimo aqui (conta já
           // excluída / customer desconhecido), então só o erro real reprova.
           const { error } = await sbAdmin.from('profiles')
