@@ -286,6 +286,7 @@ AM.motivo("diarreia", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas y mecanismos de la diarrea",
         "rows": [
           [

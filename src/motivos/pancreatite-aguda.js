@@ -415,6 +415,7 @@ AM.motivo("pancreatite-aguda", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "GET SMASHED",
         "name": "Etiologías de la pancreatitis",
         "rows": [
           [
@@ -460,6 +461,7 @@ AM.motivo("pancreatite-aguda", {
         ]
       },
       {
+        "kw": "RANSON",
         "name": "Criterios de Ranson (admisión)",
         "rows": [
           [

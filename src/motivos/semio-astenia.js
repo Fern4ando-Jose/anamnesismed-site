@@ -338,6 +338,7 @@ AM.motivo("semio-astenia", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de astenia/fatiga",
         "rows": [
           [
@@ -371,6 +372,7 @@ AM.motivo("semio-astenia", {
         ]
       },
       {
+        "kw": "ORGÁNICA x FUNCIONAL",
         "name": "Patrón temporal de la fatiga",
         "rows": [
           [

@@ -564,6 +564,7 @@ AM.motivo("dor-toracica", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "MONA",
         "name": "Conducta inicial en el IAM/SCA",
         "rows": [
           [
@@ -585,6 +586,7 @@ AM.motivo("dor-toracica", {
         ]
       },
       {
+        "kw": "6 EMERGENCIAS",
         "name": "Causas que matan por dolor torácico",
         "rows": [
           [

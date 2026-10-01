@@ -340,6 +340,7 @@ AM.motivo("hemorragia-digestiva-alta", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "VARICEAL x NO VARICEAL",
         "name": "Causas de HDA",
         "rows": [
           [
@@ -369,6 +370,7 @@ AM.motivo("hemorragia-digestiva-alta", {
         ]
       },
       {
+        "kw": "ABCDE",
         "name": "Abordaje inicial del sangrado",
         "rows": [
           [

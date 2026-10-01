@@ -294,6 +294,7 @@ AM.motivo("tontura-vertigem", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de mareo/vértigo",
         "rows": [
           [

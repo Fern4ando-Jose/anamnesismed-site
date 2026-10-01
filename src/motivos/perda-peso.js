@@ -287,6 +287,7 @@ AM.motivo("perda-peso", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de pérdida de peso involuntaria",
         "rows": [
           [

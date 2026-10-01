@@ -160,36 +160,67 @@ function bi(pt, es){
   return '<span class="pt">'+pt+'</span><span class="es">'+e+'</span>';
 }
 
-function buildMnemonicsHTML(gc){
-  if(!gc||!gc.mnemonics||!gc.mnemonics.length)
+// ── Mnemônicas por idioma ──
+// Regra: em ES só aparece a sigla que existe em espanhol (m.kwEs). Se kwEs for vazio/ausente,
+// o ES NÃO herda a sigla do PT: mostra só o nome, e as linhas ganham marcador "•" em vez da letra do PT.
+// Quando 'lang' ('pt'|'es') é informado, o HTML sai SÓ nesse idioma (sem os dois <span>).
+function mnemNorm(t){return String(t==null?'':t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()}
+function mnemLetterEs(m, r){
+  if(r[5]!=null && r[5]!=='') return r[5];
+  var l = r[0]==null ? '' : String(r[0]);
+  if(!m.kwEs) return (l.length>3 || /^[0-9]/.test(l)) ? (/^[0-9]/.test(l)?l:'•') : '•';
+  var term = r[3]==null ? '' : String(r[3]);
+  if(!l || mnemNorm(term).charAt(0)===mnemNorm(l).charAt(0)) return l || '•';
+  if(l.length>3) return l;
+  if(new RegExp('(^|[^A-Za-z])'+l.replace(/[^\w]/g,'')+'([^A-Za-z]|$)').test(term)) return l;
+  return '•';
+}
+function biLang(pt, es, lang){
+  if(lang==='pt') return pt==null?'':pt;
+  if(lang==='es') return (es==null||es==='')?(pt==null?'':pt):es;
+  return bi(pt,es);
+}
+function buildMnemonicsHTML(gc, lang){
+  if(!gc||!gc.mnemonics||!gc.mnemonics.length){
+    if(lang==='pt') return '<div class="ibox ibox-primary"><strong>Mnemônicas</strong><span>Nenhuma mnemônica cadastrada para este motivo ainda.</span></div>';
+    if(lang==='es') return '<div class="ibox ibox-primary"><strong>Mnemotécnicas</strong><span>Ninguna mnemotécnica registrada aún.</span></div>';
     return '<div class="ibox ibox-primary"><strong class="pt">Mnemônicas</strong><strong class="es">Mnemotécnicas</strong><span class="pt">Nenhuma mnemônica cadastrada para este motivo ainda.</span><span class="es">Ninguna mnemotécnica registrada aún.</span></div>';
+  }
   var html='';
   gc.mnemonics.forEach(function(m){
-    html+='<div class="mnem-card"><div class="mnem-card-head"><span class="mnem-kw">'+bi(m.kw,m.kwEs)+'</span><span class="mnem-name">'+bi(m.name,m.nameEs)+'</span></div>';
+    var kw;
+    if(lang==='pt') kw = m.kw||'';
+    else if(lang==='es') kw = m.kwEs||'';
+    else kw = '<span class="pt">'+(m.kw||'')+'</span><span class="es">'+(m.kwEs||'')+'</span>';
+    html+='<div class="mnem-card"><div class="mnem-card-head">'+(kw?'<span class="mnem-kw">'+kw+'</span>':'')+'<span class="mnem-name">'+biLang(m.name,m.nameEs,lang)+'</span></div>';
     m.rows.forEach(function(r){
-      // r = [letra, termo, dica, termoEs?, dicaEs?]
-      html+='<div class="mnem-row"><span class="mnem-letter">'+bi(r[0],r[5])+'</span><span><span class="mnem-term">'+bi(r[1],r[3])+'</span><span class="mnem-hint">'+bi(r[2],r[4])+'</span></span></div>';
+      // r = [letra, termo, dica, termoEs?, dicaEs?, letraEs?]
+      var let_ = lang==='pt' ? r[0] : lang==='es' ? mnemLetterEs(m,r) : '<span class="pt">'+(r[0]==null?'':r[0])+'</span><span class="es">'+mnemLetterEs(m,r)+'</span>';
+      var term = lang==='es' ? biLang(r[1],r[3],'es') : biLang(r[1],r[3],lang);
+      var hint = lang==='es' ? ((r[4]==null||r[4]==='')?((r[3]!=null&&r[3]!=='')?'':(r[2]||'')):r[4]) : biLang(r[2],r[4],lang);
+      html+='<div class="mnem-row"><span class="mnem-letter">'+let_+'</span><span><span class="mnem-term">'+term+'</span><span class="mnem-hint">'+hint+'</span></span></div>';
     });
     html+='</div>';
   });
   return html;
 }
 
-function buildManobrasHTML(gc){
+function buildManobrasHTML(gc, lang){
+  var B = function(p,e){return biLang(p,e,lang)};
   if(!gc||!gc.manobras||!gc.manobras.length)
-    return '<div class="ibox ibox-primary"><strong class="pt">Manobras Semiológicas</strong><strong class="es">Maniobras Semiológicas</strong><span class="pt">Nenhuma manobra cadastrada para este motivo ainda.</span><span class="es">Ninguna maniobra registrada aún.</span></div>';
+    return lang==='pt' ? '<div class="ibox ibox-primary"><strong>Manobras Semiológicas</strong><span>Nenhuma manobra cadastrada para este motivo ainda.</span></div>' : lang==='es' ? '<div class="ibox ibox-primary"><strong>Maniobras Semiológicas</strong><span>Ninguna maniobra registrada aún.</span></div>' : '<div class="ibox ibox-primary"><strong class="pt">Manobras Semiológicas</strong><strong class="es">Maniobras Semiológicas</strong><span class="pt">Nenhuma manobra cadastrada para este motivo ainda.</span><span class="es">Ninguna maniobra registrada aún.</span></div>';
   var html='';
   gc.manobras.forEach(function(m,i){
     html+='<div class="acc" id="acc-m-'+i+'">';
     html+='<div class="acc-head" onclick="this.closest(\'.acc\').classList.toggle(\'open\')">';
     html+='<span class="acc-num">'+(i+1)+'</span>';
-    html+='<div><div class="acc-title">'+bi(m.title,m.titleEs)+'</div><div class="acc-subtitle">'+bi(m.subtitle,m.subtitleEs)+'</div></div>';
+    html+='<div><div class="acc-title">'+B(m.title,m.titleEs)+'</div><div class="acc-subtitle">'+B(m.subtitle,m.subtitleEs)+'</div></div>';
     html+='<span class="acc-toggle">+</span></div>';
     html+='<div class="acc-body"><ul class="acc-steps">';
-    m.steps.forEach(function(s,si){var sEs=(m.stepsEs&&m.stepsEs[si]);html+='<li class="acc-step"><span class="acc-step-n">'+(si+1)+'.</span><span>'+bi(s,sEs)+'</span></li>';});
+    m.steps.forEach(function(s,si){var sEs=(m.stepsEs&&m.stepsEs[si]);html+='<li class="acc-step"><span class="acc-step-n">'+(si+1)+'.</span><span>'+B(s,sEs)+'</span></li>';});
     html+='</ul><div class="acc-findings">';
-    html+='<div class="acc-finding normal"><span class="acc-finding-lbl pt">Normal / Negativo</span><span class="acc-finding-lbl es">Normal / Negativo</span>'+bi(m.normal,m.normalEs)+'</div>';
-    html+='<div class="acc-finding abnormal"><span class="acc-finding-lbl pt">Alterado / Positivo</span><span class="acc-finding-lbl es">Alterado / Positivo</span>'+bi(m.abnormal,m.abnormalEs)+'</div>';
+    html+='<div class="acc-finding normal"><span class="acc-finding-lbl">Normal / Negativo</span>'+B(m.normal,m.normalEs)+'</div>';
+    html+='<div class="acc-finding abnormal"><span class="acc-finding-lbl">Alterado / Positivo</span>'+B(m.abnormal,m.abnormalEs)+'</div>';
     html+='</div></div></div>';
   });
   return html;

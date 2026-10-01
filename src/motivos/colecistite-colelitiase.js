@@ -431,6 +431,7 @@ AM.motivo("colecistite-colelitiase", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "5 F",
         "name": "Factores de riesgo para colelitiasis",
         "rows": [
           [
@@ -456,6 +457,7 @@ AM.motivo("colecistite-colelitiase", {
         ]
       },
       {
+        "kw": "CHARCOT",
         "name": "Tríada de la colangitis",
         "rows": [
           [
@@ -473,6 +475,7 @@ AM.motivo("colecistite-colelitiase", {
         ]
       },
       {
+        "kw": "",
         "name": "Complicaciones de la litiasis biliar",
         "rows": [
           [

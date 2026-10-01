@@ -386,6 +386,7 @@ AM.motivo("doencas-anorretais", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Clasificación de las hemorroides internas",
         "rows": [
           [
@@ -407,6 +408,7 @@ AM.motivo("doencas-anorretais", {
         ]
       },
       {
+        "kw": "DOLOR x SANGRE",
         "name": "Diferenciar las causas",
         "rows": [
           [

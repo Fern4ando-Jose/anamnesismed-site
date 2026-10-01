@@ -387,6 +387,7 @@ AM.motivo("dispneia", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de disnea aguda",
         "rows": [
           [

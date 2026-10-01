@@ -322,6 +322,7 @@ AM.motivo("semio-cianose", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "CENTRAL x PERIFÉRICA",
         "name": "Tipos de cianosis",
         "rows": [
           [
@@ -343,6 +344,7 @@ AM.motivo("semio-cianose", {
         ]
       },
       {
+        "kw": "5 g/dL",
         "name": "Umbral de la cianosis",
         "rows": [
           [

@@ -418,6 +418,7 @@ AM.motivo("febre", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Semiología de la fiebre",
         "rows": [
           [
@@ -443,6 +444,7 @@ AM.motivo("febre", {
         ]
       },
       {
+        "kw": "",
         "name": "Patrones de la curva febril",
         "rows": [
           [
@@ -472,6 +474,7 @@ AM.motivo("febre", {
         ]
       },
       {
+        "kw": "SIRS",
         "name": "Respuesta Inflamatoria Sistémica",
         "rows": [
           [

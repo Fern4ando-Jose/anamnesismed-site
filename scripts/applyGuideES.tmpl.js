@@ -7,7 +7,7 @@ function applyGuideES(){
     if(es.mnemonics && pt.mnemonics) es.mnemonics.forEach(function(me, i){
       var mp = pt.mnemonics[i]; if(!mp || !me) return;
       if(me.name) mp.nameEs = me.name;
-      if(me.kw) mp.kwEs = me.kw;
+      if(me.kw != null) mp.kwEs = me.kw; // '' = sem sigla em ES (nunca herdar a sigla do PT)
       if(me.rows && mp.rows) me.rows.forEach(function(re, j){
         var rp = mp.rows[j]; if(!rp || !re) return;
         if(re[0] != null) rp[3] = re[0];

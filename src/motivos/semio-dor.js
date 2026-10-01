@@ -572,6 +572,7 @@ AM.motivo("semio-dor", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Caracterización semiológica del dolor (clínica)",
         "rows": [
           [
@@ -613,6 +614,7 @@ AM.motivo("semio-dor", {
         ]
       },
       {
+        "kw": "ALICIA",
         "name": "Caracterización semiológica del dolor",
         "rows": [
           [
@@ -642,6 +644,7 @@ AM.motivo("semio-dor", {
         ]
       },
       {
+        "kw": "OPQRST",
         "name": "Esquema anglosajón del dolor",
         "rows": [
           [
@@ -671,6 +674,7 @@ AM.motivo("semio-dor", {
         ]
       },
       {
+        "kw": "VISCERAL x SOMÁTICA",
         "name": "Tipos de dolor",
         "rows": [
           [

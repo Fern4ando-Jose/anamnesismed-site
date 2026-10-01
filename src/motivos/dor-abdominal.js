@@ -460,6 +460,7 @@ AM.motivo("dor-abdominal", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de dolor abdominal",
         "rows": [
           [

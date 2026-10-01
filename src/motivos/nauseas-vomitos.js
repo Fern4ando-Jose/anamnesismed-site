@@ -306,6 +306,7 @@ AM.motivo("nauseas-vomitos", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de náuseas y vómitos",
         "rows": [
           [

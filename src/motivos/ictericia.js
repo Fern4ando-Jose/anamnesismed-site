@@ -279,6 +279,7 @@ AM.motivo("ictericia", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "PRE / HEPÁTICA / POS",
         "name": "Clasificación topográfica de la ictericia",
         "rows": [
           [

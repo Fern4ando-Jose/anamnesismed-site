@@ -190,14 +190,15 @@ AM.motivo("expectoracao", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Tipos de esputo y significado clínico",
         "rows": [
-          ["Seroso", "Espumoso, rosado → edema agudo de pulmón"],
-          ["Mucoide", "Claro/blanco → bronquitis crónica, asma estable"],
-          ["Mucopurulento", "Amarillento → infección inicial (viral→bacteriana)"],
-          ["Purulento", "Verdoso/fétido → infección bacteriana establecida"],
-          ["Herrumbroso", "Achocolatado → neumonía neumocócica"],
-          ["Numular", "Esferas (monedas) → TB, bronquiectasia"]
+          ["Espumoso, rosado → edema agudo de pulmón", "", "Seroso"],
+          ["Claro/blanco → bronquitis crónica, asma estable", "", "Mucoide"],
+          ["Amarillento → infección inicial (viral→bacteriana)", "", "Mucopurulento"],
+          ["Verdoso/fétido → infección bacteriana establecida", "", "Purulento"],
+          ["Achocolatado → neumonía neumocócica", "", "Herrumbroso"],
+          ["Esferas (monedas) → TB, bronquiectasia", "", "Numular"]
         ]
       }
     ],
