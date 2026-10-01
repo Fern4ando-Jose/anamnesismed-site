@@ -77,6 +77,7 @@
 ## FASE 2 — História clínica
 
 ### 2.1 HC por perfil
+> **Especificação escrita em `docs/HC-ESPECIFICACAO.md`** (mapa de painéis por perfil, 8 seções do médico, fechamento estruturado, contrato da IA, critérios de aceite) — aguarda aprovação do dono (§8 do documento). Implementação só depois do merge da outra branch (mexe em `anamnesismed-app.html` e `api/`).
 - [ ] **P0** Expor `tipo_usuario` ao app e gravá-lo na HC salva
 - [ ] **P0** Mapear cada painel: obrigatório (médico) / opcional / só estudante, usando `docs/pesquisa/hc-medico-modelos.md`
 - [ ] **P2** Modo Médico: 8 seções (cabeçalho, queixa e HDA, antecedentes relevantes, exame físico, complementares, hipótese/CID, conduta, assinatura/evolução); painéis didáticos colapsados
