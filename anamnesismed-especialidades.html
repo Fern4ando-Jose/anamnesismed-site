@@ -185,7 +185,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0
 }
 .esp-drawer-title{font-size:15px;font-weight:700;color:var(--ink)}
-.esp-drawer-close{background:var(--bg);border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.esp-drawer-close{background:var(--bg);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .esp-drawer-list{overflow-y:auto;padding:10px 12px 24px;display:flex;flex-direction:column;gap:4px}
 .esp-drawer-btn{
   display:flex;align-items:center;gap:12px;
@@ -295,12 +295,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <div class="esp-drawer-head">
     <span class="esp-drawer-title pt">Especialidades</span>
     <span class="esp-drawer-title es">Especialidades</span>
-    <button class="esp-drawer-close" onclick="closeEspDrawer()">✕</button>
+    <button type="button" class="esp-drawer-close" onclick="closeEspDrawer()" aria-label="Fechar / Cerrar">✕</button>
   </div>
   <div class="esp-drawer-list" id="esp-drawer-list"><!-- preenchido por JS --></div>
 </div>
 
-<script src="anamnesismed-motivos.js?v=f48a3410"></script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
 <script>
 // ── DADOS ────────────────────────────────────────────────────────────────────
 // Metadados de APRESENTAÇÃO das especialidades (nome + ícone exibidos no
@@ -536,7 +536,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
-<script src="supabase-integration.js?v=593c3dba" defer></script>
+<script src="supabase-integration.js?v=56f42252" defer></script>
 <script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

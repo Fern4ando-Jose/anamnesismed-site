@@ -42,7 +42,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14p
 .topbar-left{display:flex;align-items:center;gap:10px;min-width:0}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
 .hamburger:hover{background:var(--bg-card)}
-.topbar-back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;cursor:pointer;padding:7px 13px;border-radius:6px;border:1.5px solid var(--line-md);background:var(--bg-card)}
+.topbar-back{min-height:44px;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;cursor:pointer;padding:7px 13px;border-radius:6px;border:1.5px solid var(--line-md);background:var(--bg-card)}
 .topbar-back:hover{color:var(--primary);border-color:var(--primary)}
 .lang-switch{display:flex;gap:4px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:8px;padding:3px}
 .lang-btn{font-size:12px;font-weight:700;padding:5px 12px;border-radius:5px;cursor:pointer;color:var(--muted);user-select:none;border:0;background:transparent;font-family:inherit}
@@ -52,13 +52,14 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 .search-box{width:100%;padding:11px 16px;border-radius:10px;border:1.5px solid var(--line-md);background:var(--bg-card);font-size:13px;margin-bottom:8px}
 .search-box:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(14,116,144,.1)}
 .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
-.filter-chip{font-size:12px;font-weight:700;padding:6px 13px;border-radius:20px;background:var(--cream);border:1.5px solid transparent;cursor:pointer;color:var(--muted);user-select:none;transition:all .15s}
+.filter-chip{font-family:inherit;font-size:12px;font-weight:700;padding:6px 13px;min-height:44px;display:inline-flex;align-items:center;gap:4px;border-radius:22px;background:var(--cream);border:1.5px solid transparent;cursor:pointer;color:var(--muted);user-select:none;transition:all .15s}
+.filter-chip:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 .theme-section{margin-bottom:30px}
 .theme-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--line)}
 .theme-icon{font-size:20px;width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .theme-title{font-family:var(--serif);font-size:18px;font-weight:700}
-.section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin:14px 0 8px}
+.section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary-dark);margin:14px 0 8px}
 /* mnemonic cards */
 .mnem-card{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);margin-bottom:10px;overflow:hidden}
 .mnem-card-head{padding:10px 14px 6px;display:flex;align-items:flex-end;gap:10px;border-bottom:1px solid var(--line);background:var(--cream)}
@@ -72,7 +73,7 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 /* maneuver accordions */
 .acc{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);margin-bottom:8px;overflow:hidden}
 .acc-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
-.acc-num{font-size:14px;font-weight:700;color:var(--primary);opacity:.25;min-width:22px;line-height:1;flex-shrink:0}
+.acc-num{font-size:14px;font-weight:700;color:#6b7f8a;min-width:22px;line-height:1;flex-shrink:0}
 .acc-title{font-size:13px;font-weight:700;flex:1;line-height:1.3}
 .acc-subtitle{font-size:12px;color:var(--muted);margin-top:1px}
 .acc-toggle{font-size:18px;color:var(--primary);transition:transform .25s;flex-shrink:0}
@@ -87,7 +88,7 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 .acc-finding{padding:8px 10px;border-left:3px solid;border-radius:0 5px 5px 0;font-size:12px;line-height:1.5}
 .acc-finding.normal{border-color:var(--secondary);background:rgba(13,148,136,.07)}
 .acc-finding.abnormal{border-color:var(--danger);background:#fdf0eb}
-.acc-finding-lbl{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;color:rgba(13,45,61,.35);display:block}
+.acc-finding-lbl{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;color:#5a6b78;display:block}
 .empty-msg{font-size:12px;color:var(--muted);text-align:center;padding:30px 0}
 .es{display:none}
 .lang-es .pt{display:none}
@@ -125,13 +126,13 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
     <span class="es">Guía de revisión rápida — todas las mnemotécnicas semiológicas y maniobras de exploración física organizadas por tema clínico. Use la búsqueda o los filtros para encontrar lo que necesita.</span>
   </p>
 
-  <input class="search-box" id="search" placeholder="Buscar por palavra-chave, sigla, manobra... (ex: Murphy, MONA, edema)" oninput="renderAll()">
+  <input class="search-box" id="search" type="search" aria-label="Buscar / Buscar" placeholder="Buscar por palavra-chave, sigla, manobra... (ex: Murphy, MONA, edema)" oninput="renderAll()">
   <div class="filter-row" id="filters"></div>
 
   <div id="content"></div>
 </main>
 
-<script src="anamnesismed-motivos.js?v=f48a3410"></script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
 <script src="anamnesismed-guide.js?v=f1ebbedd"></script>
 <script src="anamnesismed-guide-es.js?v=ae197799"></script>
 <script>
@@ -144,9 +145,10 @@ function setLang(l){
   amLangA11y(l);
   LANG = l;
   document.body.classList.toggle('lang-es', l==='es');
+  document.documentElement.setAttribute('data-lang', l==='pt'?'pt':'es');
   document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active', b.dataset.lang===l)});
   try{localStorage.setItem('am-lang', l)}catch(e){}
-  var se=document.getElementById('search'); if(se) se.placeholder = l==='es' ? 'Buscar por palabra clave, sigla, maniobra... (ej: Murphy, MONA, edema)' : 'Buscar por palavra-chave, sigla, manobra... (ex: Murphy, MONA, edema)';
+  var se=document.getElementById('search'); if(se) se.setAttribute('aria-label', l==='es'?'Buscar mnemotécnicas y maniobras':'Buscar mnemônicas e manobras'); if(se) se.placeholder = l==='es' ? 'Buscar por palabra clave, sigla, maniobra... (ej: Murphy, MONA, edema)' : 'Buscar por palavra-chave, sigla, manobra... (ex: Murphy, MONA, edema)';
   if(window.AM_READY){ buildFilters(); renderAll(); }
 }
 (function(){
@@ -187,15 +189,15 @@ THEMES.forEach(function(t){
 // ── Filter chips ──
 var filterState = 'all';
 function buildFilters(){
-  var html = '<div class="filter-chip'+(filterState==='all'?' active':'')+'" data-f="all" onclick="setFilter(this,\'all\')">'+(LANG==='es'?'Todos los temas':'Todos os temas')+'</div>';
+  var html = '<button type="button" class="filter-chip'+(filterState==='all'?' active':'')+'" data-f="all" aria-pressed="'+(filterState==='all')+'" onclick="setFilter(this,\'all\')">'+(LANG==='es'?'Todos los temas':'Todos os temas')+'</button>';
   THEMES.forEach(function(t){
-    html += '<div class="filter-chip'+(filterState===t.id?' active':'')+'" data-f="'+t.id+'" onclick="setFilter(this,\''+t.id+'\')">'+(window.amIcon?amIcon(t.icon,15):t.icon)+' '+(LANG==='es'?t.nameEs:t.name)+'</div>';
+    html += '<button type="button" class="filter-chip'+(filterState===t.id?' active':'')+'" data-f="'+t.id+'" aria-pressed="'+(filterState===t.id)+'" onclick="setFilter(this,\''+t.id+'\')">'+(window.amIcon?amIcon(t.icon,15):t.icon)+' '+(LANG==='es'?t.nameEs:t.name)+'</button>';
   });
   document.getElementById('filters').innerHTML = html;
 }
 function setFilter(el, id){
   filterState = id;
-  document.querySelectorAll('.filter-chip').forEach(function(c){c.classList.toggle('active', c===el)});
+  document.querySelectorAll('.filter-chip').forEach(function(c){c.classList.toggle('active', c===el);c.setAttribute('aria-pressed',c===el?'true':'false')});
   renderAll();
 }
 
@@ -253,6 +255,8 @@ window.AM_READY = true;
 buildFilters();
 renderAll();
 </script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
+<script src="supabase-integration.js?v=56f42252" defer></script>
 <script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

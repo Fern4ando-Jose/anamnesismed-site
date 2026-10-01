@@ -114,24 +114,24 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .esp-tile-name{font-size:16px;font-weight:700;line-height:1.25}
 .esp-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
 .esp-tile-foot{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
-.esp-tile-count{font-size:12px;font-weight:700;color:var(--c);background:var(--cbg);padding:3px 11px;border-radius:20px}
-.esp-tile-go{font-size:18px;color:var(--c)}
+.esp-tile-count{font-size:12px;font-weight:700;color:color-mix(in srgb,var(--c) 65%,#000);background:var(--cbg);padding:3px 11px;border-radius:20px}
+.esp-tile-go{font-size:18px;color:color-mix(in srgb,var(--c) 65%,#000)}
 
 /* ── CARDS DE FERRAMENTAS ── */
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .tool-tile{
   position:relative;display:flex;flex-direction:column;gap:10px;
   background:var(--bg-card);border:1px dashed var(--line-md);border-radius:16px;
-  padding:18px;color:var(--ink);overflow:hidden;opacity:.92
+  padding:18px;color:var(--ink);overflow:hidden
 }
 .tool-tile-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:27px;background:var(--cbg)}
 .tool-tile-name{font-size:16px;font-weight:700}
 .tool-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
-.soon-badge{display:inline-block;align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--c);background:var(--cbg);padding:4px 11px;border-radius:20px}
+.soon-badge{display:inline-block;align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:color-mix(in srgb,var(--c) 65%,#000);background:var(--cbg);padding:4px 11px;border-radius:20px}
 .pro-badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:1px 6px;border-radius:6px;vertical-align:middle;margin-left:4px}
 .tool-tile.live{border-style:solid;border-color:var(--line);opacity:1;text-decoration:none;cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s}
 .tool-tile.live:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(30,27,75,.26);border-color:var(--c)}
-.tool-tile .go{align-self:flex-start;font-size:12.5px;font-weight:700;color:var(--c);display:flex;align-items:center;gap:6px}
+.tool-tile .go{align-self:flex-start;font-size:12.5px;font-weight:700;color:color-mix(in srgb,var(--c) 65%,#000);display:flex;align-items:center;gap:6px}
 .tool-tile.live .go .arrow{transition:transform .16s}
 .tool-tile.live:hover .go .arrow{transform:translateX(3px)}
 
@@ -278,7 +278,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   </div>
 </nav>
 
-<script src="anamnesismed-motivos.js?v=f48a3410"></script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
 <script>
 // ── DADOS DAS ESPECIALIDADES (cards do mosaico) ───────────────────────────────
 var ESPECIALIDADES = [
@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
-<script src="supabase-integration.js?v=593c3dba" defer></script>
+<script src="supabase-integration.js?v=56f42252" defer></script>
 <script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

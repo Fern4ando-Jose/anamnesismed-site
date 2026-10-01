@@ -82,7 +82,7 @@ async function roda(state, { auth = 'Bearer ' + ENV.CRON_SECRET, query, method =
   try {
     const handler = mundo(state);
     const res = makeRes();
-    await handler({ method, headers: auth === undefined ? {} : { authorization: auth }, query: query || {} }, res);
+    await handler({ method, headers: auth === null ? {} : { authorization: auth }, query: query || {} }, res);
     return { res, logs, alertas: logs.error.filter((l) => l.includes('reconciliacao_alerta')).map((l) => JSON.parse(l)) };
   } finally {
     Date.now = realNow; console.log = o.log; console.error = o.error;
@@ -100,7 +100,7 @@ test('sem CRON_SECRET → 503 (fail-closed), mesmo com Bearer qualquer; não toc
 });
 
 test('Bearer errado/ausente/sem esquema → 401 e não toca Stripe nem banco', async () => {
-  for (const auth of ['Bearer errado', undefined, 'segredo-cron', 'bearer segredo-cron', 'Bearer ']) {
+  for (const auth of ['Bearer errado', null, 'segredo-cron', 'bearer segredo-cron', 'Bearer ']) {
     const st = { profiles: [], subs: [] };
     const { res } = await roda(st, { auth });
     assert.equal(res.code, 401, String(auth));

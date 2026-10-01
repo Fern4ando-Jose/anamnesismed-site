@@ -98,6 +98,9 @@ const ORDEM = [
   '2026-10-02-profiles-genero.sql',
   '2026-10-03-consumir-limite.sql',
   '2026-10-03-contas-em-exclusao.sql',
+  '2026-10-04-profiles-protege-email.sql',
+  '2026-10-04-stripe-events-lease.sql',
+  '2026-10-04-historias-fk-cascade.sql',
 ];
 
 test.before(() => {
@@ -148,21 +151,23 @@ test('RPCs consumir_cota_ia / devolver_cota_ia (asserts reais)', { skip }, () =>
   rodaSqlTeste('2026-10-02-cota-rpc.test.sql');
 });
 
-// A 2026-06-23 (antiga, imutável) NÃO é idempotente nas policies de historias_clinicas — fica de
-// fora daqui; abaixo testamos que re-rodá-la não reabre o DELETE de profiles depois da 10-02.
-test('migrations são idempotentes: reaplicar tudo não falha', { skip }, () => {
-  for (const f of ORDEM.slice(1).filter((x) => x !== '2026-06-23-rls-profiles-historias.sql')) {
+// Idempotência: reaplicar TUDO, na ordem, não falha (a 06-23 agora é idempotente — M7). A reaplicação das
+// antigas 10-01/10-02 refaz a função do trigger SEM a trava de e-mail; como a 10-04 vem por último na ordem,
+// o estado final volta a travar (README: depois de re-executar 10-01/10-02, rode de novo a 10-04).
+test('migrations são idempotentes: reaplicar tudo (inclusive a 06-23) não falha', { skip }, () => {
+  for (const f of ORDEM.slice(1)) {
     const r = psqlFile(path.join(MIG, f));
     assert.equal(r.status, 0, 'reaplicar ' + f + ' falhou: ' + r.stderr);
   }
 });
 
-test('re-rodar a 2026-06-23 e depois a 10-02 não deixa policy ALL/DELETE em profiles', { skip }, () => {
-  psqlFile(path.join(MIG, '2026-06-23-rls-profiles-historias.sql')); // pode falhar no meio (esperado); só importa o efeito
-  const r0 = psqlFile(path.join(MIG, '2026-10-02-devolver-cota-e-search-path.sql'));
+test('re-rodar SOZINHA a 2026-06-23 (M7) não reabre policy ALL/DELETE em profiles e mantém as policies de HC', { skip }, () => {
+  const r0 = psqlFile(path.join(MIG, '2026-06-23-rls-profiles-historias.sql'));
   assert.equal(r0.status, 0, r0.stderr);
   const r = pg('psql', psqlArgs('am', ['-t', '-A', '-c', "select count(*) from pg_policies where schemaname='public' and tablename='profiles' and cmd in ('ALL','DELETE')"]));
   assert.equal(r.stdout.trim(), '0');
+  const h = pg('psql', psqlArgs('am', ['-t', '-A', '-c', "select count(*) from pg_policies where schemaname='public' and tablename='historias_clinicas' and policyname='usuario_acessa_proprias_hcs'"]));
+  assert.equal(h.stdout.trim(), '1');
 });
 
 test('migrations down da 10-02 e re-aplicação funcionam', { skip }, () => {
@@ -172,6 +177,68 @@ test('migrations down da 10-02 e re-aplicação funcionam', { skip }, () => {
   assert.equal(r.stdout.trim(), 't');
   r = psqlFile(path.join(MIG, '2026-10-02-devolver-cota-e-search-path.sql'));
   assert.equal(r.status, 0, r.stderr);
+  // A 10-02 recria profiles_protege_billing SEM a trava de e-mail: a 10-04 precisa rodar de novo depois dela.
+  r = psqlFile(path.join(MIG, '2026-10-04-profiles-protege-email.sql'));
+  assert.equal(r.status, 0, r.stderr);
+});
+
+test('trava de profiles.email + stripe_events/lease + FK cascade (asserts reais da 2026-10-04)', { skip }, () => {
+  rodaSqlTeste('2026-10-04-profiles-protege-email.test.sql');
+  rodaSqlTeste('2026-10-04-stripe-events-fk.test.sql');
+});
+
+// A1 (c): ataque direto — usuário comum tenta `update profiles set email = <e-mail de outro>` e o e-mail NÃO muda.
+test('A1: authenticated com `update profiles set email=...` não muda o e-mail (nem por upsert); service_role continua podendo', { skip }, () => {
+  const uid = 'a1a1a1a1-0000-0000-0000-000000000001';
+  const q = (sql) => {
+    const arq = path.join(dir, 'a1-' + Math.random().toString(36).slice(2) + '.sql');
+    fs.writeFileSync(arq, sql); if (IS_ROOT) spawnSync('chown', [postgresUser, arq]);
+    const r = pg('psql', psqlArgs('am', ['-t', '-A', '-f', arq]));
+    assert.equal(r.status, 0, r.stderr);
+    return r.stdout.trim();
+  };
+  q(`insert into auth.users (id, email) values ('${uid}', 'atacante-a1@exemplo.invalid') on conflict do nothing;`);
+  const ataque = `begin;
+    select set_config('request.jwt.claims', '{"role":"authenticated","sub":"${uid}"}', true);
+    set local role authenticated;
+    update public.profiles set email = 'vitima-a1@exemplo.invalid' where id = '${uid}';
+    insert into public.profiles (id, email) values ('${uid}', 'vitima-a1@exemplo.invalid') on conflict (id) do update set email = excluded.email;
+    reset role;
+    select email from public.profiles where id = '${uid}';
+    rollback;`;
+  assert.equal(q(ataque).split('\n').filter((l) => /@/.test(l)).pop(), 'atacante-a1@exemplo.invalid');
+  // service_role (backend) continua livre para corrigir o e-mail
+  const svc = `begin;
+    select set_config('request.jwt.claims', '{"role":"service_role"}', true);
+    set local role service_role;
+    update public.profiles set email = 'corrigido-a1@exemplo.invalid' where id = '${uid}';
+    reset role;
+    select email from public.profiles where id = '${uid}';
+    rollback;`;
+  assert.equal(q(svc).split('\n').filter((l) => /@/.test(l)).pop(), 'corrigido-a1@exemplo.invalid');
+});
+
+test('M4: excluir o usuário em auth.users leva as HCs (FK ON DELETE CASCADE) e só as dele; down volta a NO ACTION e a forward reaplica', { skip }, () => {
+  const q = (sql) => { const r = pg('psql', psqlArgs('am', ['-t', '-A', '-c', sql])); assert.equal(r.status, 0, r.stderr); return r.stdout.trim(); };
+  const tipo = () => q("select confdeltype from pg_constraint where conrelid='public.historias_clinicas'::regclass and contype='f' and confrelid='auth.users'::regclass");
+  assert.equal(tipo(), 'c');
+  let r = psqlFile(path.join(MIG, 'down', '2026-10-04-historias-fk-cascade.down.sql'));
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(tipo(), 'a');
+  r = psqlFile(path.join(MIG, '2026-10-04-historias-fk-cascade.sql'));
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(tipo(), 'c');
+});
+
+test('downs da 2026-10-04 funcionam e as forwards reaplicam (e-mail volta a ser travado)', { skip }, () => {
+  for (const base of ['2026-10-04-stripe-events-lease', '2026-10-04-profiles-protege-email']) {
+    let r = psqlFile(path.join(MIG, 'down', base + '.down.sql'));
+    assert.equal(r.status, 0, base + ' down: ' + r.stderr);
+    r = psqlFile(path.join(MIG, base + '.sql'));
+    assert.equal(r.status, 0, base + ' forward: ' + r.stderr);
+  }
+  rodaSqlTeste('2026-10-04-profiles-protege-email.test.sql');
+  rodaSqlTeste('2026-10-04-stripe-events-fk.test.sql');
 });
 
 test('RPC consumir_limite + rate_limits (asserts reais)', { skip }, () => {

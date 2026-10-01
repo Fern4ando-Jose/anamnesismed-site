@@ -61,16 +61,18 @@ exigir e-mail confirmado, ou passar a exigir `pro`/trial ativo (`trial_end > now
 
 | Tema | Mecanismo |
 |---|---|
-| Escalada de plano | Trigger `profiles_protege_billing` + RLS por operação; sem DELETE para o cliente |
+| Escalada de plano | Trigger `profiles_protege_billing` + RLS por operação; sem DELETE para o cliente. Trava `plano`, `trial_end`, `stripe_id` **e `email`** (migration 2026-10-04: sem isso o usuário forjava o e-mail de um assinante e a reconciliação lhe dava o plano/portal dele). `tipo_usuario`/`termos_aceitos`/`genero` seguem graváveis pelo cliente (o onboarding os grava) |
 | Cota de IA | RPC atômica `consumir_cota_ia` (`where count < limite`), `devolver_cota_ia` (nunca < 0), só `service_role` |
 | Funções SQL | `SECURITY DEFINER`/triggers com `search_path = public, pg_temp` (migration 2026-10-02) |
-| Webhook Stripe | Assinatura validada; idempotência só para tipos que escrevem; falha de escrita → 5xx + reversão da idempotência (Stripe retenta) |
+| Webhook Stripe | `stripe-signature` exigida antes de ler o body (teto ~1 MB → 413); assinatura validada; idempotência com estado/lease em `stripe_events` (`processing` → `done` só ao final; `processing` > 1 min é reassumido; erro de banco que não seja PK duplicada → 5xx, falha fechada); falha de escrita → 5xx + reversão; antes de ativar `pro` confirma no Stripe (`subscriptions.retrieve`) que a assinatura está em `STATUS_VIVOS`; `maxDuration` 30 s |
 | Checkout | Identidade vem do token; bloqueia quem já tem assinatura viva (409); reaproveita o `customer` |
-| Cron | `CRON_SECRET` obrigatório (503 sem ele, 401 com Bearer errado) em `/api/manter-banco-vivo` e `/api/reconciliar-assinaturas` |
+| Cron | `CRON_SECRET` obrigatório (503 sem ele, 401 com Bearer errado), comparado em tempo constante (`bearerConfere`: `crypto.timingSafeEqual`), em `/api/manter-banco-vivo` (que também faz a limpeza diária de `rate_limits`/`contas_em_exclusao`/`stripe_events`) e `/api/reconciliar-assinaturas` |
 | Rate limit | RPC atômica `consumir_limite` (tabela `rate_limits`, só `service_role`), **fail-closed** (503 se ausente; 429 + `Retry-After` ao estourar). Limites por usuário/hora em `LIMITES` de `api/_comum.js`: exportar-dados 5, excluir-conta 3, checkout 20, portal-cliente 20 |
 | Conta em exclusão | `/api/excluir-conta` marca `contas_em_exclusao` (sem FK; sobrevive ao login) antes de qualquer efeito; checkout recusa (409); webhook trata checkout tardio/perfil inexistente como sucesso idempotente (200 + log `[ALERTA stripe]`) e cancela, best effort, a assinatura recém-criada |
-| Webhook (billing) | Só ativa `pro` com `mode=subscription` e `payment_status` paid/no_payment_required; rebaixa só se o customer não tiver OUTRA assinatura viva (active/trialing/past_due) |
-| Reconciliação | `/api/reconciliar-assinaturas` compara `profiles` x Stripe e corrige divergências. **Não está em `crons` do `vercel.json` de propósito**: agende no Vercel/externo quando quiser, enviando `Authorization: Bearer <CRON_SECRET>` |
+| Webhook (billing) | Só ativa `pro` com `mode=subscription` e `payment_status` paid/no_payment_required; `customer.subscription.updated` active/trialing promove (perfil existente por `stripe_id`, fora de exclusão, confirmado no Stripe); rebaixa só se o customer não tiver OUTRA assinatura viva (active/trialing/past_due) |
+| Reconciliação | `/api/reconciliar-assinaturas` compara `profiles` x Stripe e corrige divergências; **agendada** em `crons` (`30 9 * * *`; sem `CRON_SECRET` responde 503, inofensivo). A adoção de perfil por e-mail confere o e-mail do LOGIN em `auth.users` (`admin.getUserById`, com `email_confirmed_at`) — nunca `profiles.email` |
+| IA | Além da cota diária (RPC atômica), rajada de 6/min por usuário e rota (`consumir_limite`: `gerar-hc-rajada`, `assistente-dx-rajada`), antes da cota; `/api/assistente-dx` distingue erro de banco (503 `plano_indisponivel`) de plano não-pro (403) |
+| Logs | Sempre `descreveErro` (código/tipo/status), nunca `err.message` |
 | Helpers | `api/_comum.js` centraliza auth, CORS, rate limit, cota, `STATUS_VIVOS`, `temAssinaturaViva`, `contaEmExclusao` |
 | LGPD | `/api/exportar-dados`, `/api/excluir-conta` (ver `docs/lgpd.md`) |
 | Dependências | `npm audit --audit-level=high` falha o CI |

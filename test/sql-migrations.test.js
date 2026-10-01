@@ -118,3 +118,44 @@ test('há asserts executáveis para o dono em supabase-migrations/tests/', () =>
     assert.match(sql, /FALHOU/, f);
   }
 });
+
+// ── 2026-10-04 ──────────────────────────────────────────────────────────────────────────────
+test('10-04 e-mail: trigger trava profiles.email (UPDATE preserva, INSERT vem de auth.users), search_path fixo, sem EXECUTE ao cliente', () => {
+  const sql = norm(le('2026-10-04-profiles-protege-email.sql'));
+  assert.match(sql, /create or replace function public\.profiles_protege_billing\(\) returns trigger language plpgsql security definer set search_path = public, pg_temp as/);
+  assert.match(sql, /coalesce\(auth\.role\(\), 'service_role'\) not in \('authenticated', 'anon'\) then return new/);
+  assert.match(sql, /new\.email := old\.email/);
+  assert.match(sql, /select u\.email into v_email from auth\.users u where u\.id = new\.id/);
+  assert.match(sql, /new\.plano := old\.plano/);
+  assert.match(sql, /new\.stripe_id := old\.stripe_id/);
+  assert.ok(sql.includes('revoke all on function public.profiles_protege_billing() from public, anon, authenticated;'));
+  assert.match(sql, /create trigger trg_profiles_protege_billing before insert or update on public\.profiles for each row/);
+  assert.match(sql, /update public\.profiles p set email = u\.email from auth\.users u where u\.id = p\.id/);
+  // tipo_usuario/termos_aceitos NÃO são travados (o onboarding os grava pelo cliente)
+  assert.doesNotMatch(sql, /new\.(tipo_usuario|termos_aceitos|genero) :=/);
+});
+
+test('10-04 stripe_events: status processing/done + lease, e revoke explícito das 3 tabelas de uso/eventos', () => {
+  const sql = norm(le('2026-10-04-stripe-events-lease.sql'));
+  assert.match(sql, /add column if not exists status text not null default 'done'/);
+  assert.match(sql, /alter column status set default 'processing'/);
+  assert.match(sql, /add column if not exists processing_desde timestamptz not null default now\(\)/);
+  assert.match(sql, /check \(status in \('processing', 'done'\)\)/);
+  for (const t of ['stripe_events', 'ai_assistant_usage', 'gerar_hc_usage']) {
+    assert.ok(new RegExp(`revoke all on table public\\.${t}\\s+from public, anon, authenticated;`).test(sql), 'revoke ' + t);
+    assert.ok(new RegExp(`grant select, insert, update, delete on table public\\.${t}\\s+to service_role;`).test(sql), 'grant ' + t);
+  }
+});
+
+test('10-04 historias: FK user_id → auth.users com ON DELETE CASCADE (NOT VALID + VALIDATE)', () => {
+  const sql = norm(le('2026-10-04-historias-fk-cascade.sql'));
+  assert.match(sql, /foreign key \(user_id\) references auth\.users \(id\) on delete cascade not valid/);
+  assert.match(sql, /validate constraint historias_clinicas_user_id_fkey/);
+});
+
+test('06-23 é idempotente: drop policy if exists antes de cada create e não recria a FOR ALL de profiles após a 10-01', () => {
+  const sql = norm(le('2026-06-23-rls-profiles-historias.sql'));
+  assert.ok(sql.indexOf('drop policy if exists "usuario_acessa_proprias_hcs"') >= 0 && sql.indexOf('drop policy if exists "usuario_acessa_proprias_hcs"') < sql.indexOf('create policy "usuario_acessa_proprias_hcs"'));
+  assert.ok(sql.indexOf('drop policy if exists "usuario_acessa_proprio_perfil"') >= 0 && sql.indexOf('drop policy if exists "usuario_acessa_proprio_perfil"') < sql.indexOf('create policy "usuario_acessa_proprio_perfil"'));
+  assert.match(sql, /version = '2026-10-01-profiles-protege-billing'/);
+});

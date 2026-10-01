@@ -45,17 +45,12 @@ Functions, sem processo de migração no deploy).
 | `2026-10-01-uso-atomico-rpc` | função `consumir_cota_ia` (cota diária atômica) | `down/` (⚠️ fail-closed nas rotas de IA) |
 | `2026-10-02-devolver-cota-e-search-path` | função `devolver_cota_ia` + `search_path = public, pg_temp` em todas as funções SECURITY DEFINER/triggers | `down/` (⚠️ reabre risco de search_path) |
 | `2026-10-02-revoke-handle-new-user` | revoga EXECUTE de `handle_new_user()` para anon/authenticated (Advisor 0028/0029) | `down/` (⚠️ reabre a chamada pela API) |
+| `2026-10-02-profiles-genero` | coluna `profiles.genero` ('F'/'M', opcional) para o tratamento Dra./Dr. de médicos | `down/` (perde o gênero informado) |
 | `2026-10-03-consumir-limite` | tabela `rate_limits` + RPC `consumir_limite` (rate limit por usuário/ação; fail-closed nas rotas) | `down/` (⚠️ rotas limitadas passam a responder 503) |
 | `2026-10-03-contas-em-exclusao` | tabela `contas_em_exclusao` (marca sem FK; checkout/webhook a consultam) | `down/` (⚠️ exclusão passa a falhar com 503) |
-| `2026-10-02-profiles-genero` | coluna `profiles.genero` ('F'/'M', opcional) para o tratamento Dra./Dr. de médicos | `down/` (perde o gênero informado) |
-
-### Ação manual do dono — 2026-10-03
-
-7. Rodar `2026-10-03-consumir-limite.sql` e `2026-10-03-contas-em-exclusao.sql` (idempotentes) e conferir com
-   `tests/2026-10-03-*.test.sql`. Sem a primeira, exportar/excluir/checkout/portal respondem 503 (fail-closed);
-   sem a segunda, `/api/excluir-conta` e o checkout respondem 503.
-8. `CRON_SECRET` também protege `/api/reconciliar-assinaturas` (503 sem ele). A rota **não** está no `crons`
-   do `vercel.json`; agende-a quando quiser (Bearer `CRON_SECRET`).
+| `2026-10-04-profiles-protege-email` | o trigger `profiles_protege_billing` passa a travar também `profiles.email` (UPDATE preserva; INSERT usa o e-mail de `auth.users`); função SECURITY DEFINER com `search_path` fixo; reparo dos e-mails divergentes | `down/` (⚠️ reabre a edição do e-mail pelo cliente) |
+| `2026-10-04-stripe-events-lease` | `stripe_events.status` (`processing`/`done`) + `processing_desde` (lease de 1 min do webhook); `revoke all` explícito de `stripe_events`, `ai_assistant_usage`, `gerar_hc_usage` para anon/authenticated | `down/` |
+| `2026-10-04-historias-fk-cascade` | `historias_clinicas.user_id` → `auth.users` passa a `ON DELETE CASCADE` | `down/` (volta a NO ACTION) |
 
 ### Ações manuais do dono (SQL Editor) — correção de segurança de 2026-10-01
 
@@ -80,7 +75,33 @@ Functions, sem processo de migração no deploy).
 6. Envs na Vercel para as rotas novas: `STRIPE_SECRET_KEY` (já existe; `/api/excluir-conta` cancela a assinatura),
    `SUPABASE_*` e `NEXT_PUBLIC_URL`.
 
-> **Não re-execute migrations antigas** (ex.: `2026-06-23`): não são idempotentes em todas as policies.
+### Ação manual do dono — 2026-10-03
+
+7. Rodar `2026-10-03-consumir-limite.sql` e `2026-10-03-contas-em-exclusao.sql` (idempotentes) e conferir com
+   `tests/2026-10-03-*.test.sql`. Sem a primeira, exportar/excluir/checkout/portal respondem 503 (fail-closed);
+   sem a segunda, `/api/excluir-conta` e o checkout respondem 503.
+8. `CRON_SECRET` também protege `/api/reconciliar-assinaturas` (503 sem ele, inofensivo). A rota **agora está**
+   no `crons` do `vercel.json` (`30 9 * * *`, logo após o keepalive das 9:00).
+
+### Ação manual do dono — 2026-10-04 (ordem sugerida; são independentes entre si)
+
+9. Rodar, nesta ordem: `2026-10-04-profiles-protege-email.sql`, `2026-10-04-stripe-events-lease.sql`,
+   `2026-10-04-historias-fk-cascade.sql` e conferir com `tests/2026-10-04-*.test.sql` (cada um termina em ROLLBACK).
+   - **email**: fecha o takeover de billing por e-mail (achado A1). O reparo de dados alinha `profiles.email` ao
+     e-mail do login — confira antes com `select count(*) from profiles p join auth.users u on u.id=p.id where p.email is distinct from u.email;`.
+     Quem trocar o e-mail do login no Supabase fica com o `profiles.email` antigo (nada de segurança depende dele).
+     `tipo_usuario`/`termos_aceitos`/`genero` **não** são travados (o onboarding os grava pelo cliente).
+   - **stripe-events-lease**: idempotência do webhook com lease; rode **antes** do deploy do código novo (sem as
+     colunas o webhook ainda funciona, mas sem lease). Linhas antigas viram `done`.
+   - **historias-fk-cascade**: lock breve em `historias_clinicas`/`auth.users` ao recriar a FK; faça fora do pico.
+     Depois dela, apagar um usuário no painel apaga as HCs dele.
+10. O código novo depende de `consumir_limite` (2026-10-03) também nas rotas de IA (rajada de 6/min): sem a migration
+    `/api/gerar-hc` e `/api/assistente-dx` respondem 503. Aplique a 10-03 antes do deploy.
+
+> **Re-execução**: todas as forwards são idempotentes (a `2026-06-23` também — e não recria a policy `FOR ALL` de
+> `profiles` depois da 10-01). Atenção: re-executar `2026-10-01-profiles-protege-billing` ou
+> `2026-10-02-devolver-cota-e-search-path` **recria a função do trigger sem a trava de e-mail** — se o fizer, rode
+> `2026-10-04-profiles-protege-email.sql` de novo (o teste `tests/2026-10-04-profiles-protege-email.test.sql` detecta).
 > Dentro do repositório, `npm test` aplica todas as migrations em um Postgres temporário (quando há Postgres
 > na máquina/CI) e roda os mesmos asserts; sem Postgres o teste é pulado e `test/sql-migrations.test.js` faz a
 > verificação estática.
@@ -95,9 +116,10 @@ Documento completo: [`docs/lgpd.md`](../docs/lgpd.md). Resumo do que é código 
 
 - **Exportação** (art. 18, II/V): `GET /api/exportar-dados` (Bearer) — JSON com perfil, HCs e PDFs do próprio usuário.
 - **Exclusão** (art. 18, VI): `POST /api/excluir-conta` (Bearer + `{"confirmar": true}`) — marca a conta como "em exclusão", cancela a assinatura no
-  Stripe, apaga `historias_clinicas`, `pdf_exports`, tabelas de uso, `profiles` e o usuário no Auth; retomável e
-  idempotente. Procedimento manual (painel → Authentication → Users) continua possível, mas
-  `historias_clinicas.user_id` **não** tem `on delete cascade` — apague as HCs antes, ou use o endpoint.
+  Stripe (e apaga o customer; se o cancelamento falhar, a marca é revertida), apaga `historias_clinicas`, `pdf_exports`, tabelas de uso, `profiles` e o usuário no Auth; retomável e
+  idempotente. Procedimento manual (painel → Authentication → Users) agora também funciona: depois da
+  `2026-10-04-historias-fk-cascade`, `historias_clinicas.user_id` tem `on delete cascade`. O endpoint ainda é o caminho completo
+  (cancela a assinatura e apaga o customer no Stripe).
 - **Retenção** — **[DONO]** definir prazo e publicar; limpeza das tabelas de uso sugerida em `docs/lgpd.md`.
 - **Consentimento** — `profiles.termos_aceitos` (booleano); **[DONO]** conferir textos de termos/privacidade e
   considerar guardar data/versão do aceite.
@@ -110,6 +132,6 @@ Documento completo: [`docs/lgpd.md`](../docs/lgpd.md). Resumo do que é código 
 
 Em 2026-10-01 todas as migrations acima foram aplicadas e conferidas pelo Claude via conector
 do Supabase (projeto estava pausado e foi retomado). Ordem aplicada: 06-14, 06-28 (x2),
-07-11 (schema-migrations, pdf-exports), 09-30 (stripe_id), 10-01 (x2), 10-02 (x2).
+07-11 (schema-migrations, pdf-exports), 09-30 (stripe_id), 10-01 (x2), 10-02 (x2). As de 10-03 e 10-04 ainda dependem da ação do dono (ver acima).
 Conferido com testes que se desfazem (rollback): usuário comum não vira `pro`, não apaga o
 perfil, não chama a RPC de cota; o servidor ativa o plano; cadastro novo cria o profile.

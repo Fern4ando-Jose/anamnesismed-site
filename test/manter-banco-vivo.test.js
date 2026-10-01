@@ -74,3 +74,18 @@ test('env do Supabase ausente → 503; método POST → 405', async () => {
     assert.equal(res.code, 405);
   });
 });
+
+// ── Limpeza diária (M1): rate_limits, contas_em_exclusao >30 d, stripe_events >90 d — best effort ──
+test('Bearer correto roda a limpeza de dados antigos; falha na limpeza NÃO derruba o keepalive', async () => {
+  await comEnv(ENV, async () => {
+    const feitos = [];
+    const sb = { from: (t) => ({
+      select: async () => ({ error: null, count: 7 }),
+      delete: () => ({ lt: async (col, corte) => { feitos.push({ t, col, corte }); if (t === 'stripe_events') throw new Error('SEGREDO'); return { error: null, count: 2 }; } }),
+    }) };
+    const handler = loadWithMocks(HANDLER, { '@supabase/supabase-js': { createClient: () => sb } });
+    const res = makeRes(); await handler(req('Bearer ' + ENV.CRON_SECRET), res);
+    assert.equal(res.code, 200);
+    assert.deepEqual(feitos.map((f) => f.t), ['rate_limits', 'contas_em_exclusao', 'stripe_events']);
+  });
+});

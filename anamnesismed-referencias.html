@@ -68,19 +68,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .ref-card .ic{width:50px;height:50px;border-radius:13px;background:var(--cbg);color:var(--c);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
 .ref-card h3{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:5px}
 .ref-card p{font-size:13px;color:var(--muted);line-height:1.5}
-.ref-card .meta{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--c)}
+.ref-card .meta{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:color-mix(in srgb,var(--c) 65%,#000)}
 
 /* LIVE card */
 .ref-card.live{cursor:pointer}
 .ref-card.live:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(30,27,75,.28);border-color:var(--c)}
 .ref-card.live .meta .arrow{transition:transform .16s}
 .ref-card.live:hover .meta .arrow{transform:translateX(3px)}
-.ref-card .live-badge{position:absolute;top:16px;right:16px;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(22,163,74,.12);color:#16a34a}
+.ref-card .live-badge{position:absolute;top:16px;right:16px;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(22,163,74,.12);color:#166534}
 
 /* SOON card */
-.ref-card.soon{opacity:.72}
-.ref-card.soon .ic{filter:grayscale(.15)}
-.soon-badge{align-self:flex-start;margin-top:14px;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(100,116,139,.14);color:#64748b}
+.ref-card.soon{opacity:1}
+.ref-card.soon .ic{filter:grayscale(.5)}
+.soon-badge{align-self:flex-start;margin-top:14px;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(100,116,139,.14);color:#475569}
 
 @media(max-width:768px){
   .main{margin-left:0}
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
-<script src="supabase-integration.js?v=593c3dba" defer></script>
+<script src="supabase-integration.js?v=56f42252" defer></script>
 <script src="am-icons.js?v=3383aef7"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <script src="sidebar.js?v=3eecb789"></script>

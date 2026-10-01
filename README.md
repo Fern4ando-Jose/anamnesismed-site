@@ -36,6 +36,7 @@ Supabase, billing via Stripe, deploy na Vercel. Bilíngue **PT-BR / ES**.
 | `api/gerar-hc.js` | IA: gera a narrativa da AEA (Claude Haiku) |
 | `api/assistente-dx.js` | IA: apoio ao raciocínio diagnóstico (Claude Sonnet, plano pago) |
 | `api/create-checkout-session.js`, `api/stripe-webhook.js` | Billing Stripe |
+| `api/manter-banco-vivo.js`, `api/reconciliar-assinaturas.js` | Crons diários (`vercel.json`): keepalive + limpeza de dados antigos; reconciliação plano × Stripe. Exigem `CRON_SECRET` (503 sem ele) |
 | `api/health.js` | Health check (`/api/health`) |
 | `supabase-migrations/` | Migrations SQL versionadas (ver seção abaixo) |
 | `instagram-automation/` | Subprojeto de automação de IG — ciclo próprio (**pausado**) |

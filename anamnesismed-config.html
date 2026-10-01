@@ -73,7 +73,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .form-field[hidden]{display:none}
 
 .btn-primary{
-  margin-top:6px;padding:12px 24px;font-size:14px;font-weight:700;
+  margin-top:6px;min-height:44px;padding:12px 24px;font-size:14px;font-weight:700;
   color:#fff;background:var(--primary);border:none;border-radius:9px;
   cursor:pointer;transition:all .2s;align-self:flex-start
 }
@@ -191,7 +191,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="form-field">
           <label class="form-label pt" for="cfg-ano-curso">Ano / curso</label>
           <label class="form-label es" for="cfg-ano-curso">Año / curso</label>
-          <input type="text" class="form-input" id="cfg-ano-curso" placeholder="Ex: 4º ano de Medicina">
+          <input type="text" class="form-input" id="cfg-ano-curso" placeholder="Ex: 4º ano de Medicina" data-ph-pt="Ex: 4º ano de Medicina" data-ph-es="Ej.: 4.º año de Medicina">
         </div>
         <div class="form-field">
           <label class="form-label pt" for="cfg-idioma">Idioma da plataforma</label>
@@ -321,6 +321,7 @@ function setLang(l){
   document.getElementById('btn-pt').classList.toggle('active', l==='pt');
   document.getElementById('btn-es').classList.toggle('active', l==='es');
   try{localStorage.setItem('am-lang', l)}catch(e){}
+  document.querySelectorAll('[data-ph-pt]').forEach(function(el){el.placeholder=el.getAttribute(l==='pt'?'data-ph-pt':'data-ph-es')});
 }
 (function(){
   var saved;
@@ -330,7 +331,7 @@ function setLang(l){
 </script>
 
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=593c3dba"></script>
+<script src="supabase-integration.js?v=56f42252"></script>
 <script>
 // ── Popular dados reais do usuário (plano, membro desde, trial) ──
 (async function(){
@@ -338,6 +339,7 @@ function setLang(l){
     if (!window.profileGet) return;
     var profile = await window.profileGet();
     if (!profile) return;
+    var DF = {day:'2-digit',month:'2-digit',year:'numeric'};
 
     if (window.uiUpdateUserInfo) await window.uiUpdateUserInfo();
 
@@ -345,11 +347,11 @@ function setLang(l){
     var criadoEm = profile.criado_em || profile.created_at;
     if (criadoEm) {
       var d = new Date(criadoEm);
-      var fmt = d.toLocaleDateString(undefined, {day:'2-digit',month:'2-digit',year:'numeric'});
+      var fmt = d.toLocaleDateString('pt-BR', DF), fmtEs = d.toLocaleDateString('es-ES', DF);
       var elPt = document.getElementById('cfg-membro-desde');
       var elEs = document.getElementById('cfg-membro-desde-es');
       if (elPt) elPt.textContent = fmt;
-      if (elEs) elEs.textContent = fmt;
+      if (elEs) elEs.textContent = fmtEs;
     }
 
     // Plano + trial
@@ -368,11 +370,11 @@ function setLang(l){
 
         if (profile.trial_end) {
           var dEnd = new Date(profile.trial_end);
-          var fmtEnd = dEnd.toLocaleDateString(undefined, {day:'2-digit',month:'2-digit',year:'numeric'});
+          var fmtEnd = dEnd.toLocaleDateString('pt-BR', DF), fmtEndEs = dEnd.toLocaleDateString('es-ES', DF);
           var fimPt = document.getElementById('cfg-trial-fim');
           var fimEs = document.getElementById('cfg-trial-fim-es');
           if (fimPt) fimPt.textContent = fmtEnd;
-          if (fimEs) fimEs.textContent = fmtEnd;
+          if (fimEs) fimEs.textContent = fmtEndEs;
         }
       }
     }
@@ -387,8 +389,8 @@ function setLang(l){
 (function(){
   function L(){return document.documentElement.getAttribute('data-lang')==='pt'?'pt':'es'}
   var T={
-    pt:{exporting:'Preparando seu arquivo…',exported:'Arquivo baixado. Guarde-o em local seguro: ele contém dados clínicos.',session:'Sua sessão expirou. Entre novamente para continuar.',fail:'Não foi possível concluir agora. Tente novamente em instantes.',net:'Sem conexão com o servidor. Verifique sua internet e tente de novo.',deleting:'Excluindo sua conta…',delFail:'Não foi possível excluir a conta agora. Nada foi perdido pela metade: você pode tentar de novo com segurança.',busy:'Aguarde…'},
-    es:{exporting:'Preparando tu archivo…',exported:'Archivo descargado. Guárdalo en un lugar seguro: contiene datos clínicos.',session:'Tu sesión expiró. Inicia sesión de nuevo para continuar.',fail:'No se pudo completar ahora. Inténtalo de nuevo en unos instantes.',net:'Sin conexión con el servidor. Revisa tu internet e inténtalo de nuevo.',deleting:'Eliminando tu cuenta…',delFail:'No se pudo eliminar la cuenta ahora. Nada quedó a medias: puedes intentarlo de nuevo con seguridad.',busy:'Espera…'}
+    pt:{exporting:'Preparando seu arquivo…',exported:'Arquivo baixado. Guarde-o em local seguro: ele contém dados clínicos.',session:'Sua sessão expirou. Entre novamente para continuar.',fail:'Não foi possível concluir agora. Tente novamente em instantes.',net:'Sem conexão com o servidor. Verifique sua internet e tente de novo.',deleting:'Excluindo sua conta…',delFail:'Não foi possível excluir a conta agora. Nada foi perdido pela metade: você pode tentar de novo com segurança.',busy:'Aguarde…',big:'Seus dados excedem o tamanho máximo da exportação pelo site. Peça a exportação completa pelo canal de privacidade (DPO).'},
+    es:{exporting:'Preparando tu archivo…',exported:'Archivo descargado. Guárdalo en un lugar seguro: contiene datos clínicos.',session:'Tu sesión expiró. Inicia sesión de nuevo para continuar.',fail:'No se pudo completar ahora. Inténtalo de nuevo en unos instantes.',net:'Sin conexión con el servidor. Revisa tu internet e inténtalo de nuevo.',deleting:'Eliminando tu cuenta…',delFail:'No se pudo eliminar la cuenta ahora. Nada quedó a medias: puedes intentarlo de nuevo con seguridad.',busy:'Espera…',big:'Tus datos superan el tamaño máximo de la exportación por el sitio. Solicita la exportación completa por el canal de privacidad (DPO).'}
   };
   function show(el,msg,isErr){el.textContent=msg;el.hidden=false;el.classList.toggle('error',!!isErr)}
   function busy(btn,on){btn.disabled=on;btn.setAttribute('aria-busy',on?'true':'false');var sp=btn.querySelector('.am-spinner');if(sp)sp.hidden=!on}
@@ -403,6 +405,7 @@ function setLang(l){
       if(!tk){show(sx,T[L()].session,true);toLogin();return}
       return fetch('/api/exportar-dados',{headers:{'Authorization':'Bearer '+tk}}).then(function(r){
         if(r.status===401){show(sx,T[L()].session,true);toLogin();return}
+        if(r.status===413){show(sx,T[L()].big,true);return}
         if(!r.ok)throw new Error('HTTP '+r.status);
         return r.blob().then(function(b){
           var url=URL.createObjectURL(new Blob([b],{type:'application/json'}));

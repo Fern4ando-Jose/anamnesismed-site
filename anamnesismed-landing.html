@@ -132,7 +132,7 @@ nav.scrolled{box-shadow:0 2px 24px rgba(10,26,36,0.07)}
 .mk-prog{display:flex;gap:4px;align-items:center}
 .mk-pd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18)}
 .mk-pd.ok{background:var(--primary-dark)}
-.mk-save{min-height:40px;padding:10px 14px;background:var(--primary-dark);border:none;border-radius:20px;font-size:12px;font-weight:700;color:#fff;cursor:default}
+.mk-save{min-height:44px;padding:10px 14px;background:var(--primary-dark);border:none;border-radius:20px;font-size:12px;font-weight:700;color:#fff;cursor:default}
 
 /* STATS BAR */
 .stats-bar{background:var(--bg-card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 64px;display:flex;justify-content:space-around;gap:16px;flex-wrap:wrap}
@@ -174,7 +174,7 @@ section{padding:80px 64px}
 .plan{border:1.5px solid var(--line);border-radius:var(--r-lg);padding:32px;position:relative;background:var(--bg);text-align:left}
 .plan.featured{border-color:var(--primary-dark);background:var(--bg-card);box-shadow:0 8px 40px rgba(15,163,177,.13)}
 .plan-bdg{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;font-size:12px;font-weight:700;letter-spacing:1px;padding:4px 14px;border-radius:20px;white-space:nowrap}
-.plan-name{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.plan-name{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink);margin-bottom:8px}
 .plan-price{font-family:var(--serif);font-size:42px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:5px}
 .plan-price sup{font-size:18px;vertical-align:super}
 .plan-price sub{font-size:14px;color:var(--muted);font-family:var(--sans);font-weight:400}
@@ -200,7 +200,7 @@ section{padding:80px 64px}
 .tav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
 .ta-name{font-size:13px;font-weight:700;color:var(--ink)}
 .ta-role{font-size:12px;color:var(--muted)}
-.stars{color:var(--accent);font-size:13px;margin-bottom:12px}
+.stars{color:#B93A28;font-size:13px;margin-bottom:12px}
 
 /* CTA BANNER */
 .cta-banner{background:var(--ink);padding:88px 64px;text-align:center;position:relative;overflow:hidden}
@@ -217,12 +217,12 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
 .foot-logo span{color:var(--primary)}
 .foot-tag{font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;max-width:200px}
 .foot-col h4{font-size:12px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:14px}
-.foot-lnk{display:block;font-size:13px;color:rgba(255,255,255,.75);text-decoration:none;margin-bottom:9px;transition:color .2s}
+.foot-lnk{display:flex;align-items:center;min-height:44px;font-size:13px;color:rgba(255,255,255,.75);text-decoration:none;margin-bottom:0;transition:color .2s}
 .foot-lnk:hover{color:#fff}
 .foot-bar{border-top:1px solid rgba(255,255,255,.06);padding-top:20px;display:flex;justify-content:space-between;align-items:center}
 .foot-copy{font-size:12px;color:rgba(255,255,255,.65)}
 .foot-lgs{display:flex;gap:14px}
-.foot-lg{font-size:12px;color:rgba(255,255,255,.7);cursor:pointer;transition:color .2s;border:none;background:none}
+.foot-lg{min-height:44px;min-width:44px;padding:0 8px;font-family:inherit;font-size:12px;color:rgba(255,255,255,.7);cursor:pointer;transition:color .2s;border:none;background:none}
 .foot-lg:hover{color:#fff}
 
 /* ANIMATIONS */
@@ -566,8 +566,8 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
     </div>
     <!-- MÉDICO -->
     <div class="plan" style="border-color:rgba(13,148,136,.4)">
-      <div class="plan-name pt" style="color:var(--secondary)">Médico</div>
-      <div class="plan-name es" style="color:var(--secondary)">Médico</div>
+      <div class="plan-name pt" style="color:var(--teal-text)">Médico</div>
+      <div class="plan-name es" style="color:var(--teal-text)">Médico</div>
       <div class="plan-price"><sup>$</sup>4,99<sub class="pt">/mês</sub><sub class="es">/mes</sub></div>
       <p class="plan-desc pt">Para médicos formados em atendimento clínico diário.</p>
       <p class="plan-desc es">Para médicos graduados en atención clínica diaria.</p>
@@ -728,6 +728,6 @@ function setLang(l){
 })();
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=593c3dba"></script>
+<script src="supabase-integration.js?v=56f42252"></script>
 </body>
 </html>

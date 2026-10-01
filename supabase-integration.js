@@ -105,7 +105,7 @@ const PAGE = (() => {
   if (p.includes('auth'))      return 'auth';
   if (p.includes('config'))    return 'config';
   if (p.includes('dashboard')) return 'dashboard';
-  if (p.includes('especialidades') || p.includes('explorar') || p.includes('-ref-')) return 'especialidades';
+  if (p.includes('especialidades') || p.includes('explorar') || p.includes('-ref-') || p.includes('referencias') || p.includes('mnemonicas')) return 'especialidades';
   if (p.includes('app'))       return 'app';
   return 'unknown';
 })();
@@ -945,12 +945,12 @@ async function uiUpdateUserInfo() {
     // (span#hcs-count-pt/es, populado por uiLoadStats). Sobrescrever o textContent aqui
     // destruiria esse span — pular esses elementos e deixar uiLoadStats cuidar deles.
     if (el.querySelector('[id^="hcs-count-"]')) return;
+    // O sidebar tem .user-plan.pt e .user-plan.es separados: cada um recebe o SEU idioma.
+    const es = el.classList.contains('es') ? true : (el.classList.contains('pt') ? false : lang === 'es');
     if (access.type === 'pro') {
       el.textContent = 'Pro';
     } else if (access.type === 'trial') {
-      el.textContent = lang === 'es'
-        ? `Prueba — ${access.daysLeft} días`
-        : `Teste — ${access.daysLeft} dias`;
+      el.textContent = es ? `Prueba — ${access.daysLeft} días` : `Teste — ${access.daysLeft} dias`;
     }
   });
 
@@ -1677,9 +1677,7 @@ function showSaveFeedback() {
     const session = await authGetSession();
     if (session) {
       document.querySelectorAll('.nav-cta, .btn-primary').forEach(el => {
-        el.textContent = document.documentElement.dataset.lang === 'pt'
-          ? 'Ir ao App →'
-          : 'Ir al App →';
+        el.innerHTML = '<span class="pt">Ir ao App →</span><span class="es">Ir al App →</span>';
         el.href = 'anamnesismed-dashboard.html';
         el.onclick = null;
       });
