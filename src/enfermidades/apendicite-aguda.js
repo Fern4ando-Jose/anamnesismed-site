@@ -71,7 +71,7 @@ AM.enfermidade("apendicite-aguda", {
         "achado": "Leucocitose com desvio à esquerda e PCR elevada", "achadoEs": "Leucocitosis con desviación a la izquierda y PCR elevada",
         "quando": "Em todo caso suspeito", "quandoEs": "En todo caso sospechoso" },
       { "nome": "β-HCG", "nomeEs": "β-HCG",
-        "achado": "Afasta gravidez ectópica", "achadoEs": "Descarta embarazo ectópico",
+        "achado": "Resultado negativo afasta gravidez; positivo exige investigar gravidez ectópica", "achadoEs": "Resultado negativo descarta embarazo; positivo exige investigar embarazo ectópico",
         "quando": "Mulheres em idade fértil", "quandoEs": "Mujeres en edad fértil" },
       { "nome": "Ultrassonografia abdominal", "nomeEs": "Ecografía abdominal",
         "achado": "Apêndice não compressível e aumentado de calibre, líquido periapendicular", "achadoEs": "Apéndice no compresible y aumentado de calibre, líquido periapendicular",
@@ -109,11 +109,13 @@ AM.enfermidade("apendicite-aguda", {
     ],
     "cirurgico": [
       "Apendicectomia, preferencialmente por via laparoscópica, nos casos confirmados ou de alta probabilidade",
-      "Forma perfurada ou com abscesso: antibioticoterapia e abordagem conforme a gravidade"
+      "Forma perfurada ou com abscesso: antibioticoterapia e abordagem conforme a gravidade",
+      "Tratamento não operatório com antibióticos pode ser considerado em casos selecionados de apendicite não complicada, com risco de recorrência; decisão compartilhada com o paciente [conferir na diretriz WSES e nos livros]"
     ],
     "cirurgicoEs": [
       "Apendicectomía, preferentemente por vía laparoscópica, en los casos confirmados o de alta probabilidad",
-      "Forma perforada o con absceso: antibioticoterapia y abordaje según la gravedad"
+      "Forma perforada o con absceso: antibioticoterapia y abordaje según la gravedad",
+      "El tratamiento no operatorio con antibióticos puede considerarse en casos seleccionados de apendicitis no complicada, con riesgo de recurrencia; decisión compartida con el paciente [verificar en la guía WSES y en los libros]"
     ],
     "encaminhar": "Todo caso suspeito vai à avaliação cirúrgica no mesmo atendimento.",
     "encaminharEs": "Todo caso sospechoso pasa a evaluación quirúrgica en la misma atención."
@@ -167,7 +169,7 @@ AM.enfermidade("apendicite-aguda", {
     { "tipo": "livro", "citacao": "Townsend CM et al. Sabiston Textbook of Surgery (apêndice). Edição mais recente usada pelo dono.", "localizacao": "[conferir capítulo/página]", "verificada": false },
     { "tipo": "diretriz", "citacao": "Di Saverio S et al. Diagnosis and treatment of acute appendicitis: 2020 update of the WSES Jerusalem guidelines. World J Emerg Surg 2020;15:27.", "localizacao": "[conferir]", "ano": 2020, "verificada": false },
     { "tipo": "artigo", "citacao": "Alvarado A. A practical score for the early diagnosis of acute appendicitis. Ann Emerg Med 1986;15:557-564.", "localizacao": "[conferir]", "ano": 1986, "verificada": false },
-    { "tipo": "artigo", "citacao": "Andersson M, Andersson RE. The appendicitis inflammatory response score. World J Surg 2008;32:1843-1849.", "localizacao": "[conferir]", "ano": 2008, "verificada": false }
+    { "tipo": "artigo", "citacao": "Andersson M, Andersson RE. The appendicitis inflammatory response score: a tool for the diagnosis of acute appendicitis that outperforms the Alvarado score. World J Surg 2008;32:1843-1849.", "localizacao": "[conferir]", "ano": 2008, "verificada": false }
   ],
   "status": "rascunho",
   "revisadoEm": "",

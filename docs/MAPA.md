@@ -41,7 +41,9 @@
 - [x] Validador (obrigatórios, paridade PT/ES, refs, ids, fármacos, status, casos) ligado ao `scripts/verify.sh` — 11 testes
 - [x] Piloto: `src/enfermidades/apendicite-aguda.js` (**rascunho**, refs ainda não conferidas)
 - [ ] Unificar a lista de especialidades (hoje duplicada em `build.js`, `SPEC_META`, `REF_PAGE`) — **toca HTML**, esperar o merge da outra branch
-- [ ] Conferir a apendicite (dono + `revisor-conteudo-clinico`)
+- [x] Revisão independente da apendicite feita: `docs/auditoria/06-revisao-clinica-apendicite.md` (refs 1–3 existem; ref 0 Sabiston não verificada; limite: sem acesso a texto integral nem livro)
+- [ ] **Dono decide as divergências do guia do motivo `src/motivos/apendicite.js`** (não alterado por mim): tabela do AIR (rebote/defesa são um item; falta neutrófilos), mnemônico ES do Alvarado, "Dipirona/Tramadol não retarda", cefazolina sem anaeróbio e sem janela, cortes sem fonte (leucocitose >18.000, T >38,5, anorexia >90%), "Grito de Laffont", ≥ vs > na temperatura e leucocitose, "TC gold standard"
+- [ ] Dono confere a guia `apendicite-aguda` pelos livros; depois `verificada: true` e `status`
 - **Aceite:** `verify.sh` falha se uma enfermidade não tiver referência ou tradução. ✔
 
 ### 0.4 Decisões do dono (bloqueiam fases seguintes)
