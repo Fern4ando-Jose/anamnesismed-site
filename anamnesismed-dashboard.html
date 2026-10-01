@@ -349,6 +349,25 @@ function setLang(l){
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');
   try{localStorage.setItem('am-lang',l)}catch(e){}
 }
+/* Busca de HCs: filtra a lista já carregada (window.__hcsAll) por motivo/paciente */
+(function(){
+  var t;
+  document.addEventListener('input',function(e){
+    if(!e.target||e.target.id!=='search')return;
+    clearTimeout(t);
+    t=setTimeout(function(){
+      var q=(e.target.value||'').trim().toLowerCase();
+      var all=window.__hcsAll||[];
+      var lim=(window.currentDashView==='hcs')?100:5;
+      if(!q){if(window.uiLoadRecentHCs)window.uiLoadRecentHCs(lim,all);return}
+      var hd=document.getElementById('recent-hcs-head');if(hd){var r=hd.getBoundingClientRect();if(r.top>innerHeight*.6)window.scrollTo({top:scrollY+r.top-80,behavior:'smooth'})}
+      var res=all.filter(function(h){var n=(h.dados&&h.dados.campos&&h.dados.campos['dp-nome'])||'';return ((h.motivo||'')+' '+(h.motivo_id||'')+' '+n).toLowerCase().indexOf(q)>-1});
+      if(res.length){window.uiLoadRecentHCs(100,res);return}
+      var c=document.querySelector('.hc-list');
+      if(c)c.innerHTML='<div class="empty-state"><div class="empty-title pt">Nenhuma HC encontrada</div><div class="empty-title es">Ninguna HC encontrada</div></div>';
+    },150);
+  });
+})();
 function encerrarSessao(){
   if(window.authLogout) window.authLogout();
   else window.location.href = 'anamnesismed-auth.html';
@@ -398,7 +417,7 @@ function setView(v){
 })();
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=2ca5652f"></script>
+<script src="supabase-integration.js?v=fe2f9279"></script>
 <script src="sidebar.js?v=bda3607c"></script>
 </body>
 </html>

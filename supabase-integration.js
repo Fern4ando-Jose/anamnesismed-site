@@ -841,7 +841,7 @@ async function uiLoadRecentHCs(limit, preHcs) {
       : '<span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>';
 
     return `
-    <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" style="cursor:pointer">
+    <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();this.click()}" style="cursor:pointer">
       <div class="hc-color" style="background:${color}"></div>
       <div class="hc-info">
         <div class="hc-name">${escHtml(hc.motivo || hc.motivo_id)}${nomePaciente ? ' — ' + escHtml(nomePaciente) : ''}</div>
@@ -855,11 +855,73 @@ async function uiLoadRecentHCs(limit, preHcs) {
         <span class="hc-status ${st.cls} es">${st.es}</span>
         <span class="hc-status ${st.cls} pt">${st.pt}</span>
         <button class="hc-btn hc-btn-edit" onclick="event.stopPropagation();window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" title="Editar" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span class="pt">Editar</span><span class="es">Editar</span></button>
-        <button class="hc-btn hc-btn-del" onclick="event.stopPropagation();hcDelete('${hc.id}').then(()=>{window.__hcsAll=null;uiLoadRecentHCs(window.currentDashView==='hcs'?100:5);})" title="Eliminar / Excluir" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
+        <button class="hc-btn hc-btn-del" onclick="event.stopPropagation();amConfirmDeleteHC('${hc.id}')" title="Eliminar / Excluir" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
       </div>
     </div>`;
   }).join('');
 }
+
+
+/**
+ * Confirmação antes de excluir uma HC (antes o botão apagava na hora, sem volta).
+ * Diálogo acessível: foco no botão seguro (Cancelar), Esc/fora/Cancelar fecham, foco volta ao botão de origem.
+ */
+function amConfirmDeleteHC(hcId) {
+  const opener = document.activeElement;
+  const old = document.getElementById('hc-del-modal'); if (old) old.remove();
+  const m = document.createElement('div');
+  m.className = 'am-modal'; m.id = 'hc-del-modal';
+  m.innerHTML = `
+    <div class="am-modal-backdrop" data-modal-close></div>
+    <div class="am-modal-box" role="alertdialog" aria-modal="true" aria-labelledby="hcdel-t" aria-describedby="hcdel-d" tabindex="-1">
+      <h2 class="am-modal-title" id="hcdel-t"><span class="pt">Excluir esta HC?</span><span class="es">¿Eliminar esta HC?</span></h2>
+      <div class="am-modal-body" id="hcdel-d">
+        <p class="pt">Esta ação não pode ser desfeita.</p><p class="es">Esta acción no se puede deshacer.</p>
+      </div>
+      <p class="priv-status error" role="alert" hidden id="hcdel-err"></p>
+      <div class="am-modal-actions">
+        <button type="button" class="am-btn am-btn--secondary" data-modal-close><span class="pt">Cancelar</span><span class="es">Cancelar</span></button>
+        <button type="button" class="am-btn am-btn--danger" id="hcdel-ok"><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  document.body.classList.add('am-modal-open');
+  const close = () => {
+    document.removeEventListener('keydown', onKey, true);
+    m.remove(); document.body.classList.remove('am-modal-open');
+    try { if (opener && document.body.contains(opener)) opener.focus(); } catch (e) {}
+  };
+  const onKey = (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key === 'Tab') {
+      const f = [...m.querySelectorAll('button')].filter(b => !b.disabled);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (!m.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    }
+  };
+  document.addEventListener('keydown', onKey, true);
+  m.querySelectorAll('[data-modal-close]').forEach(el => el.addEventListener('click', close));
+  m.querySelector('#hcdel-ok').addEventListener('click', async (ev) => {
+    const btn = ev.currentTarget; btn.disabled = true;
+    const ok = await hcDelete(hcId);
+    if (ok) {
+      close();
+      window.__hcsAll = null;
+      uiLoadRecentHCs(window.currentDashView === 'hcs' ? 100 : 5);
+    } else {
+      btn.disabled = false;
+      const er = m.querySelector('#hcdel-err');
+      er.innerHTML = '<span class="pt">Não foi possível excluir. Tente de novo.</span><span class="es">No se pudo eliminar. Inténtalo de nuevo.</span>';
+      er.hidden = false;
+    }
+  });
+  const cancel = m.querySelector('.am-modal-actions [data-modal-close]');
+  (cancel || m.querySelector('.am-modal-box')).focus();
+}
+window.amConfirmDeleteHC = amConfirmDeleteHC;
 
 /**
  * Calcula e preenche os cards de estatísticas do dashboard
