@@ -384,22 +384,10 @@ AM.motivo("colecistite-colelitiase", {
           "Força"
         ],
         "rows": [
-          [
-            "Cálculo no colédoco à USG",
-            "Muito forte"
-          ],
-          [
-            "Bilirrubina total >4 mg/dL",
-            "Muito forte"
-          ],
-          [
-            "Via biliar dilatada + Bili 1,8-4",
-            "Forte"
-          ],
-          [
-            "Colangite clínica",
-            "Muito forte"
-          ]
+          ["Cálculo no colédoco à imagem", "Alto risco"],
+          ["Colangite clínica", "Alto risco"],
+          ["Bilirrubina total >4 mg/dL com via biliar dilatada", "Alto risco"],
+          ["Via biliar dilatada isolada, enzimas hepáticas alteradas ou idade >55", "Risco intermediário"]
         ],
         "note": "Alto risco → CPRE; risco intermediário → colangio-RM ou USG endoscópica"
       }
@@ -423,7 +411,7 @@ AM.motivo("colecistite-colelitiase", {
         "1. Confirmar diagnóstico clínico + USG",
         "2. Jejum, hidratação e analgesia",
         "3. ATB se colecistite/colangite",
-        "4. Colecistectomia videolaparoscópica precoce (idealmente <72h) na colecistite aguda",
+        "4. Colecistectomia videolaparoscópica precoce na colecistite aguda (até 7 dias da admissão e 10 dias do início dos sintomas — WSES 2020)",
         "5. Coledocolitíase/colangite: CPRE para drenagem + colecistectomia posterior"
       ]
     }
@@ -628,22 +616,10 @@ AM.motivo("colecistite-colelitiase", {
           "Fuerza"
         ],
         "rows": [
-          [
-            "Cálculo en el colédoco en la USG",
-            "Muy fuerte"
-          ],
-          [
-            "Bilirrubina total >4 mg/dL",
-            "Muy fuerte"
-          ],
-          [
-            "Vía biliar dilatada + Bili 1,8-4",
-            "Fuerte"
-          ],
-          [
-            "Colangitis clínica",
-            "Muy fuerte"
-          ]
+          ["Cálculo en el colédoco en la imagen", "Alto riesgo"],
+          ["Colangitis clínica", "Alto riesgo"],
+          ["Bilirrubina total >4 mg/dL con vía biliar dilatada", "Alto riesgo"],
+          ["Vía biliar dilatada aislada, enzimas hepáticas alteradas o edad >55", "Riesgo intermedio"]
         ],
         "note": "Alto riesgo → CPRE; riesgo intermedio → colangio-RM o USG endoscópica"
       }
@@ -667,7 +643,7 @@ AM.motivo("colecistite-colelitiase", {
         "1. Confirmar diagnóstico clínico + USG",
         "2. Ayuno, hidratación y analgesia",
         "3. ATB si colecistitis/colangitis",
-        "4. Colecistectomía videolaparoscópica precoz (idealmente <72h) en la colecistitis aguda",
+        "4. Colecistectomía videolaparoscópica precoz en la colecistitis aguda (hasta 7 días del ingreso y 10 días del inicio de los síntomas — WSES 2020)",
         "5. Coledocolitiasis/colangitis: CPRE para drenaje + colecistectomía posterior"
       ]
     }

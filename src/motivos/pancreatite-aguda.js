@@ -396,7 +396,7 @@ AM.motivo("pancreatite-aguda", {
         "TC de abdome com contraste (após 72h) para necrose se grave/dúvida"
       ],
       "drugs": [
-        "Hidratação venosa vigorosa (Ringer lactato) — pilar do tratamento",
+        "Hidratação venosa precoce, moderadamente agressiva e guiada por metas (Ringer lactato) — pilar do tratamento",
         "Analgesia (opioides se necessário)",
         "Antieméticos",
         "Suporte nutricional precoce (enteral preferível)",
@@ -405,9 +405,9 @@ AM.motivo("pancreatite-aguda", {
       "steps": [
         "1. Diagnóstico: 2 de 3 (dor típica + lipase >3x LSN + imagem)",
         "2. Estratificar gravidade (BISAP/Ranson, PCR 48h)",
-        "3. Reposição volêmica agressiva precoce",
+        "3. Reposição volêmica precoce, guiada por metas, evitando excesso de volume",
         "4. Analgesia e controle de náuseas",
-        "5. Tratar a causa: CPRE se colangite/obstrução biliar; suspender álcool; controlar triglicerídeos",
+        "5. Tratar a causa: CPRE urgente se colangite (obstrução biliar sem colangite: avaliar); suspender álcool; controlar triglicerídeos",
         "6. Casos graves/necrose → UTI; ATB só se infecção documentada"
       ]
     }
@@ -640,7 +640,7 @@ AM.motivo("pancreatite-aguda", {
         "TC de abdomen con contraste (tras 72h) para necrosis si es grave/duda"
       ],
       "drugs": [
-        "Hidratación venosa vigorosa (Ringer lactato) — pilar del tratamiento",
+        "Hidratación venosa precoz, moderadamente agresiva y guiada por metas (Ringer lactato) — pilar del tratamiento",
         "Analgesia (opioides si es necesario)",
         "Antieméticos",
         "Soporte nutricional precoz (enteral preferible)",
@@ -649,9 +649,9 @@ AM.motivo("pancreatite-aguda", {
       "steps": [
         "1. Diagnóstico: 2 de 3 (dolor típico + lipasa >3x LSN + imagen)",
         "2. Estratificar gravedad (BISAP/Ranson, PCR 48h)",
-        "3. Reposición volémica agresiva precoz",
+        "3. Reposición volémica precoz, guiada por metas, evitando el exceso de volumen",
         "4. Analgesia y control de náuseas",
-        "5. Tratar la causa: CPRE si colangitis/obstrucción biliar; suspender alcohol; controlar triglicéridos",
+        "5. Tratar la causa: CPRE urgente si hay colangitis (obstrucción biliar sin colangitis: valorar); suspender alcohol; controlar triglicéridos",
         "6. Casos graves/necrosis → UCI; ATB solo si infección documentada"
       ]
     }

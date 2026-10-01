@@ -26,7 +26,7 @@ AM.enfermidade("pancreatite-aguda", {
       "Piora da dor ao decúbito dorsal e alívio parcial com o tronco inclinado para a frente"
     ],
     "sintomasEs": [
-      "Dolor epigástrico intenso, de inicio súbito, en barra, con irradiación al dorso",
+      "Dolor epigástrico intenso, de inicio súbito, en faja, con irradiación al dorso",
       "Náuseas y vómitos",
       "Empeoramiento del dolor en decúbito dorsal y alivio parcial con el tronco inclinado hacia delante"
     ],
@@ -68,11 +68,11 @@ AM.enfermidade("pancreatite-aguda", {
       { "nome": "Hemograma, ureia, creatinina, glicemia, cálcio, eletrólitos", "nomeEs": "Hemograma, urea, creatinina, glucemia, calcio, electrolitos",
         "achado": "Avaliam gravidade, desidratação e causas (hipercalcemia)", "achadoEs": "Evalúan gravedad, deshidratación y causas (hipercalcemia)",
         "quando": "Na admissão", "quandoEs": "Al ingreso" },
-      { "nome": "TGO, TGP, FA, GGT, bilirrubinas", "nomeEs": "TGO, TGP, FA, GGT, bilirrubinas",
-        "achado": "Elevação de ALT/TGP sugere causa biliar; padrão colestático sugere obstrução", "achadoEs": "Elevación de ALT/TGP sugiere causa biliar; patrón colestásico sugiere obstrucción",
+      { "nome": "TGO, TGP, FA, GGT, bilirrubinas", "nomeEs": "AST, ALT, FA, GGT, bilirrubinas",
+        "achado": "Elevação de TGP (ALT) sugere causa biliar; padrão colestático sugere obstrução", "achadoEs": "Elevación de ALT sugiere causa biliar; patrón colestásico sugiere obstrucción",
         "quando": "Na admissão, para buscar a causa", "quandoEs": "Al ingreso, para buscar la causa" },
       { "nome": "Triglicerídeos", "nomeEs": "Triglicéridos",
-        "achado": "Valores muito elevados indicam hipertrigliceridemia como causa", "achadoEs": "Valores muy elevados indican hipertrigliceridemia como causa",
+        "achado": "Valores muito elevados (em geral acima de 1.000 mg/dL) indicam hipertrigliceridemia como causa", "achadoEs": "Valores muy elevados (en general por encima de 1.000 mg/dL) indican hipertrigliceridemia como causa",
         "quando": "Se a causa não for biliar nem alcoólica", "quandoEs": "Si la causa no es biliar ni alcohólica" },
       { "nome": "Ultrassonografia de abdome", "nomeEs": "Ecografía abdominal",
         "achado": "Pesquisa cálculos na vesícula e dilatação da via biliar", "achadoEs": "Busca cálculos en la vesícula y dilatación de la vía biliar",
@@ -96,14 +96,14 @@ AM.enfermidade("pancreatite-aguda", {
       "Hidratação venosa precoce, guiada por metas e por reavaliação frequente, preferencialmente com Ringer lactato, evitando excesso de volume",
       "Analgesia adequada, com opioide quando necessário",
       "Dieta oral precoce, conforme a tolerância; nutrição enteral se não houver tolerância à via oral",
-      "Tratar a causa: afastar e suspender o álcool, controlar triglicerídeos e cálcio, tratar a causa biliar",
+      "Tratar a causa: interromper o consumo de álcool, controlar triglicerídeos e cálcio, tratar a causa biliar",
       "Formas graves ou com falência de órgão: cuidados intensivos"
     ],
     "medidasEs": [
       "Hidratación intravenosa precoz, guiada por metas y por reevaluación frecuente, preferentemente con Ringer lactato, evitando el exceso de volumen",
       "Analgesia adecuada, con opioide cuando sea necesario",
       "Dieta oral precoz, según la tolerancia; nutrición enteral si no hay tolerancia a la vía oral",
-      "Tratar la causa: suspender el alcohol, controlar triglicéridos y calcio, tratar la causa biliar",
+      "Tratar la causa: interrumpir el consumo de alcohol, controlar triglicéridos y calcio, tratar la causa biliar",
       "Formas graves o con falla de órgano: cuidados intensivos"
     ],
     "farmacologico": [
@@ -134,7 +134,7 @@ AM.enfermidade("pancreatite-aguda", {
   "casos": [
     {
       "titulo": "Dor em faixa depois de uma festa",
-      "tituloEs": "Dolor en barra después de una fiesta",
+      "tituloEs": "Dolor en faja después de una fiesta",
       "nivel": "basico",
       "apresentacao": "Homem de 45 anos, com dor epigástrica intensa há 12 horas, que irradia para as costas e piora deitado. Teve vários vômitos. Bebeu bastante álcool na noite anterior. Sem febre. Caso fictício.",
       "apresentacaoEs": "Hombre de 45 años, con dolor epigástrico intenso desde hace 12 horas, que irradia a la espalda y empeora acostado. Tuvo varios vómitos. Bebió mucho alcohol la noche anterior. Sin fiebre. Caso ficticio.",
@@ -148,7 +148,7 @@ AM.enfermidade("pancreatite-aguda", {
           "opcoesEs": ["Úlcera péptica perforada", "Pancreatitis aguda", "Colecistitis aguda", "Infarto de pared inferior"],
           "correta": 1,
           "comentario": "Dor típica em faixa e lipase acima de 3 vezes o limite superior fecham 2 dos 3 critérios diagnósticos.",
-          "comentarioEs": "El dolor típico en barra y la lipasa por encima de 3 veces el límite superior cumplen 2 de los 3 criterios diagnósticos."
+          "comentarioEs": "El dolor típico en faja y la lipasa por encima de 3 veces el límite superior cumplen 2 de los 3 criterios diagnósticos."
         },
         {
           "dados": "Ultrassonografia sem cálculos na vesícula. Triglicerídeos normais. Paciente com náuseas e dor intensa.",

@@ -70,7 +70,7 @@ AM.enfermidade("colecistite-aguda", {
       { "nome": "Hemograma e PCR", "nomeEs": "Hemograma y PCR",
         "achado": "Leucocitose e PCR elevada na colecistite", "achadoEs": "Leucocitosis y PCR elevada en la colecistitis",
         "quando": "Em todo caso suspeito", "quandoEs": "En todo caso sospechoso" },
-      { "nome": "Bilirrubinas, FA, GGT, TGO, TGP", "nomeEs": "Bilirrubinas, FA, GGT, TGO, TGP",
+      { "nome": "Bilirrubinas, FA, GGT, TGO, TGP", "nomeEs": "Bilirrubinas, FA, GGT, AST, ALT",
         "achado": "Padrão colestático sugere obstrução da via biliar", "achadoEs": "Patrón colestásico sugiere obstrucción de la vía biliar",
         "quando": "Para avaliar coledocolitíase e colangite", "quandoEs": "Para evaluar coledocolitiasis y colangitis" },
       { "nome": "Amilase e lipase", "nomeEs": "Amilasa y lipasa",
@@ -104,16 +104,16 @@ AM.enfermidade("colecistite-aguda", {
       "Evaluar la gravedad (Tokio 2018) y la presencia de coledocolitiasis o colangitis"
     ],
     "farmacologico": [
-      { "classe": "Analgésicos (AINE, opioide se dor intensa) e antieméticos", "classeEs": "Analgésicos (AINE, opioide si dolor intenso) y antieméticos", "nota": "Sintomáticos; doses a preencher com referência", "notaEs": "Sintomáticos; dosis a completar con referencia", "refs": [0, 1] },
-      { "classe": "Antibióticos", "classeEs": "Antibióticos", "nota": "Indicados na colecistite e na colangite (por exemplo, cefalosporina de 3ª geração associada a metronidazol). Esquema e duração a preencher com referência", "notaEs": "Indicados en la colecistitis y en la colangitis (por ejemplo, cefalosporina de 3.ª generación asociada a metronidazol). Esquema y duración a completar con referencia", "refs": [1, 2] }
+      { "classe": "Analgésicos (AINE, opioide se dor intensa) e antieméticos", "classeEs": "Analgésicos (AINE, opioide si dolor intenso) y antieméticos", "nota": "Sintomáticos; doses a preencher com referência", "notaEs": "Sintomáticos; dosis a completar con referencia", "refs": [0] },
+      { "classe": "Antibióticos", "classeEs": "Antibióticos", "nota": "A necessidade e a duração dependem da gravidade (Tóquio 2018) e do controle do foco; indicados na colecistite moderada ou grave e na colangite (por exemplo, cefalosporina de 3ª geração associada a metronidazol). Esquema e duração a preencher com referência", "notaEs": "La necesidad y la duración dependen de la gravedad (Tokio 2018) y del control del foco; indicados en la colecistitis moderada o grave y en la colangitis (por ejemplo, cefalosporina de 3.ª generación asociada a metronidazol). Esquema y duración a completar con referencia", "refs": [4, 2] }
     ],
     "cirurgico": [
-      "Colecistectomia videolaparoscópica precoce na colecistite aguda, em centro com experiência; o prazo ideal segue a diretriz [conferir]",
+      "Colecistectomia videolaparoscópica precoce na colecistite aguda, em centro com experiência; precoce, em geral até 7 dias da admissão e 10 dias do início dos sintomas (WSES 2020) [conferir]",
       "Colecistite grave (grau III) ou paciente de alto risco: suporte de órgão e drenagem da vesícula (colecistostomia) ou colecistectomia conforme a condição",
       "Coledocolitíase ou colangite: desobstrução por CPRE e colecistectomia posterior"
     ],
     "cirurgicoEs": [
-      "Colecistectomía videolaparoscópica precoz en la colecistitis aguda, en un centro con experiencia; el plazo ideal sigue la guía [verificar]",
+      "Colecistectomía videolaparoscópica precoz en la colecistitis aguda, en un centro con experiencia; precoz, en general hasta 7 días del ingreso y 10 días del inicio de los síntomas (WSES 2020) [verificar]",
       "Colecistitis grave (grado III) o paciente de alto riesgo: soporte de órgano y drenaje de la vesícula (colecistostomía) o colecistectomía según la condición",
       "Coledocolitiasis o colangitis: desobstrucción por CPRE y colecistectomía posterior"
     ],
@@ -152,8 +152,8 @@ AM.enfermidade("colecistite-aguda", {
           "dadosEs": "Leucocitos 15.000/mm³. Ecografía: cálculos en la vesícula, pared engrosada y líquido alrededor. Bilirrubinas normales.",
           "pergunta": "Qual é a conduta mais adequada?",
           "perguntaEs": "¿Cuál es la conducta más adecuada?",
-          "opcoes": ["Alta com analgésico e dieta sem gordura", "Jejum, hidratação, analgesia, antibiótico e avaliação para colecistectomia precoce", "CPRE de urgência", "Apenas observação por uma semana"],
-          "opcoesEs": ["Alta con analgésico y dieta sin grasa", "Ayuno, hidratación, analgesia, antibiótico y evaluación para colecistectomía precoz", "CPRE de urgencia", "Solo observación por una semana"],
+          "opcoes": ["Alta com analgésico e dieta sem gordura", "Jejum, hidratação, analgesia e avaliação para colecistectomia precoce, com antibiótico conforme a gravidade", "CPRE de urgência", "Apenas observação por uma semana"],
+          "opcoesEs": ["Alta con analgésico y dieta sin grasa", "Ayuno, hidratación, analgesia y evaluación para colecistectomía precoz, con antibiótico según la gravedad", "CPRE de urgencia", "Solo observación por una semana"],
           "correta": 1,
           "comentario": "Sinais locais, sistêmicos e imagem compatível indicam colecistite aguda. A CPRE é reservada à suspeita de coledocolitíase ou colangite, o que não há aqui.",
           "comentarioEs": "Los signos locales, sistémicos y la imagen compatible indican colecistitis aguda. La CPRE se reserva para la sospecha de coledocolitiasis o colangitis, que aquí no hay."
@@ -168,7 +168,9 @@ AM.enfermidade("colecistite-aguda", {
   "refs": [
     { "tipo": "livro", "citacao": "Townsend CM et al. Sabiston Textbook of Surgery (vesícula e vias biliares). Edição mais recente usada pelo dono.", "localizacao": "[conferir capítulo/página]", "verificada": false },
     { "tipo": "diretriz", "citacao": "Yokoe M et al. Tokyo Guidelines 2018: diagnostic criteria and severity grading of acute cholecystitis (with videos). J Hepatobiliary Pancreat Sci 2018;25:41-54.", "localizacao": "[conferir]", "ano": 2018, "verificada": false },
-    { "tipo": "diretriz", "citacao": "Pisano M et al. 2020 World Society of Emergency Surgery updated guidelines for the diagnosis and treatment of acute calculus cholecystitis. World J Emerg Surg 2020;15:61.", "localizacao": "[conferir]", "ano": 2020, "verificada": false }
+    { "tipo": "diretriz", "citacao": "Pisano M et al. 2020 World Society of Emergency Surgery updated guidelines for the diagnosis and treatment of acute calculus cholecystitis. World J Emerg Surg 2020;15:61.", "localizacao": "[conferir]", "ano": 2020, "verificada": false },
+    { "tipo": "diretriz", "citacao": "Buxbaum JL et al. ASGE guideline on the role of endoscopy in the evaluation and management of choledocholithiasis. Gastrointest Endosc 2019;89:1075-1105.", "localizacao": "[conferir]", "ano": 2019, "verificada": false },
+    { "tipo": "diretriz", "citacao": "Gomi H et al. Tokyo Guidelines 2018: antimicrobial therapy for acute cholangitis and cholecystitis. J Hepatobiliary Pancreat Sci 2018;25:3-16.", "localizacao": "[conferir]", "ano": 2018, "verificada": false }
   ],
   "status": "rascunho",
   "revisadoEm": "",

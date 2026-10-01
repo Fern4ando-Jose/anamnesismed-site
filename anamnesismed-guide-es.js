@@ -1070,20 +1070,20 @@ var GUIDE_ES = {
         ],
         "rows": [
           [
-            "Cálculo en el colédoco en la USG",
-            "Muy fuerte"
-          ],
-          [
-            "Bilirrubina total >4 mg/dL",
-            "Muy fuerte"
-          ],
-          [
-            "Vía biliar dilatada + Bili 1,8-4",
-            "Fuerte"
+            "Cálculo en el colédoco en la imagen",
+            "Alto riesgo"
           ],
           [
             "Colangitis clínica",
-            "Muy fuerte"
+            "Alto riesgo"
+          ],
+          [
+            "Bilirrubina total >4 mg/dL con vía biliar dilatada",
+            "Alto riesgo"
+          ],
+          [
+            "Vía biliar dilatada aislada, enzimas hepáticas alteradas o edad >55",
+            "Riesgo intermedio"
           ]
         ],
         "note": "Alto riesgo → CPRE; riesgo intermedio → colangio-RM o USG endoscópica"
@@ -1108,7 +1108,7 @@ var GUIDE_ES = {
         "1. Confirmar diagnóstico clínico + USG",
         "2. Ayuno, hidratación y analgesia",
         "3. ATB si colecistitis/colangitis",
-        "4. Colecistectomía videolaparoscópica precoz (idealmente <72h) en la colecistitis aguda",
+        "4. Colecistectomía videolaparoscópica precoz en la colecistitis aguda (hasta 7 días del ingreso y 10 días del inicio de los síntomas — WSES 2020)",
         "5. Coledocolitiasis/colangitis: CPRE para drenaje + colecistectomía posterior"
       ]
     }
@@ -5094,7 +5094,7 @@ var GUIDE_ES = {
         "TC de abdomen con contraste (tras 72h) para necrosis si es grave/duda"
       ],
       "drugs": [
-        "Hidratación venosa vigorosa (Ringer lactato) — pilar del tratamiento",
+        "Hidratación venosa precoz, moderadamente agresiva y guiada por metas (Ringer lactato) — pilar del tratamiento",
         "Analgesia (opioides si es necesario)",
         "Antieméticos",
         "Soporte nutricional precoz (enteral preferible)",
@@ -5103,9 +5103,9 @@ var GUIDE_ES = {
       "steps": [
         "1. Diagnóstico: 2 de 3 (dolor típico + lipasa >3x LSN + imagen)",
         "2. Estratificar gravedad (BISAP/Ranson, PCR 48h)",
-        "3. Reposición volémica agresiva precoz",
+        "3. Reposición volémica precoz, guiada por metas, evitando el exceso de volumen",
         "4. Analgesia y control de náuseas",
-        "5. Tratar la causa: CPRE si colangitis/obstrucción biliar; suspender alcohol; controlar triglicéridos",
+        "5. Tratar la causa: CPRE urgente si hay colangitis (obstrucción biliar sin colangitis: valorar); suspender alcohol; controlar triglicéridos",
         "6. Casos graves/necrosis → UCI; ATB solo si infección documentada"
       ]
     }

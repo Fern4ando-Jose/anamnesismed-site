@@ -8463,20 +8463,20 @@ const GUIDE_CONTENT = {
         ],
         "rows": [
           [
-            "Cálculo no colédoco à USG",
-            "Muito forte"
-          ],
-          [
-            "Bilirrubina total >4 mg/dL",
-            "Muito forte"
-          ],
-          [
-            "Via biliar dilatada + Bili 1,8-4",
-            "Forte"
+            "Cálculo no colédoco à imagem",
+            "Alto risco"
           ],
           [
             "Colangite clínica",
-            "Muito forte"
+            "Alto risco"
+          ],
+          [
+            "Bilirrubina total >4 mg/dL com via biliar dilatada",
+            "Alto risco"
+          ],
+          [
+            "Via biliar dilatada isolada, enzimas hepáticas alteradas ou idade >55",
+            "Risco intermediário"
           ]
         ],
         "note": "Alto risco → CPRE; risco intermediário → colangio-RM ou USG endoscópica"
@@ -8501,7 +8501,7 @@ const GUIDE_CONTENT = {
         "1. Confirmar diagnóstico clínico + USG",
         "2. Jejum, hidratação e analgesia",
         "3. ATB se colecistite/colangite",
-        "4. Colecistectomia videolaparoscópica precoce (idealmente <72h) na colecistite aguda",
+        "4. Colecistectomia videolaparoscópica precoce na colecistite aguda (até 7 dias da admissão e 10 dias do início dos sintomas — WSES 2020)",
         "5. Coledocolitíase/colangite: CPRE para drenagem + colecistectomia posterior"
       ]
     }
@@ -12714,7 +12714,7 @@ const GUIDE_CONTENT = {
         "TC de abdome com contraste (após 72h) para necrose se grave/dúvida"
       ],
       "drugs": [
-        "Hidratação venosa vigorosa (Ringer lactato) — pilar do tratamento",
+        "Hidratação venosa precoce, moderadamente agressiva e guiada por metas (Ringer lactato) — pilar do tratamento",
         "Analgesia (opioides se necessário)",
         "Antieméticos",
         "Suporte nutricional precoce (enteral preferível)",
@@ -12723,9 +12723,9 @@ const GUIDE_CONTENT = {
       "steps": [
         "1. Diagnóstico: 2 de 3 (dor típica + lipase >3x LSN + imagem)",
         "2. Estratificar gravidade (BISAP/Ranson, PCR 48h)",
-        "3. Reposição volêmica agressiva precoce",
+        "3. Reposição volêmica precoce, guiada por metas, evitando excesso de volume",
         "4. Analgesia e controle de náuseas",
-        "5. Tratar a causa: CPRE se colangite/obstrução biliar; suspender álcool; controlar triglicerídeos",
+        "5. Tratar a causa: CPRE urgente se colangite (obstrução biliar sem colangite: avaliar); suspender álcool; controlar triglicerídeos",
         "6. Casos graves/necrose → UTI; ATB só se infecção documentada"
       ]
     }
