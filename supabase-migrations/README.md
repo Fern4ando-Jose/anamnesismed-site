@@ -40,9 +40,11 @@ Functions, sem processo de migração no deploy).
 | `2026-06-28-gerar-hc-usage` | tabela `gerar_hc_usage` | `down/` (⚠️ fail-closed) |
 | `2026-06-28-stripe-events-idempotencia` | tabela `stripe_events` | `down/` |
 | `2026-07-11-schema-migrations` | tabela de controle | — (base do log) |
+| `2026-09-30-profiles-stripe-id` | coluna `profiles.stripe_id` (nunca existira no banco; exigida pelo webhook/checkout e pela trigger) | `down/` (⚠️ perde o vínculo com o customer do Stripe) |
 | `2026-10-01-profiles-protege-billing` | policies por operação + trigger que trava `plano`/`trial_end`/`stripe_id` | `down/` (⚠️ reabre escalada de plano) |
 | `2026-10-01-uso-atomico-rpc` | função `consumir_cota_ia` (cota diária atômica) | `down/` (⚠️ fail-closed nas rotas de IA) |
 | `2026-10-02-devolver-cota-e-search-path` | função `devolver_cota_ia` + `search_path = public, pg_temp` em todas as funções SECURITY DEFINER/triggers | `down/` (⚠️ reabre risco de search_path) |
+| `2026-10-02-revoke-handle-new-user` | revoga EXECUTE de `handle_new_user()` para anon/authenticated (Advisor 0028/0029) | `down/` (⚠️ reabre a chamada pela API) |
 
 ### Ações manuais do dono (SQL Editor) — correção de segurança de 2026-10-01
 
@@ -91,3 +93,12 @@ Documento completo: [`docs/lgpd.md`](../docs/lgpd.md). Resumo do que é código 
 - **DPA com a Anthropic — pendência do DONO** (e Supabase, Vercel, Stripe): aceitar/arquivar e registrar a base
   legal da transferência internacional (art. 33).
 - **Logs** — só IDs, contagens e códigos de erro; nunca texto de paciente nem `err.message` de SDK/banco.
+
+
+## Estado do banco de produção (AnamnesisMed)
+
+Em 2026-10-01 todas as migrations acima foram aplicadas e conferidas pelo Claude via conector
+do Supabase (projeto estava pausado e foi retomado). Ordem aplicada: 06-14, 06-28 (x2),
+07-11 (schema-migrations, pdf-exports), 09-30 (stripe_id), 10-01 (x2), 10-02 (x2).
+Conferido com testes que se desfazem (rollback): usuário comum não vira `pro`, não apaga o
+perfil, não chama a RPC de cota; o servidor ativa o plano; cadastro novo cria o profile.

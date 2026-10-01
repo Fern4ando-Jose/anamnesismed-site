@@ -1,35 +1,22 @@
-# Passo a passo do dono (só 2 coisas)
+# O que ainda depende do dono
 
-Tudo o mais já foi feito no código. Faltam apenas estas duas ações, que só você pode fazer
-porque exigem o seu login no Supabase e na Vercel. Tempo total: cerca de 10 minutos.
+As migrations do banco **já foram aplicadas e conferidas** (2026-10-01, via conector do
+Supabase). Não há mais nada para colar no SQL Editor.
 
-## 1) Supabase: colar um arquivo (uma vez)
+## 1) Vercel: criar uma variável (1 minuto, opcional)
 
-1. Abra o GitHub, vá em `supabase-migrations/APLICAR-TUDO.sql` (branch
-   `claude/anamnese-medica-correcao-lfvmyq`) e clique em **Raw**.
-2. Selecione tudo (Ctrl+A) e copie (Ctrl+C).
-3. Entre em supabase.com, abra o projeto do Anamnesis, clique em **SQL Editor** e depois
-   em **New query**.
-4. Cole (Ctrl+V) e clique em **Run**.
-5. Deve aparecer **Success**. Se aparecer um erro, copie o texto do erro e me mande
-   (sem nenhuma chave ou senha).
+1. vercel.com > projeto do Anamnesis > **Settings** > **Environment Variables** > **Add**.
+2. Nome `CRON_SECRET`, valor: um texto aleatório longo (32+ caracteres).
+3. **Redeploy** do último deploy.
 
-Observação: rode esse arquivo **uma vez só**. Não rode migrations antigas de novo.
+Serve só para manter o banco acordado no plano gratuito (o projeto estava pausado). Sem ela,
+o endpoint `manter-banco-vivo` responde 503 e o resto do site funciona normalmente.
 
-## 2) Vercel: criar uma variável
+## 2) Publicar
 
-1. Entre em vercel.com, abra o projeto do Anamnesis e vá em **Settings**, depois
-   **Environment Variables**.
-2. Clique em **Add**. Nome: `CRON_SECRET`. Valor: um texto longo e aleatório, com 32
-   caracteres ou mais (pode gerar num gerador de senhas). Guarde esse valor num lugar seguro.
-3. Salve e depois vá em **Deployments** e clique em **Redeploy** no último deploy.
+Unir o PR #4 à `main` publica o site. O Claude faz isso quando você autorizar.
 
-## Depois disso
+## Pode ficar para depois
 
-Só então una o PR #4 à `main` (botão **Merge** no GitHub). Se unir antes de colar o arquivo
-do passo 1, as rotas de IA respondem erro 503 de propósito, até as migrations serem aplicadas.
-
-## Pode ficar para depois (não trava nada)
-
-- Guardar os termos de tratamento de dados (DPA) da Anthropic, Supabase, Vercel e Stripe.
-- Definir por quanto tempo guardar os dados (retenção). Ver `docs/lgpd.md`.
+- Guardar os termos de tratamento de dados (DPA) de Anthropic, Supabase, Vercel e Stripe.
+- Definir a retenção dos dados (ver `docs/lgpd.md`).

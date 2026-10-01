@@ -68,7 +68,7 @@ create table public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   email text, nome text, sobrenome text, universidade text, ano_curso text, idioma text,
   tipo_usuario text, termos_aceitos boolean default false,
-  plano text default 'trial', trial_end timestamptz, stripe_id text,
+  plano text default 'trial', trial_end timestamptz,  -- sem stripe_id: no banco real ela só existe pela migration 2026-09-30
   criado_em timestamptz default now()
 );
 create table public.historias_clinicas (
@@ -90,9 +90,11 @@ const ORDEM = [
   '2026-06-28-gerar-hc-usage.sql',
   '2026-06-28-stripe-events-idempotencia.sql',
   '2026-07-11-pdf-exports.sql',
+  '2026-09-30-profiles-stripe-id.sql',
   '2026-10-01-profiles-protege-billing.sql',
   '2026-10-01-uso-atomico-rpc.sql',
   '2026-10-02-devolver-cota-e-search-path.sql',
+  '2026-10-02-revoke-handle-new-user.sql',
 ];
 
 test.before(() => {
