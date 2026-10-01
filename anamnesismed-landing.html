@@ -91,7 +91,7 @@ nav.scrolled{box-shadow:0 2px 24px rgba(10,26,36,0.07)}
 .btn-hero-ghost:hover{border-color:var(--primary-dark);color:var(--teal-text)}
 .proof{display:flex;align-items:center;gap:14px;animation:fadeUp .6s var(--ease) .4s both}
 .avatars{display:flex}
-.av{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;margin-left:-10px}
+.av{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-left:-5px;letter-spacing:-.2px}
 .avatars .av:first-child{margin-left:0}
 .av1{background:var(--primary-dark)}.av2{background:var(--ink)}.av3{background:#B8341F}.av4{background:#4C4A8F}
 .proof-text{font-size:13px;color:var(--muted);line-height:1.45}
@@ -112,7 +112,7 @@ nav.scrolled{box-shadow:0 2px 24px rgba(10,26,36,0.07)}
 .mk-ver{font-size:12px;color:rgba(255,255,255,.3)}
 .mk-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.08);padding:0 12px;gap:2px;overflow-x:auto;scrollbar-width:none}
 .mk-tabs::-webkit-scrollbar{display:none}
-.mk-tab{padding:8px 10px;font-size:12px;font-weight:600;color:rgba(255,255,255,.4);position:relative;white-space:nowrap;flex-shrink:0}
+.mk-tab{padding:8px 9px;font-size:12px;font-weight:600;color:rgba(255,255,255,.4);position:relative;white-space:nowrap;flex-shrink:0}
 .mk-tab.act{color:#fff}
 .mk-tab.act::after{content:'';position:absolute;bottom:0;left:10px;right:10px;height:2px;background:var(--primary-dark);border-radius:2px 2px 0 0}
 .mk-body{padding:14px}
@@ -294,6 +294,8 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   .cta-banner{padding:48px 16px}
   footer{padding:32px 16px 18px}
   .mockup{max-width:100%;width:100%}
+  .mk-tabs{padding:0 6px;gap:0}
+  .mk-tab{padding:8px 7px;font-size:12px}
 }
 @media(max-width:380px){
   .nav-logo{font-size:15px}
@@ -384,33 +386,33 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
         <span class="mk-ver">v2.0</span>
       </div>
       <div class="mk-tabs">
-        <div class="mk-tab act">Anamnese</div>
-        <div class="mk-tab">Mnemônicas</div>
-        <div class="mk-tab">Manobras</div>
-        <div class="mk-tab">Conduta</div>
+        <div class="mk-tab act"><span class="pt">Anamnese</span><span class="es">Anamnesis</span></div>
+        <div class="mk-tab"><span class="pt">Mnemônicas</span><span class="es">Mnemotécnicas</span></div>
+        <div class="mk-tab"><span class="pt">Manobras</span><span class="es">Maniobras</span></div>
+        <div class="mk-tab"><span class="pt">Conduta</span><span class="es">Conducta</span></div>
       </div>
       <div class="mk-body">
         <div class="mk-sec">
-          <div class="mk-lbl">Identificação do paciente</div>
+          <div class="mk-lbl"><span class="pt">Identificação do paciente</span><span class="es">Identificación del paciente</span></div>
           <div class="mk-row">
-            <div class="mk-fld">Nome completo</div>
-            <div class="mk-fld" style="max-width:64px">Idade</div>
+            <div class="mk-fld"><span class="pt">Nome completo</span><span class="es">Nombre completo</span></div>
+            <div class="mk-fld" style="max-width:64px"><span class="pt">Idade</span><span class="es">Edad</span></div>
           </div>
-          <div class="mk-row"><div class="mk-fld">Queixa principal (QP)</div></div>
+          <div class="mk-row"><div class="mk-fld"><span class="pt">Queixa principal (QP)</span><span class="es">Motivo de consulta (MC)</span></div></div>
         </div>
         <div class="mk-sec">
-          <div class="mk-lbl">Qualidade da dor — LITIDIFIS</div>
+          <div class="mk-lbl"><span class="pt">Qualidade da dor — LITIDIFIS</span><span class="es">Calidad del dolor — LITIDIFIS</span></div>
           <div class="mk-chips">
-            <span class="mk-chip on">Queimação</span>
-            <span class="mk-chip">Pontada</span>
-            <span class="mk-chip on">Aperto</span>
-            <span class="mk-chip">Cólica</span>
-            <span class="mk-chip">Peso</span>
-            <span class="mk-chip">Latejamento</span>
+            <span class="mk-chip on"><span class="pt">Queimação</span><span class="es">Ardor</span></span>
+            <span class="mk-chip"><span class="pt">Pontada</span><span class="es">Punzada</span></span>
+            <span class="mk-chip on"><span class="pt">Aperto</span><span class="es">Opresivo</span></span>
+            <span class="mk-chip"><span class="pt">Cólica</span><span class="es">Cólico</span></span>
+            <span class="mk-chip"><span class="pt">Peso</span><span class="es">Pesadez</span></span>
+            <span class="mk-chip"><span class="pt">Latejamento</span><span class="es">Pulsátil</span></span>
           </div>
         </div>
         <div class="mk-sec">
-          <div class="mk-lbl">Intensidade — Escala EVA</div>
+          <div class="mk-lbl"><span class="pt">Intensidade — Escala EVA</span><span class="es">Intensidad — Escala EVA</span></div>
           <div class="mk-eva">
             <span class="mk-eva-lbl">0</span>
             <div class="mk-n">1</div><div class="mk-n">2</div><div class="mk-n">3</div>
@@ -426,7 +428,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
           <div class="mk-pd ok"></div><div class="mk-pd ok"></div><div class="mk-pd ok"></div>
           <div class="mk-pd"></div><div class="mk-pd"></div><div class="mk-pd"></div><div class="mk-pd"></div>
         </div>
-        <button class="mk-save">Salvar HC ↓</button>
+        <button type="button" class="mk-save" tabindex="-1"><span class="pt">Salvar HC ↓</span><span class="es">Guardar HC ↓</span></button>
       </div>
     </div>
   </div>
@@ -701,21 +703,23 @@ function setLang(l){
   window.addEventListener('scroll',function(){
     document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10);
   });
+  var els=document.querySelectorAll('.fc,.tcard,.step,.plan');
+  function show(el){el.style.opacity='1';el.style.transform='none'}
+  var reduce=false;try{reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+  if(!('IntersectionObserver' in window)||reduce){return;}
   var obs=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
-      if(e.isIntersecting){
-        e.target.style.opacity='1';
-        e.target.style.transform='translateY(0)';
-        obs.unobserve(e.target);
-      }
+      if(e.isIntersecting){show(e.target);obs.unobserve(e.target);}
     });
-  },{threshold:0.12});
-  document.querySelectorAll('.fc,.tcard,.step,.plan').forEach(function(el){
+  },{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+  els.forEach(function(el){
     el.style.opacity='0';
     el.style.transform='translateY(20px)';
     el.style.transition='opacity .6s ease, transform .6s ease';
     obs.observe(el);
   });
+  /* rede de segurança: conteúdo nunca fica invisível se o observer não disparar */
+  setTimeout(function(){els.forEach(show)},4000);
 })();
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
