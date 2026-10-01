@@ -82,7 +82,7 @@
   /* Dica (title) em cada item: no tablet a barra vira trilho de ícones e o rótulo some da tela. */
   function _titulos() {
     root.querySelectorAll('.nav-item,.esp-nav-item,.sidebar-foot .user-info').forEach(function (a) {
-      if (a.getAttribute('title')) return;
+      if (a.getAttribute('title') || a.getAttribute('data-tip')) return;
       var t = Array.prototype.map.call(a.querySelectorAll('.pt,.es'), function (n) { return (n.textContent || '').trim(); })
         .filter(function (x, i, arr) { return x && arr.indexOf(x) === i; }).join(' / ');
       if (t) a.setAttribute('title', t);
@@ -90,6 +90,32 @@
   }
   _titulos();
   try { new MutationObserver(function () { _titulos(); }).observe(document.getElementById('nav-recent') || root, { childList: true, subtree: true }); } catch (e) {}
+
+  /* Dica flutuante no trilho de ícones (tablet): aparece com mouse/foco de teclado/toque longo. */
+  (function () {
+    var tip = document.createElement('div');
+    tip.className = 'sb-tip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true;
+    document.body.appendChild(tip);
+    var rail = window.matchMedia('(min-width:769px) and (max-width:1180px)');
+    function show(el) {
+      if (!rail.matches) return;
+      var t = el.getAttribute('title') || el.getAttribute('data-tip');
+      if (!t) return;
+      if (el.getAttribute('title')) { el.setAttribute('data-tip', t); el.removeAttribute('title'); }
+      var lang = document.documentElement.getAttribute('data-lang') === 'pt' ? 0 : 1;
+      var parts = t.split(' / ');
+      tip.textContent = parts[lang] || parts[0];
+      var r = el.getBoundingClientRect();
+      tip.style.left = (r.right + 10) + 'px'; tip.style.top = (r.top + r.height / 2) + 'px';
+      tip.hidden = false;
+    }
+    function hide() { tip.hidden = true; }
+    root.addEventListener('pointerenter', function (e) { if (e.pointerType !== 'touch' && e.target.closest) { var el = e.target.closest('.nav-item,.esp-nav-item,.user-info'); if (el) show(el); } }, true);
+    root.addEventListener('focusin', function (e) { var el = e.target.closest && e.target.closest('.nav-item,.esp-nav-item,.user-info'); if (el) show(el); });
+    root.addEventListener('pointerleave', hide, true);
+    root.addEventListener('focusout', hide);
+    root.addEventListener('click', hide);
+  })();
 
   /* ── TOGGLE ── */
   /* Botões que abrem/fecham o menu (hambúrguer de cada página) recebem aria-expanded/aria-controls. */
@@ -211,7 +237,7 @@
   };
   Object.keys(rules).forEach(function (id) {
     var el = document.getElementById(id);
-    if (el && rules[id]) el.classList.add('active');
+    if (el && rules[id]) { el.classList.add('active'); el.setAttribute('aria-current', 'page'); }
   });
 
 })();

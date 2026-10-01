@@ -122,9 +122,17 @@
 }
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%);width:min(var(--sidebar-w,240px),86vw);overscroll-behavior:contain}
-  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(10,26,36,.4)}
+  /* gaveta fechada: fora da tela E fora da ordem de tabulação / leitor de tela */
+  .sidebar:not(.open){visibility:hidden;transition:transform .3s,visibility 0s .3s}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(10,26,36,.4);visibility:visible;transition:transform .3s}
   #sidebar-close-btn{display:flex!important}
   /* com o sidebar aberto, esconder a barra inferior (evita 2 menus competindo/sobrepostos) */
   body.sb-open .bottom-nav,
   body.sb-open .mobile-nav{display:none!important}
 }
+
+/* dica flutuante do trilho de ícones (tablet): o title nativo não aparece em toque nem some do clip do trilho */
+.sb-tip{position:fixed;z-index:300;pointer-events:none;background:#0A1A24;color:#fff;border:1px solid rgba(255,255,255,.18);
+  border-radius:8px;padding:7px 11px;font:500 13px/1.2 var(--sans,system-ui);white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.3);
+  transform:translateY(-50%)}
+.sb-tip[hidden]{display:none}
