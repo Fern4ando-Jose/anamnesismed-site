@@ -72,7 +72,7 @@ html.deep-hc #screen-index{display:none!important}
 .spec-subtitle{font-size:12px;color:var(--muted);margin-top:3px}
 .spec-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--line);padding-bottom:0;overflow-x:auto;scrollbar-width:none}
 .spec-tabs::-webkit-scrollbar{display:none}
-.spec-tab{padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;user-select:none;text-decoration:none;display:flex;align-items:center;gap:6px}
+.spec-tab{background:none;border:0;font-family:inherit;padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;user-select:none;text-decoration:none;display:flex;align-items:center;gap:6px}
 .spec-tab:hover{color:var(--ink)}
 .spec-tab.active{color:var(--ink);border-bottom-color:var(--primary)}
 .spec-tab-count{font-size:9px;font-family:var(--mono);font-weight:700;padding:1px 6px;border-radius:8px;background:var(--cream);color:var(--muted)}
@@ -131,7 +131,7 @@ html.deep-hc #screen-index{display:none!important}
 @keyframes tabsArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
 @keyframes tabsNudge{0%{transform:translateX(0)}40%{transform:translateX(-22px)}75%{transform:translateX(0)}100%{transform:translateX(0)}}
 .guide-tab.tabs-nudge{animation:tabsNudge 1s ease-in-out}
-.guide-tab{flex:0 0 auto;padding:11px 16px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px;white-space:nowrap;user-select:none;transition:all .15s;display:flex;align-items:center;gap:6px}
+.guide-tab{background:none;border:0;font-family:inherit;flex:0 0 auto;padding:11px 16px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px;white-space:nowrap;user-select:none;transition:all .15s;display:flex;align-items:center;gap:6px}
 .guide-tab:hover{color:var(--ink)}
 .guide-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
 .guide-tab-icon{font-size:15px}
@@ -474,7 +474,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 <div class="main">
   <!-- TOPBAR -->
   <header class="topbar" id="topbar">
-    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu"><span data-am-icon="menu" data-am-size="22"></span></button>
+    <button type="button" class="hamburger" onclick="toggleSidebar()" aria-label="Menu" aria-expanded="false" aria-controls="sidebar"><span data-am-icon="menu" data-am-size="22"></span></button>
     <a href="anamnesismed-dashboard.html" class="topbar-back" data-confirm-discard><span class="pt">← Voltar</span><span class="es">← Volver</span></a>
     <div class="topbar-breadcrumb">
       <span id="tb-spec" class="pt">Clínica Médica</span>
@@ -517,19 +517,19 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
       </div>
     </div>
 
-    <div class="spec-tabs">
-      <div class="spec-tab" id="stab-semiologia" onclick="showSpec('semiologia')">
+    <div class="spec-tabs" role="tablist" aria-label="Especialidade / Especialidad">
+      <button type="button" role="tab" class="spec-tab" id="stab-semiologia" aria-selected="false" aria-controls="motivo-content" onclick="showSpec('semiologia')">
         <span data-am-icon="book" data-am-size="15"></span> <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
         <span class="spec-tab-count" id="count-semiologia">0</span>
-      </div>
-      <div class="spec-tab active" id="stab-clinica" onclick="showSpec('clinica')">
+      </button>
+      <button type="button" role="tab" class="spec-tab active" id="stab-clinica" aria-selected="true" aria-controls="motivo-content" onclick="showSpec('clinica')">
         <span data-am-icon="stethoscope" data-am-size="15"></span> <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
         <span class="spec-tab-count" id="count-clinica">0</span>
-      </div>
-      <div class="spec-tab" id="stab-cirurgia" onclick="showSpec('cirurgia')">
+      </button>
+      <button type="button" role="tab" class="spec-tab" id="stab-cirurgia" aria-selected="false" aria-controls="motivo-content" onclick="showSpec('cirurgia')">
         <span data-am-icon="scalpel" data-am-size="15"></span> <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
         <span class="spec-tab-count" id="count-cirurgia">0</span>
-      </div>
+      </button>
     </div>
 
     <!-- Motivo grids rendered by JS -->
@@ -561,42 +561,42 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
     <!-- Clinical guide tabs (motivo-specific) -->
     <div class="guide-tabs-wrap" id="guide-tabs-wrap">
-    <div class="guide-tabs" id="guide-tabs">
-      <div class="guide-tab active" onclick="showGuide('form',this)">
+    <div class="guide-tabs" id="guide-tabs" role="tablist" aria-label="Guia clínico / Guía clínica">
+      <button type="button" role="tab" class="guide-tab active" aria-selected="true" onclick="showGuide('form',this)">
         <span class="guide-tab-icon" data-am-icon="clipboard" data-am-size="15"></span>
         <span class="pt">Formulário HC</span><span class="es">Formulario HC</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('mnemonics',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('mnemonics',this)">
         <span class="guide-tab-icon" data-am-icon="brain" data-am-size="15"></span>
         <span class="pt">Mnemônicas</span><span class="es">Mnemotécnicas</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('manobras',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('manobras',this)">
         <span class="guide-tab-icon" data-am-icon="stethoscope" data-am-size="15"></span>
         <span class="pt">Manobras</span><span class="es">Maniobras</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('sinais',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('sinais',this)">
         <span class="guide-tab-icon" data-am-icon="activity" data-am-size="15"></span>
         <span class="pt">Sinais Clássicos</span><span class="es">Signos Clásicos</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('ddx',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('ddx',this)">
         <span class="guide-tab-icon" data-am-icon="scale" data-am-size="15"></span>
         <span class="pt">Diagnóstico Diferencial</span><span class="es">Diagnóstico Diferencial</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('escalas',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('escalas',this)">
         <span class="guide-tab-icon" data-am-icon="chart" data-am-size="15"></span>
         <span class="pt">Escalas</span><span class="es">Escalas</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('conduta',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('conduta',this)">
         <span class="guide-tab-icon" data-am-icon="file" data-am-size="15"></span>
         <span class="pt">Conduta</span><span class="es">Conducta</span>
-      </div>
-      <div class="guide-tab guide-tab-ia" id="gtab-assistente" onclick="showGuide('assistente',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab guide-tab-ia" id="gtab-assistente" aria-selected="false" onclick="showGuide('assistente',this)">
         <span class="guide-tab-icon" data-am-icon="sparkles" data-am-size="15"></span>
         <span class="pt">Assistente IA</span><span class="es">Asistente IA</span>
         <span class="ia-pro-pill">PRO</span>
-      </div>
+      </button>
     </div>
-    <button class="guide-tabs-next" id="guide-tabs-next" type="button" onclick="scrollGuideTabs()" aria-label="Mais abas">›</button>
+    <button class="guide-tabs-next" id="guide-tabs-next" type="button" onclick="scrollGuideTabs()" aria-label="Mais abas / Más pestañas">›</button>
     </div>
 
     <!-- GUIDE CONTENT (Mnemônicas, Manobras, etc.) -->
@@ -1741,38 +1741,38 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   <div class="fab-item">
     <span class="fab-label pt">Imprimir / PDF</span>
     <span class="fab-label es">Imprimir / PDF</span>
-    <button class="fab-btn fab-secondary" onclick="exportPDF()" title="PDF">📄</button>
+    <button type="button" class="fab-btn fab-secondary" onclick="exportPDF()" title="PDF" aria-label="Imprimir / PDF"><span aria-hidden="true">📄</span></button>
   </div>
   <div class="fab-item">
     <span class="fab-label pt">Salvar HC</span>
     <span class="fab-label es">Guardar HC</span>
-    <button class="fab-btn fab-secondary" onclick="saveHC()" title="Salvar">💾</button>
+    <button type="button" class="fab-btn fab-secondary" onclick="saveHC()" title="Salvar / Guardar" aria-label="Salvar HC / Guardar HC"><span aria-hidden="true">💾</span></button>
   </div>
   <div class="fab-item">
     <span class="fab-label pt">Referências do motivo</span>
     <span class="fab-label es">Referencias del motivo</span>
-    <button class="fab-btn fab-primary" onclick="openRefMotivo()" title="Referências clínicas"><span data-am-icon="book" data-am-size="22"></span></button>
+    <button type="button" class="fab-btn fab-primary" onclick="openRefMotivo()" title="Referências clínicas / Referencias clínicas" aria-label="Referências do motivo / Referencias del motivo"><span data-am-icon="book" data-am-size="22"></span></button>
   </div>
 </div>
 
 <!-- BOTTOM NAV (mobile) -->
-<nav class="bottom-nav">
+<nav class="bottom-nav" aria-label="Navegação / Navegación">
   <div class="bottom-nav-inner">
-    <div class="bnav-item active" id="bnav-inicio" onclick="goAppInicio()">
+    <button type="button" class="bnav-item active" id="bnav-inicio" onclick="goAppInicio()">
       <span class="bnav-icon" data-am-icon="home" data-am-size="22"></span>
       <span class="pt">Início</span><span class="es">Inicio</span>
-    </div>
-    <div class="bnav-item" onclick="newHC()">
+    </button>
+    <button type="button" class="bnav-item" onclick="newHC()">
       <span class="bnav-icon" data-am-icon="plus" data-am-size="22"></span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
-    </div>
-    <div class="bnav-item" onclick="goToDashboard('hcs')">
+    </button>
+    <button type="button" class="bnav-item" onclick="goToDashboard('hcs')">
       <span class="bnav-icon" data-am-icon="clipboard" data-am-size="22"></span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
-    </div>
-    <div class="bnav-item" onclick="exportPDF()">
+    </button>
+    <button type="button" class="bnav-item" onclick="exportPDF()">
       <span class="bnav-icon" data-am-icon="file" data-am-size="22"></span>PDF
-    </div>
+    </button>
   </div>
 </nav>
 <script src="anamnesismed-motivos.js?v=ad716e9d"></script>
@@ -2875,6 +2875,45 @@ function openRefMotivo(){
   } catch (e) {
     console.warn('Falha ao inicializar integração Supabase:', e);
   }
+})();
+</script>
+<script>
+/* ── Abas acessíveis (spec-tab / guide-tab): role=tab, roving tabindex, setas/Home/End; Enter/Espaço ativam (botão nativo) ── */
+(function(){
+  function sync(list){
+    var tabs=[].slice.call(list.querySelectorAll('[role="tab"]'));
+    var any=tabs.some(function(t){return t.classList.contains('active')});
+    tabs.forEach(function(t,i){
+      var on=t.classList.contains('active')||(!any&&i===0);
+      t.setAttribute('aria-selected',on?'true':'false');
+      t.tabIndex=on?0:-1;
+    });
+  }
+  function setup(list){
+    if(!list)return;
+    sync(list);
+    new MutationObserver(function(){sync(list)}).observe(list,{attributes:true,attributeFilter:['class'],subtree:true});
+    list.addEventListener('keydown',function(e){
+      var keys=['ArrowRight','ArrowLeft','Home','End'];
+      if(keys.indexOf(e.key)<0)return;
+      var tabs=[].slice.call(list.querySelectorAll('[role="tab"]'));
+      var i=tabs.indexOf(document.activeElement);
+      if(i<0)return;
+      e.preventDefault();
+      var n=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+      tabs[n].focus();
+      try{tabs[n].scrollIntoView({block:'nearest',inline:'nearest'})}catch(x){}
+    });
+  }
+  setup(document.querySelector('.spec-tabs'));
+  setup(document.getElementById('guide-tabs'));
+  ['hc-sections','guide-content-area','assistente-area'].forEach(function(id){
+    var el=document.getElementById(id);if(el&&!el.getAttribute('role'))el.setAttribute('role','tabpanel');
+  });
+  document.querySelectorAll('#guide-tabs [role="tab"]').forEach(function(t){
+    var m=/showGuide\('(\w+)'/.exec(t.getAttribute('onclick')||'');
+    if(m)t.setAttribute('aria-controls',m[1]==='form'?'hc-sections':m[1]==='assistente'?'assistente-area':'guide-content-area');
+  });
 })();
 </script>
 <script src="sidebar.js?v=4ced0109"></script>
