@@ -68,6 +68,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .form-input:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(14,116,144,.1)}
 .form-input[disabled]{opacity:.6;cursor:not-allowed}
 .form-hint{font-size:12px;color:var(--muted)}
+.cfg-status{margin-top:12px;font-size:14px;font-weight:600;color:var(--muted)}.cfg-status.ok{color:#15803d}.cfg-status.error{color:#b91c1c}
+.form-field[hidden]{display:none}
 
 .btn-primary{
   margin-top:6px;padding:12px 24px;font-size:14px;font-weight:700;
@@ -111,7 +113,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 }
 </style>
   <link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
-<link rel="stylesheet" href="anamnesismed-components.css?v=4324660f">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
 <link rel="stylesheet" href="sidebar.css?v=ed01236a">
 <script src="/pwa.js?v=ca447f53" defer></script>
 </head>
@@ -164,6 +166,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
           <label class="form-label es" for="cfg-sobrenome">Apellido</label>
           <input type="text" class="form-input" id="cfg-sobrenome" autocomplete="family-name">
         </div>
+        <div class="form-field full" id="cfg-genero-field" hidden>
+          <fieldset class="am-genero" aria-required="true">
+            <legend><span class="pt">Tratamento / Gênero</span><span class="es">Tratamiento / Género</span> <span aria-hidden="true">*</span></legend>
+            <div class="am-genero-opts">
+              <label class="am-genero-opt"><input type="radio" name="cfg-genero" value="F"><span><strong>Dra.</strong> <span class="am-genero-sub">(<span class="pt">feminino</span><span class="es">femenino</span>)</span></span></label>
+              <label class="am-genero-opt"><input type="radio" name="cfg-genero" value="M"><span><strong>Dr.</strong> <span class="am-genero-sub">(<span class="pt">masculino</span><span class="es">masculino</span>)</span></span></label>
+            </div>
+          </fieldset>
+        </div>
         <div class="form-field full">
           <label class="form-label pt" for="cfg-email">E-mail</label>
           <label class="form-label es" for="cfg-email">Correo electrónico</label>
@@ -194,6 +205,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <button type="submit" class="btn-primary" id="cfg-save-btn">
         <span class="pt">Salvar alterações</span><span class="es">Guardar cambios</span>
       </button>
+      <p id="cfg-status" class="cfg-status" role="status" aria-live="polite" hidden></p>
     </form>
 
     <!-- PLANO -->
@@ -317,7 +329,7 @@ function setLang(l){
 </script>
 
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=34611c75"></script>
+<script src="supabase-integration.js?v=e575bb2b"></script>
 <script>
 // ── Popular dados reais do usuário (plano, membro desde, trial) ──
 (async function(){
@@ -438,6 +450,6 @@ function setLang(l){
   }
 })();
 </script>
-<script src="sidebar.js?v=bda3607c"></script>
+<script src="sidebar.js?v=a7d46540"></script>
 </body>
 </html>

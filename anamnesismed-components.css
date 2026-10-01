@@ -100,3 +100,28 @@ html{overscroll-behavior-y:contain}
   .topbar-back{min-width:44px}
   .secnav-btn,.search-box,.btn-danger{min-height:44px}
 }
+
+/* ── Tratamento (Dr./Dra.) — radio group de gênero, aviso e modal ── */
+.am-genero{border:0;margin:14px 0 6px;padding:0;min-width:0}
+.am-genero legend{font-size:13px;font-weight:700;color:var(--ink,#0d2d3d);padding:0;margin-bottom:8px}
+.am-genero-opts{display:flex;gap:10px;flex-wrap:wrap}
+.am-genero-opt{flex:1 1 150px;display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 14px;border:1.5px solid rgba(13,45,61,.2);border-radius:10px;background:#fff;color:var(--ink,#0d2d3d);font-size:15px;cursor:pointer}
+.am-genero-opt input{width:20px;height:20px;flex-shrink:0;accent-color:#0e7490;margin:0}
+.am-genero-opt:has(input:checked){border-color:#0e7490;background:#e6f4f7}
+.am-genero-opt:focus-within{outline:3px solid #0e7490;outline-offset:2px}
+.am-genero-sub{font-size:13px;color:#4b6070}
+.am-genero-msg{margin:10px 0 0;font-size:13px;font-weight:600;color:#b91c1c}
+.am-genero-msg[hidden]{display:none}
+.am-genero-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.am-genero-actions button{min-height:44px;min-width:44px;padding:10px 18px;border-radius:8px;border:1.5px solid rgba(13,45,61,.2);background:#fff;color:#0d2d3d;font:700 14px/1 inherit;font-family:inherit;cursor:pointer}
+.am-genero-actions .am-genero-save{background:#0e7490;border-color:#0e7490;color:#fff}
+.am-genero-actions button:disabled{opacity:.6;cursor:wait}
+.am-genero-overlay{position:fixed;inset:0;z-index:9998;background:rgba(13,45,61,.6);display:flex;align-items:center;justify-content:center;padding:20px}
+.am-genero-card{background:#fff;color:#0d2d3d;border-radius:14px;max-width:440px;width:100%;padding:24px 22px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.am-genero-card h2{font-size:19px;margin:0 0 8px}
+.am-genero-card p{font-size:14px;line-height:1.55;color:#4b6070;margin:0 0 8px}
+.am-genero-aviso{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;margin:0 0 14px;padding:8px 8px 8px 14px;border:1px solid rgba(14,116,144,.3);background:#e6f4f7;color:#0d2d3d;border-radius:12px;font-size:14px}
+.am-genero-aviso>span{flex:1 1 220px}
+.am-genero-aviso button{min-height:44px;min-width:44px;border-radius:8px;border:1.5px solid #0e7490;background:#fff;color:#0e7490;font:700 14px/1 inherit;font-family:inherit;padding:0 14px;cursor:pointer}
+.am-genero-aviso .am-genero-aviso-x{border-color:transparent;background:transparent;color:#4b6070;font-size:22px;padding:0}
+[data-lang="es"] .am-genero-aviso .pt,[data-lang="pt"] .am-genero-aviso .es{display:none!important}

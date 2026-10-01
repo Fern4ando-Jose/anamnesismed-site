@@ -167,7 +167,7 @@
     var uname = localStorage.getItem('am-uname');
     if (uname) {
       document.querySelectorAll('[data-user-name],.user-name').forEach(function (el) { el.textContent = uname; });
-      var ini = uname.replace(/^dr\.?\s*/i, '').charAt(0).toUpperCase() || '?';
+      var ini = uname.replace(/^(?:dr\(a\)|dra|dr)\.\s*/i, '').charAt(0).toUpperCase() || '?';
       document.querySelectorAll('.user-avatar,.user-av').forEach(function (el) { el.textContent = ini; });
       var gp = document.getElementById('page-title');
       var ge = document.getElementById('page-title-es');
