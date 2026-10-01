@@ -81,3 +81,14 @@ body.am-modal-open{overflow:hidden}
 .am-banner a{color:var(--teal-on-dark,#5ED6E3);font-weight:700;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px}
 .am-banner button{margin-left:auto;background:none;border:0;color:#fff;font-size:20px;line-height:1;cursor:pointer;min-width:44px;min-height:44px}
 .am-banner .am-banner-msg{flex:1 1 220px;padding-top:2px}
+
+/* ── Toque / tablet / app instalado (PWA) ──
+   Alvos >= 44px, campos >= 16px (iOS não dá zoom), rolagem sem "elástico" encadeado e safe-area. */
+html{overscroll-behavior-y:contain}
+@media (pointer:coarse),(max-width:1180px){
+  .lang-btn{min-height:44px;min-width:44px}
+  .hc-btn{min-height:44px;min-width:44px}
+  .form-input,.form-select,.search-input{min-height:44px;font-size:16px}
+  .btn-new,.btn-upgrade,.hero-cta,.topbar-back,.tab-btn,.esp-card{min-height:44px}
+}
+@media (max-width:768px){.topbar .pwa-btn{display:none!important}}

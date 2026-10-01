@@ -832,7 +832,8 @@ async function uiLoadRecentHCs(limit, preHcs) {
   container.innerHTML = hcs.map(hc => {
     const color = specColors[hc.especialidade] || '#6b7c8a';
     const st = statusLabels[hc.status] || statusLabels.rascunho;
-    const date = new Date(hc.atualizado_em).toLocaleDateString('pt-BR');
+    const _d = new Date(hc.atualizado_em || hc.criado_em);
+    const date = isNaN(_d.getTime()) ? '—' : _d.toLocaleDateString('pt-BR'); // nunca mostra "Invalid Date"
     const nomePaciente = (hc.dados && hc.dados.campos && hc.dados.campos['dp-nome']) || '';
     const specLabel = hc.especialidade === 'clinica' ? 'Clínica Médica' : 'Cirugía General';
 

@@ -79,6 +79,18 @@
   if (!root) return;
   root.innerHTML = HTML;
 
+  /* Dica (title) em cada item: no tablet a barra vira trilho de ícones e o rótulo some da tela. */
+  function _titulos() {
+    root.querySelectorAll('.nav-item,.esp-nav-item,.sidebar-foot .user-info').forEach(function (a) {
+      if (a.getAttribute('title')) return;
+      var t = Array.prototype.map.call(a.querySelectorAll('.pt,.es'), function (n) { return (n.textContent || '').trim(); })
+        .filter(function (x, i, arr) { return x && arr.indexOf(x) === i; }).join(' / ');
+      if (t) a.setAttribute('title', t);
+    });
+  }
+  _titulos();
+  try { new MutationObserver(function () { _titulos(); }).observe(document.getElementById('nav-recent') || root, { childList: true, subtree: true }); } catch (e) {}
+
   /* ── TOGGLE ── */
   /* Botões que abrem/fecham o menu (hambúrguer de cada página) recebem aria-expanded/aria-controls. */
   function _toggleButtons() {
@@ -173,8 +185,11 @@
     recent = recent.slice(0, 8);
     try { localStorage.setItem('am-recent', JSON.stringify(recent)); } catch (e) {}
   }
-  var show = recent.filter(function (x) { return x !== cur && DEST[x]; }).slice(0, 3);
-  if (!show.length) show = ['explorar', 'mnemonicas', 'config'].filter(function (x) { return x !== cur; }).slice(0, 3);
+  /* Itens que já estão no menu fixo (Início, Especialidades, Minhas HCs, Ferramentas) NÃO entram
+     em "Acessado por último" — antes eles apareciam duas vezes (no trilho de ícones do tablet isso
+     virava ícones repetidos em sequência). Sem histórico útil, o bloco fica oculto. */
+  var FIXOS = { explorar: 1, mnemonicas: 1, config: 1 };
+  var show = recent.filter(function (x) { return x !== cur && DEST[x] && !FIXOS[x]; }).slice(0, 3);
   var box = document.getElementById('nav-recent');
   if (box && show.length) {
     box.innerHTML = show.map(function (id) {

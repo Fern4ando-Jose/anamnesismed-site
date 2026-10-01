@@ -52,6 +52,39 @@ for (const html of htmls) {
   }
 }
 
+// ── Versão do cache do service worker (sw.js) ────────────────────────────────────────────
+// CACHE_VERSION = hash de TODA a casca estática (HTML, JS/CSS, vendor, manifest, ícones e o próprio
+// sw.js sem a linha da versão). Mudou qualquer arquivo do site → muda a versão → o SW novo instala,
+// o aviso "Nova versão disponível" aparece e os caches antigos são apagados no activate.
+function versaoDoCache() {
+  const h = crypto.createHash('sha1');
+  const arquivos = [];
+  for (const f of fs.readdirSync(RAIZ)) {
+    if (/^google.*\.html$/.test(f)) continue;
+    if (/\.(html|js|css|webmanifest|svg|png|ico)$/.test(f)) arquivos.push(f);
+  }
+  for (const dir of ['vendor', 'pwa', 'assets/topografia']) {
+    const d = path.join(RAIZ, dir);
+    if (fs.existsSync(d)) for (const f of fs.readdirSync(d)) arquivos.push(dir + '/' + f);
+  }
+  for (const f of arquivos.sort()) {
+    let buf = fs.readFileSync(path.join(RAIZ, f));
+    if (f === 'sw.js') buf = Buffer.from(buf.toString('utf8').replace(/const CACHE_VERSION = '[^']*';/, "const CACHE_VERSION = '';"));
+    h.update(f + '\0').update(buf);
+  }
+  return 'am-pwa-' + h.digest('hex').slice(0, 10);
+}
+const SW = path.join(RAIZ, 'sw.js');
+if (fs.existsSync(SW)) {
+  const sw = fs.readFileSync(SW, 'utf8');
+  const v = versaoDoCache();
+  const novoSw = sw.replace(/const CACHE_VERSION = '[^']*';/, `const CACHE_VERSION = '${v}';`);
+  if (novoSw !== sw) {
+    desatualizados.push(`sw.js → CACHE_VERSION (${v})`);
+    if (!SO_CONFERIR) fs.writeFileSync(SW, novoSw);
+  }
+}
+
 if (SO_CONFERIR) {
   if (desatualizados.length) {
     console.error('Versão desatualizada em:\n  ' + desatualizados.join('\n  '));

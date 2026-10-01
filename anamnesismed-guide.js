@@ -299,23 +299,30 @@ function renderGuideContent(){
   area.innerHTML=html;
 }
 // ── GUIDE TABS ────────────────────────────────────────
+// Tablet em paisagem: formulário e guia ficam lado a lado (o formulário não some ao abrir uma aba do guia).
+var _splitMQ = (typeof window !== 'undefined' && window.matchMedia)
+  ? window.matchMedia('(min-width:1000px) and (max-width:1400px) and (orientation:landscape)') : null;
+function _isSplit(){ return !!(_splitMQ && _splitMQ.matches); }
 function showGuide(tab, el){
   var guideMap = {form:null, mnemonics:'gp-mnemonics', manobras:'gp-manobras', sinais:'gp-sinais', ddx:'gp-ddx', escalas:'gp-escalas', conduta:'gp-conduta'};
   var secs = document.getElementById('hc-sections');
   var area = document.getElementById('guide-content-area');
   var ai = document.getElementById('assistente-area');
+  var split = _isSplit();
+  var scr = document.getElementById('screen-hc');
+  if(scr) scr.classList.toggle('split-open', split && tab !== 'form');
 
   if(tab === 'form'){
     secs.style.display = '';
     area.style.display = 'none';
     if(ai) ai.style.display = 'none';
   } else if(tab === 'assistente'){
-    secs.style.display = 'none';
+    secs.style.display = split ? '' : 'none';
     area.style.display = 'none';
     if(ai) ai.style.display = '';
     if(typeof assistenteOnOpen === 'function') assistenteOnOpen();
   } else {
-    secs.style.display = 'none';
+    secs.style.display = split ? '' : 'none';
     area.style.display = '';
     if(ai) ai.style.display = 'none';
     area.querySelectorAll('.guide-page').forEach(function(p){p.classList.remove('active')});
@@ -325,4 +332,19 @@ function showGuide(tab, el){
 
   document.querySelectorAll('.guide-tab').forEach(function(t){t.classList.remove('active')});
   if(el) el.classList.add('active');
+}
+// Girou o tablet (retrato ⇄ paisagem): reaplica a aba ativa para montar/desmontar o layout lado a lado.
+if(_splitMQ){
+  var _reflow = function(){
+    var act = document.querySelector('.guide-tab.active');
+    if(!act || !document.getElementById('hc-sections')) return;
+    var name = (act.id || '').replace('gtab-','');
+    if(name === 'mnemonics' || name === 'form' || name === 'assistente' || name === 'manobras' || name === 'sinais' || name === 'ddx' || name === 'escalas' || name === 'conduta'){
+      if(name === 'assistente'){ /* não refaz a chamada da IA */
+        var secs=document.getElementById('hc-sections'); if(secs) secs.style.display=_isSplit()?'':'none';
+        var scr=document.getElementById('screen-hc'); if(scr) scr.classList.toggle('split-open', _isSplit());
+      } else showGuide(name, act);
+    }
+  };
+  if(_splitMQ.addEventListener) _splitMQ.addEventListener('change', _reflow); else if(_splitMQ.addListener) _splitMQ.addListener(_reflow);
 }
