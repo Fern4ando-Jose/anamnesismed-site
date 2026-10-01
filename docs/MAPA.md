@@ -36,6 +36,7 @@
 - **Aceite:** textos revisados por advogado; aviso visível na tela, no PDF e nos termos.
 
 ### 0.3 Modelo de dados do conteúdo (P0)
+> **Desenho proposto em `docs/ESQUEMA-ENFERMIDADE.md`** — aguarda aprovação do dono (§8 do documento). Implementação só depois.
 - [ ] Definir esquema `enfermidade` (definição, epidemiologia, fisiopatologia, quadro clínico, diagnóstico, exames, tratamento, complicações, prognóstico, `refs[]`, `revisadoEm`, `revisor`) e `caso` (apresentação, dados progressivos, perguntas, gabarito, pérolas, ref)
 - [ ] Estender `scripts/build.js` (registro `AM.enfermidade`, `ESP_ORDER` dinâmico, versão ES)
 - [ ] Unificar a lista de especialidades (hoje duplicada em 3 lugares)
