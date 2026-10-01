@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
 <script src="am-icons.js?v=f6cfe7c9"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <title>AnamnesísMed — Configurações</title>
@@ -40,7 +40,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .topbar-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink)}
 .topbar-subtitle{font-size:13px;color:var(--muted)}
 .lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
-.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn{padding:4px 11px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 
 .content{padding:32px;max-width:760px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px}
@@ -118,8 +118,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </div>
     </div>
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
+      <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
     </div>
   </header>
 
@@ -223,7 +223,9 @@ function encerrarSessao(){
   if(window.authLogout) window.authLogout();
   else window.location.href = 'anamnesismed-auth.html';
 }
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
 function setLang(l){
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang', l);
   document.getElementById('btn-pt').classList.toggle('active', l==='pt');
   document.getElementById('btn-es').classList.toggle('active', l==='es');

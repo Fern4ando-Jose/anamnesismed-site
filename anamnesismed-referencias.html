@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
 <title>AnamnesísMed — Referencias Clínicas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .topbar-sep{color:var(--line-md);font-size:16px;flex-shrink:0}
 .topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lang-toggle{display:flex;background:rgba(30,27,75,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line);flex-shrink:0}
-.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn{padding:4px 11px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 
 /* HERO */
@@ -103,8 +103,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <span class="topbar-title es">Referencias Clínicas</span>
     </div>
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
+      <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
     </div>
   </header>
 
@@ -213,7 +213,9 @@ function hexA(hex,a){
   return 'rgba('+r+','+g+','+b+','+a+')';
 }
 
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
 function setLang(lang){
+  amLangA11y(lang);
   L=lang;
   document.documentElement.setAttribute("data-lang",lang);
   document.getElementById("btn-es").classList.toggle("active",lang==="es");

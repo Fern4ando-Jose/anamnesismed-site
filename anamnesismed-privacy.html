@@ -39,7 +39,7 @@ nav{
 .nav-logo span{color:var(--primary)}
 .nav-right{display:flex;align-items:center;gap:12px}
 .lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
-.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn{padding:4px 10px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 
 .page-wrap{max-width:800px;margin:0 auto;padding:40px 32px 60px}
@@ -81,8 +81,8 @@ nav{
   <a href="anamnesismed-landing.html" class="nav-logo">Anamnesis<span>Med</span></a>
   <div class="nav-right">
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
+      <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
     </div>
   </div>
 </nav>
@@ -227,7 +227,9 @@ nav{
 </div>
 
 <script>
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
 function setLang(l){
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   document.getElementById('btn-es').classList.toggle('active',l==='es');
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');

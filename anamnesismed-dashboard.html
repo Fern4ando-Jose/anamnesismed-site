@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
 <script src="am-icons.js?v=f6cfe7c9"></script>
 <title>AnamnesísMed — Inicio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,10 +39,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .topbar{background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
 .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
 .topbar-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
-.topbar-subtitle{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2px}
+.topbar-subtitle{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.2px}
 .topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .lang-toggle{display:flex;background:rgba(10,26,36,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line);font-family:var(--mono);font-weight:600}
-.lang-btn{padding:5px 11px;font-size:11px;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:.2s}
+.lang-btn{padding:5px 11px;font-size:12px;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:.2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 .search-wrap{position:relative}
 .search-input{padding:9px 12px 9px 34px;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);width:200px;transition:.2s;font-family:var(--sans)}
@@ -58,7 +58,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .hero-ekg{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
 .hero-ekg polyline{fill:none;stroke:var(--pulse);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1500;stroke-dashoffset:1500;animation:ekg 2.4s ease forwards}
 @keyframes ekg{to{stroke-dashoffset:0}}
-.hero-eye{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--primary);text-transform:uppercase;position:relative}
+.hero-eye{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--primary);text-transform:uppercase;position:relative}
 .hero-greet{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.6px;margin:8px 0 6px;position:relative;color:#fff}
 .hero-sub{color:#9fc0c6;font-size:14px;position:relative;max-width:460px;line-height:1.5}
 .hero-cta{display:inline-flex;align-items:center;gap:7px;margin-top:18px;position:relative;background:var(--primary);color:#fff;font-family:var(--serif);font-weight:600;font-size:14px;padding:11px 18px;border-radius:11px;text-decoration:none;transition:.18s}
@@ -86,9 +86,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .hc-color{width:4px;height:46px;border-radius:4px;flex-shrink:0;background:var(--primary)}
 .hc-info{flex:1;min-width:0}
 .hc-name{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hc-meta{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:9px}
+.hc-meta{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:9px}
 .hc-dot{width:3px;height:3px;border-radius:50%;background:var(--line-md)}
-.hc-status{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
+.hc-status{font-family:var(--mono);font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
 .hc-status.complete{background:rgba(21,178,122,.13);color:#0e8a5e}
 .hc-status.draft{background:rgba(255,92,73,.13);color:#c23a26}
 .hc-actions{display:flex;gap:8px;flex-shrink:0;align-items:center}
@@ -108,7 +108,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .quick-icon{width:42px;height:42px;border-radius:12px;background:var(--cb,rgba(15,163,177,.12));color:var(--c,var(--primary));display:flex;align-items:center;justify-content:center;font-size:20px}
 .quick-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink)}
 .quick-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1}
-.quick-count{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--c,var(--primary));margin-top:auto}
+.quick-count{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--c,var(--primary));margin-top:auto}
 
 /* BOTTOM GRID */
 .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -119,14 +119,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .act-dot.created{background:var(--primary)}.act-dot.edited{background:var(--accent)}.act-dot.exported{background:var(--signal)}
 .act-text{font-size:13px;color:var(--muted);line-height:1.5}
 .act-text strong{color:var(--ink);font-weight:600}
-.act-time{font-family:var(--mono);font-size:10px;color:rgba(90,112,121,.6)}
+.act-time{font-family:var(--mono);font-size:12px;color:rgba(90,112,121,.6)}
 
 /* UPGRADE */
 .upgrade-panel{background:var(--ink);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;position:relative;overflow:hidden}
 .upgrade-panel .ekg{position:absolute;inset:auto 0 0 0;width:100%;height:60px;opacity:.4}
 .upgrade-panel .ekg polyline{fill:none;stroke:var(--pulse);stroke-width:2;stroke-linecap:round}
 .upgrade-content{position:relative;z-index:1}
-.upgrade-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+.upgrade-label{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
 .upgrade-title{font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.3}
 .upgrade-title em{font-style:normal;color:#5dd8e6}
 .upgrade-desc{font-size:13px;color:rgba(255,255,255,.62);margin-bottom:18px;line-height:1.6}
@@ -138,7 +138,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* MOBILE NAV */
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--ink);border-top:1px solid rgba(255,255,255,.07);padding:8px 0 env(safe-area-inset-bottom)}
 .mobile-nav-items{display:flex;justify-content:space-around}
-.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;font-size:10px;font-weight:500;color:#8fa9af;cursor:pointer;border:none;background:none;transition:color .2s;text-decoration:none}
+.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;font-size:12px;font-weight:500;color:#8fa9af;cursor:pointer;border:none;background:none;transition:color .2s;text-decoration:none}
 .mn-item.active{color:var(--primary)}
 .mn-icon{font-size:20px}
 
@@ -177,8 +177,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
     <div class="topbar-right">
       <div class="lang-toggle">
-        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
+        <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
       </div>
       <div class="search-wrap">
         <span class="search-icon">&#x1F50D;</span>
@@ -316,7 +316,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 </nav>
 
 <script>
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
 function setLang(l){
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   document.getElementById('btn-es').classList.toggle('active',l==='es');
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');

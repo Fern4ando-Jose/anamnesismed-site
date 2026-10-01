@@ -14,7 +14,7 @@
 /* Idioma antes da 1ª pintura (evita flash ES→PT) + esconde a tela de seleção
    quando a página abre direto numa HC (deep-link novo/motivo/hc). */
 (function(){try{
-  var l=localStorage.getItem('am-lang'); if(l)document.documentElement.setAttribute('data-lang',l);
+  var l=localStorage.getItem('am-lang'); if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}
   var p=new URLSearchParams(location.search);
   if(p.get('novo')||p.get('motivo')||p.get('hc'))document.documentElement.classList.add('deep-hc');
 }catch(e){}})();
@@ -1778,7 +1778,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 <script src="anamnesismed-guide-es.js?v=4b87efd7"></script>
 <script>
 // ── LANG ──────────────────────────────────────────────
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
 function setLang(l){
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   var _slEs = document.getElementById('slang-es'); if(_slEs) _slEs.classList.toggle('active',l==='es');
   var _slPt = document.getElementById('slang-pt'); if(_slPt) _slPt.classList.toggle('active',l==='pt');

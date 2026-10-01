@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
 <script src="am-icons.js?v=f6cfe7c9"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <title>Mnemônicas & Manobras — AnamnesisMed</title>
@@ -38,8 +38,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14p
 .topbar-back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;cursor:pointer;padding:7px 13px;border-radius:6px;border:1.5px solid var(--line-md);background:var(--bg-card)}
 .topbar-back:hover{color:var(--primary);border-color:var(--primary)}
 .lang-switch{display:flex;gap:4px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:8px;padding:3px}
-.lang-btn{font-size:11px;font-weight:700;padding:5px 12px;border-radius:5px;cursor:pointer;color:var(--muted);user-select:none}
-.lang-btn.active{background:var(--primary);color:#fff}
+.lang-btn{font-size:12px;font-weight:700;padding:5px 12px;border-radius:5px;cursor:pointer;color:var(--muted);user-select:none;border:0;background:transparent;font-family:inherit}
+.lang-btn.active{background:var(--primary-dark);color:#fff}
 h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
 .subtitle{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
 .search-box{width:100%;padding:11px 16px;border-radius:10px;border:1.5px solid var(--line-md);background:var(--bg-card);font-size:13px;margin-bottom:8px}
@@ -104,8 +104,8 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
       <a class="topbar-back" href="anamnesismed-dashboard.html"><span class="pt">← Voltar</span><span class="es">← Volver</span></a>
     </div>
     <div class="lang-switch">
-      <div class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</div>
-      <div class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</div>
+      <button type="button" class="lang-btn" data-lang="pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn active" data-lang="es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
     </div>
   </div>
 
@@ -123,7 +123,9 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 
 <script>
 var LANG = 'es';
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
 function setLang(l){
+  amLangA11y(l);
   LANG = l;
   document.body.classList.toggle('lang-es', l==='es');
   document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('active', b.dataset.lang===l)});
