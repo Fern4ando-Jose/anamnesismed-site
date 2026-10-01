@@ -365,6 +365,7 @@ AM.motivo("trauma-abdominal", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "ABCDE",
         "name": "Atención inicial al trauma (ATLS)",
         "rows": [
           [
@@ -390,6 +391,7 @@ AM.motivo("trauma-abdominal", {
         ]
       },
       {
+        "kw": "CERRADO x PENETRANTE",
         "name": "Mecanismos de trauma",
         "rows": [
           [

@@ -6,12 +6,19 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
-<script src="am-icons.js?v=f6cfe7c9"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
+<script src="am-icons.js?v=3383aef7"></script>
 <title>AnamnesísMed — Inicio</title>
+<meta name="description" content="Tu panel de AnamnesísMed: historias clínicas recientes, acceso rápido por especialidad y actividad.">
+<meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -21,48 +28,51 @@
   --bg:#EAF0F2;--bg-card:#FFFFFF;--ink:#0A1A24;
   --primary:#0FA3B1;--primary-dark:#0B7C88;--secondary:#0d9488;
   --accent:#FF5C49;--pulse:#FF5C49;--signal:#15B27A;
-  --muted:#5A7079;--line:rgba(10,26,36,.09);--line-md:rgba(10,26,36,.16);
+  --muted:#4E636C;--line:rgba(10,26,36,.09);--line-md:rgba(10,26,36,.16);
   --serif:'Space Grotesk',system-ui,sans-serif;
   --sans:'Inter',system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,monospace;
-  --sidebar-w:240px
+  --sidebar-w:240px;--teal-on-dark:#5ED6E3
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex;-webkit-font-smoothing:antialiased}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;display:flex;-webkit-font-smoothing:antialiased}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
-.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
-.hamburger{display:none;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink);padding:4px;flex-shrink:0}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.hamburger{display:none;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink);padding:4px;flex-shrink:0;min-width:44px;min-height:44px;margin-left:-8px}
 
 /* TOPBAR */
-.topbar{background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
+.topbar{background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
 .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
 .topbar-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
-.topbar-subtitle{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.2px}
+.topbar-subtitle{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.2px}
 .topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .lang-toggle{display:flex;background:rgba(10,26,36,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line);font-family:var(--mono);font-weight:600}
-.lang-btn{padding:5px 11px;font-size:11px;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:.2s}
+.lang-btn{padding:5px 11px;font-size:12px;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:.2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+.lang-btn:focus-visible{outline:2px solid var(--primary-dark);outline-offset:-3px}.lang-btn.active:focus-visible{outline-color:#5ED6E3}
 .search-wrap{position:relative}
-.search-input{padding:9px 12px 9px 34px;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);outline:none;width:200px;transition:.2s;font-family:var(--sans)}
-.search-input:focus{border-color:var(--primary);width:240px;box-shadow:0 0 0 3px rgba(15,163,177,.12)}
+.search-input{padding:9px 12px 9px 34px;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);width:200px;transition:.2s;font-family:var(--sans)}
+.search-input:focus{border-color:var(--primary-dark);width:240px;box-shadow:0 0 0 3px rgba(15,163,177,.12)}
 .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted)}
-.btn-new{padding:9px 17px;font-family:var(--serif);font-size:14px;font-weight:600;color:#fff;background:var(--primary);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.18s;text-decoration:none;box-shadow:0 6px 16px rgba(15,163,177,.26)}
-.btn-new:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-new{padding:9px 17px;font-family:var(--serif);font-size:14px;font-weight:600;color:#fff;background:var(--primary-dark);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.18s;text-decoration:none;box-shadow:0 6px 16px rgba(15,163,177,.26)}
+.btn-new:hover{background:#096873;transform:translateY(-1px)}
 
 .content{padding:24px 28px 48px;flex:1;max-width:1120px;width:100%}
 
 /* HERO + ECG */
 .hero{position:relative;background:var(--ink);border-radius:22px;padding:28px 30px;color:#fff;overflow:hidden;margin-bottom:22px}
-.hero-ekg{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+.hero-ekg{position:absolute;left:0;right:0;bottom:0;width:100%;height:42%;opacity:.32;pointer-events:none}
+/* o conteúdo fica sempre ACIMA da linha do ECG (antes ela cortava o nome e o texto do hero) */
+.hero > *:not(.hero-ekg){position:relative;z-index:1}
 .hero-ekg polyline{fill:none;stroke:var(--pulse);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1500;stroke-dashoffset:1500;animation:ekg 2.4s ease forwards}
 @keyframes ekg{to{stroke-dashoffset:0}}
-.hero-eye{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--primary);text-transform:uppercase;position:relative}
+.hero-eye{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--teal-on-dark);text-transform:uppercase;position:relative}
 .hero-greet{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.6px;margin:8px 0 6px;position:relative;color:#fff}
 .hero-sub{color:#9fc0c6;font-size:14px;position:relative;max-width:460px;line-height:1.5}
-.hero-cta{display:inline-flex;align-items:center;gap:7px;margin-top:18px;position:relative;background:var(--primary);color:#fff;font-family:var(--serif);font-weight:600;font-size:14px;padding:11px 18px;border-radius:11px;text-decoration:none;transition:.18s}
-.hero-cta:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.hero-cta{display:inline-flex;align-items:center;gap:7px;margin-top:18px;position:relative;background:var(--primary-dark);color:#fff;font-family:var(--serif);font-weight:600;font-size:14px;padding:11px 18px;border-radius:11px;text-decoration:none;transition:.18s}
+.hero-cta:hover{background:#096873;transform:translateY(-1px)}
 
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
@@ -71,12 +81,25 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .stat-label{font-size:12px;font-weight:500;color:var(--muted)}
 .stat-icon{width:30px;height:30px;border-radius:9px;background:rgba(15,163,177,.1);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:15px}
 .stat-value{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink);line-height:1}
-.stat-delta{font-size:12px;color:var(--secondary)}
+.stat-delta{font-size:12px;color:#0B6E64}
+.stat-delta a{display:inline-block;padding:12px 8px 12px 0;margin:-12px 0;min-height:40px;box-sizing:border-box}
+.stat-delta.up{color:#C23A26;font-weight:600}
+/* plano real do perfil */
+#stat-plano-card .pl{display:none}#stat-plano-card[data-plano="trial"] .pl-trial,#stat-plano-card[data-plano="pro"] .pl-pro,#stat-plano-card[data-plano="estudante"] .pl-estudante{display:inline}#stat-plano-card[data-plano="pro"] .pl-up{display:none}
+/* estados vazio/erro da lista de HCs */
+.empty-state{background:var(--bg-card);border:1px dashed var(--line-md);border-radius:16px;padding:32px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.empty-icon{font-size:30px;line-height:1;margin-bottom:6px}
+.empty-title{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink)}
+.empty-sub{font-size:13px;color:var(--muted);line-height:1.5;max-width:340px}
+.empty-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:12px;padding:0 20px;font-family:var(--serif);font-size:14px;font-weight:600;color:#fff;background:var(--primary-dark);border:none;border-radius:10px;cursor:pointer;text-decoration:none;transition:.18s}
+.empty-btn:hover{background:#096873;transform:translateY(-1px)}
+.empty-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.error-state{border-color:rgba(194,58,38,.35)}/* alvo de toque 44px sem alterar o layout */
 
 /* SECTION HEADERS */
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .section-title-sm{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
-.view-all{font-size:13px;font-weight:500;color:var(--primary);text-decoration:none;cursor:pointer}
+.view-all{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:500;color:#0A6A75;text-decoration:none;cursor:pointer}
 .view-all:hover{text-decoration:underline}
 
 /* HC LIST */
@@ -86,17 +109,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .hc-color{width:4px;height:46px;border-radius:4px;flex-shrink:0;background:var(--primary)}
 .hc-info{flex:1;min-width:0}
 .hc-name{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hc-meta{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:9px}
+.hc-meta{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:9px}
 .hc-dot{width:3px;height:3px;border-radius:50%;background:var(--line-md)}
-.hc-status{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
-.hc-status.complete{background:rgba(21,178,122,.13);color:#0e8a5e}
+.hc-status{font-family:var(--mono);font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px}
+.hc-status.complete{background:rgba(21,178,122,.13);color:#0B6E64}
 .hc-status.draft{background:rgba(255,92,73,.13);color:#c23a26}
 .hc-actions{display:flex;gap:8px;flex-shrink:0;align-items:center}
 .hc-btn{height:32px;border-radius:9px;border:1px solid var(--line);background:transparent;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;transition:.18s;color:var(--muted);white-space:nowrap}
 .hc-btn svg{display:block;flex-shrink:0}
 .hc-btn:hover{background:var(--bg);border-color:var(--line-md);color:var(--ink)}
-.hc-btn-edit{border-color:rgba(15,163,177,.30);background:rgba(15,163,177,.08);color:#0c7c87}
-.hc-btn-edit:hover{background:rgba(15,163,177,.16);border-color:rgba(15,163,177,.45);color:#0FA3B1}
+.hc-btn-edit{border-color:rgba(15,163,177,.30);background:rgba(15,163,177,.08);color:#0A6A75}
+.hc-btn-edit:hover{background:rgba(15,163,177,.16);border-color:rgba(15,163,177,.45);color:#075661}
 .hc-btn-del{border-color:rgba(194,58,38,.25);background:rgba(255,92,73,.07);color:#c23a26}
 .hc-btn-del:hover{background:rgba(255,92,73,.14);border-color:rgba(194,58,38,.40);color:#c23a26}
 
@@ -108,7 +131,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .quick-icon{width:42px;height:42px;border-radius:12px;background:var(--cb,rgba(15,163,177,.12));color:var(--c,var(--primary));display:flex;align-items:center;justify-content:center;font-size:20px}
 .quick-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink)}
 .quick-desc{font-size:12px;color:var(--muted);line-height:1.5;flex:1}
-.quick-count{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--c,var(--primary));margin-top:auto}
+.quick-count{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted);margin-top:auto}
 
 /* BOTTOM GRID */
 .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -119,31 +142,34 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .act-dot.created{background:var(--primary)}.act-dot.edited{background:var(--accent)}.act-dot.exported{background:var(--signal)}
 .act-text{font-size:13px;color:var(--muted);line-height:1.5}
 .act-text strong{color:var(--ink);font-weight:600}
-.act-time{font-family:var(--mono);font-size:10px;color:rgba(90,112,121,.6)}
+.act-time{font-family:var(--mono);font-size:12px;color:var(--muted)}
 
 /* UPGRADE */
 .upgrade-panel{background:var(--ink);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;position:relative;overflow:hidden}
 .upgrade-panel .ekg{position:absolute;inset:auto 0 0 0;width:100%;height:60px;opacity:.4}
 .upgrade-panel .ekg polyline{fill:none;stroke:var(--pulse);stroke-width:2;stroke-linecap:round}
 .upgrade-content{position:relative;z-index:1}
-.upgrade-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+.upgrade-label{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-on-dark);margin-bottom:8px}
 .upgrade-title{font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.3}
 .upgrade-title em{font-style:normal;color:#5dd8e6}
 .upgrade-desc{font-size:13px;color:rgba(255,255,255,.62);margin-bottom:18px;line-height:1.6}
 .upgrade-price{font-family:var(--mono);font-size:26px;font-weight:600;color:#fff;margin-bottom:16px}
 .upgrade-price span{font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.5);font-weight:400}
-.btn-upgrade{display:block;text-align:center;padding:11px;font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);background:#fff;border:none;border-radius:10px;cursor:pointer;text-decoration:none;transition:.18s}
+.btn-upgrade{display:block;text-align:center;padding:13px 11px;min-height:44px;font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);background:#fff;border:none;border-radius:10px;cursor:pointer;text-decoration:none;transition:.18s}
 .btn-upgrade:hover{background:#e9f6f8;transform:translateY(-1px)}
 
 /* MOBILE NAV */
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--ink);border-top:1px solid rgba(255,255,255,.07);padding:8px 0 env(safe-area-inset-bottom)}
 .mobile-nav-items{display:flex;justify-content:space-around}
-.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;font-size:10px;font-weight:500;color:#8fa9af;cursor:pointer;border:none;background:none;transition:color .2s;text-decoration:none}
-.mn-item.active{color:var(--primary)}
+.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;font-size:12px;font-weight:500;color:#8fa9af;cursor:pointer;border:none;background:none;transition:color .2s;text-decoration:none}
+.mn-item.active{color:var(--teal-on-dark)}
 .mn-icon{font-size:20px}
 
 /* RESPONSIVE */
-@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr)}.bottom-grid{grid-template-columns:1fr}}
+@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+/* tablet: aproveita a largura (2x2 nos atalhos; atividade e upgrade lado a lado) */
+@media(min-width:769px) and (max-width:1100px){.quick-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.bottom-grid{grid-template-columns:1fr}}
 @media(max-width:768px){
   .main{margin-left:0}.mobile-nav{display:block}.hamburger{display:flex}
   .content{padding:16px 14px 90px}.topbar{padding:0 14px;height:56px}
@@ -151,38 +177,48 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .search-wrap{display:none}.btn-new{padding:8px 13px;font-size:13px}
   .stats-row{grid-template-columns:1fr 1fr;gap:10px}.stat-value{font-size:22px}
   .quick-grid{grid-template-columns:1fr}
+  .topbar .btn-new{display:none}/* "Nova HC" já está no hero e na barra inferior */
 }
 @media(max-width:480px){
   .topbar .btn-new span.pt,.topbar .btn-new span.es{display:none}
-  .hc-actions{display:none}.stats-row{grid-template-columns:1fr 1fr}
+  .topbar-subtitle{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hc-status{display:none}
+  .hc-actions{gap:4px}.hc-btn{width:44px;height:44px;padding:0;border-radius:11px}.hc-btn span{display:none!important}
+  .hc-card{padding:10px 8px 10px 14px;gap:10px}
+  .stats-row{grid-template-columns:1fr 1fr}
 }
 </style>
-<link rel="stylesheet" href="sidebar.css?v=20566b6d">
+<link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
+<link rel="stylesheet" href="sidebar.css?v=0c39aa1b">
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <div id="sidebar-root"></div>
 
-<div class="main">
+<main class="main" id="main" tabindex="-1">
 
   <header class="topbar">
     <div class="topbar-left">
       <button class="hamburger" id="menu-btn" onclick="toggleSidebar()" aria-label="Menu"><span data-am-icon="menu" data-am-size="22"></span></button>
       <div>
-        <div class="topbar-title">Inicio</div>
+        <div class="topbar-title"><span class="pt">In&#xED;cio</span><span class="es">Inicio</span></div>
         <div class="topbar-subtitle pt" id="page-sub">&#x2014;</div>
         <div class="topbar-subtitle es" id="page-sub-es">&#x2014;</div>
       </div>
     </div>
     <div class="topbar-right">
       <div class="lang-toggle">
-        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
       </div>
       <div class="search-wrap">
         <span class="search-icon">&#x1F50D;</span>
-        <input type="search" class="search-input" placeholder="Buscar HCs..." id="search">
+        <input type="search" class="search-input" placeholder="Buscar HCs..." id="search" aria-label="Buscar HCs">
       </div>
+      <button type="button" class="pwa-btn pwa-ui" data-pwa-install hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg><span class="pt">Instalar app</span><span class="es">Instalar la app</span></button>
       <a href="anamnesismed-app.html?novo=1" class="btn-new"><span>+</span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
     </div>
   </header>
@@ -199,7 +235,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <h1 class="hero-greet pt" id="page-title">Ol&#xE1;</h1>
       <h1 class="hero-greet es" id="page-title-es">Hola</h1>
       <p class="hero-sub pt">Cada hist&#xF3;ria cl&#xED;nica completa, guiada passo a passo. Comece uma nova ou continue de onde parou.</p>
-      <p class="hero-sub es">Cada historia cl&#xED;nica completa, guiada paso a paso. Empez&#xE1; una nueva o segu&#xED; donde la dejaste.</p>
+      <p class="hero-sub es">Cada historia cl&#xED;nica completa, guiada paso a paso. Empieza una nueva o sigue donde la dejaste.</p>
       <a href="anamnesismed-app.html?novo=1" class="hero-cta"><span>+</span><span class="pt">Nova HC</span><span class="es">Nueva HC</span></a>
     </section>
 
@@ -220,12 +256,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
         <div class="stat-value" id="stat-motivos-value">&#x2014;</div>
         <div class="stat-delta pt" id="stat-motivos-delta-pt"></div><div class="stat-delta es" id="stat-motivos-delta-es"></div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" id="stat-plano-card" data-plano="trial">
         <div class="stat-card-top"><span class="stat-label pt">Plano</span><span class="stat-label es">Plan</span><span class="stat-icon" style="background:rgba(255,92,73,.12);color:var(--accent)" data-am-icon="sparkles" data-am-size="16"></span></div>
-        <div class="stat-value" style="font-family:var(--serif);font-size:20px;margin-top:3px"><span class="pt">Teste</span><span class="es">Prueba</span></div>
-        <div class="stat-delta" style="color:var(--accent)">
-          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="pt">Upgrade &#x2192;</a>
-          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none" class="es">Upgrade &#x2192;</a>
+        <div class="stat-value" style="font-family:var(--serif);font-size:20px;margin-top:3px">
+          <span class="pt"><span class="pl pl-trial">Teste</span><span class="pl pl-pro">Pro</span><span class="pl pl-estudante">Estudante</span></span>
+          <span class="es"><span class="pl pl-trial">Prueba</span><span class="pl pl-pro">Pro</span><span class="pl pl-estudante">Estudiante</span></span>
+        </div>
+        <div class="stat-delta up pl-up">
+          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;min-height:44px" class="pt">Upgrade &#x2192;</a>
+          <a href="anamnesismed-landing.html#pricing" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;min-height:44px" class="es">Upgrade &#x2192;</a>
         </div>
       </div>
     </div>
@@ -303,7 +342,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
 
   </div>
-</div>
+</main>
 
 <nav class="mobile-nav">
   <div class="mobile-nav-items">
@@ -315,12 +354,37 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 </nav>
 
 <script>
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Inicio", "d": "Tu panel de AnamnesísMed: historias clínicas recientes, acceso rápido por especialidad y actividad."}, "pt": {"t": "AnamnesísMed — Início", "d": "Seu painel do AnamnesísMed: histórias clínicas recentes, acesso rápido por especialidade e atividade."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(l){
+  amSetMeta(l);
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   document.getElementById('btn-es').classList.toggle('active',l==='es');
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');
+  var _s=document.getElementById('search'); if(_s){ _s.setAttribute('aria-label',l==='pt'?'Buscar histórias clínicas':'Buscar historias clínicas'); }
   try{localStorage.setItem('am-lang',l)}catch(e){}
 }
+/* Busca de HCs: filtra a lista já carregada (window.__hcsAll) por motivo/paciente */
+(function(){
+  var t;
+  document.addEventListener('input',function(e){
+    if(!e.target||e.target.id!=='search')return;
+    clearTimeout(t);
+    t=setTimeout(function(){
+      var q=(e.target.value||'').trim().toLowerCase();
+      var all=window.__hcsAll||[];
+      var lim=(window.currentDashView==='hcs')?100:5;
+      if(!q){if(window.uiLoadRecentHCs)window.uiLoadRecentHCs(lim,all);return}
+      var hd=document.getElementById('recent-hcs-head');if(hd){var r=hd.getBoundingClientRect();if(r.top>innerHeight*.6)window.scrollTo({top:scrollY+r.top-80,behavior:'smooth'})}
+      var res=all.filter(function(h){var n=(h.dados&&h.dados.campos&&h.dados.campos['dp-nome'])||'';return ((h.motivo||'')+' '+(h.motivo_id||'')+' '+n).toLowerCase().indexOf(q)>-1});
+      if(res.length){window.uiLoadRecentHCs(100,res);return}
+      var c=document.querySelector('.hc-list');
+      if(c)c.innerHTML='<div class="empty-state"><div class="empty-title pt">Nenhuma HC encontrada</div><div class="empty-title es">Ninguna HC encontrada</div></div>';
+    },150);
+  });
+})();
 function encerrarSessao(){
   if(window.authLogout) window.authLogout();
   else window.location.href = 'anamnesismed-auth.html';
@@ -369,8 +433,9 @@ function setView(v){
   document.getElementById('page-sub-es').textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js?v=bb827873"></script>
-<script src="sidebar.js?v=f6cd0d5b"></script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
+<script src="supabase-integration.js?v=628b1cd6"></script>
+<script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

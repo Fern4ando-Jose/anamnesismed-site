@@ -332,6 +332,7 @@ AM.motivo("lombalgia", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Signos de alarma (red flags) en la lumbalgia",
         "rows": [
           [

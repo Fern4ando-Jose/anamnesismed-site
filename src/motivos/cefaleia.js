@@ -452,6 +452,7 @@ AM.motivo("cefaleia", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "SNOOP4",
         "name": "Signos de alarma — cefalea secundaria",
         "rows": [
           [
@@ -489,6 +490,7 @@ AM.motivo("cefaleia", {
         ]
       },
       {
+        "kw": "",
         "name": "Criterios de Migraña",
         "rows": [
           [

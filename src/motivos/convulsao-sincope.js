@@ -332,6 +332,7 @@ AM.motivo("convulsao-sincope", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "SÍNCOPE x CONVULSIÓN",
         "name": "Diferenciación entre síncope y crisis convulsiva",
         "rows": [
           [
@@ -367,6 +368,7 @@ AM.motivo("convulsao-sincope", {
         ]
       },
       {
+        "kw": "CAUSAS DE SÍNCOPE",
         "name": "Clasificación etiológica del síncope (cardíaco / reflejo / ortostático)",
         "rows": [
           [

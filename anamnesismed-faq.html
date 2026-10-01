@@ -6,12 +6,20 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AnamnesísMed — Perguntas Frequentes (FAQ)</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AnamnesísMed — Preguntas Frecuentes (FAQ)</title>
+<meta name="description" content="Preguntas frecuentes sobre AnamnesísMed: planes, privacidad, uso de la historia clínica y soporte.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -19,11 +27,11 @@
   --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
   --secondary:#0d9488;--accent:#f59e0b;--danger:#c0392b;
   --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
+  --serif:'Space Grotesk',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
   --r:10px;--r-lg:16px
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;min-height:100dvh}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
 
@@ -34,30 +42,33 @@ nav{
   background:rgba(240,244,248,0.94);backdrop-filter:blur(16px);
   border-bottom:1px solid var(--line)
 }
-.nav-logo{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);text-decoration:none}
+.nav-logo{display:inline-flex;align-items:center;min-height:44px;font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);text-decoration:none}
 .nav-logo span{color:var(--primary)}
 .nav-right{display:flex;align-items:center;gap:12px}
 .lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
-.lang-btn{padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn{padding:4px 10px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+.lang-btn:focus-visible{outline:2px solid var(--primary-dark);outline-offset:-3px}.lang-btn.active:focus-visible{outline-color:#5ED6E3}
 
 .page-wrap{max-width:760px;margin:0 auto;padding:40px 32px 80px}
 
 .doc-header{text-align:center;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--line)}
-.doc-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(14,116,144,.09);border:1px solid rgba(14,116,144,.2);color:var(--primary);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:16px}
+.doc-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(14,116,144,.09);border:1px solid rgba(14,116,144,.2);color:var(--primary-dark);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:16px}
 .doc-title{font-family:var(--serif);font-size:clamp(24px,3vw,36px);font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.2}
 .doc-title em{font-style:italic;color:var(--primary)}
 .doc-subtitle{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto;line-height:1.7}
 
 .faq-group{margin-bottom:32px}
-.faq-group-title{font-family:var(--serif);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--secondary);margin-bottom:14px}
+.faq-group-title{font-family:var(--serif);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0A6A75;margin-bottom:14px}
 
 .faq-item{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
 .faq-item.open{border-color:var(--line-md)}
+.faq-q:focus-visible{outline:3px solid var(--primary);outline-offset:-3px;border-radius:var(--r-lg)}
 .faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;cursor:pointer;font-weight:700;font-size:15.5px;color:var(--ink);font-family:var(--sans)}
 .faq-q-icon{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(14,116,144,.10);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;transition:transform .25s}
 .faq-item.open .faq-q-icon{transform:rotate(45deg)}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-a{max-height:0;overflow:hidden;visibility:hidden;transition:max-height .3s ease,visibility 0s .3s}
+.faq-item.open .faq-a{visibility:visible;transition:max-height .3s ease}
 .faq-a-inner{padding:0 22px 20px;font-size:14.5px;color:var(--muted);line-height:1.75}
 .faq-a-inner strong{color:var(--ink)}
 .faq-a-inner a{color:var(--primary);text-decoration:none}
@@ -74,20 +85,22 @@ nav{
   .page-wrap{padding:28px 20px 60px}
 }
 </style>
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <nav>
   <a href="anamnesismed-landing.html" class="nav-logo">Anamnesis<span>Med</span></a>
   <div class="nav-right">
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
     </div>
   </div>
 </nav>
 
-<div class="page-wrap">
+<main class="page-wrap" id="main" tabindex="-1">
 
   <div class="doc-header">
     <div class="doc-badge pt">💬 Central de Ajuda</div>
@@ -233,27 +246,39 @@ nav{
     <a href="mailto:contato@anamnesismed.com" class="cta-btn es">✉ Enviar correo</a>
   </div>
 
-</div>
+</main>
 
 <script>
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Preguntas Frecuentes (FAQ)", "d": "Preguntas frecuentes sobre AnamnesísMed: planes, privacidad, uso de la historia clínica y soporte."}, "pt": {"t": "AnamnesísMed — Perguntas Frequentes (FAQ)", "d": "Perguntas frequentes sobre o AnamnesísMed: planos, privacidade, uso da história clínica e suporte."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(l){
+  amSetMeta(l);
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   document.getElementById('btn-es').classList.toggle('active',l==='es');
   document.getElementById('btn-pt').classList.toggle('active',l==='pt');
   try{localStorage.setItem('am-lang',l)}catch(e){}
+  if(typeof faqFit==='function')faqFit();
+}
+function faqFit(){document.querySelectorAll('.faq-item.open .faq-a').forEach(function(a){a.style.maxHeight=a.scrollHeight+'px'})}
+function faqToggle(q){
+  var item=q.closest('.faq-item');
+  var ans=item.querySelector('.faq-a');
+  var open=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(o){
+    if(o!==item){o.classList.remove('open');o.querySelector('.faq-a').style.maxHeight=null;var oq=o.querySelector('.faq-q');if(oq)oq.setAttribute('aria-expanded','false')}
+  });
+  item.classList.toggle('open',!open);
+  q.setAttribute('aria-expanded',open?'false':'true');
+  ans.style.maxHeight=open?null:(ans.scrollHeight+'px');
 }
 document.querySelectorAll('.faq-q').forEach(function(q){
-  q.addEventListener('click',function(){
-    var item=q.closest('.faq-item');
-    var ans=item.querySelector('.faq-a');
-    var open=item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(function(o){
-      if(o!==item){o.classList.remove('open');o.querySelector('.faq-a').style.maxHeight=null}
-    });
-    item.classList.toggle('open',!open);
-    ans.style.maxHeight=open?null:(ans.scrollHeight+'px');
-  });
+  q.setAttribute('role','button');q.setAttribute('tabindex','0');q.setAttribute('aria-expanded','false');
+  q.addEventListener('click',function(){faqToggle(q)});
+  q.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();faqToggle(q)}});
 });
+window.addEventListener('resize',faqFit);
 (function(){var s;try{s=localStorage.getItem('am-lang')}catch(e){}setLang(s||'es');})();
 </script>
 </body>

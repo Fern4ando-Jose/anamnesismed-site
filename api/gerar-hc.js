@@ -27,6 +27,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
+const { iniciaRota, autenticar, devolverCota, aplicaLimite, descreveErro } = require('./_comum');
 
 const MODEL = 'claude-haiku-4-5';
 const MAX_TOKENS = 1800;
@@ -103,25 +104,49 @@ function buildSystemPrompt(pt) {
 var LIM = { relato: 8000, campo: 1000, nome: 200, motivos: 10, respostas: 60 };
 function clip(s, max) { s = (s == null ? '' : String(s)); return s.length > max ? s.slice(0, max) : s; }
 
+// Sanitização de tipos: o body vem do cliente (não confiável). Tudo que entra no
+// prompt passa por aqui — tipo errado vira '' em vez de estourar 500 ou injetar objeto.
+function txt(v, max) { return (typeof v === 'string' || typeof v === 'number') ? clip(String(v).trim(), max) : ''; }
+function ordemSegura(v) { var n = parseInt(v, 10); return (isFinite(n) && n > 0 && n < 100) ? String(n) : ''; }
+function sanitizaDemografia(d) {
+  if (!d || typeof d !== 'object' || Array.isArray(d)) return {};
+  var sx = d.sexo === 'M' || d.sexo === 'F' ? d.sexo : txt(d.sexo, 20);
+  return { idade: txt(d.idade, 20), sexo: sx, tempoEvolucao: txt(d.tempoEvolucao, LIM.campo) };
+}
+function sanitizaMotivos(arr) {
+  if (!Array.isArray(arr)) return [];
+  return arr.slice(0, LIM.motivos).filter(function (m) { return m && typeof m === 'object'; }).map(function (m) {
+    var resp = Array.isArray(m.respostas) ? m.respostas.slice(0, LIM.respostas) : [];
+    return {
+      ordem: ordemSegura(m.ordem),
+      nome: txt(m.nome, LIM.nome),
+      respostas: resp.filter(function (r) { return r && typeof r === 'object'; }).map(function (r) {
+        return { pergunta: txt(r.pergunta, LIM.campo), resposta: txt(r.resposta, LIM.campo) };
+      }),
+    };
+  });
+}
+
+// Recebe demografia/motivos JÁ sanitizados (sanitizaDemografia/sanitizaMotivos).
 function buildUserMessage(pt, demografia, motivos, relatoLivre) {
   var L = [];
   L.push(pt ? '## Dados do paciente' : '## Datos del paciente');
   if (demografia) {
     if (demografia.idade) L.push((pt ? 'Idade: ' : 'Edad: ') + demografia.idade);
     if (demografia.sexo) {
-      var sx = demografia.sexo === 'M' ? (pt ? 'masculino' : 'masculino')
+      var sx = demografia.sexo === 'M' ? 'masculino'
              : demografia.sexo === 'F' ? (pt ? 'feminino' : 'femenino') : demografia.sexo;
-      L.push((pt ? 'Sexo: ' : 'Sexo: ') + sx);
+      L.push('Sexo: ' + sx);
     }
     if (demografia.tempoEvolucao) L.push((pt ? 'Tempo de evolução: ' : 'Tiempo de evolución: ') + demografia.tempoEvolucao);
   }
   L.push('');
   L.push(pt ? '## Motivos e respostas do guia (AEA)' : '## Motivos y respuestas de la guía (AEA)');
-  (motivos || []).slice(0, LIM.motivos).forEach(function (m) {
+  motivos.forEach(function (m) {
     L.push('');
-    L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + clip(m.nome, LIM.nome));
-    (m.respostas || []).slice(0, LIM.respostas).forEach(function (r) {
-      if (r && r.pergunta && r.resposta) L.push('- ' + clip(r.pergunta, LIM.campo) + ': ' + clip(r.resposta, LIM.campo));
+    L.push('Motivo ' + m.ordem + ': ' + m.nome);
+    m.respostas.forEach(function (r) {
+      if (r.pergunta && r.resposta) L.push('- ' + r.pergunta + ': ' + r.resposta);
     });
   });
   if (relatoLivre && String(relatoLivre).trim()) {
@@ -137,16 +162,16 @@ function buildUserMessage(pt, demografia, motivos, relatoLivre) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  // CORS restrito, no-store, preflight e método (centralizado em _comum.js).
+  if (iniciaRota(req, res, 'POST')) return;
 
-  var body = req.body || {};
+  var body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};
   var lang = body.lang === 'es' ? 'es' : 'pt';
   var pt = lang !== 'es';
   var msg = function (p, e) { return pt ? p : e; };
-  var motivos = Array.isArray(body.motivos) ? body.motivos : [];
-  var relatoLivre = typeof body.relatoLivre === 'string' ? body.relatoLivre : '';
+  var motivos = sanitizaMotivos(body.motivos);
+  var demografia = sanitizaDemografia(body.demografia);
+  var relatoLivre = typeof body.relatoLivre === 'string' ? clip(body.relatoLivre, LIM.relato) : '';
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY não configurada no servidor' });
@@ -156,61 +181,49 @@ module.exports = async (req, res) => {
   }
 
   // 1) Autenticação — token do Supabase no header Authorization (bloqueia anônimo)
-  var authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
-  var token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
-  if (!token) return res.status(401).json({ error: msg('Não autenticado', 'No autenticado') });
-
   var sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  var auth = await autenticar(sbAdmin, req, msg);
+  if (auth.error) return res.status(auth.status).json({ error: auth.error });
+  var userId = auth.user.id;
 
-  var userId = null;
-  try {
-    var au = await sbAdmin.auth.getUser(token);
-    if (au.error || !au.data || !au.data.user) return res.status(401).json({ error: msg('Sessão inválida', 'Sesión inválida') });
-    userId = au.data.user.id;
-  } catch (e) {
-    return res.status(401).json({ error: msg('Falha ao validar sessão', 'Error al validar la sesión') });
-  }
-
-  // 2) Limite diário por usuário — FAIL-CLOSED (controle de custo da API paga).
-  // Não há gate de plano: qualquer usuário logado (trial ou pro) gera HC por IA.
-  // Se a tabela de uso não existir ou falhar, devolvemos 503 e NÃO chamamos o modelo
-  // (o front cai no motor de narrativa local — o usuário ainda recebe a HC).
-  var usageUnavailable = function () {
-    return res.status(503).json({ error: msg('Serviço de IA temporariamente indisponível', 'Servicio de IA temporalmente no disponible'), code: 'usage_unavailable' });
-  };
-  try {
-    var dia = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
-    var sel = await sbAdmin.from('gerar_hc_usage').select('count').eq('user_id', userId).eq('dia', dia).single();
-    if (sel.error && sel.error.code !== 'PGRST116') {
-      // PGRST116 = nenhuma linha (1º uso do dia, esperado). Qualquer outro erro
-      // (inclui tabela ausente) → fail-closed para não recriar o furo de custo.
-      console.error('[ALERTA custo] gerar_hc_usage select falhou (fail-closed):', sel.error.message || sel.error.code);
-      return usageUnavailable();
-    }
-    var usados = sel.data && typeof sel.data.count === 'number' ? sel.data.count : 0;
-    if (usados >= DAILY_LIMIT) {
-      return res.status(429).json({ error: msg('Limite diário de gerações de HC atingido. Tente novamente amanhã.', 'Límite diario de generaciones de HC alcanzado. Inténtalo de nuevo mañana.'), code: 'rate_limit' });
-    }
-    var up = await sbAdmin.from('gerar_hc_usage').upsert({ user_id: userId, dia: dia, count: usados + 1 }, { onConflict: 'user_id,dia' });
-    if (up.error) {
-      console.error('[ALERTA custo] gerar_hc_usage upsert falhou (fail-closed):', up.error.message || up.error.code);
-      return usageUnavailable();
-    }
-  } catch (e) {
-    console.error('[ALERTA custo] gerar_hc_usage exceção (fail-closed):', e && e.message ? e.message : e);
-    return usageUnavailable();
-  }
-
+  // 2) Conteúdo mínimo — validado ANTES de descontar a cota (400 não consome limite).
   // Precisa de pelo menos um motivo com alguma resposta OU relato livre preenchido
   var temConteudo = (relatoLivre.trim().length > 0) || motivos.some(function (m) {
-    return m && Array.isArray(m.respostas) && m.respostas.some(function (r) { return r && r.resposta; });
+    return m.respostas.some(function (r) { return r.resposta; });
   });
   if (!temConteudo) {
     return res.status(400).json({ error: pt ? 'Sem respostas suficientes para gerar a HC' : 'Sin respuestas suficientes para generar la HC' });
   }
 
+  // 3a) Rajada curta (6/min) ANTES da cota diária: disparo em loop não consome a cota do dia nem chama o
+  // modelo. Fail-closed (503 se `consumir_limite` não existir — migration 2026-10-03).
+  if (!(await aplicaLimite(res, sbAdmin, userId, 'gerar-hc-rajada'))) return;
+
+  // 3) Limite diário por usuário — FAIL-CLOSED e ATÔMICO (controle de custo da API paga).
+  // Não há gate de plano: qualquer usuário logado (trial ou pro) gera HC por IA.
+  // O incremento é feito pela RPC `consumir_cota_ia` (insert ... on conflict do update ...
+  // where count < limite), então requisições concorrentes não furam o teto. Se a RPC não
+  // existir (migration 2026-10-01-uso-atomico-rpc.sql não aplicada) ou falhar, devolvemos
+  // 503 e NÃO chamamos o modelo (o front cai no motor de narrativa local).
+  var usageUnavailable = function () {
+    return res.status(503).json({ error: msg('Serviço de IA temporariamente indisponível', 'Servicio de IA temporalmente no disponible'), code: 'usage_unavailable' });
+  };
   try {
-    var client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    var rpc = await sbAdmin.rpc('consumir_cota_ia', { p_user_id: userId, p_rota: 'gerar-hc', p_limite: DAILY_LIMIT });
+    if (rpc.error || typeof rpc.data !== 'number') {
+      console.error('[ALERTA custo] RPC consumir_cota_ia falhou (fail-closed; migration aplicada?):', rpc.error ? descreveErro(rpc.error) : 'retorno inesperado');
+      return usageUnavailable();
+    }
+    if (rpc.data < 0) {
+      return res.status(429).json({ error: msg('Limite diário de gerações de HC atingido. Tente novamente amanhã.', 'Límite diario de generaciones de HC alcanzado. Inténtalo de nuevo mañana.'), code: 'rate_limit' });
+    }
+  } catch (e) {
+    console.error('[ALERTA custo] consumir_cota_ia exceção (fail-closed):', descreveErro(e));
+    return usageUnavailable();
+  }
+
+  try {
+    var client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 25000, maxRetries: 0 });
     var response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
@@ -221,7 +234,7 @@ module.exports = async (req, res) => {
       // Mantido como estrutura correta: se o system crescer além do mínimo, passa a
       // cachear sozinho, sem nova mudança de código.
       system: [{ type: 'text', text: buildSystemPrompt(pt), cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: buildUserMessage(pt, body.demografia, motivos, relatoLivre) }],
+      messages: [{ role: 'user', content: buildUserMessage(pt, demografia, motivos, relatoLivre) }],
     });
 
     var narrativa = (response.content || [])
@@ -231,6 +244,8 @@ module.exports = async (req, res) => {
       .trim();
 
     if (!narrativa) {
+      // Modelo não entregou texto: o usuário não recebeu o serviço → devolve a cota.
+      await devolverCota(sbAdmin, userId, 'gerar-hc');
       return res.status(502).json({ error: pt ? 'O modelo não retornou texto' : 'El modelo no devolvió texto' });
     }
     // Observabilidade estruturada: uma linha JSON por chamada paga, para a rotina
@@ -245,12 +260,14 @@ module.exports = async (req, res) => {
     }));
     return res.status(200).json({ narrativa: narrativa });
   } catch (err) {
-    console.error('gerar-hc error:', err && err.message ? err.message : err);
+    // Loga só o necessário no servidor (sem dados de paciente) e devolve mensagem FIXA:
+    // err.message do SDK pode conter trechos do request/detalhes internos.
+    console.error('gerar-hc error:', JSON.stringify({ status: (err && err.status) || null, erro: descreveErro(err) }));
+    // A cota foi consumida antes da chamada: se o modelo falhou (erro/timeout/5xx do SDK),
+    // devolve-a — sem mascarar o erro original (devolverCota nunca lança).
+    await devolverCota(sbAdmin, userId, 'gerar-hc');
     var status = (err && err.status) || 500;
-    // Erros 4xx têm mensagem intencional p/ o usuário; 5xx (SDK/infra) → mensagem genérica (não vazar interno).
-    var safeMsg = status < 500 && err && err.message
-      ? err.message
-      : msg('Erro ao gerar a HC', 'Error al generar la HC');
-    return res.status(status).json({ error: safeMsg });
+    if (status === 429) return res.status(503).json({ error: msg('Serviço de IA sobrecarregado. Tente novamente em instantes.', 'Servicio de IA sobrecargado. Inténtalo de nuevo en unos instantes.') });
+    return res.status(502).json({ error: msg('Erro ao gerar a HC', 'Error al generar la HC') });
   }
 };

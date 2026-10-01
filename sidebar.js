@@ -6,8 +6,8 @@
   'use strict';
 
   var HTML = [
-    '<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>',
-    '<aside class="sidebar" id="sidebar">',
+    '<div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>',
+    '<aside class="sidebar" id="sidebar" aria-label="Menu principal / Menú principal">',
     '',
     '  <div class="sidebar-head" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">',
     '    <div>',
@@ -15,8 +15,8 @@
     '      <div class="sidebar-role pt" id="sb-plan-pt">Teste</div>',
     '      <div class="sidebar-role es" id="sb-plan-es">Prueba</div>',
     '    </div>',
-    '    <button id="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Fechar menu"',
-    '      style="display:none;align-items:center;justify-content:center;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0">&#x2715;</button>',
+    '    <button type="button" id="sidebar-close-btn" aria-label="Fechar menu / Cerrar menú"',
+    '      style="display:none;align-items:center;justify-content:center;border-radius:10px;width:44px;height:44px;font-size:16px;cursor:pointer;flex-shrink:0">&#x2715;</button>',
     '  </div>',
     '',
     '  <nav class="sidebar-nav">',
@@ -42,6 +42,10 @@
     '',
     '    <div class="nav-section-label pt" style="margin-top:4px">Ferramentas</div>',
     '    <div class="nav-section-label es" style="margin-top:4px">Herramientas</div>',
+    '    <a href="anamnesismed-referencias.html" class="nav-item" id="nav-guia">',
+    '      <span class="nav-icon">' + amIcon('book', 18) + '</span>',
+    '      <span class="pt">Guia de estudo</span><span class="es">Gu&#xED;a de estudio</span>',
+    '    </a>',
     '    <a href="anamnesismed-mnemonicas.html" class="nav-item" id="nav-mnemonicas">',
     '      <span class="nav-icon">' + amIcon('brain', 18) + '</span>',
     '      <span class="pt">Mnem&#xF4;nicas</span><span class="es">Mnemot&#xE9;cnicas</span>',
@@ -54,15 +58,19 @@
     '      <span class="nav-icon">' + amIcon('sparkles', 18) + '</span>',
     '      <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>',
     '    </a>',
-    '    <button class="nav-item nav-item-logout" onclick="if(window.encerrarSessao)encerrarSessao()">',
+    '    <button type="button" class="nav-item nav-item-logout" onclick="if(window.encerrarSessao)encerrarSessao()">',
     '      <span class="nav-icon">' + amIcon('logout', 16) + '</span>',
     '      <span class="pt">Encerrar sess&#xE3;o</span><span class="es">Cerrar sesi&#xF3;n</span>',
     '    </button>',
     '  </nav>',
     '',
     '  <div class="sidebar-foot">',
+    '    <button type="button" class="nav-item sb-toggle" id="sb-toggle" aria-controls="sidebar" aria-expanded="true">',
+    '      <span class="nav-icon"><svg class="am-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg></span>',
+    '      <span class="pt" data-sbt="pt">Recolher menu</span><span class="es" data-sbt="es">Contraer men&#xFA;</span>',
+    '    </button>',
     '    <a href="anamnesismed-config.html" class="user-info" style="text-decoration:none">',
-    '      <div class="user-av user-avatar">?</div>',
+    '      <div class="user-av user-avatar">' + amIcon('user', 16) + '</div>',
     '      <div style="flex:1;min-width:0;overflow:hidden">',
     '        <div class="user-name" id="sidebar-user-name" data-user-name>&#x2014;</div>',
     '        <div class="user-plan pt">Teste</div>',
@@ -79,10 +87,78 @@
   if (!root) return;
   root.innerHTML = HTML;
 
+  /* Dica (title) em cada item: no tablet a barra vira trilho de ícones e o rótulo some da tela. */
+  function _titulos() {
+    root.querySelectorAll('.nav-item,.esp-nav-item,.sidebar-foot .user-info').forEach(function (a) {
+      if (a.id === 'sb-toggle') return; /* título dinâmico (recolher/expandir) */
+      if (a.getAttribute('title') || a.getAttribute('data-tip')) return;
+      var t = Array.prototype.map.call(a.querySelectorAll('.pt,.es'), function (n) { return (n.textContent || '').trim(); })
+        .filter(function (x, i, arr) { return x && arr.indexOf(x) === i; }).join(' / ');
+      if (t) a.setAttribute('title', t);
+    });
+  }
+  _titulos();
+  try { new MutationObserver(function () { _titulos(); }).observe(document.getElementById('nav-recent') || root, { childList: true, subtree: true }); } catch (e) {}
+
+  /* Dica flutuante no trilho de ícones (tablet): aparece com mouse/foco de teclado/toque longo. */
+  (function () {
+    var tip = document.createElement('div');
+    tip.className = 'sb-tip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true;
+    document.body.appendChild(tip);
+    var hideT = null;
+    function show(el) {
+      if (!document.documentElement.classList.contains('sb-collapsed') || !window.matchMedia('(min-width:769px)').matches) return;
+      var t = el.getAttribute('title') || el.getAttribute('data-tip');
+      if (!t) return;
+      if (el.getAttribute('title')) { el.setAttribute('data-tip', t); el.removeAttribute('title'); }
+      var lang = document.documentElement.getAttribute('data-lang') === 'pt' ? 0 : 1;
+      var parts = t.split(' / ');
+      tip.textContent = parts[lang] || parts[0];
+      var r = el.getBoundingClientRect();
+      tip.style.left = (r.right + 10) + 'px'; tip.style.top = (r.top + r.height / 2) + 'px';
+      tip.hidden = false;
+    }
+    function hide() { tip.hidden = true; }
+    root.addEventListener('pointerenter', function (e) { if (e.pointerType !== 'touch' && e.target.closest) { var el = e.target.closest('.nav-item,.esp-nav-item,.user-info'); if (el) show(el); } }, true);
+    root.addEventListener('focusin', function (e) { var el = e.target.closest && e.target.closest('.nav-item,.esp-nav-item,.user-info'); if (el) show(el); });
+    root.addEventListener('pointerleave', hide, true);
+    root.addEventListener('focusout', hide);
+    root.addEventListener('click', hide);
+    /* Toque: pressionar e segurar (~450ms) mostra a dica do ícone por 2s sem acionar o link. */
+    var lpT = null, lpShown = false;
+    root.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'touch' || !e.target.closest) return;
+      var el = e.target.closest('.nav-item,.esp-nav-item,.user-info'); if (!el) return;
+      lpShown = false; clearTimeout(lpT);
+      lpT = setTimeout(function () { show(el); lpShown = !tip.hidden; clearTimeout(hideT); hideT = setTimeout(hide, 2000); }, 450);
+    });
+    ['pointerup', 'pointercancel', 'pointermove'].forEach(function (ev) { root.addEventListener(ev, function () { clearTimeout(lpT); }); });
+    root.addEventListener('click', function (e) { if (lpShown) { e.preventDefault(); lpShown = false; } }, true);
+    root.addEventListener('contextmenu', function (e) { if (e.target.closest && e.target.closest('.nav-item,.esp-nav-item,.user-info')) e.preventDefault(); });
+    window._sbTipHide = hide;
+  })();
+
   /* ── TOGGLE ── */
+  /* Botões que abrem/fecham o menu (hambúrguer de cada página) recebem aria-expanded/aria-controls. */
+  function _toggleButtons() {
+    return document.querySelectorAll('[onclick*="toggleSidebar"],[onclick*="openSidebar"],[data-sidebar-toggle]');
+  }
+  var _lastTrigger = null;
   function _syncBodyState() {
-    var open = document.getElementById('sidebar').classList.contains('open');
+    var sb = document.getElementById('sidebar');
+    var open = sb.classList.contains('open');
     document.body.classList.toggle('sb-open', open);
+    _toggleButtons().forEach(function (b) {
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      b.setAttribute('aria-controls', 'sidebar');
+    });
+    var closeBtn = document.getElementById('sidebar-close-btn');
+    if (open && window.matchMedia('(max-width:768px)').matches) {
+      if (document.activeElement && document.activeElement !== document.body) _lastTrigger = document.activeElement;
+      if (closeBtn) closeBtn.focus();
+    } else if (!open && _lastTrigger && document.body.contains(_lastTrigger) && sb.contains(document.activeElement)) {
+      try { _lastTrigger.focus(); } catch (e) {}
+    }
   }
   window.toggleSidebar = function () {
     document.getElementById('sidebar').classList.toggle('open');
@@ -99,13 +175,82 @@
     document.getElementById('sidebar-backdrop').classList.remove('open');
     _syncBodyState();
   };
+  document.getElementById('sidebar-backdrop').addEventListener('click', window.closeSidebar);
+  document.getElementById('sidebar-close-btn').addEventListener('click', window.closeSidebar);
+  /* Esc fecha o menu (teclado) */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('open')) window.closeSidebar();
+  });
+  _syncBodyState();
+
+  /* ── RECOLHER / EXPANDIR (>=769px) ──
+     Regra: índice/demais páginas -> preferência do usuário (localStorage 'am-sb'), padrão = expandida no
+     desktop e trilho no tablet. Tela de HC (#screen-hc.active) -> recolhe sozinha para o trilho; o usuário
+     pode expandir (vale só enquanto estiver naquela HC, não é gravado); ao voltar ao índice, restaura a
+     preferência. O botão do rodapé grava a preferência quando acionado fora da HC. */
+  (function () {
+    var KEY = 'am-sb', html = document.documentElement;
+    var btn = document.getElementById('sb-toggle');
+    var hcEl = document.getElementById('screen-hc');
+    var wide = window.matchMedia('(min-width:769px)');
+    var tabletMq = window.matchMedia('(max-width:1180px)');
+    var inHC = false, hcOverride = null, started = false;
+    function getPref() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+    function setPref(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+    function collapsed() {
+      if (inHC) return hcOverride === null ? true : hcOverride;
+      var p = getPref();
+      if (p === 'collapsed') return true;
+      if (p === 'expanded') return false;
+      return tabletMq.matches;
+    }
+    function apply() {
+      var c = collapsed() && wide.matches;
+      html.classList.toggle('sb-collapsed', c);
+      if (!btn) return;
+      btn.setAttribute('aria-expanded', c ? 'false' : 'true');
+      var t = c ? 'Expandir menu / Expandir menú' : 'Recolher menu / Contraer menú';
+      btn.removeAttribute('data-tip'); btn.setAttribute('title', t);
+      var p = btn.querySelector('[data-sbt="pt"]'), e = btn.querySelector('[data-sbt="es"]');
+      if (p) p.textContent = c ? 'Expandir menu' : 'Recolher menu';
+      if (e) e.textContent = c ? 'Expandir menú' : 'Contraer menú';
+      if (!started) { started = true; (window.requestAnimationFrame || setTimeout)(function () { html.classList.add('sb-anim'); }); }
+    }
+    function syncCtx() {
+      var now = !!(hcEl && hcEl.classList.contains('active'));
+      if (now !== inHC) { inHC = now; hcOverride = null; apply(); if (window._sbTipHide) window._sbTipHide(); }
+    }
+    if (btn) btn.addEventListener('click', function () {
+      var next = !html.classList.contains('sb-collapsed');
+      if (inHC) hcOverride = next; else setPref(next ? 'collapsed' : 'expanded');
+      apply();
+      if (window._sbTipHide) window._sbTipHide();
+    });
+    inHC = !!(hcEl && hcEl.classList.contains('active'));
+    apply();
+    if (hcEl) try { new MutationObserver(syncCtx).observe(hcEl, { attributes: true, attributeFilter: ['class'] }); } catch (e) {}
+    [wide, tabletMq].forEach(function (m) { if (m.addEventListener) m.addEventListener('change', apply); else if (m.addListener) m.addListener(apply); });
+  })();
+
+  /* Item "Guia de estudo": na tela do app abre as referências do motivo em nova aba (a HC em andamento não se perde). */
+  (function () {
+    var g = document.getElementById('nav-guia');
+    if (!g) return;
+    g.addEventListener('click', function (e) {
+      var hc = document.getElementById('screen-hc');
+      if (hc && hc.classList.contains('active') && typeof window.openRefMotivo === 'function') {
+        e.preventDefault(); window.openRefMotivo();
+        if (window.closeSidebar) window.closeSidebar();
+      }
+    });
+  })();
 
   /* ── NOME INSTANTÂNEO (cache local — elimina o delay até o Supabase resolver) ── */
   try {
     var uname = localStorage.getItem('am-uname');
     if (uname) {
       document.querySelectorAll('[data-user-name],.user-name').forEach(function (el) { el.textContent = uname; });
-      var ini = uname.replace(/^dr\.?\s*/i, '').charAt(0).toUpperCase() || '?';
+      var ini = uname.replace(/^(?:dr\(a\)|dra|dr)\.\s*/i, '').charAt(0).toUpperCase() || '?';
       document.querySelectorAll('.user-avatar,.user-av').forEach(function (el) { el.textContent = ini; });
       var gp = document.getElementById('page-title');
       var ge = document.getElementById('page-title-es');
@@ -149,8 +294,11 @@
     recent = recent.slice(0, 8);
     try { localStorage.setItem('am-recent', JSON.stringify(recent)); } catch (e) {}
   }
-  var show = recent.filter(function (x) { return x !== cur && DEST[x]; }).slice(0, 3);
-  if (!show.length) show = ['explorar', 'mnemonicas', 'config'].filter(function (x) { return x !== cur; }).slice(0, 3);
+  /* Itens que já estão no menu fixo (Início, Especialidades, Minhas HCs, Ferramentas) NÃO entram
+     em "Acessado por último" — antes eles apareciam duas vezes (no trilho de ícones do tablet isso
+     virava ícones repetidos em sequência). Sem histórico útil, o bloco fica oculto. */
+  var FIXOS = { explorar: 1, mnemonicas: 1, config: 1 };
+  var show = recent.filter(function (x) { return x !== cur && DEST[x] && !FIXOS[x]; }).slice(0, 3);
   var box = document.getElementById('nav-recent');
   if (box && show.length) {
     box.innerHTML = show.map(function (id) {
@@ -166,13 +314,76 @@
   var rules = {
     'nav-inicio':     path.includes('dashboard') && view !== 'hcs',
     'nav-hcs':        path.includes('dashboard') && view === 'hcs',
-    'nav-explorar':   path.includes('explorar') || path.includes('especialidades') || path.includes('ref-respiratorio'),
+    'nav-explorar':   path.includes('explorar') || path.includes('especialidades'),
+    'nav-guia':       path.includes('referencias') || path.includes('-ref-'),
     'nav-mnemonicas': path.includes('mnemonicas'),
     'nav-config':     path.includes('config')
   };
   Object.keys(rules).forEach(function (id) {
     var el = document.getElementById(id);
-    if (el && rules[id]) el.classList.add('active');
+    if (el && rules[id]) { el.classList.add('active'); el.setAttribute('aria-current', 'page'); }
   });
 
+})();
+
+/* ── A11Y: elementos clicáveis não-nativos (div/span com onclick) ───────────────────────────
+   Cards, chips, cabeçalhos de acordeão etc. são gerados em HTML/JS como <div onclick>. Em vez de
+   reescrever centenas de pontos (e arriscar o layout), damos a eles semântica de botão:
+   role + tabindex=0 + Enter/Espaço, e espelhamos o estado (aria-pressed / aria-expanded) a
+   partir das classes (.sel/.on/.active/.open). Roda também em conteúdo inserido depois. */
+(function () {
+  'use strict';
+  var SKIP = 'button,a,input,select,textarea,summary,label,[role],[tabindex]';
+  var NOISE = /overlay|backdrop/i;
+  var PRESSED = '.f-radio,.f-check,.ecto-opt,.filter-chip,.f-eva-btn,.f-chip,.chip';
+  var EXPAND = '.hc-panel-head,.acc-head,.ras-head';
+
+  function label(el) {
+    if (el.hasAttribute('aria-label') || el.textContent.trim()) return;
+    el.setAttribute('aria-label', 'Fechar / Cerrar');
+  }
+  function sync(el) {
+    if (el.matches(EXPAND)) {
+      var p = el.parentElement;
+      el.setAttribute('aria-expanded', p && /\bopen\b/.test(p.className) ? 'true' : 'false');
+    } else if (el.matches(PRESSED)) {
+      el.setAttribute('aria-pressed', /\b(sel|sel-danger|on|active)\b/.test(el.className) ? 'true' : 'false');
+    }
+  }
+  function enhance(root) {
+    if (!root || root.nodeType !== 1) return;
+    var list = [].slice.call(root.querySelectorAll('[onclick]'));
+    if (root.hasAttribute && root.hasAttribute('onclick')) list.unshift(root);
+    list.forEach(function (el) {
+      if (el.matches(SKIP) || NOISE.test(el.className + ' ' + el.id)) return;
+      el.setAttribute('role', 'button');
+      el.tabIndex = 0;
+      el.setAttribute('data-am-kb', '');
+      if (/^[×✕xX]$/.test(el.textContent.trim())) label(el);
+      sync(el);
+    });
+  }
+  function init() {
+    enhance(document.body);
+    new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        if (m.type === 'childList') {
+          m.addedNodes.forEach(enhance);
+          if (m.target.nodeType === 1 && m.target.parentElement) {
+            var c = m.target.closest(EXPAND + ',' + PRESSED); if (c) sync(c);
+          }
+        } else if (m.target.nodeType === 1) {
+          var t = m.target;
+          if (t.matches(EXPAND + ',' + PRESSED)) sync(t);
+          var h = t.querySelector(':scope > ' + EXPAND.split(',').join(',:scope > ')); if (h) sync(h);
+        }
+      });
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    document.addEventListener('keydown', function (e) {
+      var el = e.target;
+      if (!el || !el.hasAttribute || !el.hasAttribute('data-am-kb')) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); el.click(); }
+    });
+  }
+  if (document.body) init(); else document.addEventListener('DOMContentLoaded', init);
 })();

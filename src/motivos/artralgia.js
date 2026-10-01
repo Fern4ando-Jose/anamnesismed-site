@@ -433,7 +433,8 @@ AM.motivo("artralgia", {
   "guideEs": {
     "mnemonics": [
       {
-        "name": "Mnemónico GASA — principales causas de monoartritis aguda",
+        "kw": "CAUSAS DE MONOARTRITIS",
+        "name": "Principales causas de monoartritis aguda",
         "rows": [
           [
             "Gota / pseudogota (cristales)",
@@ -454,7 +455,8 @@ AM.motivo("artralgia", {
         ]
       },
       {
-        "name": "Mnemónico SOAP-BRAIN — causas de poliartritis (adaptado)",
+        "kw": "CAUSAS DE POLIARTRITIS",
+        "name": "Causas de poliartritis",
         "rows": [
           [
             "LES (Lupus Eritematoso Sistémico)",

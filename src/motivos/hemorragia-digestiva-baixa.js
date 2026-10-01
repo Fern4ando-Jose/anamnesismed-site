@@ -355,6 +355,7 @@ AM.motivo("hemorragia-digestiva-baixa", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de HDB",
         "rows": [
           [
@@ -380,6 +381,7 @@ AM.motivo("hemorragia-digestiva-baixa", {
         ]
       },
       {
+        "kw": "ALTA x BAJA",
         "name": "Diferenciar el origen",
         "rows": [
           [

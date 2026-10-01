@@ -6,25 +6,31 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AnamnesísMed — Entrar</title>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AnamnesísMed — Entrar o crear cuenta</title>
+<meta name="description" content="Entra o crea tu cuenta en AnamnesísMed con tu email, sin contraseña. Historia clínica para médicos y estudiantes.">
+<meta name="robots" content="noindex, nofollow">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f0f4f8;--bg-card:#ffffff;
-  --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
-  --secondary:#0d9488;--accent:#f59e0b;
-  --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
-  --ease:cubic-bezier(0.16,1,0.3,1);
-  --r:10px;--r-lg:16px
+  /* tokens do tema Pulso vêm de anamnesismed-theme.css; aqui só extras locais */
+  --ease:cubic-bezier(0.16,1,0.3,1)
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:1fr 1fr}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
 
@@ -32,60 +38,60 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 .left{
   background:var(--ink);
   display:flex;flex-direction:column;justify-content:space-between;
-  padding:40px 48px;position:relative;overflow:hidden;min-height:100vh
+  padding:40px 48px;position:relative;overflow:hidden;min-height:100vh;min-height:100dvh
 }
 .left::before{
   content:'';position:absolute;inset:0;
   background:
-    radial-gradient(ellipse at 15% 15%,rgba(14,116,144,.4) 0%,transparent 50%),
+    radial-gradient(ellipse at 15% 15%,rgba(15,163,177,.4) 0%,transparent 50%),
     radial-gradient(ellipse at 85% 85%,rgba(13,148,136,.25) 0%,transparent 50%)
 }
 .left-content{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;justify-content:space-between}
 
 .left-top{display:flex;justify-content:space-between;align-items:center}
 .logo{font-family:var(--serif);font-size:20px;font-weight:700;color:#fff;text-decoration:none}
-.logo span{color:#5dd0e8}
+.logo span{color:var(--teal-on-dark)}
 
 .lang-toggle{display:flex;background:rgba(255,255,255,.08);border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
-.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.5);transition:all .2s}
+.lang-btn{padding:6px 12px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.75);transition:all .2s;font-family:var(--sans)}
 .lang-btn.active{background:rgba(255,255,255,.15);color:#fff;border-radius:20px}
 
 /* FEATURE HIGHLIGHTS */
 .left-mid{flex:1;display:flex;flex-direction:column;justify-content:center;padding:48px 0}
 .left-headline{font-family:var(--serif);font-size:clamp(26px,2.5vw,38px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:14px}
-.left-headline em{font-style:italic;color:#5dd0e8}
-.left-sub{font-size:16px;color:rgba(255,255,255,.55);margin-bottom:40px;line-height:1.7;max-width:400px}
+.left-headline em{font-style:italic;color:var(--teal-on-dark)}
+.left-sub{font-size:16px;color:rgba(255,255,255,.78);margin-bottom:40px;line-height:1.7;max-width:400px}
 
 .features-list{display:flex;flex-direction:column;gap:14px}
 .feat-row{display:flex;align-items:flex-start;gap:14px}
 .feat-icon-wrap{
   width:38px;height:38px;border-radius:9px;flex-shrink:0;
-  background:rgba(14,116,144,.25);border:1px solid rgba(14,116,144,.35);
+  background:rgba(15,163,177,.22);border:1px solid rgba(15,163,177,.4);
   display:flex;align-items:center;justify-content:center;font-size:18px
 }
 .feat-text{}
 .feat-text strong{font-size:14px;font-weight:700;color:#fff;display:block;margin-bottom:2px}
-.feat-text span{font-size:13px;color:rgba(255,255,255,.5)}
+.feat-text span{font-size:13px;color:rgba(255,255,255,.75)}
 
 /* TESTIMONIAL */
 .left-bottom{}
 .testi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:20px}
-.testi-quote{font-size:14px;color:rgba(255,255,255,.7);line-height:1.65;font-style:italic;margin-bottom:14px}
+.testi-quote{font-size:14px;color:rgba(255,255,255,.85);line-height:1.65;font-style:italic;margin-bottom:14px}
 .testi-author{display:flex;align-items:center;gap:10px}
-.testi-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:#0e7490}
+.testi-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:var(--primary-dark)}
 .testi-name{font-size:13px;font-weight:700;color:#fff}
-.testi-role{font-size:11px;color:rgba(255,255,255,.45)}
+.testi-role{font-size:12px;color:rgba(255,255,255,.7)}
 
 /* RIGHT PANEL */
 .right{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:60px 48px;min-height:100vh
+  padding:60px 48px;min-height:100vh;min-height:100dvh
 }
 .auth-card{width:100%;max-width:420px}
 
 .auth-back{
   display:inline-flex;align-items:center;gap:6px;
-  font-size:13px;color:var(--muted);text-decoration:none;
+  font-size:14px;color:var(--muted);text-decoration:none;
   margin-bottom:36px;transition:color .2s
 }
 .auth-back:hover{color:var(--ink)}
@@ -94,67 +100,36 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 .auth-title{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--ink);margin-bottom:6px}
 .auth-sub{font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.6}
 
-/* TABS */
-.auth-tabs{display:flex;background:rgba(13,45,61,0.06);border-radius:10px;padding:4px;margin-bottom:28px}
-.auth-tab{flex:1;text-align:center;padding:8px;font-size:14px;font-weight:600;color:var(--muted);border-radius:8px;cursor:pointer;transition:all .2s;border:none;background:transparent}
-.auth-tab.active{background:var(--bg-card);color:var(--ink);box-shadow:0 1px 6px rgba(13,45,61,0.1)}
-
 /* FORM */
 .form-group{margin-bottom:18px}
-.form-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
-.form-input{
-  width:100%;padding:12px 14px;font-size:15px;font-family:var(--sans);
-  background:var(--bg-card);border:1.5px solid var(--line-md);
-  border-radius:var(--r);color:var(--ink);outline:none;
-  transition:border-color .2s,box-shadow .2s
-}
-.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(14,116,144,.12)}
-.form-input::placeholder{color:rgba(75,96,112,.45)}
-
-.btn-submit{
-  width:100%;padding:14px;font-size:15px;font-weight:700;
-  color:#fff;background:var(--primary);border:none;
-  border-radius:var(--r);cursor:pointer;font-family:var(--sans);
-  transition:all .2s;box-shadow:0 4px 20px rgba(14,116,144,.25);
-  margin-top:4px
-}
-.btn-submit:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 6px 28px rgba(14,116,144,.35)}
+.form-input{padding:12px 14px} /* base em .am-input (anamnesismed-components.css) */
+.btn-submit{padding:14px;font-size:15px;box-shadow:0 4px 20px rgba(15,163,177,.25);margin-top:4px}
+.btn-submit:hover{box-shadow:0 6px 28px rgba(15,163,177,.35)}
 .btn-submit:active{transform:translateY(0)}
 
 .divider{display:flex;align-items:center;gap:12px;margin:20px 0}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
 .divider span{font-size:12px;color:var(--muted);white-space:nowrap}
 
-.btn-google{
-  width:100%;padding:12px;font-size:14px;font-weight:600;
-  color:var(--ink);background:var(--bg-card);border:1.5px solid var(--line-md);
-  border-radius:var(--r);cursor:pointer;font-family:var(--sans);
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:all .2s
-}
-.btn-google:hover{border-color:var(--primary);background:var(--bg)}
+.btn-google{padding:12px;font-size:14px;font-weight:600}
 .google-icon{width:18px;height:18px}
 
 .auth-footer{margin-top:24px;text-align:center;font-size:13px;color:var(--muted)}
-.auth-footer a{color:var(--primary);text-decoration:none;font-weight:600}
+.auth-footer a{color:var(--teal-text);text-decoration:none;font-weight:600}
 .auth-footer a:hover{text-decoration:underline}
 
 .magic-info{
-  background:rgba(14,116,144,.08);border:1px solid rgba(14,116,144,.18);
+  background:rgba(15,163,177,.08);border:1px solid rgba(15,163,177,.18);
   border-radius:var(--r);padding:14px 16px;margin-bottom:20px;
   font-size:13px;color:var(--muted);line-height:1.6
 }
-.magic-info strong{color:var(--primary)}
+.magic-info strong{color:var(--teal-text)}
 
 /* SUCCESS STATE */
 .success-state{text-align:center;padding:20px 0;display:none}
 .success-icon{font-size:48px;margin-bottom:16px}
 .success-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px}
 .success-sub{font-size:15px;color:var(--muted);line-height:1.65;max-width:320px;margin:0 auto}
-
-/* PANEL TOGGLE — PASSWORD FIELDS */
-#panel-login .register-only{display:none}
-#panel-register .login-only{display:none}
 
 /* RESPONSIVE */
 @media(max-width:900px){
@@ -172,12 +147,30 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
   .left-headline{font-size:20px}
   .right{padding:24px 16px}
   .auth-card{max-width:100%}
-  .auth-tabs{margin-bottom:20px}
-  .accept-box{padding:16px}
 }
+@media(max-width:600px){
+  /* no celular o formulário precisa aparecer sem rolar: esconde a lista de benefícios */
+  .features-list{display:none}
+  .left-mid{padding:12px 0 0}
+  .left-sub{margin-bottom:0}
+  .left{padding-bottom:18px}
+  .right{padding-top:18px}
+}
+
+/* ERRO INLINE + CARREGANDO */
+.form-error{display:flex;gap:8px;align-items:flex-start;margin:0 0 16px;padding:12px 14px;border-radius:var(--r);background:#FDECEA;border:1px solid #F3B3AB;color:#8A1F11;font-size:14px;line-height:1.5}
+.form-error[hidden]{display:none}
+.btn-submit[disabled],.btn-google[disabled]{opacity:.7;cursor:not-allowed;transform:none!important}
+.btn-submit .spin{display:none;margin-right:8px}
+.btn-submit.loading .spin{display:inline-block}
+.auth-legal{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.5}
+.auth-legal a{color:var(--teal-text);display:inline-block;padding:11px 3px;margin:-11px 0}
+.success-state:focus{outline:none}
 </style>
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <!-- LEFT PANEL -->
 <div class="left">
@@ -185,8 +178,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
     <div class="left-top">
       <a href="anamnesismed-landing.html" class="logo">Anamnesis<span>Med</span></a>
       <div class="lang-toggle">
-        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português">PT</button>
+        <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español">ES</button>
       </div>
     </div>
 
@@ -250,48 +243,36 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 </div>
 
 <!-- RIGHT PANEL -->
-<div class="right">
+<main class="right" id="main">
   <div class="auth-card">
     <a href="anamnesismed-landing.html" class="auth-back pt">Voltar ao início</a>
     <a href="anamnesismed-landing.html" class="auth-back es">Volver al inicio</a>
 
-    <!-- TABS -->
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">
-        <span class="pt">Entrar</span><span class="es">Iniciar sesión</span>
-      </button>
-      <button class="auth-tab" id="tab-register" onclick="switchTab('register')">
-        <span class="pt">Criar conta</span><span class="es">Crear cuenta</span>
-      </button>
-    </div>
+    <div id="auth-form-wrap">
+      <h1 class="auth-title pt">Entrar ou criar conta</h1>
+      <h1 class="auth-title es">Entrar o crear cuenta</h1>
+      <p class="auth-sub pt">Digite seu e-mail e enviamos um link de acesso. Se você ainda não tem conta, criamos uma para você — sem senha, grátis, sem cartão.</p>
+      <p class="auth-sub es">Escribe tu email y te enviamos un link de acceso. Si aún no tienes cuenta, la creamos por ti — sin contraseña, gratis, sin tarjeta.</p>
 
-    <!-- LOGIN PANEL -->
-    <div id="panel-login">
-      <h1 class="auth-title pt">Bem-vindo de volta</h1>
-      <h1 class="auth-title es">Bienvenido de vuelta</h1>
-      <p class="auth-sub pt">Entre com seu e-mail para receber o link de acesso.</p>
-      <p class="auth-sub es">Ingresa con tu email para recibir el link de acceso.</p>
+      <div id="auth-error" class="form-error" role="alert" aria-live="assertive" hidden></div>
 
-      <div class="magic-info">
-        <strong class="pt">🔐 Login sem senha</strong><strong class="es">🔐 Inicio sin contraseña</strong>
-        <span class="pt"> — Enviamos um link seguro para o seu e-mail. Clique nele para entrar instantaneamente.</span>
-        <span class="es"> — Enviamos un link seguro a tu email. Haz clic en él para entrar al instante.</span>
-      </div>
-
-      <form id="form-login" onsubmit="handleSubmit(event,'login')">
+      <form id="form-login" novalidate>
         <div class="form-group">
-          <label class="form-label pt" for="email-login">E-mail</label>
-          <label class="form-label es" for="email-login">Email</label>
-          <input type="email" id="email-login" class="form-input" placeholder="seu@email.com" required autocomplete="email">
+          <label class="form-label am-label pt" for="email-login">E-mail</label>
+          <label class="form-label am-label es" for="email-login">Email</label>
+          <input type="email" id="email-login" class="form-input am-input" placeholder="seu@email.com" required autocomplete="email" inputmode="email" aria-describedby="auth-error">
         </div>
-        <button type="submit" class="btn-submit pt">Enviar link de acesso →</button>
-        <button type="submit" class="btn-submit es">Enviar link de acceso →</button>
+        <button type="submit" id="btn-submit" class="btn-submit am-btn am-btn--primary am-btn--block">
+          <span class="spin am-spinner" aria-hidden="true"></span>
+          <span class="btn-label pt">Continuar com e-mail →</span>
+          <span class="btn-label es">Continuar con email →</span>
+        </button>
       </form>
 
       <div class="divider"><span class="pt">ou continue com</span><span class="es">o continúa con</span></div>
 
-      <button class="btn-google" onclick="googleAuth()">
-        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <button type="button" class="btn-google am-btn am-btn--secondary am-btn--block" id="btn-google">
+        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -301,141 +282,134 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
         <span class="es">Continuar con Google</span>
       </button>
 
-      <div class="success-state" id="success-login">
-        <div class="success-icon">✉️</div>
-        <div class="success-title pt">Verifique seu e-mail!</div>
-        <div class="success-title es">¡Verifica tu email!</div>
-        <p class="success-sub pt">Enviamos o link de acesso para <strong id="email-sent-login"></strong>. Clique no link para entrar.</p>
-        <p class="success-sub es">Enviamos el link de acceso a <strong id="email-sent-login-es"></strong>. Haz clic en el link para entrar.</p>
+      <div class="magic-info" style="margin-top:20px">
+        <strong class="pt">Sem senha</strong><strong class="es">Sin contraseña</strong>
+        <span class="pt"> — o link chega por e-mail e vale para entrar ou para ativar sua conta. Nome e perfil (médico ou estudante) são pedidos no primeiro acesso.</span>
+        <span class="es"> — el link llega por email y sirve para entrar o para activar tu cuenta. Nombre y perfil (médico o estudiante) se piden en el primer acceso.</span>
       </div>
 
-      <p class="auth-footer login-only pt">Não tem conta? <a href="#" onclick="switchTab('register');return false">Criar conta gratuita</a></p>
-      <p class="auth-footer login-only es">¿No tienes cuenta? <a href="#" onclick="switchTab('register');return false">Crear cuenta gratuita</a></p>
+      <p class="auth-legal pt">Ao continuar, você concorda com os <a href="anamnesismed-terms.html">Termos de uso</a> e a <a href="anamnesismed-privacy.html">Política de privacidade</a>.</p>
+      <p class="auth-legal es">Al continuar, aceptas los <a href="anamnesismed-terms.html">Términos de uso</a> y la <a href="anamnesismed-privacy.html">Política de privacidad</a>.</p>
     </div>
 
-    <!-- REGISTER PANEL -->
-    <div id="panel-register" style="display:none">
-      <h1 class="auth-title pt">Criar sua conta</h1>
-      <h1 class="auth-title es">Crear tu cuenta</h1>
-      <p class="auth-sub pt">Gratuito para começar. Sem cartão de crédito.</p>
-      <p class="auth-sub es">Gratis para empezar. Sin tarjeta de crédito.</p>
-
-      <form id="form-register" onsubmit="handleSubmit(event,'register')">
-        <div class="form-group">
-          <label class="form-label pt" for="name-register">Nome completo</label>
-          <label class="form-label es" for="name-register">Nombre completo</label>
-          <input type="text" id="name-register" class="form-input" required autocomplete="name">
-        </div>
-        <div class="form-group">
-          <label class="form-label pt" for="email-register">E-mail</label>
-          <label class="form-label es" for="email-register">Email</label>
-          <input type="email" id="email-register" class="form-input" placeholder="seu@email.com" required autocomplete="email">
-        </div>
-        <div class="form-group">
-          <label class="form-label pt" for="role-register">Você é...</label>
-          <label class="form-label es" for="role-register">Eres...</label>
-          <select id="role-register" class="form-input" style="cursor:pointer">
-            <option value="" disabled selected class="pt">Selecione sua área</option>
-            <option value="" disabled selected class="es">Selecciona tu área</option>
-            <option value="student-pt" class="pt">Estudante de medicina</option>
-            <option value="student-es" class="es">Estudiante de medicina</option>
-            <option value="resident-pt" class="pt">Médico residente</option>
-            <option value="resident-es" class="es">Médico residente</option>
-            <option value="doctor-pt" class="pt">Médico formado</option>
-            <option value="doctor-es" class="es">Médico graduado</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-submit pt">Criar conta gratuita →</button>
-        <button type="submit" class="btn-submit es">Crear cuenta gratuita →</button>
-      </form>
-
-      <div class="divider"><span class="pt">ou</span><span class="es">o</span></div>
-
-      <button class="btn-google" onclick="googleAuth()">
-        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-        </svg>
-        <span class="pt">Cadastrar com Google</span>
-        <span class="es">Registrarse con Google</span>
-      </button>
-
-      <div class="success-state" id="success-register">
-        <div class="success-icon">🎉</div>
-        <div class="success-title pt">Conta criada!</div>
-        <div class="success-title es">¡Cuenta creada!</div>
-        <p class="success-sub pt">Enviamos o link de confirmação para <strong id="email-sent-register"></strong>. Clique no link para ativar sua conta.</p>
-        <p class="success-sub es">Enviamos el link de confirmación a <strong id="email-sent-register-es"></strong>. Haz clic en el link para activar tu cuenta.</p>
-      </div>
-
-      <p class="auth-footer register-only pt">Já tem conta? <a href="#" onclick="switchTab('login');return false">Entrar</a></p>
-      <p class="auth-footer register-only es">¿Ya tienes cuenta? <a href="#" onclick="switchTab('login');return false">Iniciar sesión</a></p>
-
-      <p style="font-size:12px;color:var(--muted);margin-top:16px;line-height:1.5" class="pt">Ao criar uma conta, você concorda com nossos <a href="#" style="color:var(--primary)">Termos de uso</a> e <a href="#" style="color:var(--primary)">Política de privacidade</a>.</p>
-      <p style="font-size:12px;color:var(--muted);margin-top:16px;line-height:1.5" class="es">Al crear una cuenta, aceptas nuestros <a href="#" style="color:var(--primary)">Términos de uso</a> y <a href="#" style="color:var(--primary)">Política de privacidad</a>.</p>
+    <div class="success-state" id="success-login" role="status" aria-live="polite" tabindex="-1">
+      <div class="success-icon" aria-hidden="true">✉️</div>
+      <h2 class="success-title pt">Verifique seu e-mail!</h2>
+      <h2 class="success-title es">¡Verifica tu email!</h2>
+      <p class="success-sub pt">Enviamos o link de acesso para <strong id="email-sent-login"></strong>. Clique no link para entrar (ou ativar sua conta).</p>
+      <p class="success-sub es">Enviamos el link de acceso a <strong id="email-sent-login-es"></strong>. Haz clic en el link para entrar (o activar tu cuenta).</p>
     </div>
-
   </div>
-</div>
+</main>
 
 <script>
+var MSG={
+  pt:{invalid:'Digite um e-mail válido.',unavailable:'Serviço de login indisponível no momento. Tente novamente em instantes.',rate:'Muitas tentativas. Aguarde um minuto e tente de novo.',generic:'Não foi possível enviar o link. Verifique sua conexão e tente novamente.',google:'Não foi possível iniciar o login com Google. Tente novamente.'},
+  es:{invalid:'Escribe un email válido.',unavailable:'Servicio de inicio de sesión no disponible por ahora. Inténtalo de nuevo en unos instantes.',rate:'Demasiados intentos. Espera un minuto e inténtalo de nuevo.',generic:'No se pudo enviar el link. Verifica tu conexión e inténtalo de nuevo.',google:'No se pudo iniciar sesión con Google. Inténtalo de nuevo.'}
+};
+function curLang(){return document.documentElement.getAttribute('data-lang')==='pt'?'pt':'es';}
 function setLang(l){
+  if(l!=='pt'&&l!=='es')l='es';
   document.documentElement.setAttribute('data-lang',l);
-  document.getElementById('btn-es').classList.toggle('active',l==='es');
-  document.getElementById('btn-pt').classList.toggle('active',l==='pt');
+  document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');
+  document.title=l==='pt'?'AnamnesísMed — Entrar ou criar conta':'AnamnesísMed — Entrar o crear cuenta';
+  ['es','pt'].forEach(function(k){
+    var b=document.getElementById('btn-'+k);
+    b.classList.toggle('active',l===k);
+    b.setAttribute('aria-pressed',l===k?'true':'false');
+  });
+  var email=document.getElementById('email-login');
+  email.placeholder=l==='pt'?'seu@email.com':'tu@email.com';
+  if(typeof lastErr!=='undefined'&&lastErr){showError(lastErr);}
   try{localStorage.setItem('am-lang',l)}catch(e){}
 }
 
-function switchTab(tab){
-  var isLogin=(tab==='login');
-  document.getElementById('panel-login').style.display=isLogin?'block':'none';
-  document.getElementById('panel-register').style.display=isLogin?'none':'block';
-  document.getElementById('tab-login').classList.toggle('active',isLogin);
-  document.getElementById('tab-register').classList.toggle('active',!isLogin);
+var lastErr=null;
+function showError(key){
+  var box=document.getElementById('auth-error');
+  lastErr=key;
+  box.textContent=MSG[curLang()][key]||key;
+  box.hidden=false;
+}
+function clearError(){
+  var box=document.getElementById('auth-error');
+  lastErr=null;
+  box.hidden=true;box.textContent='';
+  document.getElementById('email-login').removeAttribute('aria-invalid');
+}
+function setBusy(busy){
+  var btn=document.getElementById('btn-submit');
+  var g=document.getElementById('btn-google');
+  btn.disabled=busy;g.disabled=busy;
+  btn.classList.toggle('loading',busy);
+  btn.setAttribute('aria-busy',busy?'true':'false');
+  var lbl=btn.querySelectorAll('.btn-label');
+  lbl.forEach(function(el){
+    if(busy){el.dataset.orig=el.textContent;el.textContent=el.classList.contains('pt')?'Enviando o link…':'Enviando el enlace…';}
+    else if(el.dataset.orig){el.textContent=el.dataset.orig;}
+  });
 }
 
-function handleSubmit(e,type){
+var sending=false;
+function handleSubmit(e){
   e.preventDefault();
-  var email=document.getElementById('email-'+type).value.trim();
-  if(!email||!email.includes('@'))return;
-  var form=document.getElementById('form-'+type);
-  var btn=form.querySelector('.btn-submit');
-
-  if(typeof authSendMagicLink!=='function'){
-    alert('Serviço de login indisponível no momento. Tente novamente em instantes.');
+  if(sending)return;
+  clearError();
+  var input=document.getElementById('email-login');
+  var email=input.value.trim();
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    input.setAttribute('aria-invalid','true');
+    showError('invalid');
+    input.focus();
     return;
   }
-
-  authSendMagicLink(email).then(function(result){
-    if(!result.ok){
-      alert(result.error||'Erro ao enviar o link. Tente novamente.');
+  if(typeof authSendMagicLink!=='function'){
+    showError('unavailable');
+    return;
+  }
+  sending=true;setBusy(true);
+  var p;
+  try{p=Promise.resolve(authSendMagicLink(email));}catch(err){p=Promise.reject(err);}
+  p.then(function(result){
+    if(!result||!result.ok){
+      showError(result&&result.rate?'rate':'generic');
       return;
     }
-    var success=document.getElementById('success-'+type);
-    form.style.display='none';
+    document.getElementById('auth-form-wrap').style.display='none';
+    var success=document.getElementById('success-login');
     success.style.display='block';
-    var el=document.getElementById('email-sent-'+type);
-    if(el)el.textContent=email;
-    var elEs=document.getElementById('email-sent-'+type+'-es');
-    if(elEs)elEs.textContent=email;
+    document.getElementById('email-sent-login').textContent=email;
+    document.getElementById('email-sent-login-es').textContent=email;
+    success.focus();
+  }).catch(function(err){
+    console.error('magic link',err);
+    showError('generic');
+  }).then(function(){
+    sending=false;setBusy(false);
   });
 }
 
 function googleAuth(){
-  if(typeof authGoogleLogin==='function'){
-    authGoogleLogin();
-  }else{
-    alert('Serviço de login com Google indisponível no momento. Tente novamente em instantes.');
+  clearError();
+  if(typeof authGoogleLogin!=='function'){
+    showError('unavailable');
+    return;
   }
+  Promise.resolve(authGoogleLogin()).then(function(r){
+    if(r&&r.ok===false)showError('google');
+  }).catch(function(){showError('google');});
 }
 
+document.getElementById('form-login').addEventListener('submit',handleSubmit);
+document.getElementById('btn-google').addEventListener('click',googleAuth);
+document.getElementById('btn-es').addEventListener('click',function(){setLang('es')});
+document.getElementById('btn-pt').addEventListener('click',function(){setLang('pt')});
+document.getElementById('email-login').addEventListener('input',clearError);
 (function(){
   try{var s=localStorage.getItem('am-lang');setLang(s||'es');}catch(e){setLang('es');}
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js?v=bb827873"></script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
+<script src="supabase-integration.js?v=628b1cd6"></script>
 </body>
 </html>

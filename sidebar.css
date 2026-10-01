@@ -1,4 +1,4 @@
-@import url('anamnesismed-theme.css');
+/* O tema (anamnesismed-theme.css) é carregado por <link> em cada página. */
 
 /* ── SIDEBAR "Pulso" (escuro) — AnamnesísMed ──
    Componente único compartilhado. Importa o tema global acima,
@@ -8,11 +8,11 @@
 .sidebar-backdrop.open{display:block}
 
 .sidebar{
-  width:var(--sidebar-w,240px);min-height:100vh;
+  width:var(--sidebar-w,240px);min-height:100vh;min-height:100dvh;
   background:var(--ink,#0A1A24);
   border-right:1px solid rgba(255,255,255,.06);
   display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;
+  position:fixed;top:0;left:0;bottom:0;padding-left:env(safe-area-inset-left,0px);
   z-index:100;transition:transform .3s
 }
 .sidebar-head{padding:20px 14px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
@@ -22,7 +22,7 @@
 }
 .sidebar-logo span{color:var(--primary,#0FA3B1)}
 .sidebar-role{
-  font-family:var(--mono);font-size:10px;color:#6f8b92;
+  font-family:var(--mono);font-size:12px;color:#6f8b92;
   letter-spacing:.6px;text-transform:uppercase
 }
 
@@ -32,30 +32,30 @@
    do .sidebar-nav, então não herdam o gap) — replicamos o mesmo espaçamento aqui */
 #nav-recent{display:flex;flex-direction:column;gap:4px}
 .nav-section-label{
-  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;
-  text-transform:uppercase;color:#4f6b72;padding:12px 6px 5px
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted-on-dark,#9DB6BD);padding:12px 6px 5px
 }
 .nav-item{
-  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;
+  display:flex;align-items:center;gap:11px;padding:10px 12px;min-height:44px;border-radius:11px;
   border:1px solid rgba(255,255,255,.06);box-shadow:none;
   font-family:var(--sans);font-size:14px;font-weight:500;color:#bcd2d7;
   text-decoration:none;cursor:pointer;background:rgba(255,255,255,.03);
   transition:all .16s;width:100%;text-align:left
 }
 .nav-item:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.12)}
-.nav-item.active{background:var(--primary,#0FA3B1);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(15,163,177,.28)}
+.nav-item.active{background:var(--primary-dark,#0B7C88);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(15,163,177,.28)}
 .nav-icon{font-size:18px;flex-shrink:0;line-height:1;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;opacity:.95}
 .nav-icon svg{display:block}
 .nav-badge{
-  margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;
-  background:var(--primary,#0FA3B1);color:#fff;padding:2px 8px;border-radius:10px
+  margin-left:auto;font-family:var(--mono);font-size:12px;font-weight:600;
+  background:var(--primary-dark,#0B7C88);color:#fff;padding:2px 8px;border-radius:10px
 }
 .nav-item.active .nav-badge{background:rgba(255,255,255,.22)}
 .nav-count{
   margin-left:auto;min-width:24px;height:22px;border-radius:20px;padding:0 8px;
   background:rgba(255,255,255,.10);color:#dbeef1;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:11px;font-weight:600;flex-shrink:0
+  font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0
 }
 .nav-item.active .nav-count{background:rgba(255,255,255,.22);color:#fff}
 .nav-item-logout{color:#ff8b80!important;border-color:rgba(255,92,73,.20)!important;background:rgba(255,92,73,.06)!important;box-shadow:none!important}
@@ -63,22 +63,22 @@
 
 /* especialidades dinâmicas (renderSidebarEsp) */
 .esp-nav-item{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;
+  display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:44px;border-radius:11px;
   border:1px solid rgba(255,255,255,.06);
   font-family:var(--sans);font-size:14px;font-weight:500;color:#bcd2d7;
   cursor:pointer;background:rgba(255,255,255,.03);transition:all .16s;width:100%;text-align:left;margin-bottom:4px
 }
 .esp-nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
-.esp-nav-item.active{background:var(--primary,#0FA3B1);color:#fff;border-color:transparent}
+.esp-nav-item.active{background:var(--primary-dark,#0B7C88);color:#fff;border-color:transparent}
 .esp-nav-count{
   margin-left:auto;min-width:24px;height:22px;border-radius:20px;padding:0 8px;
   background:rgba(255,255,255,.10);color:#dbeef1;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:11px;font-weight:600;flex-shrink:0
+  font-family:var(--mono);font-size:12px;font-weight:600;flex-shrink:0
 }
 .esp-nav-item.active .esp-nav-count{background:rgba(255,255,255,.22);color:#fff}
 
-.sidebar-foot{padding:10px;border-top:1px solid rgba(255,255,255,.07)}
+.sidebar-foot{padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.07)}
 .sidebar-foot .user-info{
   display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
   border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .16s;
@@ -86,22 +86,65 @@
 }
 .sidebar-foot .user-info:hover{background:rgba(255,255,255,.08)}
 .user-av{
-  width:32px;height:32px;border-radius:50%;background:var(--primary,#0FA3B1);
+  width:32px;height:32px;border-radius:50%;background:var(--primary-dark,#0B7C88);
   display:flex;align-items:center;justify-content:center;
   font-family:var(--serif);font-size:13px;font-weight:600;color:#fff;flex-shrink:0
 }
 .user-name{font-family:var(--sans);font-size:13px;font-weight:500;color:#fff}
-.user-plan{font-family:var(--mono);font-size:10px;color:#7e9aa0;margin-top:1px;letter-spacing:.3px}
+.user-plan{font-family:var(--mono);font-size:12px;color:#7e9aa0;margin-top:1px;letter-spacing:.3px}
 .user-caret{margin-left:auto;font-size:18px;color:#7e9aa0}
 
 /* botão fechar (mobile) — sobrepõe o estilo claro inline do sidebar.js */
 #sidebar-close-btn{display:none;background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.14)!important;color:#fff!important}
 
+/* Trilho de ícones (76px): estado "recolhido" (html.sb-collapsed, definido por sidebar.js só em >=769px).
+   Padrão no tablet (769–1180px); no desktop vira trilho ao iniciar uma HC ou pelo botão do rodapé da barra.
+   Os rótulos continuam no DOM (visualmente ocultos) para leitores de tela; sidebar.js põe title (dica) em cada item.
+   html.sb-collapsed:root vence o --sidebar-w que cada página declara no próprio <style>. */
+@media(min-width:769px){
+  html.sb-collapsed:root{--sidebar-w:76px}
+  html.sb-collapsed .sidebar{overflow:hidden;align-items:stretch}
+  html.sb-collapsed .sidebar-head{padding:14px 6px 12px;display:flex!important;justify-content:center;text-align:center}
+  html.sb-collapsed .sidebar-logo{font-size:0;margin:0;display:flex;align-items:center;justify-content:center;width:52px;height:44px}
+  html.sb-collapsed .sidebar-logo::before{content:"Am" / "";font-family:var(--serif);font-size:21px;font-weight:700;letter-spacing:-.5px;color:#fff}
+  html.sb-collapsed .sidebar-logo span{display:none}
+  html.sb-collapsed .sidebar-head .sidebar-role{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  html.sb-collapsed .sidebar-nav{padding:8px 0;align-items:center;gap:6px;overscroll-behavior:contain}
+  html.sb-collapsed #nav-recent{align-items:center;gap:6px}
+  html.sb-collapsed .nav-section-label{font-size:0;line-height:0;height:1px;width:36px;padding:0;margin:6px 0;background:rgba(255,255,255,.12)}
+  html.sb-collapsed .nav-item,html.sb-collapsed .esp-nav-item{position:relative;width:52px;min-width:52px;min-height:52px;padding:0;justify-content:center;gap:0;margin:0}
+  html.sb-collapsed .nav-item .pt,html.sb-collapsed .nav-item .es,html.sb-collapsed .esp-nav-item .pt,html.sb-collapsed .esp-nav-item .es,html.sb-collapsed .user-info .pt,html.sb-collapsed .user-info .es,html.sb-collapsed .user-name,html.sb-collapsed .user-caret,html.sb-collapsed .nav-item>span:not(.nav-icon):not(.nav-badge):not(.nav-count){
+    position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;padding:0;border:0}
+  html.sb-collapsed .nav-badge,html.sb-collapsed .nav-count,html.sb-collapsed .esp-nav-count{position:absolute;top:3px;right:3px;margin:0;min-width:18px;height:18px;padding:0 5px;font-size:12px;line-height:18px}
+  html.sb-collapsed .nav-icon{width:24px;height:24px}
+  html.sb-collapsed .sidebar-foot{padding:8px 0 calc(10px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:6px}
+  html.sb-collapsed .sidebar-foot .user-info{width:52px;min-height:52px;padding:0;justify-content:center;gap:0}
+  html.sb-collapsed .sidebar-foot .user-info>div:not(.user-av){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  /* botão expandir/recolher (rodapé) */
+  html .sb-toggle{display:flex}
+  html.sb-collapsed .sb-toggle svg{transform:rotate(180deg)}
+  /* transição suave (classe sb-anim só entra após o 1º quadro) */
+  html.sb-anim .sidebar{transition:width .24s cubic-bezier(.16,1,.3,1),transform .3s}
+  html.sb-anim .main,html.sb-anim .wrap{transition:margin-left .24s cubic-bezier(.16,1,.3,1)}
+}
+@media(prefers-reduced-motion:reduce){html.sb-anim .sidebar,html.sb-anim .main,html.sb-anim .wrap{transition:none!important}}
+.sb-toggle{display:none;margin-bottom:6px}
+.sb-toggle svg{transition:transform .2s}
 @media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(10,26,36,.4)}
+  .sidebar{transform:translateX(-100%);width:min(var(--sidebar-w,240px),86vw);overscroll-behavior:contain}
+  /* gaveta fechada: fora da tela E fora da ordem de tabulação / leitor de tela */
+  .sidebar:not(.open){visibility:hidden;transition:transform .3s,visibility 0s .3s}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 32px rgba(10,26,36,.4);visibility:visible;transition:transform .3s}
   #sidebar-close-btn{display:flex!important}
+  /* a barra superior da página (sticky, z-index 100) ficava por cima do topo da gaveta e do fundo escurecido */
+  body.sb-open .topbar{z-index:90}
   /* com o sidebar aberto, esconder a barra inferior (evita 2 menus competindo/sobrepostos) */
   body.sb-open .bottom-nav,
   body.sb-open .mobile-nav{display:none!important}
 }
+
+/* dica flutuante do trilho de ícones (tablet): o title nativo não aparece em toque nem some do clip do trilho */
+.sb-tip{position:fixed;z-index:300;pointer-events:none;background:#0A1A24;color:#fff;border:1px solid rgba(255,255,255,.18);
+  border-radius:8px;padding:7px 11px;font:500 13px/1.2 var(--sans,system-ui);white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.3);
+  transform:translateY(-50%)}
+.sb-tip[hidden]{display:none}

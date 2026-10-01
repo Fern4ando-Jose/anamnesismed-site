@@ -356,6 +356,7 @@ AM.motivo("doenca-diverticular", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "HINCHEY",
         "name": "Clasificación de la diverticulitis complicada",
         "rows": [
           [
@@ -377,6 +378,7 @@ AM.motivo("doenca-diverticular", {
         ]
       },
       {
+        "kw": "LOCALIZACIÓN",
         "name": "Características de la diverticulitis",
         "rows": [
           [

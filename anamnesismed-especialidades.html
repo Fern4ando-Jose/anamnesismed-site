@@ -6,15 +6,23 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
-<script src="am-icons.js?v=f6cfe7c9"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
+<script src="am-icons.js?v=3383aef7"></script>
 <script src="nav-back.js?v=eeac804b"></script>
-<title>AnamnesísMed — Nova HC</title>
+<title>AnamnesísMed — Nueva HC</title>
+<meta name="description" content="Elige el motivo de consulta y arma una nueva historia clínica en AnamnesísMed.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -22,17 +30,17 @@
   --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
   --secondary:#0d9488;--accent:#f59e0b;
   --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
+  --serif:'Space Grotesk',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
   --sidebar-w:240px
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;display:flex}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
 
 /* ── SIDEBAR ── */
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -56,7 +64,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .topbar-title{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .lang-toggle{display:flex;background:rgba(13,45,61,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
-.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn{padding:4px 11px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 
 /* ── PAINEL DE CONTEÚDO ── */
@@ -65,7 +73,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* ── EMPTY STATE ── */
 .empty-state{
   display:flex;flex-direction:column;align-items:center;
-  justify-content:center;min-height:60vh;
+  justify-content:center;min-height:60vh;min-height:60dvh;
   text-align:center;gap:12px
 }
 .es-icon{font-size:52px}
@@ -106,7 +114,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 /* ── MOTIVOS ── */
 .cat-block{margin-bottom:28px}
 .cat-label{
-  font-size:10px;font-weight:700;letter-spacing:1px;
+  font-size:12px;font-weight:700;letter-spacing:1px;
   text-transform:uppercase;color:var(--muted);
   margin-bottom:10px;padding-bottom:8px;
   border-bottom:1px solid var(--line)
@@ -155,7 +163,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .mn-item{
   flex:1;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:3px;padding:10px 4px;
-  font-size:10px;font-weight:600;color:var(--muted);
+  font-size:12px;font-weight:600;color:var(--muted);
   text-decoration:none;background:none;border:none;cursor:pointer;transition:color .15s
 }
 .mn-item.active,.mn-item:active{color:var(--primary)}
@@ -169,7 +177,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   background:var(--bg-card);border-radius:16px 16px 0 0;
   z-index:160;transform:translateY(100%);
   transition:transform .3s cubic-bezier(.32,.72,0,1);
-  max-height:70vh;overflow:hidden;display:flex;flex-direction:column
+  max-height:70vh;max-height:70dvh;overflow:hidden;display:flex;flex-direction:column
 }
 .esp-drawer.open{transform:translateY(0)}
 .esp-drawer-head{
@@ -177,7 +185,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0
 }
 .esp-drawer-title{font-size:15px;font-weight:700;color:var(--ink)}
-.esp-drawer-close{background:var(--bg);border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.esp-drawer-close{background:var(--bg);border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .esp-drawer-list{overflow-y:auto;padding:10px 12px 24px;display:flex;flex-direction:column;gap:4px}
 .esp-drawer-btn{
   display:flex;align-items:center;gap:12px;
@@ -201,7 +209,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .topbar{padding:0 14px;height:52px}
   .motivos-grid{grid-template-columns:1fr}
   .hamburger{display:flex}
-  .topbar-back span{display:none}
+  .topbar-back span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
   .topbar-back::before{content:'←'}
   .panel-esp-title{font-size:20px}
 }
@@ -215,9 +223,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .motivos-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 }
 </style>
-  <link rel="stylesheet" href="sidebar.css?v=20566b6d">
+  <link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
+<link rel="stylesheet" href="sidebar.css?v=0c39aa1b">
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <!-- SIDEBAR BACKDROP (mobile) -->
 
@@ -225,7 +237,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 <div id="sidebar-root"></div>
 
 <!-- ── MAIN ── -->
-<div class="main">
+<main class="main" id="main" tabindex="-1">
 
   <!-- TOPBAR -->
   <header class="topbar">
@@ -244,8 +256,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
     <div class="topbar-right">
       <div class="lang-toggle">
-        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
       </div>
     </div>
   </header>
@@ -253,7 +265,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <!-- PAINEL -->
   <div class="panel" id="panel"><!-- preenchido por JS --></div>
 
-</div><!-- /main -->
+</main><!-- /main -->
 
 <!-- MOBILE NAV -->
 <nav class="mobile-nav">
@@ -283,12 +295,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   <div class="esp-drawer-head">
     <span class="esp-drawer-title pt">Especialidades</span>
     <span class="esp-drawer-title es">Especialidades</span>
-    <button class="esp-drawer-close" onclick="closeEspDrawer()">✕</button>
+    <button type="button" class="esp-drawer-close" onclick="closeEspDrawer()" aria-label="Fechar / Cerrar">✕</button>
   </div>
   <div class="esp-drawer-list" id="esp-drawer-list"><!-- preenchido por JS --></div>
 </div>
 
-<script src="anamnesismed-motivos.js?v=ad716e9d"></script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
 <script>
 // ── DADOS ────────────────────────────────────────────────────────────────────
 // Metadados de APRESENTAÇÃO das especialidades (nome + ícone exibidos no
@@ -486,7 +498,12 @@ function setTab(t){
 }
 
 // ── LANG ──────────────────────────────────────────────────────────────────────
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Nueva HC", "d": "Elige el motivo de consulta y arma una nueva historia clínica en AnamnesísMed."}, "pt": {"t": "AnamnesísMed — Nova HC", "d": "Escolha o motivo da consulta e monte uma nova história clínica no AnamnesísMed."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(lang){
+  amSetMeta(lang);
+  amLangA11y(lang);
   currentLang=lang;
   document.documentElement.setAttribute("data-lang",lang);
   document.getElementById("btn-es").classList.toggle("active",lang==="es");
@@ -518,7 +535,8 @@ document.addEventListener("DOMContentLoaded",()=>{
   // nome DEPOIS que a sessão resolve. Não chamar aqui para evitar nome vazio.
 });
 </script>
-<script src="supabase-integration.js?v=bb827873" defer></script>
-<script src="sidebar.js?v=f6cd0d5b"></script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
+<script src="supabase-integration.js?v=628b1cd6" defer></script>
+<script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

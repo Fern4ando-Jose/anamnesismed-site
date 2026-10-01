@@ -2,7 +2,7 @@
 AM.motivo("dor-abdominal", {
   "name": "Dor Abdominal",
   "nameEs": "Dolor Abdominal",
-  "icon": "🫀",
+  "icon": "🫃",
   "color": "mc-accent",
   "isPain": true,
   "rasHighlight": [
@@ -460,6 +460,7 @@ AM.motivo("dor-abdominal", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de dolor abdominal",
         "rows": [
           [

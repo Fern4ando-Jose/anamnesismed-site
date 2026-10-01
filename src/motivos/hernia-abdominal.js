@@ -361,6 +361,7 @@ AM.motivo("hernia-abdominal", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Estados clínicos de la hernia",
         "rows": [
           [
@@ -382,6 +383,7 @@ AM.motivo("hernia-abdominal", {
         ]
       },
       {
+        "kw": "LOCALIZACIONES",
         "name": "Tipos por localización",
         "rows": [
           [

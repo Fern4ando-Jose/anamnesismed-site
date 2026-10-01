@@ -373,6 +373,7 @@ AM.motivo("tosse", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de tos crónica (>8 semanas)",
         "rows": [
           [

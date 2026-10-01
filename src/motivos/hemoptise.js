@@ -184,13 +184,26 @@ AM.motivo("hemoptise", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "Clasificación por volumen",
         "name": "Hemoptisis — clasificación por volumen",
         "rows": [
-          ["Mínima/estrías", "Bajo riesgo inmediato — investigar causa"],
-          ["Leve", "< 250 mL/24h — hospitalizar, sin riesgo de asfixia"],
-          ["Moderada", "250–500 mL/24h — internación, vigilancia intensiva"],
-          ["Grave", "500–600 mL/24h — UCI, broncoscopia urgente"],
-          ["Fulminante", "> 600 mL/24h — muerte por asfixia — emergencia"]
+          ["Estrías — bajo riesgo inmediato — investigar causa", "", "Mínima/estrías"],
+          ["< 250 mL/24h — hospitalizar, sin riesgo de asfixia", "", "Leve"],
+          ["250–500 mL/24h — internación, vigilancia intensiva", "", "Moderada"],
+          ["500–600 mL/24h — UCI, broncoscopia urgente", "", "Grave"],
+          ["> 600 mL/24h — muerte por asfixia — emergencia", "", "Fulminante"]
+        ]
+      },
+      {
+        "kw": "Causas por frecuencia",
+        "name": "Etiología de la hemoptisis",
+        "rows": [
+          ["Causa más común (esputo hemoptoico leve)", "", "Bronquitis/EPOC"],
+          ["2ª causa — adulto fumador > 40 años", "", "Carcinoma broncogénico"],
+          ["Volumen alto, matutino, crónico", "", "Bronquiectasias"],
+          ["Contacto con TB, síntomas B, nódulo/cavidad", "", "TB activa o cicatriz"],
+          ["Pleurítica + TVP + taquicardia + Dímero D ↑", "", "TEP"],
+          ["Disnea de esfuerzo, soplo mitral, ortopnea", "", "Estenosis mitral"]
         ]
       }
     ],

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /app
+Disallow: /dashboard
+Disallow: /login
+Disallow: /anamnesismed-app.html
+Disallow: /anamnesismed-dashboard.html
+Disallow: /anamnesismed-auth.html
+Disallow: /anamnesismed-config.html
+
+# NOTA: domínio assumido = https://anamnesismed.com (extraído do rodapé/contato da landing).
+Sitemap: https://anamnesismed.com/sitemap.xml

@@ -165,7 +165,7 @@ AM.motivo("semio-dor", {
   ],
   "aeaGuideCir": [
     {
-      "q": "Aparición / Início (A)",
+      "q": "Aparecimento / Início (A)",
       "qEs": "Aparición / Inicio (A)",
       "type": "radio",
       "opts": [
@@ -263,47 +263,47 @@ AM.motivo("semio-dor", {
         "rows": [
           [
             "L",
-            "Localización",
+            "Localização",
             "Onde dói — apontar com um dedo (somática) ou difusa/mal definida (visceral)"
           ],
           [
             "I",
-            "Irradiación",
+            "Irradiação",
             "Para onde a dor se propaga (ombro na irritação diafragmática, dorso na pancreatite)"
           ],
           [
             "T",
             "Tipo",
-            "Urente, constritivo, gravativo, terebrante, pulsátil, surdo, fulgurante, punzante, cólico, lancinante"
+            "Urente, constritivo, gravativo, terebrante, pulsátil, surdo, fulgurante, em pontada, cólico, lancinante"
           ],
           [
             "I",
-            "Intensidad",
+            "Intensidade",
             "EVA 0-10 — leve, moderada, intensa; repercussão em atividades/sono"
           ],
           [
             "D",
-            "Duración",
+            "Duração",
             "Contínua ou descontínua (em crises); tempo de evolução"
           ],
           [
             "I",
-            "Inicio",
+            "Início",
             "Brusco/súbito (vascular, perfuração) ou insidioso (inflamatório)"
           ],
           [
             "F",
-            "Factores",
+            "Fatores",
             "O que inicia, exacerba ou acalma a dor (esforço, alimentação, repouso, medicação)"
           ],
           [
             "E",
-            "Evolución",
+            "Evolução",
             "Progressiva, flutuante, estável ou regressiva"
           ],
           [
             "S",
-            "Síntomas acompañantes",
+            "Sintomas acompanhantes",
             "Náuseas, vômitos, febre, sudorese, alterações intestinais"
           ]
         ]
@@ -314,27 +314,27 @@ AM.motivo("semio-dor", {
         "rows": [
           [
             "A",
-            "Aparición / Início",
+            "Aparecimento / Início",
             "Quando e como começou: súbito (vascular/perfuração) ou gradual (inflamatório)"
           ],
           [
             "L",
-            "Localización",
+            "Localização",
             "Onde dói — apontar com um dedo (somática) ou difusa/mal definida (visceral)"
           ],
           [
             "I",
-            "Irradiación",
+            "Irradiação",
             "Para onde a dor se propaga (ex.: ombro na irritação diafragmática, dorso na pancreatite)"
           ],
           [
             "C",
-            "Carácter",
+            "Caráter",
             "Tipo: em cólica, queimação, pontada, peso, lancinante"
           ],
           [
             "I",
-            "Intensidad",
+            "Intensidade",
             "EVA 0-10 e repercussão nas atividades/sono"
           ],
           [
@@ -572,6 +572,7 @@ AM.motivo("semio-dor", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Caracterización semiológica del dolor (clínica)",
         "rows": [
           [
@@ -613,6 +614,7 @@ AM.motivo("semio-dor", {
         ]
       },
       {
+        "kw": "ALICIA",
         "name": "Caracterización semiológica del dolor",
         "rows": [
           [
@@ -642,6 +644,7 @@ AM.motivo("semio-dor", {
         ]
       },
       {
+        "kw": "OPQRST",
         "name": "Esquema anglosajón del dolor",
         "rows": [
           [
@@ -671,6 +674,7 @@ AM.motivo("semio-dor", {
         ]
       },
       {
+        "kw": "VISCERAL x SOMÁTICA",
         "name": "Tipos de dolor",
         "rows": [
           [

@@ -1,0 +1,214 @@
+/**
+ * Utilitários compartilhados das Vercel Functions (arquivo com prefixo "_": a Vercel NÃO o
+ * publica como rota; só é empacotado junto de quem o importa).
+ *
+ * Nada aqui loga dado de paciente nem o texto cru de erros de SDK.
+ */
+
+const crypto = require('node:crypto');
+
+/**
+ * Descrição SEGURA de um erro para log: só código/tipo/nome (nunca `message`, que em SDK/banco pode
+ * trazer trecho de request, e-mail ou dado clínico). Erros próprios do código criados com
+ * `falhaSegura(msg)` (msg montada só com códigos) podem expor a mensagem.
+ */
+function descreveErro(e) {
+  if (e == null) return 'erro desconhecido';
+  if (typeof e === 'string') return 'erro';
+  if (e.seguro === true && typeof e.message === 'string') return e.message.slice(0, 120);
+  const partes = [e.code, e.type, e.statusCode || e.status, e.name !== 'Error' ? e.name : null].filter((x) => x != null && x !== '');
+  return (partes.length ? partes.map(String).join('/') : 'erro desconhecido').slice(0, 120);
+}
+
+// Cria um Error cuja mensagem é segura para log (use só com códigos/IDs, nunca texto vindo de fora).
+function falhaSegura(msg) {
+  return Object.assign(new Error(msg), { seguro: true });
+}
+
+/**
+ * Confere `Authorization: Bearer <segredo>` em tempo constante (crypto.timingSafeEqual sobre o SHA-256
+ * de cada lado, o que também esconde o tamanho do segredo). Segredo vazio nunca confere.
+ */
+function bearerConfere(header, segredo) {
+  if (!segredo || typeof header !== 'string') return false;
+  const h = (v) => crypto.createHash('sha256').update(String(v)).digest();
+  return crypto.timingSafeEqual(h(header), h('Bearer ' + segredo));
+}
+
+// Extrai o token do header `Authorization: Bearer <access_token do Supabase>`.
+function lerToken(req) {
+  const h = (req.headers && (req.headers['authorization'] || req.headers['Authorization'])) || '';
+  return /^Bearer\s+(.+)$/i.test(h) ? h.replace(/^Bearer\s+/i, '').trim() : '';
+}
+
+// CORS fail-closed: só o domínio do app (NEXT_PUBLIC_URL), nunca '*'.
+function aplicaCors(res, metodos) {
+  const origem = process.env.NEXT_PUBLIC_URL || '';
+  if (origem) res.setHeader('Access-Control-Allow-Origin', origem);
+  res.setHeader('Access-Control-Allow-Methods', metodos);
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+}
+
+/**
+ * Devolve 1 unidade da cota diária de IA (RPC `devolver_cota_ia`) quando a chamada ao
+ * modelo FALHOU depois de a cota já ter sido consumida (a cota é consumida ANTES, de forma
+ * atômica, para o teto de custo valer sob concorrência). Nunca lança e nunca mascara o erro
+ * original da rota: qualquer falha aqui só vira log (sem dados sensíveis).
+ * Retorna true se a devolução foi confirmada.
+ */
+async function devolverCota(sbAdmin, userId, rota) {
+  try {
+    const { error } = await sbAdmin.rpc('devolver_cota_ia', { p_user_id: userId, p_rota: rota });
+    if (error) {
+      console.error('[cota] devolver_cota_ia falhou (migration 2026-10-02 aplicada?):', rota, descreveErro(error));
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('[cota] devolver_cota_ia exceção:', rota, descreveErro(e));
+    return false;
+  }
+}
+
+// Tabela ainda não criada (migration opcional não aplicada): 42P01 = undefined_table (Postgres),
+// PGRST205 = tabela fora do schema cache (PostgREST). Tratada como "sem dados", não como falha.
+function tabelaAusente(error) {
+  return !!error && (error.code === '42P01' || error.code === 'PGRST205');
+}
+
+// Valida o token no Supabase. Retorna o usuário ({id, email, ...}) ou null.
+async function usuarioDoToken(sbAdmin, token) {
+  try {
+    const { data, error } = await sbAdmin.auth.getUser(token);
+    return (!error && data && data.user && data.user.id) ? data.user : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Padrão de entrada das rotas: CORS restrito, `Cache-Control: no-store`, preflight e método.
+// Retorna true quando a resposta JÁ foi enviada (OPTIONS ou método errado) — a rota só faz `return`.
+function iniciaRota(req, res, metodo) {
+  aplicaCors(res, metodo + ', OPTIONS');
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method === 'OPTIONS') { res.status(200).end(); return true; }
+  if (req.method !== metodo) { res.status(405).json({ error: 'Method not allowed' }); return true; }
+  return false;
+}
+
+/**
+ * Autentica a requisição (Bearer do Supabase). Retorna `{ user }` ou `{ status: 401, error }`
+ * (a rota só devolve o erro). `msg(pt, es)` permite rotas bilíngues; o padrão é português.
+ * A identidade vem SEMPRE do token validado no servidor, nunca do body.
+ */
+async function autenticar(sbAdmin, req, msg) {
+  const m = msg || ((p) => p);
+  const token = lerToken(req);
+  if (!token) return { status: 401, error: m('Não autenticado', 'No autenticado') };
+  try {
+    const { data, error } = await sbAdmin.auth.getUser(token);
+    if (error || !data || !data.user || !data.user.id) return { status: 401, error: m('Sessão inválida', 'Sesión inválida') };
+    return { user: data.user };
+  } catch (e) {
+    return { status: 401, error: m('Falha ao validar sessão', 'Error al validar la sesión') };
+  }
+}
+
+// Limites por usuário (janela fixa, em segundos) das rotas SEM cota de IA. Ajuste aqui.
+const LIMITES = {
+  'exportar-dados': { max: 5, janelaSeg: 3600 },
+  'excluir-conta': { max: 3, janelaSeg: 3600 },
+  'checkout': { max: 20, janelaSeg: 3600 },
+  'portal-cliente': { max: 20, janelaSeg: 3600 },
+  // Rajada curta nas rotas de IA (além da cota diária): protege o custo contra disparo em loop.
+  'gerar-hc-rajada': { max: 6, janelaSeg: 60 },
+  'assistente-dx-rajada': { max: 6, janelaSeg: 60 },
+};
+
+/**
+ * Consome 1 unidade do limite `acao` do usuário (RPC atômica `consumir_limite`, só service_role).
+ * Retorna true se PODE seguir. Caso contrário JÁ respondeu: 429 + `Retry-After` (segundos) quando
+ * estourou, ou 503 quando o limitador está indisponível (FALHA FECHADA: RPC ausente/erro — a
+ * migration 2026-10-03-consumir-limite.sql não foi aplicada?).
+ */
+async function aplicaLimite(res, sbAdmin, userId, acao) {
+  const cfg = LIMITES[acao];
+  let retorno;
+  try {
+    retorno = await sbAdmin.rpc('consumir_limite', { p_user_id: userId, p_acao: acao, p_janela_seg: cfg.janelaSeg, p_max: cfg.max });
+  } catch (e) {
+    retorno = { error: { code: 'EXC' } };
+  }
+  const { data, error } = retorno || {};
+  if (error || typeof data !== 'number' || data < 0) {
+    console.error('[ALERTA limite] consumir_limite indisponível (fail-closed; migration 2026-10-03 aplicada?):', acao, error ? descreveErro(error) : 'retorno inesperado');
+    res.status(503).json({ error: 'Serviço temporariamente indisponível. Tente novamente em instantes.', code: 'limite_indisponivel' });
+    return false;
+  }
+  if (data > 0) {
+    res.setHeader('Retry-After', String(data));
+    res.status(429).json({ error: 'Muitas tentativas. Aguarde antes de tentar de novo.', code: 'rate_limited', retry_after: data });
+    return false;
+  }
+  return true;
+}
+
+// Assinaturas do Stripe que ainda valem como plano `pro` (past_due conta: o caminho é atualizar o cartão).
+const STATUS_VIVOS = ['active', 'trialing', 'past_due'];
+
+// O customer tem alguma assinatura viva (exceto `ignorarId`)? Lança em erro do Stripe (o chamador decide).
+async function temAssinaturaViva(stripe, customerId, ignorarId) {
+  const lista = await stripe.subscriptions.list({ customer: customerId, status: 'all', limit: 100 });
+  return ((lista && lista.data) || []).some((sub) => sub.id !== ignorarId && STATUS_VIVOS.includes(sub.status));
+}
+
+// A conta está marcada como "em exclusão"? (tabela contas_em_exclusao, só service_role.)
+// Retorna true/false; LANÇA se não der para saber — quem chama falha fechado.
+// `{ toleraAusente: true }`: tabela inexistente (migration não aplicada) = sem marca (webhook/cron,
+// para não travar billing); sem a opção, tabela ausente também lança.
+async function contaEmExclusao(sbAdmin, userId, opcoes) {
+  const { data, error } = await sbAdmin.from('contas_em_exclusao').select('user_id').eq('user_id', userId).maybeSingle();
+  if (error) {
+    if (opcoes && opcoes.toleraAusente && tabelaAusente(error)) return false;
+    throw falhaSegura('erro ao ler contas_em_exclusao: ' + descreveErro(error));
+  }
+  return !!data;
+}
+
+/**
+ * Limpeza periódica (chamada pelo cron diário /api/manter-banco-vivo, best effort — nunca lança):
+ *  - rate_limits: janelas com mais de 2 dias (a maior janela usada é 1 h; o teto da RPC é 24 h);
+ *  - contas_em_exclusao: marcas com mais de 30 dias (checkout/webhook tardios já não chegam);
+ *  - stripe_events: eventos com mais de 90 dias (a janela de reentrega do Stripe é de poucos dias).
+ * Tabela ausente (migration não aplicada) é ignorada. Devolve { tabela: nº de linhas apagadas | null }.
+ */
+const RETENCAO = [
+  ['rate_limits', 'janela_inicio', 2],
+  ['contas_em_exclusao', 'iniciado_em', 30],
+  ['stripe_events', 'received_at', 90],
+  // `dia` é DATE (não timestamptz); comparar com o ISO completo do corte funciona (cast implícito).
+  ['gerar_hc_usage', 'dia', 90],
+  ['ai_assistant_usage', 'dia', 90],
+];
+async function limparAntigos(sbAdmin, agora) {
+  const base = agora instanceof Date ? agora.getTime() : Date.now();
+  const r = {};
+  for (const [tabela, coluna, dias] of RETENCAO) {
+    try {
+      const corte = new Date(base - dias * 86400000).toISOString();
+      const { error, count } = await sbAdmin.from(tabela).delete({ count: 'exact' }).lt(coluna, corte);
+      if (error) {
+        r[tabela] = null;
+        if (!tabelaAusente(error)) console.error('[limpeza] falha em', tabela, descreveErro(error));
+      } else {
+        r[tabela] = typeof count === 'number' ? count : 0;
+      }
+    } catch (e) {
+      r[tabela] = null;
+      console.error('[limpeza] exceção em', tabela, descreveErro(e));
+    }
+  }
+  return r;
+}
+
+module.exports = { descreveErro, falhaSegura, bearerConfere, limparAntigos, RETENCAO, lerToken, aplicaCors, devolverCota, tabelaAusente, usuarioDoToken, iniciaRota, autenticar, aplicaLimite, LIMITES, STATUS_VIVOS, temAssinaturaViva, contaEmExclusao };

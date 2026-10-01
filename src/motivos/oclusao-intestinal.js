@@ -362,6 +362,7 @@ AM.motivo("oclusao-intestinal", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "4 SIGNOS",
         "name": "Obstrucción intestinal",
         "rows": [
           [
@@ -383,6 +384,7 @@ AM.motivo("oclusao-intestinal", {
         ]
       },
       {
+        "kw": "",
         "name": "Causas más comunes en el adulto",
         "rows": [
           [

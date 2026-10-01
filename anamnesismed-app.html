@@ -6,23 +6,31 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AnamnesísMed — HC Completa</title>
+<meta name="description" content="Armado de la historia clínica (HC) con guía AEA, mnemotécnicas, maniobras y narrativa automática en AnamnesísMed.">
+<meta name="robots" content="noindex, nofollow">
 <script>
 /* Idioma antes da 1ª pintura (evita flash ES→PT) + esconde a tela de seleção
    quando a página abre direto numa HC (deep-link novo/motivo/hc). */
 (function(){try{
-  var l=localStorage.getItem('am-lang'); if(l)document.documentElement.setAttribute('data-lang',l);
+  var l=localStorage.getItem('am-lang'); if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}
   var p=new URLSearchParams(location.search);
   if(p.get('novo')||p.get('motivo')||p.get('hc'))document.documentElement.classList.add('deep-hc');
 }catch(e){}})();
 </script>
-<script src="am-icons.js?v=f6cfe7c9"></script>
+<script src="am-icons.js?v=3383aef7"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -31,9 +39,9 @@ html,body{height:100%}
   --ink:#0d2d3d; --primary:#0e7490; --primary-dark:#0c5f72;
   --secondary:#0d9488; --accent:#f59e0b; --danger:#c0392b;
   --muted:#4b6070; --line:rgba(13,45,61,.10); --line-md:rgba(13,45,61,.18);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
-  --mono:'DM Mono',monospace;
+  --serif:'Space Grotesk',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
   --ease:cubic-bezier(.16,1,.3,1);
   --sidebar-w:248px
 }
@@ -43,7 +51,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14p
 
 /* ── SIDEBAR ── */
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);min-width:0;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 .topbar{
   position:sticky;top:0;z-index:100;
   background:rgba(240,244,248,.93);backdrop-filter:blur(14px);
@@ -69,16 +77,16 @@ html.deep-hc #screen-index{display:none!important}
 .spec-subtitle{font-size:12px;color:var(--muted);margin-top:3px}
 .spec-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--line);padding-bottom:0;overflow-x:auto;scrollbar-width:none}
 .spec-tabs::-webkit-scrollbar{display:none}
-.spec-tab{padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;user-select:none;text-decoration:none;display:flex;align-items:center;gap:6px}
+.spec-tab{background:none;border:0;font-family:inherit;padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;user-select:none;text-decoration:none;display:flex;align-items:center;gap:6px}
 .spec-tab:hover{color:var(--ink)}
 .spec-tab.active{color:var(--ink);border-bottom-color:var(--primary)}
-.spec-tab-count{font-size:9px;font-family:var(--mono);font-weight:700;padding:1px 6px;border-radius:8px;background:var(--cream);color:var(--muted)}
+.spec-tab-count{font-size:12px;font-family:var(--mono);font-weight:700;padding:1px 6px;border-radius:8px;background:var(--cream);color:var(--muted)}
 .spec-tab.active .spec-tab-count{background:var(--primary);color:#fff}
 .cat-section{margin-bottom:24px}
-.cat-lbl{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding:0 2px;display:flex;align-items:center;gap:8px}
+.cat-lbl{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding:0 2px;display:flex;align-items:center;gap:8px}
 .cat-lbl::after{content:'';flex:1;height:1px;background:var(--line)}
 .motivo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.motivo-card{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);padding:13px 12px;cursor:pointer;user-select:none;transition:all .18s;display:flex;align-items:flex-start;gap:9px;position:relative;overflow:hidden;text-decoration:none}
+.motivo-card{font:inherit;color:inherit;text-align:left;width:100%;background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);padding:13px 12px;cursor:pointer;user-select:none;transition:all .18s;display:flex;align-items:center;gap:9px;position:relative;overflow:hidden;text-decoration:none}
 .motivo-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,45,61,.09);border-color:rgba(14,116,144,.3)}
 .motivo-card:active{transform:scale(.98)}
 .motivo-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
@@ -89,12 +97,12 @@ html.deep-hc #screen-index{display:none!important}
 .mc-purple::before{background:#6d28d9}
 .mc-navy::before{background:#1a3a5c}
 .motivo-icon{font-size:18px;flex-shrink:0;width:34px;height:34px;background:var(--cream);border-radius:7px;display:flex;align-items:center;justify-content:center}
-.motivo-info{flex:1;min-width:0}
-.motivo-name{font-size:12px;font-weight:700;line-height:1.3;color:var(--ink)}
-.motivo-sub{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.motivo-info{flex:1;min-width:0;display:block}
+.motivo-name{display:block;font-size:12px;font-weight:700;line-height:1.3;color:var(--ink)}
+.motivo-sub{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── HC SCREEN ── */
-.hc-screen{display:none;flex-direction:column;min-height:calc(100vh - 53px)}
+.hc-screen{display:none;flex-direction:column;min-height:calc(100vh - 53px);min-height:calc(100dvh - 53px)}
 .hc-screen.active{display:flex}
 
 /* Motivo header */
@@ -103,7 +111,7 @@ html.deep-hc #screen-index{display:none!important}
 .hc-motivo-icon{font-size:22px;width:44px;height:44px;border-radius:10px;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .hc-header-info{flex:1;min-width:0}
 .hc-motivo-name{font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.3px;color:var(--ink)}
-.hc-motivo-spec{font-size:11px;color:var(--muted);margin-top:2px}
+.hc-motivo-spec{font-size:12px;color:var(--muted);margin-top:2px}
 .hc-motivo-patient{font-size:12.5px;color:var(--ink);margin-top:6px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;line-height:1.3}
 .hc-motivo-patient.empty{color:var(--muted);font-style:italic;font-size:12px}
 .hc-pm-dot{color:var(--line-md)}
@@ -113,7 +121,7 @@ html.deep-hc #screen-index{display:none!important}
 
 /* Clinical guide tabs (Mnemônicas, Manobras, etc.) */
 /* #1 — barra de abas do guia: wrapper relativo p/ ancorar o indicador de "há mais abas". */
-.guide-tabs-wrap{position:relative}
+.guide-tabs-wrap{position:relative;overflow-x:clip}
 .guide-tabs{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--bg-card);border-bottom:2px solid var(--line);padding:0 24px;flex-shrink:0;gap:2px;scroll-behavior:smooth}
 .guide-tabs::-webkit-scrollbar{display:none}
 /* Indicador PERSISTENTE de que há mais abas à direita (rolável no celular): seta
@@ -128,7 +136,7 @@ html.deep-hc #screen-index{display:none!important}
 @keyframes tabsArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
 @keyframes tabsNudge{0%{transform:translateX(0)}40%{transform:translateX(-22px)}75%{transform:translateX(0)}100%{transform:translateX(0)}}
 .guide-tab.tabs-nudge{animation:tabsNudge 1s ease-in-out}
-.guide-tab{flex:0 0 auto;padding:11px 16px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px;white-space:nowrap;user-select:none;transition:all .15s;display:flex;align-items:center;gap:6px}
+.guide-tab{background:none;border:0;font-family:inherit;flex:0 0 auto;padding:11px 16px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px;white-space:nowrap;user-select:none;transition:all .15s;display:flex;align-items:center;gap:6px}
 .guide-tab:hover{color:var(--ink)}
 .guide-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
 .guide-tab-icon{font-size:15px}
@@ -155,10 +163,10 @@ html.deep-hc #screen-index{display:none!important}
   transition:background .15s
 }
 .hc-panel-head:hover{background:var(--bg)}
-.hc-panel-num{font-size:11px;font-weight:700;font-family:var(--mono);color:rgba(14,116,144,.45);min-width:20px}
+.hc-panel-num{font-size:12px;font-weight:700;font-family:var(--mono);color:var(--muted);min-width:20px}
 .hc-panel-title{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--ink);flex:1}
-.hc-panel-title small{font-family:var(--sans);font-size:10px;color:var(--muted);font-weight:400;display:block;margin-top:1px}
-.hc-panel-badge{font-size:9px;font-weight:700;font-family:var(--mono);padding:2px 7px;border-radius:10px;background:rgba(14,116,144,.1);color:var(--primary)}
+.hc-panel-title small{font-family:var(--sans);font-size:12px;color:var(--muted);font-weight:400;display:block;margin-top:1px}
+.hc-panel-badge{font-size:12px;font-weight:700;font-family:var(--mono);padding:2px 7px;border-radius:10px;background:rgba(14,116,144,.1);color:var(--primary)}
 .hc-panel-toggle{font-size:18px;color:var(--primary);transition:transform .25s;flex-shrink:0;font-weight:300}
 .hc-panel.open .hc-panel-toggle{transform:rotate(45deg)}
 .hc-panel-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
@@ -170,9 +178,9 @@ html.deep-hc #screen-index{display:none!important}
 .f-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .f-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .f-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.f-label{font-size:11px;font-weight:700;color:rgba(13,45,61,.7);margin-bottom:4px;display:block}
-.f-hint{font-size:10px;color:rgba(75,96,112,.5);font-style:italic;margin-bottom:3px}
-.f-input{width:100%;padding:8px 11px;font-size:13px;font-family:var(--sans);background:var(--bg);border:1.5px solid var(--line-md);border-radius:7px;color:var(--ink);outline:none;transition:border-color .2s}
+.f-label{font-size:12px;font-weight:700;color:rgba(13,45,61,.7);margin-bottom:4px;display:block}
+.f-hint{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:3px}
+.f-input{width:100%;padding:8px 11px;font-size:13px;font-family:var(--sans);background:var(--bg);border:1.5px solid var(--line-md);border-radius:7px;color:var(--ink);transition:border-color .2s}
 .f-input:focus{border-color:var(--primary);background:var(--bg-card);box-shadow:0 0 0 3px rgba(14,116,144,.1)}
 .f-input::placeholder{color:rgba(75,96,112,.35)}
 textarea.f-input{min-height:70px;resize:vertical}
@@ -180,7 +188,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
 /* Radio / Checkbox pills */
 .f-radios{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0 3px}
-.f-radio{padding:5px 12px;background:var(--cream);border:1.5px solid var(--line-md);border-radius:20px;font-size:11px;cursor:pointer;user-select:none;white-space:nowrap;transition:all .15s}
+.f-radio{padding:5px 12px;background:var(--cream);border:1.5px solid var(--line-md);border-radius:20px;font-size:12px;cursor:pointer;user-select:none;white-space:nowrap;transition:all .15s}
 .f-radio:hover{border-color:var(--primary)}
 .f-radio.sel{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
 .f-radio.sel-danger{background:var(--danger);border-color:var(--danger);color:#fff;font-weight:700}
@@ -188,29 +196,29 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 /* Checkbox grid */
 .f-checks{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:2px 0}
 .f-checks-3{grid-template-columns:1fr 1fr 1fr}
-.f-check{display:flex;align-items:flex-start;gap:7px;padding:7px 9px;background:var(--cream);border-radius:7px;cursor:pointer;user-select:none;font-size:11px;line-height:1.4;transition:background .15s;border:1.5px solid transparent}
+.f-check{display:flex;align-items:flex-start;gap:7px;padding:7px 9px;background:var(--cream);border-radius:7px;cursor:pointer;user-select:none;font-size:12px;line-height:1.4;transition:background .15s;border:1.5px solid transparent}
 .f-check:hover{border-color:var(--line-md)}
 .f-check.on{background:#e0f2f1;border-color:rgba(13,148,136,.3)}
 .f-check.on .f-checkbox{background:var(--primary);border-color:var(--primary);color:#fff}
-.f-checkbox{width:15px;height:15px;border:2px solid var(--line-md);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;transition:all .15s;margin-top:1px;color:transparent}
+.f-checkbox{width:15px;height:15px;border:2px solid var(--line-md);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all .15s;margin-top:1px;color:transparent}
 
 /* EVA scale */
 .f-eva{display:flex;gap:2px;padding:2px 0}
-.f-eva-btn{flex:1;text-align:center;padding:7px 1px;background:var(--cream);border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;user-select:none;transition:all .15s}
+.f-eva-btn{flex:1;text-align:center;padding:7px 1px;background:var(--cream);border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;transition:all .15s}
 .f-eva-btn.sel{background:var(--primary);color:#fff}
-.f-eva-lbl{display:flex;justify-content:space-between;font-size:9px;color:rgba(75,96,112,.5);padding:0 1px 4px}
+.f-eva-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:0 1px 4px}
 
 /* Section divider label */
-.f-section-lbl{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--primary);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.f-section-lbl{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--primary);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
 .f-section-lbl::after{content:'';flex:1;height:1px;background:rgba(14,116,144,.18)}
 
 /* Inline Sim/Não */
 .yn-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
 .yn-row:last-child{border-bottom:none}
 .yn-question{flex:1;font-size:12px;color:var(--ink);line-height:1.5;padding-top:2px}
-.yn-question small{font-size:10px;color:var(--muted);display:block;margin-top:1px}
+.yn-question small{font-size:12px;color:var(--muted);display:block;margin-top:1px}
 .yn-btns{display:flex;gap:4px;flex-shrink:0}
-.yn-btn{padding:4px 10px;font-size:10px;font-weight:700;border-radius:15px;border:1.5px solid var(--line-md);background:transparent;cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.yn-btn{padding:4px 10px;font-size:12px;font-weight:700;border-radius:15px;border:1.5px solid var(--line-md);background:transparent;cursor:pointer;transition:all .15s;font-family:var(--sans)}
 .yn-btn:hover{border-color:var(--primary)}
 .yn-btn.sim{background:var(--primary);border-color:var(--primary);color:#fff}
 .yn-btn.nao{background:var(--muted);border-color:var(--muted);color:#fff}
@@ -220,18 +228,18 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .mnem-card{background:var(--bg-card);border-radius:12px;border:1.5px solid var(--line);margin-bottom:18px;overflow:hidden;box-shadow:0 2px 10px rgba(13,45,61,.05)}
 .mnem-card-head{padding:12px 16px 8px;display:flex;align-items:flex-end;gap:10px;border-bottom:2px solid var(--primary);background:var(--cream)}
 .mnem-kw{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--primary);letter-spacing:-1.5px;line-height:1}
-.mnem-name{font-size:10px;color:var(--muted);padding-bottom:2px}
+.mnem-name{font-size:12px;color:var(--muted);padding-bottom:2px}
 .mnem-row{display:flex;gap:12px;padding:9px 16px;border-bottom:1px solid var(--line);align-items:flex-start}
 .mnem-row:last-child{border-bottom:none}
 .mnem-letter{font-size:12px;font-weight:700;color:var(--primary);min-width:14px;line-height:1.6;flex-shrink:0}
 .mnem-term{font-size:12px;font-weight:700;display:block;line-height:1.4}
-.mnem-hint{font-size:10px;color:var(--muted);display:block;line-height:1.4}
+.mnem-hint{font-size:12px;color:var(--muted);display:block;line-height:1.4}
 
 .acc{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);margin-bottom:8px;overflow:hidden}
 .acc-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
-.acc-num{font-size:14px;font-weight:700;color:var(--primary);opacity:.25;min-width:22px;line-height:1;flex-shrink:0}
+.acc-num{font-size:14px;font-weight:700;color:#566a77;min-width:22px;line-height:1;flex-shrink:0}
 .acc-title{font-size:13px;font-weight:700;flex:1;line-height:1.3}
-.acc-subtitle{font-size:10px;color:var(--muted);margin-top:1px}
+.acc-subtitle{font-size:12px;color:var(--muted);margin-top:1px}
 .acc-toggle{font-size:18px;color:var(--primary);transition:transform .25s;flex-shrink:0}
 .acc.open .acc-toggle{transform:rotate(45deg)}
 .acc-body{max-height:0;overflow:hidden;transition:max-height .38s ease}
@@ -239,44 +247,47 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .acc-steps{list-style:none;padding:6px 14px}
 .acc-step{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px;line-height:1.6}
 .acc-step:last-child{border-bottom:none}
-.acc-step-n{font-size:9px;font-weight:700;color:var(--primary);min-width:16px;margin-top:2px;flex-shrink:0}
+.acc-step-n{font-size:12px;font-weight:700;color:var(--primary);min-width:16px;margin-top:2px;flex-shrink:0}
 .acc-findings{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 14px 10px}
-.acc-finding{padding:8px 10px;border-left:3px solid;border-radius:0 5px 5px 0;font-size:11px;line-height:1.5}
+.acc-finding{padding:8px 10px;border-left:3px solid;border-radius:0 5px 5px 0;font-size:12px;line-height:1.5}
 .acc-finding.normal{border-color:var(--secondary);background:rgba(13,148,136,.07)}
 .acc-finding.abnormal{border-color:var(--danger);background:#fdf0eb}
-.acc-finding-lbl{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;color:rgba(13,45,61,.35);display:block}
+.acc-finding-lbl{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;color:#5a6b78;display:block}
 
 .sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .sign-card{background:var(--bg-card);border-radius:10px;border:1.5px solid var(--line);padding:13px;position:relative;overflow:hidden}
 .sign-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--primary)}
 .sign-name{font-family:var(--serif);font-size:14px;font-weight:700;margin-bottom:3px}
-.sign-eponym{font-size:9px;font-family:var(--mono);color:var(--primary);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:block}
-.sign-how{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:5px}
-.sign-means{font-size:10px;font-weight:700;background:var(--cream);padding:4px 8px;border-radius:5px;display:inline-block}
+.sign-eponym{font-size:12px;font-family:var(--mono);color:var(--primary);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:block}
+.sign-how{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:5px}
+.sign-means{font-size:12px;font-weight:700;background:var(--cream);padding:4px 8px;border-radius:5px;display:inline-block}
 
-.score-title{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink);margin:14px 0 7px;display:flex;align-items:center;gap:8px}
+.score-title{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink);margin:14px 0 7px;display:flex;align-items:center;gap:8px}
 .score-title::after{content:'';flex:1;height:1px;background:var(--line)}
-.score-table{width:100%;border-collapse:collapse;font-size:11px;background:var(--bg-card);border-radius:10px;overflow:hidden;border:1.5px solid var(--line);margin-bottom:10px}
-.score-table th{background:var(--ink);color:#fff;padding:7px 10px;text-align:left;font-size:8px;letter-spacing:1px;text-transform:uppercase}
+.score-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--bg-card);border-radius:10px;overflow:hidden;border:1.5px solid var(--line);margin-bottom:10px}
+.score-table th{background:var(--ink);color:#fff;padding:7px 10px;text-align:left;font-size:12px;letter-spacing:1px;text-transform:uppercase}
 .score-table td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
 .score-table tr:nth-child(even) td{background:var(--cream)}
 .score-table tr:last-child td{border-bottom:none}
 .score-table td:first-child{font-weight:700;color:var(--primary);font-size:12px}
-.score-note{background:rgba(13,148,136,.08);border-left:3px solid var(--secondary);border-radius:0 7px 7px 0;padding:9px 12px;font-size:11px;line-height:1.6;margin-bottom:12px;color:var(--primary-dark)}
-.score-note strong{display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px;opacity:.7}
+/* tabelas largas rolam na horizontal dentro do próprio bloco (nunca cortam o conteúdo) */
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:10px;max-width:100%}
+.tbl-scroll>table{margin-bottom:0}
+.score-note{background:rgba(13,148,136,.08);border-left:3px solid var(--secondary);border-radius:0 7px 7px 0;padding:9px 12px;font-size:12px;line-height:1.6;margin-bottom:12px;color:var(--primary-dark)}
+.score-note strong{display:block;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px;opacity:.7}
 .ibox{border-left:3px solid;border-radius:0 7px 7px 0;padding:10px 12px;margin-bottom:10px;font-size:12px;line-height:1.65}
 .ibox-primary{background:rgba(14,116,144,.07);border-color:var(--primary)}
 .ibox-secondary{background:rgba(13,148,136,.07);border-color:var(--secondary)}
 .ibox-danger{background:#fff0ee;border-color:var(--danger)}
 .ibox-accent{background:rgba(245,158,11,.07);border-color:var(--accent)}
-.ibox strong{display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;opacity:.6}
-.ddx-table{width:100%;border-collapse:collapse;font-size:11px;background:var(--bg-card);border-radius:10px;overflow:hidden;border:1.5px solid var(--line);margin-bottom:10px}
-.ddx-table th{background:var(--ink);color:#fff;padding:7px 10px;text-align:left;font-size:8px;letter-spacing:1px;text-transform:uppercase}
-.ddx-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55;font-size:11px}
+.ibox strong{display:block;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;opacity:.6}
+.ddx-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--bg-card);border-radius:10px;overflow:hidden;border:1.5px solid var(--line);margin-bottom:10px}
+.ddx-table th{background:var(--ink);color:#fff;padding:7px 10px;text-align:left;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+.ddx-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55;font-size:12px}
 .ddx-table tr:last-child td{border-bottom:none}
 .ddx-table td:first-child{font-weight:700;color:var(--ink);font-size:12px;white-space:nowrap}
-.ddx-inc{color:var(--danger);font-size:9px;font-weight:700;font-family:var(--mono)}
-.ddx-exc{color:var(--secondary);font-size:9px;font-weight:700;font-family:var(--mono)}
+.ddx-inc{color:var(--danger);font-size:12px;font-weight:700;font-family:var(--mono)}
+.ddx-exc{color:var(--secondary);font-size:12px;font-weight:700;font-family:var(--mono)}
 .conduta-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;font-size:13px;font-weight:700;border-radius:8px;border:none;cursor:pointer;transition:all .2s;text-decoration:none;margin-right:8px;margin-bottom:8px;font-family:var(--sans)}
 .conduta-btn-primary{background:var(--primary);color:#fff;box-shadow:0 3px 12px rgba(14,116,144,.3)}
 .conduta-btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
@@ -285,13 +296,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
 /* AEA guided questions */
 .aea-guided{background:rgba(14,116,144,.05);border:1px solid rgba(14,116,144,.18);border-radius:10px;padding:14px;margin-bottom:14px}
-.aea-guided-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin-bottom:10px}
+.aea-guided-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin-bottom:10px}
 .aea-q{margin-bottom:12px}
 .aea-q:last-child{margin-bottom:0}
 .aea-q-lbl{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:5px}
 /* Red flag: pergunta de sinal de alarme — sempre visível, destaque sóbrio */
 .aea-q-flag{border-left:3px solid var(--mc-danger,#d92d20);padding-left:9px}
-.aea-flag-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mc-danger,#d92d20);background:rgba(217,45,32,.08);border-radius:4px;padding:2px 6px;margin-bottom:4px}
+.aea-flag-badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mc-danger,#d92d20);background:rgba(217,45,32,.08);border-radius:4px;padding:2px 6px;margin-bottom:4px}
 
 /* RAS */
 .ras-system{border:1.5px solid var(--line);border-radius:9px;margin-bottom:7px;overflow:hidden}
@@ -301,30 +312,29 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .ras-system.relevant .ras-head{background:rgba(14,116,144,.04)}
 .ras-icon{font-size:16px;flex-shrink:0}
 .ras-name{font-size:12px;font-weight:700;color:var(--ink);flex:1}
-.ras-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;font-family:var(--mono)}
+.ras-badge{font-size:12px;font-weight:700;padding:2px 7px;border-radius:10px;font-family:var(--mono)}
 .ras-badge.rel{background:rgba(14,116,144,.15);color:var(--primary)}
 .ras-toggle{font-size:16px;color:var(--muted);transition:transform .2s;flex-shrink:0}
 .ras-system.open .ras-toggle{transform:rotate(45deg)}
 .ras-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .ras-system.open .ras-body{max-height:1200px}
 .ras-content{padding:10px 13px 12px;border-top:1px solid var(--line)}
-.ras-q{font-size:11px;color:var(--muted);line-height:1.65;margin-bottom:5px}
+.ras-q{font-size:12px;color:var(--muted);line-height:1.65;margin-bottom:5px}
 
 /* Ectoscopia */
 .ecto-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ecto-item{background:var(--bg);border-radius:8px;padding:10px;border:1.5px solid var(--line)}
-.ecto-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ecto-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .ecto-options{display:flex;flex-wrap:wrap;gap:4px}
-.ecto-opt{padding:4px 9px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:15px;font-size:10px;cursor:pointer;transition:all .15s}
+.ecto-opt{padding:4px 9px;background:var(--bg-card);border:1.5px solid var(--line-md);border-radius:15px;font-size:12px;cursor:pointer;transition:all .15s}
 .ecto-opt:hover{border-color:var(--primary)}
 .ecto-opt.sel{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
 
 /* Bottom nav (mobile) */
 .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--bg-card);border-top:1px solid var(--line);padding:6px 0 env(safe-area-inset-bottom,0)}
 .bottom-nav-inner{display:flex;justify-content:space-around}
-.bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 12px;cursor:pointer;font-size:9px;font-weight:700;color:var(--muted);user-select:none;transition:color .15s}
+.bnav-item{background:none;border:0;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 12px;cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);user-select:none;transition:color .15s}
 .bnav-item.active{color:var(--primary)}
-.bnav-item.bnav-disabled{opacity:.3;pointer-events:none}
 .bnav-icon{font-size:18px}
 
 /* Hamburger / overlay */
@@ -333,29 +343,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ── FLOATING ACTION BUTTON ── */
-.fab-wrap{
-  position:fixed;bottom:80px;right:18px;z-index:250;
-  display:none;flex-direction:column;gap:8px;align-items:flex-end
-}
-.hc-screen.active ~ * .fab-wrap,
-.fab-wrap.visible{display:flex}
-.fab-btn{
-  width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-  box-shadow:0 4px 16px rgba(13,45,61,.25);transition:all .2s
-}
-.fab-btn:hover{transform:scale(1.1)}
-.fab-primary{background:var(--primary);color:#fff;width:52px;height:52px;font-size:22px}
-.fab-secondary{background:var(--bg-card);color:var(--ink)}
-.fab-label{
-  background:rgba(13,45,61,.85);color:#fff;
-  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
-  white-space:nowrap;pointer-events:none;
-  opacity:0;transform:translateX(10px);transition:opacity .15s,transform .15s
-}
-.fab-item:hover .fab-label{opacity:1;transform:none}
-.fab-item{display:flex;align-items:center;gap:8px}
+.conduta-btn [data-am-icon]{vertical-align:-3px;margin-right:6px}
+/* PDF e Salvar/Guardar existem UMA vez só: botões do cabeçalho da HC (todos os breakpoints). Sem botões flutuantes; o atalho do guia virou item do menu principal (sidebar/trilho/gaveta/bottom-nav). */
 
 /* ── MOBILE RESPONSIVENESS ── */
 @media(max-width:768px){
@@ -367,6 +356,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .motivo-grid{grid-template-columns:1fr 1fr}
   .index-screen,.hc-sections{padding:12px 14px 100px}
   .hc-header{padding:12px 14px 0}
+  .hc-progress{margin:0 -14px}
   .guide-tabs{padding:0 8px}
   .guide-tab{padding:14px 18px;font-size:14.5px}
   .guide-tab-icon{font-size:17px}
@@ -382,15 +372,17 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .f-checks-3{grid-template-columns:1fr 1fr}
   .hc-panel-content{padding:4px 12px 14px}
   .acc-findings{grid-template-columns:1fr}
-  .ddx-table{font-size:10px}
-  .ddx-table td:first-child{font-size:11px}
-  .score-table{font-size:10px}
+  .ddx-table{font-size:12px}
+  .ddx-table td:first-child{font-size:12px}
+  .ddx-table td:first-child{white-space:normal;width:32%;min-width:0}
+  .ddx-table th,.ddx-table td,.score-table th,.score-table td{padding:7px 6px}
+  .ddx-table th,.score-table th{letter-spacing:.3px}
+  .score-table{font-size:12px}
   .mnem-kw{font-size:20px}
-  .fab-wrap{bottom:75px;right:14px}
   /* alvos de toque maiores no mobile (dedo ~44px) */
-  .yn-btn{padding:8px 14px;font-size:11px}
+  .yn-btn{padding:8px 14px;font-size:12px}
   .f-radio{padding:8px 14px;font-size:12px}
-  .ecto-opt{padding:7px 12px;font-size:11px}
+  .ecto-opt{padding:7px 12px;font-size:12px}
   .f-eva-btn{padding:11px 1px}
   .f-check{padding:10px 10px}
 }
@@ -404,12 +396,112 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   .sign-grid{grid-template-columns:1fr}
   .sources-grid{grid-template-columns:1fr}
   .spec-tabs{gap:2px}
-  .spec-tab{padding:8px 10px;font-size:11px}
+  .spec-tab{padding:8px 10px;font-size:12px}
   .topbar{padding:8px 12px}
   .topbar-breadcrumb{display:none}
 }
+/* ══ TABLET-FIRST (768–1400px, retrato e paisagem) + toque (celular/tablet) ═══════════════ */
+/* Toque: campos >= 16px (iOS não dá zoom ao focar), alvos >= 44px, sem depender de hover */
+@media (max-width:1180px),(pointer:coarse){
+  .f-input,.f-input::placeholder{font-size:16px}
+  .f-input{min-height:44px;padding:10px 12px}
+  textarea.f-input{min-height:96px}
+  .f-radio,.ecto-opt,.yn-btn,.f-eva-btn,.f-check{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .f-check{display:flex;justify-content:flex-start}
+  .f-radio{padding:8px 16px;font-size:14px;white-space:normal;max-width:100%;line-height:1.25;text-align:center}
+  .ecto-opt{padding:0 14px;font-size:14px}
+  .yn-btn{padding:0 18px;min-width:56px;font-size:14px}
+  .f-eva-btn{padding:0 1px;font-size:13px}
+  .f-checkbox{width:20px;height:20px}
+  .f-check,.yn-question,.f-label{font-size:13px}
+  .hc-panel-head,.acc-head,.ras-head{min-height:52px}
+  .guide-tab,.spec-tab,.topbar-back,.btn-new,.conduta-btn,.bnav-item,.motivo-card{min-height:44px}
+  .hamburger{min-width:44px;min-height:44px;display:none;align-items:center;justify-content:center}
+  .topbar-back,.btn-new{padding-top:0;padding-bottom:0;font-size:13px;align-items:center}
+  .hc-header-top .conduta-btn{min-height:44px;padding:0 16px!important;font-size:13px!important;align-items:center;margin:0}
+  .main{padding-right:env(safe-area-inset-right,0px)}
+}
+@media (max-width:768px){
+  .hamburger{display:flex}
+  .bnav-item{min-width:64px;justify-content:center;font-size:12px}
+  .bottom-nav{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+}
+/* Seleção de motivo: grade confortável */
+@media (min-width:769px) and (max-width:1180px){
+  .index-screen{padding:24px 24px 60px}
+  .motivo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .motivo-card{padding:14px 14px}
+  .motivo-name{font-size:13.5px}
+  .motivo-sub{font-size:12px}
+}
+@media (min-width:1000px) and (max-width:1180px) and (orientation:landscape){
+  .motivo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+/* HC no tablet: guia clínico vira coluna de navegação à esquerda; formulário à direita */
+@media (min-width:769px) and (max-width:1180px){
+  .hc-screen.active{display:grid;grid-template-columns:196px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);align-items:start;min-height:calc(100dvh - 53px)}
+  .hc-header{grid-column:1/-1;grid-row:1}
+  .hc-header .hc-motivo-name{font-size:21px}
+  .guide-tabs-wrap{grid-column:1;grid-row:2;position:sticky;top:53px;align-self:start;height:calc(100dvh - 53px);overflow-y:auto;overscroll-behavior:contain;background:var(--bg-card);border-right:1px solid var(--line);padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .guide-tabs{flex-direction:column;overflow:visible;padding:12px 10px;gap:6px;border-bottom:0;background:transparent}
+  .guide-tab{margin:0;width:100%;min-height:48px;padding:10px 12px;border:1.5px solid var(--line);border-radius:11px;background:var(--bg);font-size:13.5px;white-space:normal;text-align:left;line-height:1.25}
+  .guide-tab.active{background:rgba(14,116,144,.10);border-color:var(--primary);color:var(--primary)}
+  .guide-tab-icon{flex-shrink:0}
+  .guide-tabs-next{display:none!important}
+  #hc-sections,#guide-content-area,#assistente-area{grid-column:2;grid-row:2;min-width:0}
+  .hc-sections{padding:18px 20px calc(110px + env(safe-area-inset-bottom,0px));overflow:visible}
+  .guide-page{padding:18px 20px 90px}
+  .guide-page>div[style*="padding"]{padding:0 0 90px!important}
+  .ia-dx-wrap{padding:18px 20px 90px}
+  .f-row-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .f-checks-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hc-progress{margin:0 -24px}
+}
+/* Retrato (769–1000): form mais estreito → grades densas em 2 colunas */
+@media (min-width:769px) and (max-width:999px){
+  .f-row-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .f-row-3{grid-auto-flow:row dense}
+  .f-row:has(#dp-nasc-d){grid-column:1/-1}
+  .sign-grid,.ecto-grid{grid-template-columns:1fr}
+}
+/* Paisagem (>=1000): formulário e guia lado a lado, cada um rolando sozinho */
+@media (min-width:1000px) and (max-width:1180px) and (orientation:landscape){
+  .hc-screen.active{grid-template-columns:196px minmax(0,1fr) minmax(0,1fr);height:calc(100dvh - 53px);min-height:0;overflow:hidden}
+  html,body{overscroll-behavior:none}
+  .guide-tabs-wrap{top:0;height:100%}
+  #hc-sections,#guide-content-area,#assistente-area{height:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  #hc-sections{grid-column:2}
+  #guide-content-area,#assistente-area{grid-column:3;border-left:1px solid var(--line-md);background:var(--bg)}
+  /* sem guia aberto, o formulário ocupa as duas colunas */
+  .hc-screen:not(.split-open) #hc-sections{grid-column:2/-1}
+  .split-open .f-row-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .split-open .f-row-3{grid-auto-flow:row dense}
+  .split-open .f-row:has(#dp-nasc-d){grid-column:1/-1}
+  .split-open .sign-grid,.split-open .ecto-grid,.split-open .acc-findings{grid-template-columns:1fr}
+  .hc-sections{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+}
+/* Notebook/tablet grande em paisagem (1181–1400): abas do guia no topo (como no desktop) + formulário e guia lado a lado */
+@media (min-width:1181px) and (max-width:1400px) and (orientation:landscape){
+  .hc-screen.active{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);height:calc(100dvh - 53px);min-height:0;overflow:hidden;align-items:stretch}
+  .hc-header,.guide-tabs-wrap{grid-column:1/-1}
+  .hc-header{grid-row:1}
+  .guide-tabs-wrap{grid-row:2}
+  #hc-sections,#guide-content-area,#assistente-area{grid-row:3;min-width:0;height:100%;overflow-y:auto;overscroll-behavior:contain}
+  #hc-sections{grid-column:1}
+  #guide-content-area,#assistente-area{grid-column:2;border-left:1px solid var(--line-md);background:var(--bg)}
+  .hc-screen:not(.split-open) #hc-sections{grid-column:1/-1}
+  .split-open .f-row-3{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row dense}
+  .split-open .f-row:has(#dp-nasc-d){grid-column:1/-1}
+  .split-open .sign-grid,.split-open .ecto-grid,.split-open .acc-findings{grid-template-columns:1fr}
+  .guide-page{padding:18px 20px 90px}
+  html,body{overscroll-behavior:none}
+}
+@media (max-width:768px){
+  /* celular: uma coluna; abas do guia rolam na horizontal com área de toque maior */
+  .guide-tab{min-height:48px}
+}
 @media print{
-  .sidebar,.topbar,.guide-tabs,.bottom-nav,.hc-progress,.hamburger,.fab-wrap{display:none!important}
+  .sidebar,.topbar,.guide-tabs,.bottom-nav,.hc-progress,.hamburger{display:none!important}
   .main{margin-left:0}
   .hc-sections{padding:0}
   .hc-panel-body{max-height:none!important}
@@ -417,7 +509,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 }
 
 /* ── Assistente de IA (apoio diagnóstico) ───────────────────────────── */
-.guide-tab-ia .ia-pro-pill{font-size:9px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:1px 5px;border-radius:6px;margin-left:4px;vertical-align:middle}
+.guide-tab-ia .ia-pro-pill{font-size:12px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:1px 5px;border-radius:6px;margin-left:4px;vertical-align:middle}
 .ia-dx-wrap{padding:18px 24px 60px;max-width:840px;margin:0 auto}
 .ia-dx-head{margin-bottom:16px}
 .ia-dx-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:var(--ink)}
@@ -428,21 +520,21 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .ia-dx-lock-ic{color:#10b981;display:inline-flex;margin-bottom:8px}
 .ia-dx-lock-title{font-size:15px;font-weight:800;color:var(--ink)}
 .ia-dx-lock-desc{font-size:12.5px;color:var(--muted);margin:6px auto 16px;max-width:420px;line-height:1.45}
-.ia-dx-upgrade{border:none;cursor:pointer;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:10px 22px;border-radius:10px}
+.ia-dx-upgrade{border:none;cursor:pointer;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:10px 22px;border-radius:10px;min-height:44px}
 .ia-dx-upgrade:hover{filter:brightness(1.05)}
 .ia-dx-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .ia-dx-btn{display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:10px 18px;border-radius:10px}
 .ia-dx-btn[disabled]{opacity:.6;cursor:default}
 .ia-dx-btn [data-am-icon]{line-height:0}
-.ia-dx-status{font-size:11.5px;color:var(--muted);line-height:1.3}
-.ia-dx-sec-lbl{display:block;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--primary);margin:18px 0 8px}
+.ia-dx-status{font-size:12px;color:var(--muted);line-height:1.3}
+.ia-dx-sec-lbl{display:block;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--primary);margin:18px 0 8px}
 .ia-dx-resumo p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink);background:var(--bg);border-left:3px solid var(--primary);border-radius:8px;padding:10px 13px}
 .ia-dx-card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#fff}
 .ia-dx-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ia-dx-card-top strong{font-size:14px;color:var(--ink)}
-.ia-dx-badge{font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:8px;white-space:nowrap}
+.ia-dx-badge{font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:8px;white-space:nowrap}
 .ia-dx-fav,.ia-dx-con{margin-top:8px}
-.ia-dx-fav>span,.ia-dx-con>span{font-size:11px;font-weight:700;color:var(--muted)}
+.ia-dx-fav>span,.ia-dx-con>span{font-size:12px;font-weight:700;color:var(--muted)}
 .ia-dx-card ul{margin:4px 0 0;padding-left:18px}
 .ia-dx-card li{font-size:12.5px;line-height:1.45;margin:2px 0}
 .ia-dx-li-fav li{color:#0f766e}
@@ -456,21 +548,26 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .ia-dx-err{font-size:13px;color:#b91c1c;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);border-radius:10px;padding:12px 14px}
 .ia-dx-skel{height:14px;border-radius:6px;background:linear-gradient(90deg,var(--line),var(--cream),var(--line));background-size:200% 100%;animation:iaDxShimmer 1.2s infinite;margin:10px 0}
 @keyframes iaDxShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.ia-dx-disclaimer{margin-top:18px;font-size:11px;line-height:1.45;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.ia-dx-disclaimer{margin-top:18px;font-size:12px;line-height:1.45;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 </style>
-  <link rel="stylesheet" href="sidebar.css?v=20566b6d">
+  <link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
+<link rel="stylesheet" href="sidebar.css?v=0c39aa1b">
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
 <div id="sidebar-root"></div>
 
 <!-- MAIN -->
-<div class="main">
+<main class="main" id="main" tabindex="-1">
+  <h1 class="sr-only"><span class="pt">AnamnesísMed — História clínica</span><span class="es">AnamnesísMed — Historia clínica</span></h1>
   <!-- TOPBAR -->
   <header class="topbar" id="topbar">
-    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu"><span data-am-icon="menu" data-am-size="22"></span></button>
+    <button type="button" class="hamburger" onclick="toggleSidebar()" aria-label="Menu" aria-expanded="false" aria-controls="sidebar"><span data-am-icon="menu" data-am-size="22"></span></button>
     <a href="anamnesismed-dashboard.html" class="topbar-back" data-confirm-discard><span class="pt">← Voltar</span><span class="es">← Volver</span></a>
     <div class="topbar-breadcrumb">
       <span id="tb-spec" class="pt">Clínica Médica</span>
@@ -513,23 +610,23 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
       </div>
     </div>
 
-    <div class="spec-tabs">
-      <div class="spec-tab" id="stab-semiologia" onclick="showSpec('semiologia')">
+    <div class="spec-tabs" role="tablist" aria-label="Especialidade / Especialidad">
+      <button type="button" role="tab" class="spec-tab" id="stab-semiologia" aria-selected="false" aria-controls="motivo-content" onclick="showSpec('semiologia')">
         <span data-am-icon="book" data-am-size="15"></span> <span class="pt">Semiologia Básica</span><span class="es">Semiología Básica</span>
         <span class="spec-tab-count" id="count-semiologia">0</span>
-      </div>
-      <div class="spec-tab active" id="stab-clinica" onclick="showSpec('clinica')">
+      </button>
+      <button type="button" role="tab" class="spec-tab active" id="stab-clinica" aria-selected="true" aria-controls="motivo-content" onclick="showSpec('clinica')">
         <span data-am-icon="stethoscope" data-am-size="15"></span> <span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>
         <span class="spec-tab-count" id="count-clinica">0</span>
-      </div>
-      <div class="spec-tab" id="stab-cirurgia" onclick="showSpec('cirurgia')">
+      </button>
+      <button type="button" role="tab" class="spec-tab" id="stab-cirurgia" aria-selected="false" aria-controls="motivo-content" onclick="showSpec('cirurgia')">
         <span data-am-icon="scalpel" data-am-size="15"></span> <span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>
         <span class="spec-tab-count" id="count-cirurgia">0</span>
-      </div>
+      </button>
     </div>
 
     <!-- Motivo grids rendered by JS -->
-    <div id="motivo-content"></div>
+    <div id="motivo-content" role="tabpanel" aria-labelledby="stab-clinica"></div>
   </div>
 
   <!-- HC SCREEN -->
@@ -545,10 +642,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         </div>
         <div style="margin-left:auto;display:flex;gap:8px">
           <button class="conduta-btn conduta-btn-pdf" onclick="exportPDF()" style="padding:7px 14px;font-size:12px">
-            📄 PDF
+            <span data-am-icon="file" data-am-size="16" aria-hidden="true"></span> PDF
           </button>
           <button class="conduta-btn conduta-btn-secondary" onclick="saveHC()" style="padding:7px 14px;font-size:12px">
-            💾 <span class="pt">Salvar</span><span class="es">Guardar</span>
+            <span data-am-icon="save" data-am-size="16" aria-hidden="true"></span> <span class="pt">Salvar</span><span class="es">Guardar</span>
           </button>
         </div>
       </div>
@@ -557,49 +654,49 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
     <!-- Clinical guide tabs (motivo-specific) -->
     <div class="guide-tabs-wrap" id="guide-tabs-wrap">
-    <div class="guide-tabs" id="guide-tabs">
-      <div class="guide-tab active" onclick="showGuide('form',this)">
+    <div class="guide-tabs" id="guide-tabs" role="tablist" aria-label="Guia clínico / Guía clínica">
+      <button type="button" role="tab" class="guide-tab active" id="gtab-form" aria-selected="true" aria-controls="hc-sections" onclick="showGuide('form',this)">
         <span class="guide-tab-icon" data-am-icon="clipboard" data-am-size="15"></span>
         <span class="pt">Formulário HC</span><span class="es">Formulario HC</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('mnemonics',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" id="gtab-mnemonics" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('mnemonics',this)">
         <span class="guide-tab-icon" data-am-icon="brain" data-am-size="15"></span>
         <span class="pt">Mnemônicas</span><span class="es">Mnemotécnicas</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('manobras',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" id="gtab-manobras" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('manobras',this)">
         <span class="guide-tab-icon" data-am-icon="stethoscope" data-am-size="15"></span>
         <span class="pt">Manobras</span><span class="es">Maniobras</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('sinais',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" id="gtab-sinais" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('sinais',this)">
         <span class="guide-tab-icon" data-am-icon="activity" data-am-size="15"></span>
         <span class="pt">Sinais Clássicos</span><span class="es">Signos Clásicos</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('ddx',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" id="gtab-ddx" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('ddx',this)">
         <span class="guide-tab-icon" data-am-icon="scale" data-am-size="15"></span>
         <span class="pt">Diagnóstico Diferencial</span><span class="es">Diagnóstico Diferencial</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('escalas',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" id="gtab-escalas" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('escalas',this)">
         <span class="guide-tab-icon" data-am-icon="chart" data-am-size="15"></span>
         <span class="pt">Escalas</span><span class="es">Escalas</span>
-      </div>
-      <div class="guide-tab" onclick="showGuide('conduta',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab" id="gtab-conduta" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('conduta',this)">
         <span class="guide-tab-icon" data-am-icon="file" data-am-size="15"></span>
         <span class="pt">Conduta</span><span class="es">Conducta</span>
-      </div>
-      <div class="guide-tab guide-tab-ia" id="gtab-assistente" onclick="showGuide('assistente',this)">
+      </button>
+      <button type="button" role="tab" class="guide-tab guide-tab-ia" id="gtab-assistente" aria-selected="false" aria-controls="assistente-area" onclick="showGuide('assistente',this)">
         <span class="guide-tab-icon" data-am-icon="sparkles" data-am-size="15"></span>
         <span class="pt">Assistente IA</span><span class="es">Asistente IA</span>
         <span class="ia-pro-pill">PRO</span>
-      </div>
+      </button>
     </div>
-    <button class="guide-tabs-next" id="guide-tabs-next" type="button" onclick="scrollGuideTabs()" aria-label="Mais abas">›</button>
+    <button class="guide-tabs-next" id="guide-tabs-next" type="button" onclick="scrollGuideTabs()" aria-label="Mais abas / Más pestañas">›</button>
     </div>
 
     <!-- GUIDE CONTENT (Mnemônicas, Manobras, etc.) -->
-    <div id="guide-content-area" style="display:none"></div>
+    <div id="guide-content-area" role="tabpanel" aria-labelledby="gtab-mnemonics" style="display:none"></div>
 
     <!-- ASSISTENTE DE IA (apoio diagnóstico) — exclusivo do plano pago -->
-    <div id="assistente-area" style="display:none">
+    <div id="assistente-area" role="tabpanel" aria-labelledby="gtab-assistente" style="display:none">
       <div class="ia-dx-wrap">
         <div class="ia-dx-head">
           <span class="ia-dx-title"><span data-am-icon="sparkles" data-am-size="20"></span> <span class="pt">Assistente de IA — Apoio Diagnóstico</span><span class="es">Asistente de IA — Apoyo Diagnóstico</span></span>
@@ -641,7 +738,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div>
 
     <!-- HC FORM SECTIONS -->
-    <div class="hc-sections" id="hc-sections">
+    <div class="hc-sections" id="hc-sections" role="tabpanel" aria-labelledby="gtab-form">
 
       <!-- S0: DADOS PESSOAIS -->
       <div class="hc-panel open" id="panel-dados">
@@ -658,14 +755,14 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
           <div class="hc-panel-content">
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Nome completo</label>
-                <label class="f-label es">Nombre completo</label>
+                <label for="dp-nome" class="f-label pt">Nome completo</label>
+                <label for="dp-nome" class="f-label es">Nombre completo</label>
                 <input class="f-input" type="text" id="dp-nome" placeholder="Nome do paciente" data-ph-pt="Nome do paciente" data-ph-es="Nombre del paciente" oninput="updateProgress()">
               </div>
               <div class="f-row-2">
                 <div class="f-row">
-                  <label class="f-label pt">Sexo</label>
-                  <label class="f-label es">Sexo</label>
+                  <label for="dp-sexo" class="f-label pt">Sexo</label>
+                  <label for="dp-sexo" class="f-label es">Sexo</label>
                   <select class="f-input" id="dp-sexo" onchange="toggleAPGO()">
                     <option value="">—</option>
                     <option value="M" class="pt">Masculino</option>
@@ -675,20 +772,20 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   </select>
                 </div>
                 <div class="f-row">
-                  <label class="f-label pt">Idade</label>
-                  <label class="f-label es">Edad</label>
+                  <label for="dp-idade" class="f-label pt">Idade</label>
+                  <label for="dp-idade" class="f-label es">Edad</label>
                   <input class="f-input" type="number" id="dp-idade" min="0" max="120" placeholder="Anos" data-ph-pt="Anos" data-ph-es="Años">
                 </div>
               </div>
             </div>
             <div class="f-row-3">
               <div class="f-row">
-                <label class="f-label">CI / RG / DNI</label>
+                <label for="dp-ci" class="f-label">CI / RG / DNI</label>
                 <input class="f-input" type="text" id="dp-ci" placeholder="Documento" data-ph-pt="Documento" data-ph-es="Documento">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Data de nascimento</label>
-                <label class="f-label es">Fecha de nacimiento</label>
+                <label for="dp-nasc-d" class="f-label pt">Data de nascimento</label>
+                <label for="dp-nasc-d" class="f-label es">Fecha de nacimiento</label>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:6px">
                   <select class="f-input" id="dp-nasc-d" aria-label="Dia"></select>
                   <select class="f-input" id="dp-nasc-m" aria-label="Mes"></select>
@@ -696,20 +793,20 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 </div>
               </div>
               <div class="f-row">
-                <label class="f-label pt">Nacionalidade</label>
-                <label class="f-label es">Nacionalidad</label>
+                <label for="dp-nac" class="f-label pt">Nacionalidade</label>
+                <label for="dp-nac" class="f-label es">Nacionalidad</label>
                 <input class="f-input" type="text" id="dp-nac" placeholder="Ex: Paraguaia" data-ph-pt="Ex: Paraguaia" data-ph-es="Ej: Paraguaya">
               </div>
             </div>
             <div class="f-row-3">
               <div class="f-row">
-                <label class="f-label pt">Ocupação</label>
-                <label class="f-label es">Ocupación</label>
+                <label for="dp-ocup" class="f-label pt">Ocupação</label>
+                <label for="dp-ocup" class="f-label es">Ocupación</label>
                 <input class="f-input" type="text" id="dp-ocup" placeholder="">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Estado Civil</label>
-                <label class="f-label es">Estado Civil</label>
+                <label for="dp-ecivil" class="f-label pt">Estado Civil</label>
+                <label for="dp-ecivil" class="f-label es">Estado Civil</label>
                 <select class="f-input" id="dp-ecivil">
                   <option value="">—</option>
                   <option class="pt">Solteiro(a)</option><option class="es">Soltero(a)</option>
@@ -720,8 +817,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 </select>
               </div>
               <div class="f-row">
-                <label class="f-label pt">Escolaridade</label>
-                <label class="f-label es">Escolaridad</label>
+                <label for="dp-escol" class="f-label pt">Escolaridade</label>
+                <label for="dp-escol" class="f-label es">Escolaridad</label>
                 <select class="f-input" id="dp-escol">
                   <option value="">—</option>
                   <option class="pt">Primária</option><option class="es">Primaria</option>
@@ -732,30 +829,30 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             </div>
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Procedência</label>
-                <label class="f-label es">Procedencia</label>
+                <label for="dp-proc" class="f-label pt">Procedência</label>
+                <label for="dp-proc" class="f-label es">Procedencia</label>
                 <input class="f-input" type="text" id="dp-proc" placeholder="">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Residência</label>
-                <label class="f-label es">Residencia</label>
+                <label for="dp-res" class="f-label pt">Residência</label>
+                <label for="dp-res" class="f-label es">Residencia</label>
                 <input class="f-input" type="text" id="dp-res" placeholder="">
               </div>
             </div>
             <div class="f-row-3">
               <div class="f-row">
-                <label class="f-label pt">Telefone / Celular</label>
-                <label class="f-label es">Teléfono / Celular</label>
+                <label for="dp-tel" class="f-label pt">Telefone / Celular</label>
+                <label for="dp-tel" class="f-label es">Teléfono / Celular</label>
                 <input class="f-input" type="tel" id="dp-tel" placeholder="">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Data de ingresso</label>
-                <label class="f-label es">Fecha de ingreso</label>
+                <label for="dp-dtingresso" class="f-label pt">Data de ingresso</label>
+                <label for="dp-dtingresso" class="f-label es">Fecha de ingreso</label>
                 <input class="f-input" type="date" id="dp-dtingresso">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Hora de ingresso</label>
-                <label class="f-label es">Hora de ingreso</label>
+                <label for="dp-hringresso" class="f-label pt">Hora de ingresso</label>
+                <label for="dp-hringresso" class="f-label es">Hora de ingreso</label>
                 <input class="f-input" type="time" id="dp-hringresso">
               </div>
             </div>
@@ -764,13 +861,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl es">Acompañante / Responsable</div>
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Nome do acompanhante</label>
-                <label class="f-label es">Nombre del acompañante</label>
+                <label for="dp-acomp-nome" class="f-label pt">Nome do acompanhante</label>
+                <label for="dp-acomp-nome" class="f-label es">Nombre del acompañante</label>
                 <input class="f-input" type="text" id="dp-acomp-nome">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Vínculo com o paciente</label>
-                <label class="f-label es">Vínculo con el paciente</label>
+                <label for="dp-acomp-vinculo" class="f-label pt">Vínculo com o paciente</label>
+                <label for="dp-acomp-vinculo" class="f-label es">Vínculo con el paciente</label>
                 <input class="f-input" type="text" id="dp-acomp-vinculo" placeholder="Ex: cônjuge, filho(a)" data-ph-pt="Ex: cônjuge, filho(a)" data-ph-es="Ej: cónyuge, hijo(a)">
               </div>
             </div>
@@ -809,8 +906,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row" style="margin-top:8px">
-              <label class="f-label pt">Aportado por (quem fornece a informação)</label>
-              <label class="f-label es">Aportado por (quién aporta la información)</label>
+              <label for="dp-aportado" class="f-label pt">Aportado por (quem fornece a informação)</label>
+              <label for="dp-aportado" class="f-label es">Aportado por (quién aporta la información)</label>
               <input class="f-input" type="text" id="dp-aportado" placeholder="Ex: próprio paciente, familiar, prontuário..." data-ph-pt="Ex: próprio paciente, familiar, prontuário..." data-ph-es="Ej: el propio paciente, familiar, historia clínica...">
             </div>
           </div>
@@ -831,8 +928,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row" style="position:relative">
-              <label class="f-label pt">a) Queixa principal</label>
-              <label class="f-label es">a) Queja principal</label>
+              <label for="mc-a" class="f-label pt">a) Queixa principal</label>
+              <label for="mc-a" class="f-label es">a) Queja principal</label>
               <div style="position:relative">
                 <input class="f-input" type="text" id="mc-a" placeholder="Digite ou selecione o motivo..." data-ph-pt="Digite ou selecione o motivo..." data-ph-es="Escriba o seleccione el motivo..." autocomplete="off"
                   oninput="onMCInput(this.value)" style="padding-right:32px">
@@ -848,12 +945,12 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                 <span id="mc-badge-name"></span>
                 <span style="cursor:pointer;opacity:.6;font-size:16px;font-weight:300" onclick="clearMotivo()">×</span>
               </div>
-              <small style="margin-left:10px;font-size:11px;color:var(--muted)" class="pt">AEA e guias atualizados para este motivo</small>
-              <small style="margin-left:10px;font-size:11px;color:var(--muted)" class="es">AEA y guías actualizados para este motivo</small>
+              <small style="margin-left:10px;font-size:12px;color:var(--muted)" class="pt">AEA e guias atualizados para este motivo</small>
+              <small style="margin-left:10px;font-size:12px;color:var(--muted)" class="es">AEA y guías actualizados para este motivo</small>
             </div>
             <div class="f-row" style="position:relative">
-              <label class="f-label pt">b) Segunda queixa (se houver)</label>
-              <label class="f-label es">b) Segunda queja (si hubiera)</label>
+              <label for="mc-b" class="f-label pt">b) Segunda queixa (se houver)</label>
+              <label for="mc-b" class="f-label es">b) Segunda queja (si hubiera)</label>
               <input class="f-input" type="text" id="mc-b"
                 data-ph-pt="Digite ou selecione o 2º motivo..."
                 data-ph-es="Escriba o seleccione el 2.º motivo..."
@@ -866,13 +963,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   <span id="mc-b-badge-name"></span>
                   <span style="cursor:pointer;opacity:.6;font-size:16px;font-weight:300" onclick="clearMotivo2()">×</span>
                 </div>
-                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="pt">2º motivo com AEA guiada ativa</small>
-                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="es">2.º motivo con AEA guiada activa</small>
+                <small style="margin-left:8px;font-size:12px;color:var(--muted)" class="pt">2º motivo com AEA guiada ativa</small>
+                <small style="margin-left:8px;font-size:12px;color:var(--muted)" class="es">2.º motivo con AEA guiada activa</small>
               </div>
             </div>
             <div class="f-row" style="position:relative">
-              <label class="f-label pt">c) Terceira queixa (se houver)</label>
-              <label class="f-label es">c) Tercera queja (si hubiera)</label>
+              <label for="mc-c" class="f-label pt">c) Terceira queixa (se houver)</label>
+              <label for="mc-c" class="f-label es">c) Tercera queja (si hubiera)</label>
               <input class="f-input" type="text" id="mc-c"
                 data-ph-pt="Digite ou selecione o 3º motivo..."
                 data-ph-es="Escriba o seleccione el 3.º motivo..."
@@ -885,13 +982,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   <span id="mc-c-badge-name"></span>
                   <span style="cursor:pointer;opacity:.6;font-size:16px;font-weight:300" onclick="clearMotivo3()">×</span>
                 </div>
-                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="pt">3º motivo com AEA guiada ativa</small>
-                <small style="margin-left:8px;font-size:11px;color:var(--muted)" class="es">3.º motivo con AEA guiada activa</small>
+                <small style="margin-left:8px;font-size:12px;color:var(--muted)" class="pt">3º motivo com AEA guiada ativa</small>
+                <small style="margin-left:8px;font-size:12px;color:var(--muted)" class="es">3.º motivo con AEA guiada activa</small>
               </div>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Tempo de evolução da queixa principal</label>
-              <label class="f-label es">Tiempo de evolución de la queja principal</label>
+              <label for="mc-tempo-n" class="f-label pt">Tempo de evolução da queixa principal</label>
+              <label for="mc-tempo-n" class="f-label es">Tiempo de evolución de la queja principal</label>
               <div class="f-row-2">
                 <input class="f-input" type="number" id="mc-tempo-n" min="0" placeholder="Nº">
                 <select class="f-input" id="mc-tempo-u">
@@ -927,8 +1024,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div id="aea-mc3-section" style="display:none;margin-top:4px;border-top:2px dashed var(--secondary);padding-top:10px"></div>
 
             <div class="f-row" style="margin-top:8px">
-              <label class="f-label pt">Relato livre (AEA em texto)</label>
-              <label class="f-label es">Relato libre (AEA en texto)</label>
+              <label for="aea-texto" class="f-label pt">Relato livre (AEA em texto)</label>
+              <label for="aea-texto" class="f-label es">Relato libre (AEA en texto)</label>
               <textarea class="f-input" id="aea-texto" rows="4" placeholder="Descreva a história da doença atual..." data-ph-pt="Descreva a história da doença atual..." data-ph-es="Describa la historia de la enfermedad actual..."></textarea>
             </div>
 
@@ -945,7 +1042,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   <span data-am-icon="brain" data-am-size="16"></span>
                   <span class="pt">Analisar caso (IA)</span><span class="es">Analizar caso (IA)</span>
                 </button>
-                <span id="ia-hc-status" style="font-size:11px;color:var(--muted);line-height:1.3"></span>
+                <span id="ia-hc-status" style="font-size:12px;color:var(--muted);line-height:1.3"></span>
               </div>
               <!-- Aparece só quando a HC aberta guarda um texto do formato antigo.
                    O PDF imprime o que está guardado, então sem isto o médico exporta
@@ -963,8 +1060,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
                   <span class="pt">desfazer e voltar ao anterior</span><span class="es">deshacer y volver al anterior</span>
                 </a>
               </div>
-              <label class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
-              <label class="f-label es">Narrativa de la HC (revise antes de exportar)</label>
+              <label for="aea-narrativa" class="f-label pt">Narrativa da HC (revise antes de exportar)</label>
+              <label for="aea-narrativa" class="f-label es">Narrativa de la HC (revise antes de exportar)</label>
               <textarea class="f-input" id="aea-narrativa" rows="6" placeholder="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-pt="Clique em “Gerar HC” para redigir a narrativa a partir dos motivos, tempo de evolução e relato livre. Você pode editar antes de exportar." data-ph-es="Haga clic en “Generar HC” para redactar la narrativa a partir de los motivos, tiempo de evolución y relato libre. Puede editarla antes de exportar."></textarea>
             </div>
           </div>
@@ -996,8 +1093,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Descreva o episódio anterior (quando, como, tratamento, resolução)</label>
-              <label class="f-label es">Describa el episodio anterior (cuándo, cómo, tratamiento, resolución)</label>
+              <label for="area-desc" class="f-label pt">Descreva o episódio anterior (quando, como, tratamento, resolução)</label>
+              <label for="area-desc" class="f-label es">Describa el episodio anterior (cuándo, cómo, tratamiento, resolución)</label>
               <textarea class="f-input" id="area-desc" rows="3" placeholder=""></textarea>
             </div>
           </div>
@@ -1144,18 +1241,18 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl pt">Cirurgias / Traumas / Internações</div>
             <div class="f-section-lbl es">Cirugías / Traumas / Internaciones</div>
             <div class="f-row">
-              <label class="f-label pt">Antecedentes cirúrgicos</label>
-              <label class="f-label es">Antecedentes quirúrgicos</label>
+              <label for="app-cirurg" class="f-label pt">Antecedentes cirúrgicos</label>
+              <label for="app-cirurg" class="f-label es">Antecedentes quirúrgicos</label>
               <input class="f-input" type="text" id="app-cirurg" placeholder="Tipo, ano, local..." data-ph-pt="Tipo, ano, local..." data-ph-es="Tipo, año, lugar...">
             </div>
             <div class="f-row">
-              <label class="f-label pt">Antecedentes traumáticos</label>
-              <label class="f-label es">Antecedentes traumáticos</label>
+              <label for="app-trauma" class="f-label pt">Antecedentes traumáticos</label>
+              <label for="app-trauma" class="f-label es">Antecedentes traumáticos</label>
               <input class="f-input" type="text" id="app-trauma" placeholder="">
             </div>
             <div class="f-row">
-              <label class="f-label pt">Internações prévias</label>
-              <label class="f-label es">Internaciones previas</label>
+              <label for="app-intern" class="f-label pt">Internações prévias</label>
+              <label for="app-intern" class="f-label es">Internaciones previas</label>
               <input class="f-input" type="text" id="app-intern" placeholder="Motivo, local, ano..." data-ph-pt="Motivo, local, ano..." data-ph-es="Motivo, lugar, año...">
             </div>
 
@@ -1185,14 +1282,14 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl pt">Medicação em uso</div>
             <div class="f-section-lbl es">Medicación en uso</div>
             <div class="f-row">
-              <label class="f-label pt">Medicamentos de uso contínuo / recente (nome, dose, frequência)</label>
-              <label class="f-label es">Medicamentos de uso continuo / reciente (nombre, dosis, frecuencia)</label>
+              <label for="app-medicacao" class="f-label pt">Medicamentos de uso contínuo / recente (nome, dose, frequência)</label>
+              <label for="app-medicacao" class="f-label es">Medicamentos de uso continuo / reciente (nombre, dosis, frecuencia)</label>
               <textarea class="f-input" id="app-medicacao" rows="2" placeholder="Ex: Losartana 50mg 1x/dia; AAS 100mg..." data-ph-pt="Ex: Losartana 50mg 1x/dia; AAS 100mg..." data-ph-es="Ej: Losartán 50mg 1x/día; AAS 100mg..."></textarea>
             </div>
 
             <div class="f-row" style="margin-top:10px">
-              <label class="f-label pt">Outras patologias (texto livre)</label>
-              <label class="f-label es">Otras patologías (texto libre)</label>
+              <label for="app-outras" class="f-label pt">Outras patologias (texto livre)</label>
+              <label for="app-outras" class="f-label es">Otras patologías (texto libre)</label>
               <textarea class="f-input" id="app-outras" rows="2" placeholder=""></textarea>
             </div>
           </div>
@@ -1212,15 +1309,15 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row-3">
-              <div class="f-row"><label class="f-label pt">Menarca (anos)</label><label class="f-label es">Menarquía (años)</label><input class="f-input" type="number" id="apgo-menarca" placeholder=""></div>
-              <div class="f-row"><label class="f-label pt">Regularidade</label><label class="f-label es">Regularidad</label>
+              <div class="f-row"><label for="apgo-menarca" class="f-label pt">Menarca (anos)</label><label for="apgo-menarca" class="f-label es">Menarquía (años)</label><input class="f-input" type="number" id="apgo-menarca" placeholder=""></div>
+              <div class="f-row"><label for="apgo-reg" class="f-label pt">Regularidade</label><label for="apgo-reg" class="f-label es">Regularidad</label>
                 <select class="f-input" id="apgo-reg">
                   <option value="">—</option>
                   <option class="pt">Regular</option><option class="es">Regular</option>
                   <option class="pt">Irregular</option><option class="es">Irregular</option>
                 </select>
               </div>
-              <div class="f-row"><label class="f-label">FUM</label><input class="f-input" type="date" id="apgo-fum"></div>
+              <div class="f-row"><label for="apgo-fum" class="f-label">FUM</label><input class="f-input" type="date" id="apgo-fum"></div>
             </div>
             <div class="f-checks">
               <div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span class="pt">Coágulos</span><span class="es">Coágulos</span></div>
@@ -1232,10 +1329,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             </div>
             <div class="f-section-lbl pt">Obstétrico</div><div class="f-section-lbl es">Obstétrico</div>
             <div class="f-row-4">
-              <div class="f-row"><label class="f-label pt">Gestações</label><label class="f-label es">Gestaciones</label><input class="f-input" type="number" id="apgo-gest" min="0"></div>
-              <div class="f-row"><label class="f-label pt">Partos normais</label><label class="f-label es">Partos vaginales</label><input class="f-input" type="number" id="apgo-pnorm" min="0"></div>
-              <div class="f-row"><label class="f-label pt">Cesáreas</label><label class="f-label es">Cesáreas</label><input class="f-input" type="number" id="apgo-cesar" min="0"></div>
-              <div class="f-row"><label class="f-label pt">Abortos</label><label class="f-label es">Abortos</label><input class="f-input" type="number" id="apgo-abort" min="0"></div>
+              <div class="f-row"><label for="apgo-gest" class="f-label pt">Gestações</label><label for="apgo-gest" class="f-label es">Gestaciones</label><input class="f-input" type="number" id="apgo-gest" min="0"></div>
+              <div class="f-row"><label for="apgo-pnorm" class="f-label pt">Partos normais</label><label for="apgo-pnorm" class="f-label es">Partos vaginales</label><input class="f-input" type="number" id="apgo-pnorm" min="0"></div>
+              <div class="f-row"><label for="apgo-cesar" class="f-label pt">Cesáreas</label><label for="apgo-cesar" class="f-label es">Cesáreas</label><input class="f-input" type="number" id="apgo-cesar" min="0"></div>
+              <div class="f-row"><label for="apgo-abort" class="f-label pt">Abortos</label><label for="apgo-abort" class="f-label es">Abortos</label><input class="f-input" type="number" id="apgo-abort" min="0"></div>
             </div>
             <div class="f-checks">
               <div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span class="pt">Método anticoncepcional em uso</span><span class="es">Método anticonceptivo en uso</span></div>
@@ -1282,14 +1379,14 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row-2">
-              <div><label class="f-label pt">Irmãos (nº / ♂ / ♀)</label><label class="f-label es">Hermanos (nº / ♂ / ♀)</label>
+              <div><label for="apf-irm-tot" class="f-label pt">Irmãos (nº / ♂ / ♀)</label><label for="apf-irm-tot" class="f-label es">Hermanos (nº / ♂ / ♀)</label>
                 <div class="f-row-3">
                   <input class="f-input" type="number" placeholder="Total" data-ph-pt="Total" data-ph-es="Total" id="apf-irm-tot">
                   <input class="f-input" type="number" placeholder="♂" id="apf-irm-m">
                   <input class="f-input" type="number" placeholder="♀" id="apf-irm-f">
                 </div>
               </div>
-              <div><label class="f-label pt">Filhos (nº / ♂ / ♀)</label><label class="f-label es">Hijos (nº / ♂ / ♀)</label>
+              <div><label for="apf-fil-tot" class="f-label pt">Filhos (nº / ♂ / ♀)</label><label for="apf-fil-tot" class="f-label es">Hijos (nº / ♂ / ♀)</label>
                 <div class="f-row-3">
                   <input class="f-input" type="number" placeholder="Total" data-ph-pt="Total" data-ph-es="Total" id="apf-fil-tot">
                   <input class="f-input" type="number" placeholder="♂" id="apf-fil-m">
@@ -1311,8 +1408,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               <div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span class="pt">Doença mental</span><span class="es">Enfermedad mental</span></div>
             </div>
             <div class="f-row" style="margin-top:8px">
-              <label class="f-label pt">Outros antecedentes familiares</label>
-              <label class="f-label es">Otros antecedentes familiares</label>
+              <label for="apf-outros" class="f-label pt">Outros antecedentes familiares</label>
+              <label for="apf-outros" class="f-label es">Otros antecedentes familiares</label>
               <input class="f-input" type="text" id="apf-outros">
             </div>
           </div>
@@ -1332,8 +1429,8 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row">
-              <label class="f-label pt">Internações / consultas hospitalares anteriores relevantes</label>
-              <label class="f-label es">Internaciones / consultas hospitalarias anteriores relevantes</label>
+              <label for="adm-texto" class="f-label pt">Internações / consultas hospitalares anteriores relevantes</label>
+              <label for="adm-texto" class="f-label es">Internaciones / consultas hospitalarias anteriores relevantes</label>
               <textarea class="f-input" id="adm-texto" rows="4" placeholder="Data, local, motivo, diagnóstico, tratamento, alta..." data-ph-pt="Data, local, motivo, diagnóstico, tratamento, alta..." data-ph-es="Fecha, lugar, motivo, diagnóstico, tratamiento, alta..."></textarea>
             </div>
           </div>
@@ -1386,16 +1483,16 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             </div>
             <div class="f-row-2">
               <div class="f-row">
-                <label class="f-label pt">Diurese</label><label class="f-label es">Diuresis</label>
+                <label for="hab-diurese" class="f-label pt">Diurese</label><label for="hab-diurese" class="f-label es">Diuresis</label>
                 <input class="f-input" type="text" id="hab-diurese" placeholder="Volume, frequência, características..." data-ph-pt="Volume, frequência, características..." data-ph-es="Volumen, frecuencia, características...">
               </div>
               <div class="f-row">
-                <label class="f-label pt">Catarse (evacuações)</label><label class="f-label es">Catarsis (evacuaciones)</label>
+                <label for="hab-catarse" class="f-label pt">Catarse (evacuações)</label><label for="hab-catarse" class="f-label es">Catarsis (evacuaciones)</label>
                 <input class="f-input" type="text" id="hab-catarse" placeholder="Frequência, consistência, cor..." data-ph-pt="Frequência, consistência, cor..." data-ph-es="Frecuencia, consistencia, color...">
               </div>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Sono</label><label class="f-label es">Sueño</label>
+              <label for="hab-sono-h" class="f-label pt">Sono</label><label for="hab-sono-h" class="f-label es">Sueño</label>
               <div class="f-row-2">
                 <input class="f-input" type="number" id="hab-sono-h" placeholder="Horas/noite" data-ph-pt="Horas/noite" data-ph-es="Horas/noche" min="0" max="24">
                 <div class="f-radios" id="hab-sono-q">
@@ -1471,9 +1568,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
               </div>
             </div>
             <div class="f-row-3">
-              <div><label class="f-label pt">Pessoas na casa</label><label class="f-label es">Personas en casa</label><input class="f-input" type="number" id="case-pessoas" min="0"></div>
-              <div><label class="f-label pt">Nº de cômodos</label><label class="f-label es">Nº de habitaciones</label><input class="f-input" type="number" id="case-comodos" min="0"></div>
-              <div><label class="f-label pt">Água</label><label class="f-label es">Agua</label>
+              <div><label for="case-pessoas" class="f-label pt">Pessoas na casa</label><label for="case-pessoas" class="f-label es">Personas en casa</label><input class="f-input" type="number" id="case-pessoas" min="0"></div>
+              <div><label for="case-comodos" class="f-label pt">Nº de cômodos</label><label for="case-comodos" class="f-label es">Nº de habitaciones</label><input class="f-input" type="number" id="case-comodos" min="0"></div>
+              <div><label for="case-agua" class="f-label pt">Água</label><label for="case-agua" class="f-label es">Agua</label>
                 <select class="f-input" id="case-agua">
                   <option value="">—</option>
                   <option class="pt">Encanada/ESSAP</option><option class="es">Red pública</option>
@@ -1628,21 +1725,21 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             <div class="f-section-lbl pt">Sinais vitais</div>
             <div class="f-section-lbl es">Signos vitales</div>
             <div class="f-row-4">
-              <div><label class="f-label pt">PA (mmHg)</label><label class="f-label es">PA (mmHg)</label><input class="f-input" type="text" id="sv-pa" placeholder="120/80"></div>
-              <div><label class="f-label pt">FC (bpm)</label><label class="f-label es">FC (lpm)</label><input class="f-input" type="number" id="sv-fc" placeholder="80"></div>
-              <div><label class="f-label pt">FR (irpm)</label><label class="f-label es">FR (rpm)</label><input class="f-input" type="number" id="sv-fr" placeholder="18"></div>
-              <div><label class="f-label pt">Temp (°C)</label><label class="f-label es">Temp (°C)</label><input class="f-input" type="number" id="sv-temp" step="0.1" placeholder="36.5"></div>
+              <div><label for="sv-pa" class="f-label pt">PA (mmHg)</label><label for="sv-pa" class="f-label es">PA (mmHg)</label><input class="f-input" type="text" id="sv-pa" placeholder="120/80"></div>
+              <div><label for="sv-fc" class="f-label pt">FC (bpm)</label><label for="sv-fc" class="f-label es">FC (lpm)</label><input class="f-input" type="number" id="sv-fc" placeholder="80"></div>
+              <div><label for="sv-fr" class="f-label pt">FR (irpm)</label><label for="sv-fr" class="f-label es">FR (rpm)</label><input class="f-input" type="number" id="sv-fr" placeholder="18"></div>
+              <div><label for="sv-temp" class="f-label pt">Temp (°C)</label><label for="sv-temp" class="f-label es">Temp (°C)</label><input class="f-input" type="number" id="sv-temp" step="0.1" placeholder="36.5"></div>
             </div>
             <div class="f-row-4">
-              <div><label class="f-label pt">SpO₂ (%)</label><label class="f-label es">SpO₂ (%)</label><input class="f-input" type="number" id="sv-spo2" placeholder="98"></div>
-              <div><label class="f-label pt">Peso (kg)</label><label class="f-label es">Peso (kg)</label><input class="f-input" type="number" id="sv-peso" step="0.1" placeholder=""></div>
-              <div><label class="f-label pt">Altura (cm)</label><label class="f-label es">Talla (cm)</label><input class="f-input" type="number" id="sv-altura" placeholder=""></div>
-              <div><label class="f-label">IMC</label><input class="f-input" type="text" id="sv-imc" readonly placeholder="Auto" style="background:var(--cream)"></div>
+              <div><label for="sv-spo2" class="f-label pt">SpO₂ (%)</label><label for="sv-spo2" class="f-label es">SpO₂ (%)</label><input class="f-input" type="number" id="sv-spo2" placeholder="98"></div>
+              <div><label for="sv-peso" class="f-label pt">Peso (kg)</label><label for="sv-peso" class="f-label es">Peso (kg)</label><input class="f-input" type="number" id="sv-peso" step="0.1" placeholder=""></div>
+              <div><label for="sv-altura" class="f-label pt">Altura (cm)</label><label for="sv-altura" class="f-label es">Talla (cm)</label><input class="f-input" type="number" id="sv-altura" placeholder=""></div>
+              <div><label for="sv-imc" class="f-label">IMC</label><input class="f-input" type="text" id="sv-imc" readonly placeholder="Auto" style="background:var(--cream)"></div>
             </div>
 
             <div class="f-row">
-              <label class="f-label pt">Chama atenção / Achados do exame geral</label>
-              <label class="f-label es">Llama la atención / Hallazgos del examen general</label>
+              <label for="exfis-geral" class="f-label pt">Chama atenção / Achados do exame geral</label>
+              <label for="exfis-geral" class="f-label es">Llama la atención / Hallazgos del examen general</label>
               <textarea class="f-input" id="exfis-geral" rows="3" placeholder="Cicatrizes, drenos, aparelhos, alterações visíveis..." data-ph-pt="Cicatrizes, drenos, aparelhos, alterações visíveis..." data-ph-es="Cicatrices, drenajes, dispositivos, alteraciones visibles..."></textarea>
             </div>
           </div>
@@ -1662,18 +1759,18 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row">
-              <label class="f-label pt">Principais achados positivos da HC e exame físico</label>
-              <label class="f-label es">Principales hallazgos positivos de la HC y examen físico</label>
+              <label for="sum-achados" class="f-label pt">Principais achados positivos da HC e exame físico</label>
+              <label for="sum-achados" class="f-label es">Principales hallazgos positivos de la HC y examen físico</label>
               <textarea class="f-input" id="sum-achados" rows="4" placeholder="Liste os achados mais relevantes..." data-ph-pt="Liste os achados mais relevantes..." data-ph-es="Liste los hallazgos más relevantes..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Síndrome(s) identificada(s)</label>
-              <label class="f-label es">Síndrome(s) identificada(s)</label>
+              <label for="sum-sindromes" class="f-label pt">Síndrome(s) identificada(s)</label>
+              <label for="sum-sindromes" class="f-label es">Síndrome(s) identificada(s)</label>
               <input class="f-input" type="text" id="sum-sindromes" placeholder="Ex: Síndrome febril, síndrome de condensação pulmonar..." data-ph-pt="Ex: Síndrome febril, síndrome de condensação pulmonar..." data-ph-es="Ej: síndrome febril, síndrome de condensación pulmonar...">
             </div>
             <div class="f-row">
-              <label class="f-label pt">Hipótese(s) diagnóstica(s)</label>
-              <label class="f-label es">Hipótesis diagnóstica(s)</label>
+              <label for="sum-hipoteses" class="f-label pt">Hipótese(s) diagnóstica(s)</label>
+              <label for="sum-hipoteses" class="f-label es">Hipótesis diagnóstica(s)</label>
               <textarea class="f-input" id="sum-hipoteses" rows="3" placeholder="1º Hipótese, 2º Hipótese..." data-ph-pt="1º Hipótese, 2º Hipótese..." data-ph-es="1ª Hipótesis, 2ª Hipótesis..."></textarea>
             </div>
           </div>
@@ -1693,34 +1790,28 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         <div class="hc-panel-body">
           <div class="hc-panel-content">
             <div class="f-row">
-              <label class="f-label pt">Exames solicitados</label>
-              <label class="f-label es">Exámenes solicitados</label>
+              <label for="plan-exames" class="f-label pt">Exames solicitados</label>
+              <label for="plan-exames" class="f-label es">Exámenes solicitados</label>
               <textarea class="f-input" id="plan-exames" rows="3" placeholder="Hemograma, PCR, Rx tórax, ECG..." data-ph-pt="Hemograma, PCR, Rx tórax, ECG..." data-ph-es="Hemograma, PCR, radiografía de tórax, ECG..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Tratamento / Prescrição</label>
-              <label class="f-label es">Tratamiento / Prescripción</label>
+              <label for="plan-trat" class="f-label pt">Tratamento / Prescrição</label>
+              <label for="plan-trat" class="f-label es">Tratamiento / Prescripción</label>
               <textarea class="f-input" id="plan-trat" rows="3" placeholder="Medicação, dose, via, frequência, duração..." data-ph-pt="Medicação, dose, via, frequência, duração..." data-ph-es="Medicación, dosis, vía, frecuencia, duración..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Conduta / Plano</label>
-              <label class="f-label es">Conducta / Plan</label>
+              <label for="plan-conduta" class="f-label pt">Conduta / Plano</label>
+              <label for="plan-conduta" class="f-label es">Conducta / Plan</label>
               <textarea class="f-input" id="plan-conduta" rows="3" placeholder="Internação, alta, retorno, encaminhamentos..." data-ph-pt="Internação, alta, retorno, encaminhamentos..." data-ph-es="Internación, alta, control, derivaciones..."></textarea>
             </div>
             <div class="f-row">
-              <label class="f-label pt">Observações / Evolução</label>
-              <label class="f-label es">Observaciones / Evolución</label>
+              <label for="plan-obs" class="f-label pt">Observações / Evolução</label>
+              <label for="plan-obs" class="f-label es">Observaciones / Evolución</label>
               <textarea class="f-input" id="plan-obs" rows="2" placeholder=""></textarea>
             </div>
             <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-              <button class="conduta-btn conduta-btn-primary" onclick="exportPDF()">
-                📄 <span class="pt">Exportar PDF completo</span><span class="es">Exportar PDF completo</span>
-              </button>
-              <button class="conduta-btn conduta-btn-secondary" onclick="saveHC()">
-                💾 <span class="pt">Salvar HC</span><span class="es">Guardar HC</span>
-              </button>
               <button class="conduta-btn conduta-btn-pdf" onclick="newHC()">
-                ➕ <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
+                <span data-am-icon="plus" data-am-size="16" aria-hidden="true"></span> <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
               </button>
             </div>
           </div>
@@ -1730,53 +1821,62 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div><!-- /hc-sections -->
   </div><!-- /hc-screen -->
 
-</div><!-- /main -->
-
-<!-- FLOATING ACTION BUTTON (visível só na tela HC) -->
-<div class="fab-wrap" id="fab-wrap">
-  <div class="fab-item">
-    <span class="fab-label pt">Imprimir / PDF</span>
-    <span class="fab-label es">Imprimir / PDF</span>
-    <button class="fab-btn fab-secondary" onclick="exportPDF()" title="PDF">📄</button>
-  </div>
-  <div class="fab-item">
-    <span class="fab-label pt">Salvar HC</span>
-    <span class="fab-label es">Guardar HC</span>
-    <button class="fab-btn fab-secondary" onclick="saveHC()" title="Salvar">💾</button>
-  </div>
-  <div class="fab-item">
-    <span class="fab-label pt">Referências do motivo</span>
-    <span class="fab-label es">Referencias del motivo</span>
-    <button class="fab-btn fab-primary" onclick="openRefMotivo()" title="Referências clínicas"><span data-am-icon="book" data-am-size="22"></span></button>
-  </div>
-</div>
+</main><!-- /main -->
 
 <!-- BOTTOM NAV (mobile) -->
-<nav class="bottom-nav">
+<nav class="bottom-nav" aria-label="Navegação / Navegación">
   <div class="bottom-nav-inner">
-    <div class="bnav-item active" id="bnav-inicio" onclick="goAppInicio()">
+    <button type="button" class="bnav-item active" id="bnav-inicio" onclick="goAppInicio()">
       <span class="bnav-icon" data-am-icon="home" data-am-size="22"></span>
       <span class="pt">Início</span><span class="es">Inicio</span>
-    </div>
-    <div class="bnav-item" onclick="newHC()">
+    </button>
+    <button type="button" class="bnav-item" onclick="newHC()">
       <span class="bnav-icon" data-am-icon="plus" data-am-size="22"></span>
       <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
-    </div>
-    <div class="bnav-item" onclick="goToDashboard('hcs')">
+    </button>
+    <button type="button" class="bnav-item" onclick="goToDashboard('hcs')">
       <span class="bnav-icon" data-am-icon="clipboard" data-am-size="22"></span>
       <span class="pt">Minhas HCs</span><span class="es">Mis HCs</span>
-    </div>
-    <div class="bnav-item" onclick="exportPDF()">
-      <span class="bnav-icon" data-am-icon="file" data-am-size="22"></span>PDF
-    </div>
+    </button>
+    <button type="button" class="bnav-item" id="bnav-guia" onclick="goGuia()">
+      <span class="bnav-icon" data-am-icon="book" data-am-size="22"></span>
+      <span class="pt">Guia</span><span class="es">Guía</span>
+    </button>
   </div>
 </nav>
-<script src="anamnesismed-motivos.js?v=ad716e9d"></script>
-<script src="anamnesismed-guide.js?v=3b1b9653"></script>
-<script src="anamnesismed-guide-es.js?v=4b87efd7"></script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
+<script src="anamnesismed-guide.js?v=f9dcd360"></script>
+<script src="anamnesismed-guide-es.js?v=ae197799"></script>
 <script>
 // ── LANG ──────────────────────────────────────────────
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — HC Completa", "d": "Armado de la historia clínica (HC) con guía AEA, mnemotécnicas, maniobras y narrativa automática en AnamnesísMed."}, "pt": {"t": "AnamnesísMed — HC Completa", "d": "Montagem da história clínica (HC) com guia AEA, mnemônicas, manobras e narrativa automática no AnamnesísMed."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
+// ── Nomes acessíveis p/ campos sem <label for>: usa data-al-pt/es, ou o <label.f-label> vizinho (no idioma ativo), ou o placeholder ──
+function amLabelFields(l){
+  l = l || document.documentElement.getAttribute('data-lang') || 'pt';
+  document.querySelectorAll('input.f-input,select.f-input,textarea.f-input').forEach(function(el){
+    var al = el.getAttribute('data-al-'+l);
+    if(al){ el.setAttribute('aria-label', al); return; }
+    if(el.getAttribute('aria-label') && !el.hasAttribute('data-am-auto')) return;
+    if(el.id && document.querySelector('label[for="'+el.id+'"]')) return;
+    if(el.closest('label')) return;
+    var lab = '', node = el.parentElement;
+    for(var d=0; d<3 && node && !lab; d++, node=node.parentElement){
+      var ls = [].filter.call(node.children, function(c){ return c.tagName==='LABEL' && c.classList.contains('f-label'); });
+      var m = ls.filter(function(c){ return c.classList.contains(l); })[0] || ls.filter(function(c){ return !c.classList.contains('pt') && !c.classList.contains('es'); })[0] || ls[0];
+      if(m) lab = m.textContent.trim();
+    }
+    var ph = el.getAttribute('data-ph-'+l) || el.getAttribute('placeholder') || '';
+    var nm = lab && ph && ph!==lab ? lab+' — '+ph : (lab || ph);
+    if(nm){ el.setAttribute('aria-label', nm); el.setAttribute('data-am-auto',''); }
+  });
+}
+(function(){ var t; function run(){ clearTimeout(t); t=setTimeout(function(){amLabelFields()},150); }
+  document.addEventListener('DOMContentLoaded', function(){ run(); try{ new MutationObserver(run).observe(document.body,{childList:true,subtree:true}); }catch(e){} }); })();
 function setLang(l){
+  amSetMeta(l);
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   var _slEs = document.getElementById('slang-es'); if(_slEs) _slEs.classList.toggle('active',l==='es');
   var _slPt = document.getElementById('slang-pt'); if(_slPt) _slPt.classList.toggle('active',l==='pt');
@@ -1785,6 +1885,7 @@ function setLang(l){
     el.setAttribute('placeholder', ph);
   });
   try{localStorage.setItem('am-lang',l)}catch(e){}
+  amLabelFields(l);
   // Re-renderiza o grid de motivos com o novo idioma
   if(typeof currentSpec !== 'undefined' && document.getElementById('motivo-content')){
     renderMotivoGrid(currentSpec);
@@ -1794,6 +1895,8 @@ function setLang(l){
 
 // ── SIDEBAR ───────────────────────────────────────────
 function setSBActive(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
+// Guia de estudo (item do menu / bottom-nav): na HC abre as referências do motivo em nova aba; no índice, navega.
+function goGuia(){ var hc=document.getElementById('screen-hc'); if(hc && hc.classList.contains('active')) openRefMotivo(); else window.location.href='anamnesismed-referencias.html'; }
 function goToDashboard(view){ if(!confirmDiscardHC()) return; window.location.href='anamnesismed-dashboard.html'+(view?'?view='+view:'');}
 // #8 — "Início" no app: dentro de uma HC volta para a seleção de motivos; quando já
 // está na seleção (nada a voltar dentro do app), vai para o Início real (dashboard).
@@ -1904,16 +2007,10 @@ function showScreen(s){
   document.getElementById('screen-index').classList.toggle('active',s==='index');
   document.getElementById('screen-hc').classList.toggle('active',s==='hc');
   document.getElementById('tb-sep').style.display=s==='hc'?'inline':'none';
-  // FAB só aparece na tela HC
-  var fab = document.getElementById('fab-wrap');
-  if(fab) fab.classList.toggle('visible', s==='hc');
   // Atualiza active state do bnav (Inicio = index, sem active na tela HC)
   document.querySelectorAll('.bnav-item').forEach(function(el,i){
     el.classList.toggle('active', s==='index' && i===0);
   });
-  // PDF bnav só habilitado dentro de uma HC
-  var pdfBtn = document.querySelectorAll('.bnav-item')[3];
-  if(pdfBtn) pdfBtn.classList.toggle('bnav-disabled', s!=='hc');
   // Limpa tb-motivo ao voltar para o index
   if(s==='index'){
     var tbm = document.getElementById('tb-motivo');
@@ -1947,11 +2044,11 @@ function onMCInput(val){
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
     var specLabel = m._spec==='clinica'?(lang==='pt'?'Clínica Médica':'Clínica Médica'):(lang==='pt'?'Cirurgia Geral':'Cirugía General');
-    return '<div onclick="selectMotivoFromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
+    return '<button type="button" onclick="selectMotivoFromMC(\''+m.id+'\')" style="width:100%;border:0;background:none;text-align:left;font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:11px 14px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'
       +'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>'
-      +'<div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'
-      +'<div style="font-size:10px;color:var(--muted);line-height:1.3;margin-top:1px">'+specLabel+'</div></div>'
-      +'</div>';
+      +'<span style="min-width:0;flex:1;display:block"><span style="display:block;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</span>'
+      +'<span style="display:block;font-size:12px;color:var(--muted);line-height:1.3;margin-top:1px">'+specLabel+'</span></span>'
+      +'</button>';
   }).join('');
   // Posição já vem do CSS inline (top:calc(100% + 2px);left:0;width:100%)
   // relativo ao .f-row — não sobrescrever via JS (offsetTop usava o wrapper
@@ -2015,7 +2112,7 @@ function mcbSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo2FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'+'</div>';
+    return '<button type="button" onclick="selectMotivo2FromMC(\''+m.id+'\')" style="width:100%;border:0;background:none;text-align:left;font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</span>'+'</button>';
   }).join('');
   var inp = document.getElementById('mc-b');
   sug.style.display = 'block';
@@ -2061,7 +2158,7 @@ function mccSearch(val){
   if(!matches.length){ sug.style.display='none'; return; }
   sug.innerHTML = matches.map(function(m){
     var nm = lang==='es'?(m.nameEs||m.name):m.name;
-    return '<div onclick="selectMotivo3FromMC(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</div>'+'</div>';
+    return '<button type="button" onclick="selectMotivo3FromMC(\''+m.id+'\')" style="width:100%;border:0;background:none;text-align:left;font:inherit;color:inherit;display:flex;align-items:center;gap:10px;padding:11px 13px;min-height:44px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'\'">'+'<span style="flex-shrink:0;color:var(--primary);line-height:0">'+(window.amIcon?amIcon(m.icon,17):m.icon)+'</span>'+'<div style="min-width:0;flex:1;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3">'+nm+'</span>'+'</button>';
   }).join('');
   sug.style.display = 'block';
 }
@@ -2167,10 +2264,10 @@ function renderMotivoGrid(spec){
     html += '<div class="motivo-grid">';
     cat.items.forEach(function(m){
       var nm = lang==='es'?(m.nameEs||m.name):m.name;
-      html += '<div class="motivo-card '+m.color+'" onclick="openHC(\''+m.id+'\')">';
-      html += '<div class="motivo-icon">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</div>';
-      html += '<div class="motivo-info"><div class="motivo-name">'+nm+'</div></div>';
-      html += '</div>';
+      html += '<button type="button" class="motivo-card '+m.color+'" onclick="openHC(\''+m.id+'\')">';
+      html += '<span class="motivo-icon" aria-hidden="true">'+(window.amIcon?amIcon(m.icon,18):m.icon)+'</span>';
+      html += '<span class="motivo-info"><span class="motivo-name">'+nm+'</span></span>';
+      html += '</button>';
     });
     html += '</div></div>';
   });
@@ -2810,11 +2907,11 @@ function openRefMotivo(){
   try{ document.documentElement.classList.remove('deep-hc'); }catch(e){}
 })();
 </script>
-<script src="anamnesismed-narrativa.js?v=0df032df"></script>
-<script src="anamnesismed-pdf.js?v=5c96e332"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js?v=bb827873"></script>
-<script src="anamnesismed-assistente.js?v=8d43d51d"></script>
+<script src="anamnesismed-narrativa.js?v=86e59da0"></script>
+<script src="anamnesismed-pdf.js?v=a96326db"></script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
+<script src="supabase-integration.js?v=628b1cd6"></script>
+<script src="anamnesismed-assistente.js?v=88810182"></script>
 <script>
 // ── INTEGRAÇÃO SUPABASE: acesso real, dados do usuário, onboarding ──
 (async function(){
@@ -2871,6 +2968,55 @@ function openRefMotivo(){
   }
 })();
 </script>
-<script src="sidebar.js?v=f6cd0d5b"></script>
+<script>
+/* ── Abas acessíveis (spec-tab / guide-tab): role=tab, roving tabindex, setas/Home/End; Enter/Espaço ativam (botão nativo) ── */
+(function(){
+  function sync(list){
+    var tabs=[].slice.call(list.querySelectorAll('[role="tab"]'));
+    var any=tabs.some(function(t){return t.classList.contains('active')});
+    tabs.forEach(function(t,i){
+      var on=t.classList.contains('active')||(!any&&i===0);
+      t.setAttribute('aria-selected',on?'true':'false');
+      t.tabIndex=on?0:-1;
+    });
+  }
+  function setup(list){
+    if(!list)return;
+    sync(list);
+    new MutationObserver(function(){sync(list)}).observe(list,{attributes:true,attributeFilter:['class'],subtree:true});
+    list.addEventListener('keydown',function(e){
+      var keys=['ArrowRight','ArrowLeft','Home','End'];
+      if(keys.indexOf(e.key)<0)return;
+      var tabs=[].slice.call(list.querySelectorAll('[role="tab"]'));
+      var i=tabs.indexOf(document.activeElement);
+      if(i<0)return;
+      e.preventDefault();
+      var n=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+      tabs[n].focus();
+      try{tabs[n].scrollIntoView({block:'nearest',inline:'nearest'})}catch(x){}
+    });
+  }
+  /* Painéis: cada aba aponta (aria-controls) para um role=tabpanel existente; o painel compartilhado
+     (#guide-content-area serve Mnemônicas/Manobras/Sinais/DDx/Escalas/Conduta) é rotulado pela aba ATIVA. */
+  function labelPanels(list){
+    var tabs=[].slice.call(list.querySelectorAll('[role="tab"]'));
+    var done={};
+    tabs.forEach(function(t){
+      var id=t.getAttribute('aria-controls');if(!id||done[id]===2)return;
+      var p=document.getElementById(id);if(!p)return;
+      var on=t.getAttribute('aria-selected')==='true';
+      if(on||!done[id]){p.setAttribute('aria-labelledby',t.id);done[id]=on?2:1}
+    });
+  }
+  [document.querySelector('.spec-tabs'),document.getElementById('guide-tabs')].forEach(function(list){
+    if(!list)return;
+    labelPanels(list);
+    new MutationObserver(function(){labelPanels(list)}).observe(list,{attributes:true,attributeFilter:['aria-selected'],subtree:true});
+  });
+  setup(document.querySelector('.spec-tabs'));
+  setup(document.getElementById('guide-tabs'));
+})();
+</script>
+<script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

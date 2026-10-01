@@ -272,6 +272,7 @@ AM.motivo("sintomas-urinarios", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de disuria/síntomas urinarios",
         "rows": [
           [

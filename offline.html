@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AnamnesísMed — Sin conexión / Sem conexão</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
+<style>
+:root{--ink:#0A1A24;--mist:#EAF0F2;--teal:#0B7C88;--teal-on-dark:#5ED6E3;--coral:#FF5C49;--muted-on-dark:#9DB6BD}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{min-height:100vh;min-height:100dvh;background:var(--ink);color:#fff;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;display:flex;align-items:center;justify-content:center;
+  padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));overscroll-behavior:none}
+[data-lang="es"] .pt{display:none!important}
+[data-lang="pt"] .es{display:none!important}
+main{max-width:460px;width:100%;text-align:center}
+.logo{width:88px;height:88px;border-radius:22px;margin:0 auto 24px;display:block}
+.pulse{display:block;margin:0 auto 18px;width:160px;height:40px}
+h1{font-size:24px;line-height:1.25;margin:0 0 10px;letter-spacing:-.3px}
+p{margin:0 0 26px;color:var(--muted-on-dark);font-size:16px;line-height:1.55}
+button{font:inherit;font-size:16px;font-weight:700;min-height:48px;padding:0 28px;border:0;border-radius:12px;background:var(--teal);color:#fff;cursor:pointer;touch-action:manipulation;box-shadow:0 6px 18px rgba(15,163,177,.28)}
+button:hover{background:#096873}
+:focus-visible{outline:3px solid var(--teal-on-dark);outline-offset:3px}
+.note{margin-top:22px;font-size:13px;color:var(--muted-on-dark)}
+</style>
+</head>
+<body>
+<main role="main">
+  <img class="logo" src="/pwa/icon-192.png" width="88" height="88" alt="">
+  <svg class="pulse" viewBox="0 0 160 40" aria-hidden="true"><path d="M0 20 H52 L62 6 L76 34 L86 20 H160" fill="none" stroke="#FF5C49" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 6"/></svg>
+  <h1><span class="pt">Você está sem conexão</span><span class="es">Estás sin conexión</span></h1>
+  <p>
+    <span class="pt">Não conseguimos carregar esta página agora. Confira sua internet e tente de novo — suas HCs continuam seguras na sua conta.</span>
+    <span class="es">No pudimos cargar esta página ahora. Revisa tu internet e inténtalo de nuevo — tus HCs siguen seguras en tu cuenta.</span>
+  </p>
+  <button type="button" id="retry"><span class="pt">Tentar de novo</span><span class="es">Intentar de nuevo</span></button>
+  <div class="note" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+(function(){
+  var b=document.getElementById('retry'),s=document.getElementById('status');
+  function pt(){return document.documentElement.getAttribute('data-lang')==='pt'}
+  b.addEventListener('click',function(){
+    if(navigator.onLine===false){s.textContent=pt()?'Ainda sem conexão.':'Todavía sin conexión.';return;}
+    location.reload();
+  });
+  window.addEventListener('online',function(){location.reload()});
+})();
+</script>
+</body>
+</html>

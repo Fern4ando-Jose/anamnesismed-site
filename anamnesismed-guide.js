@@ -32,8 +32,8 @@ function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
       });
       html += '</div>';
     } else if(q.type==='multi'){
-      html += '<div class="aea-q-hint pt" style="font-size:11px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Selecione quantas opções forem aplicáveis</div>';
-      html += '<div class="aea-q-hint es" style="font-size:11px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Seleccione todas las opciones que correspondan</div>';
+      html += '<div class="aea-q-hint pt" style="font-size:12px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Selecione quantas opções forem aplicáveis</div>';
+      html += '<div class="aea-q-hint es" style="font-size:12px;color:var(--ink-soft,#6b7c8a);margin-bottom:5px">Seleccione todas las opciones que correspondan</div>';
       html += '<div class="f-radios" id="'+id+'">';
       q.opts.forEach(function(o,oi){
         var oEs = (q.optsEs && q.optsEs[oi]) || o;
@@ -46,7 +46,8 @@ function buildAEAGuideHTML(mObj, idPfx, lang, titleStyle){
       html += '<button class="yn-btn" onclick="ynBtnSel(this,\''+id+'\',\'nao\')"><span class="pt">Não</span><span class="es">No</span></button>';
       html += '</div>';
     } else if(q.type==='input'){
-      html += '<input class="f-input" type="text" id="'+id+'" placeholder="'+(lang==='es'?(q.ph2||q.ph||''):(q.ph||''))+'">';
+      var _al = function(t){return String(t||'').replace(/<[^>]*>/g,'').replace(/"/g,'&quot;');};
+      html += '<input class="f-input" type="text" id="'+id+'" placeholder="'+(lang==='es'?(q.ph2||q.ph||''):(q.ph||''))+'" aria-label="'+_al(lang==='es'?(q.qEs||q.q):q.q)+'" data-al-pt="'+_al(q.q)+'" data-al-es="'+_al(q.qEs||q.q)+'">';
     }
     html += '</div>';
   });
@@ -160,36 +161,67 @@ function bi(pt, es){
   return '<span class="pt">'+pt+'</span><span class="es">'+e+'</span>';
 }
 
-function buildMnemonicsHTML(gc){
-  if(!gc||!gc.mnemonics||!gc.mnemonics.length)
-    return '<div class="ibox ibox-primary"><strong>Mnemônicas</strong><span class="pt">Nenhuma mnemônica cadastrada para este motivo ainda.</span><span class="es">Ninguna mnemotécnica registrada aún.</span></div>';
+// ── Mnemônicas por idioma ──
+// Regra: em ES só aparece a sigla que existe em espanhol (m.kwEs). Se kwEs for vazio/ausente,
+// o ES NÃO herda a sigla do PT: mostra só o nome, e as linhas ganham marcador "•" em vez da letra do PT.
+// Quando 'lang' ('pt'|'es') é informado, o HTML sai SÓ nesse idioma (sem os dois <span>).
+function mnemNorm(t){return String(t==null?'':t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()}
+function mnemLetterEs(m, r){
+  if(r[5]!=null && r[5]!=='') return r[5];
+  var l = r[0]==null ? '' : String(r[0]);
+  if(!m.kwEs) return (l.length>3 || /^[0-9]/.test(l)) ? (/^[0-9]/.test(l)?l:'•') : '•';
+  var term = r[3]==null ? '' : String(r[3]);
+  if(!l || mnemNorm(term).charAt(0)===mnemNorm(l).charAt(0)) return l || '•';
+  if(l.length>3) return l;
+  if(new RegExp('(^|[^A-Za-z])'+l.replace(/[^\w]/g,'')+'([^A-Za-z]|$)').test(term)) return l;
+  return '•';
+}
+function biLang(pt, es, lang){
+  if(lang==='pt') return pt==null?'':pt;
+  if(lang==='es') return (es==null||es==='')?(pt==null?'':pt):es;
+  return bi(pt,es);
+}
+function buildMnemonicsHTML(gc, lang){
+  if(!gc||!gc.mnemonics||!gc.mnemonics.length){
+    if(lang==='pt') return '<div class="ibox ibox-primary"><strong>Mnemônicas</strong><span>Nenhuma mnemônica cadastrada para este motivo ainda.</span></div>';
+    if(lang==='es') return '<div class="ibox ibox-primary"><strong>Mnemotécnicas</strong><span>Ninguna mnemotécnica registrada aún.</span></div>';
+    return '<div class="ibox ibox-primary"><strong class="pt">Mnemônicas</strong><strong class="es">Mnemotécnicas</strong><span class="pt">Nenhuma mnemônica cadastrada para este motivo ainda.</span><span class="es">Ninguna mnemotécnica registrada aún.</span></div>';
+  }
   var html='';
   gc.mnemonics.forEach(function(m){
-    html+='<div class="mnem-card"><div class="mnem-card-head"><span class="mnem-kw">'+bi(m.kw,m.kwEs)+'</span><span class="mnem-name">'+bi(m.name,m.nameEs)+'</span></div>';
+    var kw;
+    if(lang==='pt') kw = m.kw||'';
+    else if(lang==='es') kw = m.kwEs||'';
+    else kw = '<span class="pt">'+(m.kw||'')+'</span><span class="es">'+(m.kwEs||'')+'</span>';
+    html+='<div class="mnem-card"><div class="mnem-card-head">'+(kw?'<span class="mnem-kw">'+kw+'</span>':'')+'<span class="mnem-name">'+biLang(m.name,m.nameEs,lang)+'</span></div>';
     m.rows.forEach(function(r){
-      // r = [letra, termo, dica, termoEs?, dicaEs?]
-      html+='<div class="mnem-row"><span class="mnem-letter">'+bi(r[0],r[5])+'</span><span><span class="mnem-term">'+bi(r[1],r[3])+'</span><span class="mnem-hint">'+bi(r[2],r[4])+'</span></span></div>';
+      // r = [letra, termo, dica, termoEs?, dicaEs?, letraEs?]
+      var let_ = lang==='pt' ? r[0] : lang==='es' ? mnemLetterEs(m,r) : '<span class="pt">'+(r[0]==null?'':r[0])+'</span><span class="es">'+mnemLetterEs(m,r)+'</span>';
+      var term = lang==='es' ? biLang(r[1],r[3],'es') : biLang(r[1],r[3],lang);
+      var hint = lang==='es' ? ((r[4]==null||r[4]==='')?((r[3]!=null&&r[3]!=='')?'':(r[2]||'')):r[4]) : biLang(r[2],r[4],lang);
+      html+='<div class="mnem-row"><span class="mnem-letter">'+let_+'</span><span><span class="mnem-term">'+term+'</span><span class="mnem-hint">'+hint+'</span></span></div>';
     });
     html+='</div>';
   });
   return html;
 }
 
-function buildManobrasHTML(gc){
+function buildManobrasHTML(gc, lang){
+  var B = function(p,e){return biLang(p,e,lang)};
   if(!gc||!gc.manobras||!gc.manobras.length)
-    return '<div class="ibox ibox-primary"><strong>Manobras Semiológicas</strong><span class="pt">Nenhuma manobra cadastrada para este motivo ainda.</span><span class="es">Ninguna maniobra registrada aún.</span></div>';
+    return lang==='pt' ? '<div class="ibox ibox-primary"><strong>Manobras Semiológicas</strong><span>Nenhuma manobra cadastrada para este motivo ainda.</span></div>' : lang==='es' ? '<div class="ibox ibox-primary"><strong>Maniobras Semiológicas</strong><span>Ninguna maniobra registrada aún.</span></div>' : '<div class="ibox ibox-primary"><strong class="pt">Manobras Semiológicas</strong><strong class="es">Maniobras Semiológicas</strong><span class="pt">Nenhuma manobra cadastrada para este motivo ainda.</span><span class="es">Ninguna maniobra registrada aún.</span></div>';
   var html='';
   gc.manobras.forEach(function(m,i){
     html+='<div class="acc" id="acc-m-'+i+'">';
     html+='<div class="acc-head" onclick="this.closest(\'.acc\').classList.toggle(\'open\')">';
     html+='<span class="acc-num">'+(i+1)+'</span>';
-    html+='<div><div class="acc-title">'+bi(m.title,m.titleEs)+'</div><div class="acc-subtitle">'+bi(m.subtitle,m.subtitleEs)+'</div></div>';
+    html+='<div><div class="acc-title">'+B(m.title,m.titleEs)+'</div><div class="acc-subtitle">'+B(m.subtitle,m.subtitleEs)+'</div></div>';
     html+='<span class="acc-toggle">+</span></div>';
     html+='<div class="acc-body"><ul class="acc-steps">';
-    m.steps.forEach(function(s,si){var sEs=(m.stepsEs&&m.stepsEs[si]);html+='<li class="acc-step"><span class="acc-step-n">'+(si+1)+'.</span><span>'+bi(s,sEs)+'</span></li>';});
+    m.steps.forEach(function(s,si){var sEs=(m.stepsEs&&m.stepsEs[si]);html+='<li class="acc-step"><span class="acc-step-n">'+(si+1)+'.</span><span>'+B(s,sEs)+'</span></li>';});
     html+='</ul><div class="acc-findings">';
-    html+='<div class="acc-finding normal"><span class="acc-finding-lbl pt">Normal / Negativo</span><span class="acc-finding-lbl es">Normal / Negativo</span>'+bi(m.normal,m.normalEs)+'</div>';
-    html+='<div class="acc-finding abnormal"><span class="acc-finding-lbl pt">Alterado / Positivo</span><span class="acc-finding-lbl es">Alterado / Positivo</span>'+bi(m.abnormal,m.abnormalEs)+'</div>';
+    html+='<div class="acc-finding normal"><span class="acc-finding-lbl">Normal / Negativo</span>'+B(m.normal,m.normalEs)+'</div>';
+    html+='<div class="acc-finding abnormal"><span class="acc-finding-lbl">Alterado / Positivo</span>'+B(m.abnormal,m.abnormalEs)+'</div>';
     html+='</div></div></div>';
   });
   return html;
@@ -197,7 +229,7 @@ function buildManobrasHTML(gc){
 
 function buildSinaisHTML(gc){
   if(!gc||!gc.sinais||!gc.sinais.length)
-    return '<div class="ibox ibox-secondary"><strong>Sinais Clássicos</strong><span class="pt">Nenhum sinal cadastrado para este motivo ainda.</span></div>';
+    return '<div class="ibox ibox-secondary"><strong class="pt">Sinais Clássicos</strong><strong class="es">Signos Clásicos</strong><span class="pt">Nenhum sinal cadastrado para este motivo ainda.</span><span class="es">Ningún signo registrado para este motivo aún.</span></div>';
   var html='<div class="sign-grid">';
   gc.sinais.forEach(function(s){
     html+='<div class="sign-card"><div class="sign-name">'+bi(s.name,s.nameEs)+'</div>';
@@ -210,34 +242,34 @@ function buildSinaisHTML(gc){
 
 function buildDDxHTML(gc){
   if(!gc||!gc.ddx||!gc.ddx.length)
-    return '<div class="ibox ibox-primary"><strong pt>Diagnóstico Diferencial</strong><span class="pt">Nenhum DDx cadastrado para este motivo.</span></div>';
-  var html='<table class="ddx-table"><thead><tr><th pt>Diagnóstico</th><th es>Diagnóstico</th><th pt>A favor</th><th es>A favor</th><th pt>Contra</th><th es>En contra</th></tr></thead><tbody>';
+    return '<div class="ibox ibox-primary"><strong class="pt">Diagnóstico Diferencial</strong><strong class="es">Diagnóstico Diferencial</strong><span class="pt">Nenhum DDx cadastrado para este motivo.</span><span class="es">Ningún DDx registrado para este motivo.</span></div>';
+  var html='<div class="tbl-scroll"><table class="ddx-table"><thead><tr><th>Diagnóstico</th><th>A favor</th><th><span class="pt">Contra</span><span class="es">En contra</span></th></tr></thead><tbody>';
   gc.ddx.forEach(function(d){
     // d = [diag, aFavor, contra, diagEs?, aFavorEs?, contraEs?]
     html+='<tr><td>'+bi(d[0],d[3])+'</td><td><span class="ddx-inc">✓</span> '+bi(d[1],d[4])+'</td><td><span class="ddx-exc">✗</span> '+bi(d[2],d[5])+'</td></tr>';
   });
-  return html+'</tbody></table>';
+  return html+'</tbody></table></div>';
 }
 
 function buildEscalasHTML(gc){
   if(!gc||!gc.escalas||!gc.escalas.length)
-    return '<div class="ibox ibox-secondary"><strong>Escalas</strong><span class="pt">Nenhuma escala cadastrada para este motivo ainda.</span></div>';
+    return '<div class="ibox ibox-secondary"><strong>Escalas</strong> <span class="pt">Nenhuma escala cadastrada para este motivo ainda.</span><span class="es">Ninguna escala registrada para este motivo aún.</span></div>';
   var html='';
   gc.escalas.forEach(function(e){
     html+='<div class="score-title">'+bi(e.title,e.titleEs)+'</div>';
-    html+='<table class="score-table"><thead><tr>';
+    html+='<div class="tbl-scroll"><table class="score-table"><thead><tr>';
     e.headers.forEach(function(h,hi){var hEs=(e.headersEs&&e.headersEs[hi]);html+='<th>'+bi(h,hEs)+'</th>';});
     html+='</tr></thead><tbody>';
     e.rows.forEach(function(r,ri){html+='<tr>';r.forEach(function(c,ci){var cEs=(e.rowsEs&&e.rowsEs[ri]&&e.rowsEs[ri][ci]);html+='<td>'+bi(c,cEs)+'</td>';});html+='</tr>';});
-    html+='</tbody></table>';
-    if(e.note)html+='<div class="score-note"><strong pt>Interpretação</strong><strong es>Interpretación</strong>'+bi(e.note,e.noteEs)+'</div>';
+    html+='</tbody></table></div>';
+    if(e.note)html+='<div class="score-note"><strong class="pt">Interpretação</strong><strong class="es">Interpretación</strong>'+bi(e.note,e.noteEs)+'</div>';
   });
   return html;
 }
 
 function buildCondutaHTML(gc){
   if(!gc||!gc.conduta)
-    return '<div class="ibox ibox-primary"><strong>Conduta</strong><span class="pt">Nenhuma conduta cadastrada para este motivo ainda.</span></div>';
+    return '<div class="ibox ibox-primary"><strong class="pt">Conduta</strong><strong class="es">Conducta</strong><span class="pt">Nenhuma conduta cadastrada para este motivo ainda.</span><span class="es">Ninguna conducta registrada para este motivo aún.</span></div>';
   var c=gc.conduta,html='';
   if(c.steps&&c.steps.length){
     html+='<div class="score-title pt">Passos da abordagem</div><div class="score-title es">Pasos del abordaje</div>';
@@ -248,7 +280,7 @@ function buildCondutaHTML(gc){
   if(c.exames&&c.exames.length){
     html+='<div class="score-title pt">Exames a solicitar</div><div class="score-title es">Exámenes a solicitar</div>';
     html+='<div class="f-checks f-checks-3" style="margin-bottom:12px">';
-    c.exames.forEach(function(ex,xi){var exEs=(c.examesEs&&c.examesEs[xi]);html+='<div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span style="font-size:11px">'+bi(ex,exEs)+'</span></div>';});
+    c.exames.forEach(function(ex,xi){var exEs=(c.examesEs&&c.examesEs[xi]);html+='<div class="f-check" onclick="toggleCheck(this)"><div class="f-checkbox">✓</div><span style="font-size:12px">'+bi(ex,exEs)+'</span></div>';});
     html+='</div>';
   }
   if(c.drugs&&c.drugs.length){
@@ -299,23 +331,30 @@ function renderGuideContent(){
   area.innerHTML=html;
 }
 // ── GUIDE TABS ────────────────────────────────────────
+// Tablet em paisagem: formulário e guia ficam lado a lado (o formulário não some ao abrir uma aba do guia).
+var _splitMQ = (typeof window !== 'undefined' && window.matchMedia)
+  ? window.matchMedia('(min-width:1000px) and (max-width:1400px) and (orientation:landscape)') : null;
+function _isSplit(){ return !!(_splitMQ && _splitMQ.matches); }
 function showGuide(tab, el){
   var guideMap = {form:null, mnemonics:'gp-mnemonics', manobras:'gp-manobras', sinais:'gp-sinais', ddx:'gp-ddx', escalas:'gp-escalas', conduta:'gp-conduta'};
   var secs = document.getElementById('hc-sections');
   var area = document.getElementById('guide-content-area');
   var ai = document.getElementById('assistente-area');
+  var split = _isSplit();
+  var scr = document.getElementById('screen-hc');
+  if(scr) scr.classList.toggle('split-open', split && tab !== 'form');
 
   if(tab === 'form'){
     secs.style.display = '';
     area.style.display = 'none';
     if(ai) ai.style.display = 'none';
   } else if(tab === 'assistente'){
-    secs.style.display = 'none';
+    secs.style.display = split ? '' : 'none';
     area.style.display = 'none';
     if(ai) ai.style.display = '';
     if(typeof assistenteOnOpen === 'function') assistenteOnOpen();
   } else {
-    secs.style.display = 'none';
+    secs.style.display = split ? '' : 'none';
     area.style.display = '';
     if(ai) ai.style.display = 'none';
     area.querySelectorAll('.guide-page').forEach(function(p){p.classList.remove('active')});
@@ -325,4 +364,19 @@ function showGuide(tab, el){
 
   document.querySelectorAll('.guide-tab').forEach(function(t){t.classList.remove('active')});
   if(el) el.classList.add('active');
+}
+// Girou o tablet (retrato ⇄ paisagem): reaplica a aba ativa para montar/desmontar o layout lado a lado.
+if(_splitMQ){
+  var _reflow = function(){
+    var act = document.querySelector('.guide-tab.active');
+    if(!act || !document.getElementById('hc-sections')) return;
+    var name = (act.id || '').replace('gtab-','');
+    if(name === 'mnemonics' || name === 'form' || name === 'assistente' || name === 'manobras' || name === 'sinais' || name === 'ddx' || name === 'escalas' || name === 'conduta'){
+      if(name === 'assistente'){ /* não refaz a chamada da IA */
+        var secs=document.getElementById('hc-sections'); if(secs) secs.style.display=_isSplit()?'':'none';
+        var scr=document.getElementById('screen-hc'); if(scr) scr.classList.toggle('split-open', _isSplit());
+      } else showGuide(name, act);
+    }
+  };
+  if(_splitMQ.addEventListener) _splitMQ.addEventListener('change', _reflow); else if(_splitMQ.addListener) _splitMQ.addListener(_reflow);
 }

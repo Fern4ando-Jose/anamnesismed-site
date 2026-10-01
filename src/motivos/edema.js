@@ -365,6 +365,7 @@ AM.motivo("edema", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de edema",
         "rows": [
           [

@@ -277,6 +277,7 @@ AM.motivo("palpitacoes", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de palpitaciones",
         "rows": [
           [

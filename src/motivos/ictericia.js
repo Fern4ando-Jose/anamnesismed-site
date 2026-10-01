@@ -2,7 +2,7 @@
 AM.motivo("ictericia", {
   "name": "Icterícia",
   "nameEs": "Ictericia",
-  "icon": "🟡",
+  "icon": "👁️",
   "color": "mc-secondary",
   "rasHighlight": [
     "digest",
@@ -279,6 +279,7 @@ AM.motivo("ictericia", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "PRE / HEPÁTICA / POS",
         "name": "Clasificación topográfica de la ictericia",
         "rows": [
           [

@@ -8,7 +8,7 @@
  * SEGURANÇA (regra do produto):
  *  - Exige `Authorization: Bearer <access_token do Supabase>`.
  *  - Valida o token no servidor e confirma que o usuário é do plano PAGO ('pro').
- *  - Aplica limite diário por usuário (controle de custo da API).
+ *  - Aplica limite diário por usuário (controle de custo da API) — FAIL-CLOSED e atômico (RPC).
  *  - A chave da Anthropic NUNCA vai ao front-end — toda a chamada acontece aqui.
  *
  * Variáveis de ambiente necessárias no Vercel:
@@ -26,6 +26,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
+const { iniciaRota, autenticar, devolverCota, aplicaLimite, descreveErro } = require('./_comum');
 
 const MODEL = 'claude-sonnet-4-6';
 // 3000 (02/08/2026, 2ª correção do dia): eu havia baixado para 1500 para caber no
@@ -124,10 +125,10 @@ function buildUserMessage(pt, hc) {
   if (Array.isArray(hc.motivos) && hc.motivos.length) {
     L.push('');
     L.push(pt ? '## Motivos e respostas guiadas (AEA)' : '## Motivos y respuestas guiadas (AEA)');
-    hc.motivos.slice(0, LIM.motivos).forEach((m) => {
+    hc.motivos.slice(0, LIM.motivos).filter((m) => m && typeof m === 'object').forEach((m) => {
       L.push('');
       L.push((pt ? 'Motivo ' : 'Motivo ') + (m.ordem || '') + ': ' + clip(m.nome, LIM.nome));
-      (m.respostas || []).slice(0, LIM.respostas).forEach((r) => { if (r && r.pergunta && r.resposta) L.push('- ' + clip(r.pergunta, LIM.campo) + ': ' + clip(r.resposta, LIM.campo)); });
+      (Array.isArray(m.respostas) ? m.respostas : []).slice(0, LIM.respostas).forEach((r) => { if (r && r.pergunta && r.resposta) L.push('- ' + clip(r.pergunta, LIM.campo) + ': ' + clip(r.resposta, LIM.campo)); });
     });
   }
 
@@ -261,9 +262,10 @@ function parseRelatorio(text) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  // CORS restrito, no-store, preflight e método (centralizado em _comum.js).
+  if (iniciaRota(req, res, 'POST')) return;
 
-  const body = req.body || {};
+  const body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};
   const lang = body.lang === 'es' ? 'es' : 'pt';
   const pt = lang !== 'es';
   const msg = (p, e) => (pt ? p : e);
@@ -272,57 +274,58 @@ module.exports = async (req, res) => {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return res.status(500).json({ error: 'Supabase não configurado no servidor' });
 
   // 1) Autenticação — token do Supabase no header Authorization
-  const authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
-  const token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
-  if (!token) return res.status(401).json({ error: msg('Não autenticado', 'No autenticado') });
-
   const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  const auth = await autenticar(sbAdmin, req, msg);
+  if (auth.error) return res.status(auth.status).json({ error: auth.error });
+  const userId = auth.user.id;
 
-  let userId = null;
-  try {
-    const { data, error } = await sbAdmin.auth.getUser(token);
-    if (error || !data || !data.user) return res.status(401).json({ error: msg('Sessão inválida', 'Sesión inválida') });
-    userId = data.user.id;
-  } catch (e) {
-    return res.status(401).json({ error: msg('Falha ao validar sessão', 'Error al validar la sesión') });
-  }
-
-  // 2) Plano pago — só 'pro' tem acesso (TODO: incluir trial/segmentar médico×estudante depois)
+  // 2) Plano pago — só 'pro' tem acesso (TODO: incluir trial/segmentar médico×estudante depois).
+  // ERRO DE BANCO ≠ PLANO NÃO-PRO: perfil inexistente (PGRST116) ou plano != pro → 403; qualquer outra
+  // falha na leitura (banco fora, timeout) → 503, para o front não mostrar "faça upgrade" a quem JÁ paga.
+  const indisponivel = () => res.status(503).json({ error: msg('Não foi possível confirmar o plano agora. Tente novamente em instantes.', 'No se pudo confirmar el plan ahora. Inténtalo de nuevo en unos instantes.'), code: 'plano_indisponivel' });
   try {
     const { data: prof, error } = await sbAdmin.from('profiles').select('plano').eq('id', userId).single();
+    if (error && error.code !== 'PGRST116') {
+      console.error('[assistente-dx] leitura do plano falhou:', descreveErro(error));
+      return indisponivel();
+    }
     if (error || !prof || prof.plano !== 'pro') {
       return res.status(403).json({ error: msg('Recurso exclusivo do plano pago', 'Recurso exclusivo del plan de pago'), code: 'upgrade' });
     }
   } catch (e) {
-    return res.status(403).json({ error: msg('Não foi possível confirmar o plano', 'No se pudo confirmar el plan'), code: 'upgrade' });
+    console.error('[assistente-dx] leitura do plano exceção:', descreveErro(e));
+    return indisponivel();
   }
 
-  // 3) Limite diário por usuário (fail-open se a tabela ainda não existir)
-  try {
-    const dia = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
-    const { data: row, error: selErr } = await sbAdmin
-      .from('ai_assistant_usage').select('count').eq('user_id', userId).eq('dia', dia).single();
-    if (selErr && selErr.code && selErr.code !== 'PGRST116') {
-      // PGRST116 = nenhuma linha (esperado no 1º uso do dia). Outros erros → fail-open.
-      console.warn('ai_assistant_usage select:', selErr.message || selErr.code);
-    } else {
-      const usados = row && typeof row.count === 'number' ? row.count : 0;
-      if (usados >= DAILY_LIMIT) {
-        return res.status(429).json({ error: msg('Limite diário de análises atingido. Tente novamente amanhã.', 'Límite diario de análisis alcanzado. Inténtalo de nuevo mañana.'), code: 'rate_limit' });
-      }
-      await sbAdmin.from('ai_assistant_usage')
-        .upsert({ user_id: userId, dia, count: usados + 1 }, { onConflict: 'user_id,dia' });
-    }
-  } catch (e) {
-    console.warn('ai_assistant_usage indisponível (fail-open):', e && e.message ? e.message : e);
-  }
-
-  // 4) Conteúdo mínimo
-  const hc = body.hc || {};
+  // 3) Conteúdo mínimo — validado ANTES de descontar a cota (400 não consome limite)
+  const hc = (body.hc && typeof body.hc === 'object' && !Array.isArray(body.hc)) ? body.hc : {};
   const temConteudo = (hc.relatoLivre && String(hc.relatoLivre).trim()) ||
     (Array.isArray(hc.motivos) && hc.motivos.some((m) => m && Array.isArray(m.respostas) && m.respostas.some((r) => r && r.resposta))) ||
     (hc.exameFisico && String(hc.exameFisico).trim());
   if (!temConteudo) return res.status(400).json({ error: msg('Preencha a HC antes de pedir a análise', 'Completa la HC antes de pedir el análisis') });
+
+  // 3b) Rajada curta (6/min) ANTES da cota diária: um disparo em loop não consome a cota do dia nem chama o
+  // modelo. Fail-closed (503 se `consumir_limite` não existir — migration 2026-10-03).
+  if (!(await aplicaLimite(res, sbAdmin, userId, 'assistente-dx-rajada'))) return;
+
+  // 4) Limite diário por usuário — FAIL-CLOSED e ATÔMICO (controle de custo da API paga,
+  // mesmo padrão do /api/gerar-hc). O incremento é feito pela RPC `consumir_cota_ia`
+  // (insert ... on conflict do update ... where count < limite), então requisições
+  // concorrentes não furam o teto. Se a RPC não existir (migration
+  // 2026-10-01-uso-atomico-rpc.sql não aplicada) ou falhar → 503 e NÃO chama o modelo.
+  try {
+    const { data: usados, error: rpcErr } = await sbAdmin.rpc('consumir_cota_ia', { p_user_id: userId, p_rota: 'assistente-dx', p_limite: DAILY_LIMIT });
+    if (rpcErr || typeof usados !== 'number') {
+      console.error('[ALERTA custo] RPC consumir_cota_ia falhou (fail-closed; migration aplicada?):', rpcErr ? descreveErro(rpcErr) : 'retorno inesperado');
+      return res.status(503).json({ error: msg('Serviço de IA temporariamente indisponível', 'Servicio de IA temporalmente no disponible'), code: 'usage_unavailable' });
+    }
+    if (usados < 0) {
+      return res.status(429).json({ error: msg('Limite diário de análises atingido. Tente novamente amanhã.', 'Límite diario de análisis alcanzado. Inténtalo de nuevo mañana.'), code: 'rate_limit' });
+    }
+  } catch (e) {
+    console.error('[ALERTA custo] consumir_cota_ia exceção (fail-closed):', descreveErro(e));
+    return res.status(503).json({ error: msg('Serviço de IA temporariamente indisponível', 'Servicio de IA temporalmente no disponible'), code: 'usage_unavailable' });
+  }
 
   // 5) Chamada ao modelo
   //
@@ -335,7 +338,7 @@ module.exports = async (req, res) => {
   // `stream()`, que mantém a conexão viva recebendo os pedaços à medida que saem
   // em vez de esperar tudo de uma vez. O formato devolvido ao cliente é o mesmo.
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 55000, maxRetries: 0 });
     const response = await client.messages.stream({
       model: MODEL,
       max_tokens: MAX_TOKENS,
@@ -367,17 +370,21 @@ module.exports = async (req, res) => {
     if (!relatorio) {
       // fallback: devolve o texto cru para o front exibir como apoio
       if (text) return res.status(200).json({ relatorio: null, raw: text });
+      // Modelo não entregou nada utilizável: o usuário não recebeu o serviço → devolve a cota.
+      await devolverCota(sbAdmin, userId, 'assistente-dx');
       return res.status(502).json({ error: msg('O modelo não retornou análise', 'El modelo no devolvió análisis') });
     }
     return res.status(200).json({ relatorio });
   } catch (err) {
-    console.error('assistente-dx error:', err && err.message ? err.message : err);
+    // Loga só o necessário no servidor (sem dados de paciente) e devolve mensagem FIXA:
+    // err.message do SDK pode conter trechos do request/detalhes internos.
+    console.error('assistente-dx error:', JSON.stringify({ status: (err && err.status) || null, erro: descreveErro(err) }));
+    // A cota foi consumida antes da chamada: se o modelo falhou (erro/timeout/5xx do SDK),
+    // devolve-a — sem mascarar o erro original (devolverCota nunca lança).
+    await devolverCota(sbAdmin, userId, 'assistente-dx');
     const status = (err && err.status) || 500;
-    // Erros 4xx têm mensagem intencional p/ o usuário; 5xx (SDK/infra) → mensagem genérica (não vazar interno).
-    const safeMsg = status < 500 && err && err.message
-      ? err.message
-      : msg('Erro ao gerar a análise', 'Error al generar el análisis');
-    return res.status(status).json({ error: safeMsg });
+    if (status === 429) return res.status(503).json({ error: msg('Serviço de IA sobrecarregado. Tente novamente em instantes.', 'Servicio de IA sobrecargado. Inténtalo de nuevo en unos instantes.') });
+    return res.status(502).json({ error: msg('Erro ao gerar a análise', 'Error al generar el análisis') });
   }
 };
 

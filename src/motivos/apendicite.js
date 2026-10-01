@@ -546,6 +546,7 @@ AM.motivo("apendicite", {
   "guideEs": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Características clínicas",
         "rows": [
           [
@@ -591,7 +592,7 @@ AM.motivo("apendicite", {
         ]
       },
       {
-        "kw": "A. MAESTRO",
+        "kw": "",
         "name": "Escala de Alvarado (10 puntos)",
         "rows": [
           [

@@ -3,6 +3,7 @@ var GUIDE_ES = {
   "apendicite": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Características clínicas",
         "rows": [
           [
@@ -48,7 +49,7 @@ var GUIDE_ES = {
         ]
       },
       {
-        "kw": "A. MAESTRO",
+        "kw": "",
         "name": "Escala de Alvarado (10 puntos)",
         "rows": [
           [
@@ -402,7 +403,8 @@ var GUIDE_ES = {
   "artralgia": {
     "mnemonics": [
       {
-        "name": "Mnemónico GASA — principales causas de monoartritis aguda",
+        "kw": "CAUSAS DE MONOARTRITIS",
+        "name": "Principales causas de monoartritis aguda",
         "rows": [
           [
             "Gota / pseudogota (cristales)",
@@ -423,7 +425,8 @@ var GUIDE_ES = {
         ]
       },
       {
-        "name": "Mnemónico SOAP-BRAIN — causas de poliartritis (adaptado)",
+        "kw": "CAUSAS DE POLIARTRITIS",
+        "name": "Causas de poliartritis",
         "rows": [
           [
             "LES (Lupus Eritematoso Sistémico)",
@@ -622,6 +625,7 @@ var GUIDE_ES = {
   "cefaleia": {
     "mnemonics": [
       {
+        "kw": "SNOOP4",
         "name": "Signos de alarma — cefalea secundaria",
         "rows": [
           [
@@ -659,6 +663,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "",
         "name": "Criterios de Migraña",
         "rows": [
           [
@@ -864,6 +869,7 @@ var GUIDE_ES = {
   "colecistite-colelitiase": {
     "mnemonics": [
       {
+        "kw": "5 F",
         "name": "Factores de riesgo para colelitiasis",
         "rows": [
           [
@@ -889,6 +895,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "CHARCOT",
         "name": "Tríada de la colangitis",
         "rows": [
           [
@@ -906,6 +913,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "",
         "name": "Complicaciones de la litiasis biliar",
         "rows": [
           [
@@ -1108,6 +1116,7 @@ var GUIDE_ES = {
   "convulsao-sincope": {
     "mnemonics": [
       {
+        "kw": "SÍNCOPE x CONVULSIÓN",
         "name": "Diferenciación entre síncope y crisis convulsiva",
         "rows": [
           [
@@ -1143,6 +1152,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "CAUSAS DE SÍNCOPE",
         "name": "Clasificación etiológica del síncope (cardíaco / reflejo / ortostático)",
         "rows": [
           [
@@ -1311,6 +1321,7 @@ var GUIDE_ES = {
   "diarreia": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas y mecanismos de la diarrea",
         "rows": [
           [
@@ -1484,6 +1495,7 @@ var GUIDE_ES = {
   "dispneia": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de disnea aguda",
         "rows": [
           [
@@ -1699,6 +1711,7 @@ var GUIDE_ES = {
   "doenca-diverticular": {
     "mnemonics": [
       {
+        "kw": "HINCHEY",
         "name": "Clasificación de la diverticulitis complicada",
         "rows": [
           [
@@ -1720,6 +1733,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "LOCALIZACIÓN",
         "name": "Características de la diverticulitis",
         "rows": [
           [
@@ -1930,6 +1944,7 @@ var GUIDE_ES = {
   "doencas-anorretais": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Clasificación de las hemorroides internas",
         "rows": [
           [
@@ -1951,6 +1966,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "DOLOR x SANGRE",
         "name": "Diferenciar las causas",
         "rows": [
           [
@@ -2151,6 +2167,7 @@ var GUIDE_ES = {
   "dor-abdominal": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de dolor abdominal",
         "rows": [
           [
@@ -2397,6 +2414,7 @@ var GUIDE_ES = {
   "dor-toracica": {
     "mnemonics": [
       {
+        "kw": "MONA",
         "name": "Conducta inicial en el IAM/SCA",
         "rows": [
           [
@@ -2418,6 +2436,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "6 EMERGENCIAS",
         "name": "Causas que matan por dolor torácico",
         "rows": [
           [
@@ -2670,6 +2689,7 @@ var GUIDE_ES = {
   "edema": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de edema",
         "rows": [
           [
@@ -2849,31 +2869,38 @@ var GUIDE_ES = {
   "expectoracao": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Tipos de esputo y significado clínico",
         "rows": [
           [
-            "Seroso",
-            "Espumoso, rosado → edema agudo de pulmón"
+            "Espumoso, rosado → edema agudo de pulmón",
+            "",
+            "Seroso"
           ],
           [
-            "Mucoide",
-            "Claro/blanco → bronquitis crónica, asma estable"
+            "Claro/blanco → bronquitis crónica, asma estable",
+            "",
+            "Mucoide"
           ],
           [
-            "Mucopurulento",
-            "Amarillento → infección inicial (viral→bacteriana)"
+            "Amarillento → infección inicial (viral→bacteriana)",
+            "",
+            "Mucopurulento"
           ],
           [
-            "Purulento",
-            "Verdoso/fétido → infección bacteriana establecida"
+            "Verdoso/fétido → infección bacteriana establecida",
+            "",
+            "Purulento"
           ],
           [
-            "Herrumbroso",
-            "Achocolatado → neumonía neumocócica"
+            "Achocolatado → neumonía neumocócica",
+            "",
+            "Herrumbroso"
           ],
           [
-            "Numular",
-            "Esferas (monedas) → TB, bronquiectasia"
+            "Esferas (monedas) → TB, bronquiectasia",
+            "",
+            "Numular"
           ]
         ]
       }
@@ -2931,6 +2958,7 @@ var GUIDE_ES = {
   "febre": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Semiología de la fiebre",
         "rows": [
           [
@@ -2956,6 +2984,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "",
         "name": "Patrones de la curva febril",
         "rows": [
           [
@@ -2985,6 +3014,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "SIRS",
         "name": "Respuesta Inflamatoria Sistémica",
         "rows": [
           [
@@ -3204,27 +3234,69 @@ var GUIDE_ES = {
   "hemoptise": {
     "mnemonics": [
       {
+        "kw": "Clasificación por volumen",
         "name": "Hemoptisis — clasificación por volumen",
         "rows": [
           [
-            "Mínima/estrías",
-            "Bajo riesgo inmediato — investigar causa"
+            "Estrías — bajo riesgo inmediato — investigar causa",
+            "",
+            "Mínima/estrías"
           ],
           [
-            "Leve",
-            "< 250 mL/24h — hospitalizar, sin riesgo de asfixia"
+            "< 250 mL/24h — hospitalizar, sin riesgo de asfixia",
+            "",
+            "Leve"
           ],
           [
-            "Moderada",
-            "250–500 mL/24h — internación, vigilancia intensiva"
+            "250–500 mL/24h — internación, vigilancia intensiva",
+            "",
+            "Moderada"
           ],
           [
-            "Grave",
-            "500–600 mL/24h — UCI, broncoscopia urgente"
+            "500–600 mL/24h — UCI, broncoscopia urgente",
+            "",
+            "Grave"
           ],
           [
-            "Fulminante",
-            "> 600 mL/24h — muerte por asfixia — emergencia"
+            "> 600 mL/24h — muerte por asfixia — emergencia",
+            "",
+            "Fulminante"
+          ]
+        ]
+      },
+      {
+        "kw": "Causas por frecuencia",
+        "name": "Etiología de la hemoptisis",
+        "rows": [
+          [
+            "Causa más común (esputo hemoptoico leve)",
+            "",
+            "Bronquitis/EPOC"
+          ],
+          [
+            "2ª causa — adulto fumador > 40 años",
+            "",
+            "Carcinoma broncogénico"
+          ],
+          [
+            "Volumen alto, matutino, crónico",
+            "",
+            "Bronquiectasias"
+          ],
+          [
+            "Contacto con TB, síntomas B, nódulo/cavidad",
+            "",
+            "TB activa o cicatriz"
+          ],
+          [
+            "Pleurítica + TVP + taquicardia + Dímero D ↑",
+            "",
+            "TEP"
+          ],
+          [
+            "Disnea de esfuerzo, soplo mitral, ortopnea",
+            "",
+            "Estenosis mitral"
           ]
         ]
       }
@@ -3284,6 +3356,7 @@ var GUIDE_ES = {
   "hemorragia-digestiva-alta": {
     "mnemonics": [
       {
+        "kw": "VARICEAL x NO VARICEAL",
         "name": "Causas de HDA",
         "rows": [
           [
@@ -3313,6 +3386,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "ABCDE",
         "name": "Abordaje inicial del sangrado",
         "rows": [
           [
@@ -3506,6 +3580,7 @@ var GUIDE_ES = {
   "hemorragia-digestiva-baixa": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de HDB",
         "rows": [
           [
@@ -3531,6 +3606,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "ALTA x BAJA",
         "name": "Diferenciar el origen",
         "rows": [
           [
@@ -3726,6 +3802,7 @@ var GUIDE_ES = {
   "hernia-abdominal": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Estados clínicos de la hernia",
         "rows": [
           [
@@ -3747,6 +3824,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "LOCALIZACIONES",
         "name": "Tipos por localización",
         "rows": [
           [
@@ -3942,6 +4020,7 @@ var GUIDE_ES = {
   "ictericia": {
     "mnemonics": [
       {
+        "kw": "PRE / HEPÁTICA / POS",
         "name": "Clasificación topográfica de la ictericia",
         "rows": [
           [
@@ -4101,6 +4180,7 @@ var GUIDE_ES = {
   "lombalgia": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Signos de alarma (red flags) en la lumbalgia",
         "rows": [
           [
@@ -4286,6 +4366,7 @@ var GUIDE_ES = {
   "nauseas-vomitos": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de náuseas y vómitos",
         "rows": [
           [
@@ -4472,6 +4553,7 @@ var GUIDE_ES = {
   "oclusao-intestinal": {
     "mnemonics": [
       {
+        "kw": "4 SIGNOS",
         "name": "Obstrucción intestinal",
         "rows": [
           [
@@ -4493,6 +4575,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "",
         "name": "Causas más comunes en el adulto",
         "rows": [
           [
@@ -4698,6 +4781,7 @@ var GUIDE_ES = {
   "palpitacoes": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de palpitaciones",
         "rows": [
           [
@@ -4861,6 +4945,7 @@ var GUIDE_ES = {
   "pancreatite-aguda": {
     "mnemonics": [
       {
+        "kw": "GET SMASHED",
         "name": "Etiologías de la pancreatitis",
         "rows": [
           [
@@ -4906,6 +4991,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "RANSON",
         "name": "Criterios de Ranson (admisión)",
         "rows": [
           [
@@ -5105,6 +5191,7 @@ var GUIDE_ES = {
   "perda-peso": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de pérdida de peso involuntaria",
         "rows": [
           [
@@ -5299,6 +5386,7 @@ var GUIDE_ES = {
   "semio-astenia": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de astenia/fatiga",
         "rows": [
           [
@@ -5332,6 +5420,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "ORGÁNICA x FUNCIONAL",
         "name": "Patrón temporal de la fatiga",
         "rows": [
           [
@@ -5525,6 +5614,7 @@ var GUIDE_ES = {
   "semio-cianose": {
     "mnemonics": [
       {
+        "kw": "CENTRAL x PERIFÉRICA",
         "name": "Tipos de cianosis",
         "rows": [
           [
@@ -5546,6 +5636,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "5 g/dL",
         "name": "Umbral de la cianosis",
         "rows": [
           [
@@ -5723,6 +5814,7 @@ var GUIDE_ES = {
   "semio-dor": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Caracterización semiológica del dolor (clínica)",
         "rows": [
           [
@@ -5764,6 +5856,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "ALICIA",
         "name": "Caracterización semiológica del dolor",
         "rows": [
           [
@@ -5793,6 +5886,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "OPQRST",
         "name": "Esquema anglosajón del dolor",
         "rows": [
           [
@@ -5822,6 +5916,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "VISCERAL x SOMÁTICA",
         "name": "Tipos de dolor",
         "rows": [
           [
@@ -6008,6 +6103,7 @@ var GUIDE_ES = {
   "sintomas-urinarios": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de disuria/síntomas urinarios",
         "rows": [
           [
@@ -6174,6 +6270,7 @@ var GUIDE_ES = {
   "tontura-vertigem": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de mareo/vértigo",
         "rows": [
           [
@@ -6359,6 +6456,7 @@ var GUIDE_ES = {
   "tosse": {
     "mnemonics": [
       {
+        "kw": "",
         "name": "Causas de tos crónica (>8 semanas)",
         "rows": [
           [
@@ -6520,6 +6618,7 @@ var GUIDE_ES = {
   "trauma-abdominal": {
     "mnemonics": [
       {
+        "kw": "ABCDE",
         "name": "Atención inicial al trauma (ATLS)",
         "rows": [
           [
@@ -6545,6 +6644,7 @@ var GUIDE_ES = {
         ]
       },
       {
+        "kw": "CERRADO x PENETRANTE",
         "name": "Mecanismos de trauma",
         "rows": [
           [
@@ -6752,7 +6852,7 @@ function applyGuideES(){
     if(es.mnemonics && pt.mnemonics) es.mnemonics.forEach(function(me, i){
       var mp = pt.mnemonics[i]; if(!mp || !me) return;
       if(me.name) mp.nameEs = me.name;
-      if(me.kw) mp.kwEs = me.kw;
+      if(me.kw != null) mp.kwEs = me.kw; // '' = sem sigla em ES (nunca herdar a sigla do PT)
       if(me.rows && mp.rows) me.rows.forEach(function(re, j){
         var rp = mp.rows[j]; if(!rp || !re) return;
         if(re[0] != null) rp[3] = re[0];

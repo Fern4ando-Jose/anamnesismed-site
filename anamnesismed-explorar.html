@@ -6,15 +6,23 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
-<script src="am-icons.js?v=f6cfe7c9"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
+<script src="am-icons.js?v=3383aef7"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <title>AnamnesísMed — Explorar</title>
+<meta name="description" content="Explora las especialidades de AnamnesísMed: clínica médica, cirugía, respiratorio y semiología.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -22,16 +30,16 @@
   --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
   --secondary:#0d9488;--accent:#f59e0b;
   --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
+  --serif:'Space Grotesk',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
   --sidebar-w:240px
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;display:flex}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
 
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 
 /* ── TOPBAR (estilo dashboard) ── */
 .topbar{
@@ -46,7 +54,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .topbar-subtitle{font-size:13px;color:var(--muted)}
 .topbar-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
 .lang-toggle{display:flex;background:rgba(13,45,61,.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
-.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn{padding:4px 11px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 
 /* ── BUSCA (no topbar) ── */
@@ -55,7 +63,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .search-input{
   padding:8px 12px 8px 34px;font-size:13px;
   background:var(--bg);border:1px solid var(--line);
-  border-radius:8px;color:var(--ink);outline:none;
+  border-radius:8px;color:var(--ink);
   width:240px;transition:all .2s;font-family:var(--sans)
 }
 .search-input:focus{border-color:rgba(14,116,144,.5);box-shadow:0 0 0 3px rgba(14,116,144,.10);width:280px}
@@ -71,7 +79,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .sr-item:hover,.sr-item.active{background:rgba(14,116,144,.07)}
 .sr-icon{font-size:18px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--bg);flex-shrink:0}
 .sr-name{font-size:14px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sr-spec{font-size:11px;color:var(--muted);font-weight:600;flex-shrink:0}
+.sr-spec{font-size:12px;color:var(--muted);font-weight:600;flex-shrink:0}
 .sr-empty{padding:16px;text-align:center;font-size:13px;color:var(--muted)}
 
 /* ── BOTÃO NOVA HC ── */
@@ -89,7 +97,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .hub-sub{font-size:14px;color:var(--muted)}
 
 /* ── SECTION LABEL ── */
-.sec-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.sec-label{font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:0 0 14px;display:flex;align-items:center;gap:8px}
 .sec-label::after{content:'';flex:1;height:1px;background:var(--line)}
 
 /* ── MOSAICO DE ESPECIALIDADES ── */
@@ -106,31 +114,31 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .esp-tile-name{font-size:16px;font-weight:700;line-height:1.25}
 .esp-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
 .esp-tile-foot{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
-.esp-tile-count{font-size:12px;font-weight:700;color:var(--c);background:var(--cbg);padding:3px 11px;border-radius:20px}
-.esp-tile-go{font-size:18px;color:var(--c)}
+.esp-tile-count{font-size:12px;font-weight:700;color:color-mix(in srgb,var(--c) 65%,#000);background:var(--cbg);padding:3px 11px;border-radius:20px}
+.esp-tile-go{font-size:18px;color:color-mix(in srgb,var(--c) 65%,#000)}
 
 /* ── CARDS DE FERRAMENTAS ── */
 .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .tool-tile{
   position:relative;display:flex;flex-direction:column;gap:10px;
   background:var(--bg-card);border:1px dashed var(--line-md);border-radius:16px;
-  padding:18px;color:var(--ink);overflow:hidden;opacity:.92
+  padding:18px;color:var(--ink);overflow:hidden
 }
 .tool-tile-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:27px;background:var(--cbg)}
 .tool-tile-name{font-size:16px;font-weight:700}
 .tool-tile-desc{font-size:12.5px;color:var(--muted);line-height:1.45;flex:1}
-.soon-badge{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--c);background:var(--cbg);padding:4px 11px;border-radius:20px}
-.pro-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:1px 6px;border-radius:6px;vertical-align:middle;margin-left:4px}
+.soon-badge{display:inline-block;align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:color-mix(in srgb,var(--c) 65%,#000);background:var(--cbg);padding:4px 11px;border-radius:20px}
+.pro-badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(90deg,#10b981,#059669);padding:1px 6px;border-radius:6px;vertical-align:middle;margin-left:4px}
 .tool-tile.live{border-style:solid;border-color:var(--line);opacity:1;text-decoration:none;cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s}
 .tool-tile.live:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(30,27,75,.26);border-color:var(--c)}
-.tool-tile .go{align-self:flex-start;font-size:12.5px;font-weight:700;color:var(--c);display:flex;align-items:center;gap:6px}
+.tool-tile .go{align-self:flex-start;font-size:12.5px;font-weight:700;color:color-mix(in srgb,var(--c) 65%,#000);display:flex;align-items:center;gap:6px}
 .tool-tile.live .go .arrow{transition:transform .16s}
 .tool-tile.live:hover .go .arrow{transform:translateX(3px)}
 
 /* ── MOBILE NAV ── */
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--line);z-index:200;padding-bottom:env(safe-area-inset-bottom)}
 .mn-row{display:flex;align-items:stretch}
-.mn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px;font-size:10px;font-weight:600;color:var(--muted);text-decoration:none;background:none;border:none;cursor:pointer;transition:color .15s}
+.mn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;background:none;border:none;cursor:pointer;transition:color .15s}
 .mn-item.active,.mn-item:active{color:var(--primary)}
 .mn-icon{font-size:20px}
 
@@ -143,8 +151,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .hamburger{display:flex}
   /* saudação some no mobile (estourava o topbar e colidia com busca/idioma) */
   .topbar-left > div{display:none}
-  .search-input{width:150px}
-  .search-input:focus{width:150px}
+  .search-input,.search-input:focus{width:100%}
+  .topbar-right{flex:1;min-width:0;justify-content:flex-end;gap:8px}
+  .search-wrap{flex:1 1 0;min-width:0}
+  .topbar-back{display:none!important}/* o menu e a barra inferior já levam ao Início */
   .btn-new span.pt,.btn-new span.es{display:none}
   .hub-title{font-size:20px}
   .mosaic,.tools-grid{grid-template-columns:1fr}
@@ -152,16 +162,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 @media(min-width:769px) and (max-width:1100px){
   .panel{padding:22px 22px 48px}
 }
+/* saudação do topbar não quebra em coluna estreita: uma linha só, sem subtítulo no tablet */
+.topbar-title{white-space:nowrap}
+@media(max-width:1100px){.topbar-subtitle{display:none!important}}
 </style>
-<link rel="stylesheet" href="sidebar.css?v=20566b6d">
+<link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
+<link rel="stylesheet" href="sidebar.css?v=0c39aa1b">
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <!-- ── SIDEBAR ── -->
 <div id="sidebar-root"></div>
 
 <!-- ── MAIN ── -->
-<div class="main">
+<main class="main" id="main" tabindex="-1">
 
   <!-- TOPBAR (estilo dashboard) -->
   <header class="topbar">
@@ -181,12 +198,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
     <div class="topbar-right">
       <div class="lang-toggle">
-        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-        <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
+        <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
       </div>
       <div class="search-wrap">
         <span class="search-icon">&#x1F50D;</span>
-        <input type="text" class="search-input" id="motivo-search" autocomplete="off"
+        <input type="text" class="search-input" id="motivo-search" autocomplete="off" aria-label="Buscar motivo"
           placeholder="Buscar motivo..." data-ph-pt="Buscar motivo..." data-ph-es="Buscar motivo...">
         <div class="search-results" id="search-results"></div>
       </div>
@@ -237,7 +254,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
 
   </div><!-- /panel -->
-</div><!-- /main -->
+</main><!-- /main -->
 
 <!-- MOBILE NAV -->
 <nav class="mobile-nav">
@@ -261,7 +278,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   </div>
 </nav>
 
-<script src="anamnesismed-motivos.js?v=ad716e9d"></script>
+<script src="anamnesismed-motivos.js?v=f683d932"></script>
 <script>
 // ── DADOS DAS ESPECIALIDADES (cards do mosaico) ───────────────────────────────
 var ESPECIALIDADES = [
@@ -352,13 +369,19 @@ function runSearch(q){
 }
 
 // ── LANG ──────────────────────────────────────────────────────────────────────
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Explorar", "d": "Explora las especialidades de AnamnesísMed: clínica médica, cirugía, respiratorio y semiología."}, "pt": {"t": "AnamnesísMed — Explorar", "d": "Explore as especialidades do AnamnesísMed: clínica médica, cirurgia, respiratório e semiologia."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(lang){
+  amSetMeta(lang);
+  amLangA11y(lang);
   currentLang = lang;
   document.documentElement.setAttribute("data-lang",lang);
   document.getElementById("btn-es").classList.toggle("active",lang==="es");
   document.getElementById("btn-pt").classList.toggle("active",lang==="pt");
   renderMosaic();
   var si = document.getElementById("motivo-search");
+  if(si) si.setAttribute("aria-label", "Buscar motivo de consulta");
   if(si) runSearch(si.value);
   try{ localStorage.setItem("am-lang",lang); }catch(e){}
 }
@@ -395,7 +418,8 @@ document.addEventListener("DOMContentLoaded", function(){
   });
 });
 </script>
-<script src="supabase-integration.js?v=bb827873" defer></script>
-<script src="sidebar.js?v=f6cd0d5b"></script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
+<script src="supabase-integration.js?v=628b1cd6" defer></script>
+<script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>

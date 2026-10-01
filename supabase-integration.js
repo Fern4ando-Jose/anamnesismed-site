@@ -3,7 +3,7 @@
  * ─────────────────────────────────────────────────────────────────────────
  * Arquivo: supabase-integration.js
  * Inclui em TODOS os HTMLs antes do </body>:
- *   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ *   <script src="/vendor/supabase-2.110.2.js"></script>   (hospedado no próprio domínio; v2.110.2)
  *   <script src="supabase-integration.js"></script>
  *
  * CONFIGURAR as duas linhas abaixo com suas chaves do Supabase:
@@ -25,6 +25,79 @@ function escHtml(s) {
   });
 }
 
+// ── Aviso acessível reutilizável (substitui alert()) ─────────────────────────
+// amNotify('texto') ou amNotify({pt:'...', es:'...'}, {type:'error'|'info', timeout:ms})
+// Renderiza um toast com role="alert" (erro) / role="status" (info) + aria-live; sem bloquear a página.
+function amNotify(msg, opts) {
+  opts = opts || {};
+  var lang = document.documentElement.getAttribute('data-lang') === 'pt' ? 'pt' : 'es';
+  var text = (msg && typeof msg === 'object') ? (msg[lang] || msg.pt || msg.es || '') : String(msg || '');
+  var isErr = opts.type !== 'info';
+  var wrap = document.getElementById('am-toast-wrap');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'am-toast-wrap';
+    wrap.className = 'am-toast-wrap';
+    document.body.appendChild(wrap);
+    if (!document.getElementById('am-toast-style')) {
+      // Fallback de estilo para páginas sem anamnesismed-theme.css
+      var st = document.createElement('style');
+      st.id = 'am-toast-style';
+      st.textContent = '.am-toast-wrap{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:8px;width:min(92vw,420px)}' +
+        '.am-toast{background:#0A1A24;color:#fff;border-left:4px solid #0FA3B1;border-radius:10px;padding:12px 14px;font:500 14px/1.45 system-ui,sans-serif;box-shadow:0 8px 28px rgba(10,26,36,.35);display:flex;gap:10px;align-items:flex-start}' +
+        '.am-toast.error{border-left-color:#FF5C49}.am-toast button{margin-left:auto;background:none;border:0;color:#fff;font-size:16px;cursor:pointer}';
+      document.head.appendChild(st);
+    }
+  }
+  var t = document.createElement('div');
+  t.className = 'am-toast' + (isErr ? ' error' : '');
+  t.setAttribute('role', isErr ? 'alert' : 'status');
+  t.setAttribute('aria-live', isErr ? 'assertive' : 'polite');
+  var span = document.createElement('span');
+  span.textContent = text;
+  var close = document.createElement('button');
+  close.type = 'button';
+  close.setAttribute('aria-label', lang === 'pt' ? 'Fechar aviso' : 'Cerrar aviso');
+  close.textContent = '\u2715';
+  close.addEventListener('click', function () { t.remove(); });
+  t.appendChild(span); t.appendChild(close);
+  wrap.appendChild(t);
+  setTimeout(function () { if (t.parentNode) t.remove(); }, opts.timeout || 8000);
+  return t;
+}
+window.amNotify = amNotify;
+
+// ── Aviso fixo inline (não some sozinho) — ex.: "você já tem assinatura ativa" ──
+// amShowBanner({id, msg:{pt,es}, link:{href,pt,es}}) → role="alert", com botão de fechar. Reaproveita o mesmo id.
+function amShowBanner(o) {
+  var lang = document.documentElement.getAttribute('data-lang') === 'pt' ? 'pt' : 'es';
+  var old = document.getElementById(o.id);
+  if (old) old.remove();
+  var b = document.createElement('div');
+  b.id = o.id;
+  b.className = 'am-banner';
+  b.setAttribute('role', 'alert');
+  var m = document.createElement('span');
+  m.className = 'am-banner-msg';
+  m.textContent = o.msg[lang] || o.msg.pt;
+  b.appendChild(m);
+  if (o.link) {
+    var a = document.createElement('a');
+    a.href = o.link.href;
+    a.textContent = o.link[lang] || o.link.pt;
+    b.appendChild(a);
+  }
+  var x = document.createElement('button');
+  x.type = 'button';
+  x.setAttribute('aria-label', lang === 'pt' ? 'Fechar aviso' : 'Cerrar aviso');
+  x.textContent = '\u2715';
+  x.addEventListener('click', function () { b.remove(); });
+  b.appendChild(x);
+  document.body.appendChild(b);
+  return b;
+}
+window.amShowBanner = amShowBanner;
+
 // ── Detectar em qual página estamos ──────────────────────────────────────
 const PAGE = (() => {
   const p = window.location.pathname;
@@ -32,7 +105,7 @@ const PAGE = (() => {
   if (p.includes('auth'))      return 'auth';
   if (p.includes('config'))    return 'config';
   if (p.includes('dashboard')) return 'dashboard';
-  if (p.includes('especialidades') || p.includes('explorar') || p.includes('-ref-')) return 'especialidades';
+  if (p.includes('especialidades') || p.includes('explorar') || p.includes('-ref-') || p.includes('referencias') || p.includes('mnemonicas')) return 'especialidades';
   if (p.includes('app'))       return 'app';
   return 'unknown';
 })();
@@ -57,7 +130,7 @@ async function authSendMagicLink(email) {
     return { ok: true };
   } catch (err) {
     console.error('Magic link error:', err);
-    return { ok: false, error: err.message };
+    return { ok: false, error: err && err.message, rate: !!(err && (err.status === 429 || /rate limit/i.test(err.message || ''))) };
   }
 }
 
@@ -74,9 +147,11 @@ async function authGoogleLogin() {
       }
     });
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Google OAuth error:', err);
-    alert('Erro ao iniciar login com Google. Tente novamente.');
+    amNotify({ pt: 'Erro ao iniciar login com Google. Tente novamente.', es: 'Error al iniciar sesión con Google. Inténtalo de nuevo.' });
+    return { ok: false, error: err && err.message };
   }
 }
 
@@ -86,7 +161,7 @@ async function authGoogleLogin() {
  */
 async function authSaveProfile(data) {
   const { data: { user } } = await sb.auth.getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: 'no_user' };
 
   // Verifica se já existe perfil — se não existir, é um cadastro novo
   // e precisa iniciar o trial de 30 dias (senão o paywall aparece na hora)
@@ -105,6 +180,8 @@ async function authSaveProfile(data) {
     ano_curso: data.ano_curso,
     idioma: data.idioma || 'es',
   };
+  // genero só entra no payload quando informado ('F'|'M') — o cadastro inicial não o apaga
+  if (data.genero !== undefined) payload.genero = amGeneroNorm(data.genero);
 
   if (!existing || !existing.plano || (existing.plano === 'trial' && !existing.trial_end)) {
     payload.plano = 'trial';
@@ -115,6 +192,7 @@ async function authSaveProfile(data) {
 
   if (error) console.error('Profile save error:', error);
   _profileCache = null; // invalida cache após gravar (ver profileGet)
+  return error ? { ok: false, error } : { ok: true };
 }
 
 /**
@@ -210,16 +288,154 @@ async function profileAcceptTerms() {
 /**
  * Salvar tipo de usuário (medico | estudante)
  */
-async function profileSetTipoUsuario(tipo) {
+async function profileSetTipoUsuario(tipo, genero) {
   const user = await authGetUser();
   if (!user) return { ok: false, error: 'no_user' };
-  const { data, error } = await sb.from('profiles').update({ tipo_usuario: tipo }).eq('id', user.id).select();
+  const upd = { tipo_usuario: tipo };
+  if (tipo === 'medico' && amGeneroNorm(genero)) upd.genero = amGeneroNorm(genero); // 'F' | 'M'
+  const { data, error } = await sb.from('profiles').update(upd).eq('id', user.id).select();
   if (error) { console.error('Set tipo_usuario error:', error); return { ok: false, error }; }
   if (!data || data.length === 0) {
     console.error('Set tipo_usuario: 0 linhas atualizadas (RLS bloqueou ou perfil não existe) — user.id=', user.id);
     return { ok: false, error: 'zero_rows_updated' };
   }
+  _profileCache = null;
   return { ok: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TRATAMENTO (Dr./Dra.) — só médicos recebem título; estudantes só o nome
+// ═══════════════════════════════════════════════════════════════════════════
+
+// AM_TRATAMENTO_BEGIN (bloco puro — testado em test/tratamento.test.js)
+function amGeneroNorm(g) {
+  const v = String(g == null ? '' : g).trim().toUpperCase();
+  return (v === 'F' || v === 'M') ? v : null;
+}
+
+/** médico+F → "Dra."; médico+M → "Dr."; médico sem gênero → "Dr(a)."; demais → "" */
+function amTratamento(perfil) {
+  if (!perfil || perfil.tipo_usuario !== 'medico') return '';
+  const g = amGeneroNorm(perfil.genero);
+  return g === 'F' ? 'Dra.' : g === 'M' ? 'Dr.' : 'Dr(a).';
+}
+
+/** Nome sem título digitado pelo usuário ("Dr. Ana" → "Ana"), 1ª letra maiúscula. */
+function amNomeBase(perfil) {
+  const p = perfil || {};
+  const strip = (s) => String(s == null ? '' : s).trim().replace(/^(?:(?:dr\(a\)|dra|dr)\.?\s+)+/i, '').trim();
+  let n = strip(p.nome);
+  if (!n) n = strip(p.email ? String(p.email).split('@')[0] : '');
+  if (!n) n = 'Usuário';
+  return n.charAt(0).toUpperCase() + n.slice(1);
+}
+
+/** "Dra. Fernanda" / "Dr. João" / "Dr(a). Ana" / "Maria" (estudante) — nunca título duplicado. */
+function amNomeExibicao(perfil) {
+  const t = amTratamento(perfil);
+  return (t ? t + ' ' : '') + amNomeBase(perfil);
+}
+// AM_TRATAMENTO_END
+
+/** Grava o gênero (F|M) — o check constraint do banco só aceita esses valores. */
+async function profileSetGenero(genero) {
+  const g = amGeneroNorm(genero);
+  if (!g) return { ok: false, error: 'invalid_genero' };
+  const user = await authGetUser();
+  if (!user) return { ok: false, error: 'no_user' };
+  const { data, error } = await sb.from('profiles').update({ genero: g }).eq('id', user.id).select();
+  if (error) { console.error('Set genero error:', error); return { ok: false, error }; }
+  if (!data || data.length === 0) return { ok: false, error: 'zero_rows_updated' };
+  _profileCache = null;
+  return { ok: true };
+}
+
+function amGeneroErroMsg(lang, r) {
+  const zero = r && r.error === 'zero_rows_updated';
+  return lang === 'es'
+    ? (zero ? 'No se pudo guardar (perfil no encontrado). Inténtalo de nuevo.' : 'No se pudo guardar tu tratamiento. Revisa tu conexión e inténtalo de nuevo.')
+    : (zero ? 'Não foi possível salvar (perfil não encontrado). Tente novamente.' : 'Não foi possível salvar seu tratamento. Verifique a conexão e tente novamente.');
+}
+
+/** HTML do radio group acessível (fieldset/legend, alvos ≥44px, ES/PT). */
+function amGeneroFieldsetHtml(lang, name, value) {
+  const es = lang === 'es';
+  const opt = (v, label, sub) =>
+    '<label class="am-genero-opt"><input type="radio" name="' + name + '" value="' + v + '"' + (value === v ? ' checked' : '') + '>' +
+    '<span><strong>' + label + '</strong> <span class="am-genero-sub">(' + sub + ')</span></span></label>';
+  return '<fieldset class="am-genero" aria-required="true">' +
+    '<legend>' + (es ? 'Tratamiento / Género' : 'Tratamento / Gênero') + ' <span aria-hidden="true">*</span></legend>' +
+    '<div class="am-genero-opts">' +
+    opt('F', 'Dra.', es ? 'femenino' : 'feminino') +
+    opt('M', 'Dr.', es ? 'masculino' : 'masculino') +
+    '</div></fieldset>';
+}
+
+/** Modal para completar o tratamento (usado pelo aviso do dashboard). */
+function amAskGenero(onDone) {
+  if (document.getElementById('am-genero-modal')) return;
+  const lang = document.documentElement.dataset.lang === 'es' ? 'es' : 'pt';
+  const es = lang === 'es';
+  const opener = document.activeElement;
+  const ov = document.createElement('div');
+  ov.id = 'am-genero-modal';
+  ov.className = 'am-genero-overlay';
+  ov.innerHTML = '<div class="am-genero-card" role="dialog" aria-modal="true" aria-labelledby="am-genero-title">' +
+    '<h2 id="am-genero-title">' + (es ? 'Informa tu tratamiento' : 'Informe seu tratamento') + '</h2>' +
+    '<p>' + (es ? 'Usaremos "Dr." o "Dra." en tu saludo y en tu perfil.' : 'Vamos usar "Dr." ou "Dra." na sua saudação e no seu perfil.') + '</p>' +
+    amGeneroFieldsetHtml(lang, 'am-genero-modal-r', null) +
+    '<p class="am-genero-msg" role="alert" aria-live="assertive" hidden></p>' +
+    '<div class="am-genero-actions"><button type="button" class="am-genero-cancel">' + (es ? 'Cancelar' : 'Cancelar') + '</button>' +
+    '<button type="button" class="am-genero-save">' + (es ? 'Guardar' : 'Salvar') + '</button></div></div>';
+  document.body.appendChild(ov);
+  const msg = ov.querySelector('.am-genero-msg');
+  const save = ov.querySelector('.am-genero-save');
+  const close = () => { ov.remove(); try { opener && opener.focus && opener.focus(); } catch (e) {} };
+  ov.querySelector('.am-genero-cancel').addEventListener('click', close);
+  ov.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+  save.addEventListener('click', async () => {
+    const sel = ov.querySelector('input[name="am-genero-modal-r"]:checked');
+    if (!sel) { msg.hidden = false; msg.textContent = es ? 'Elige "Dra." o "Dr." para continuar.' : 'Escolha "Dra." ou "Dr." para continuar.'; return; }
+    save.disabled = true; save.textContent = es ? 'Guardando…' : 'Salvando…';
+    const r = await profileSetGenero(sel.value);
+    if (!r.ok) {
+      save.disabled = false; save.textContent = es ? 'Guardar' : 'Salvar';
+      msg.hidden = false; msg.textContent = amGeneroErroMsg(lang, r);
+      return;
+    }
+    ov.remove();
+    const av = document.getElementById('am-genero-aviso'); if (av) av.remove();
+    await uiUpdateUserInfo();
+    if (typeof onDone === 'function') onDone();
+  });
+  const first = ov.querySelector('input[type=radio]'); if (first) first.focus();
+}
+
+/** Aviso discreto e dispensável (dashboard) para médicos sem gênero cadastrado. */
+function amGeneroAvisoShow(profile) {
+  const need = profile && profile.tipo_usuario === 'medico' && !amGeneroNorm(profile.genero);
+  const existing = document.getElementById('am-genero-aviso');
+  if (!need) { if (existing) existing.remove(); return; }
+  try { if (sessionStorage.getItem('am-genero-aviso-off') === '1') return; } catch (e) {}
+  if (existing) return;
+  const hero = document.getElementById('dash-hero');
+  if (!hero || !hero.parentNode) return;
+  const el = document.createElement('div');
+  el.id = 'am-genero-aviso';
+  el.className = 'am-genero-aviso';
+  el.setAttribute('role', 'status');
+  el.innerHTML =
+    '<span class="pt">Informe seu tratamento (Dr. ou Dra.) para personalizar sua saudação.</span>' +
+    '<span class="es">Informa tu tratamiento (Dr. o Dra.) para personalizar tu saludo.</span>' +
+    '<button type="button" class="am-genero-aviso-go"><span class="pt">Informar tratamento</span><span class="es">Informar tratamiento</span></button>' +
+    '<button type="button" class="am-genero-aviso-x" aria-label="' + (document.documentElement.dataset.lang === 'es' ? 'Descartar aviso' : 'Dispensar aviso') + '">&times;</button>';
+  hero.parentNode.insertBefore(el, hero);
+  el.querySelector('.am-genero-aviso-go').addEventListener('click', () => amAskGenero());
+  el.querySelector('.am-genero-aviso-x').addEventListener('click', () => {
+    try { sessionStorage.setItem('am-genero-aviso-off', '1'); } catch (e) {}
+    el.remove();
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -245,7 +461,7 @@ async function onboardingCheckAndShow(profile) {
     position:fixed;inset:0;z-index:9999;
     background:rgba(13,45,61,0.72);
     display:flex;align-items:center;justify-content:center;
-    padding:20px;font-family:'Source Sans 3',system-ui,sans-serif`;
+    padding:20px;font-family:'Inter',system-ui,sans-serif`;
 
   const card = document.createElement('div');
   card.style.cssText = `
@@ -257,7 +473,7 @@ async function onboardingCheckAndShow(profile) {
 
   function renderTerms() {
     card.innerHTML = `
-      <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:20px;margin-bottom:12px">
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:20px;margin-bottom:12px">
         ${lang==='pt' ? 'Antes de continuar' : 'Antes de continuar'}
       </h2>
       <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:14px">
@@ -322,7 +538,7 @@ async function onboardingCheckAndShow(profile) {
 
   function renderTipo() {
     card.innerHTML = `
-      <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:20px;margin-bottom:12px">
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:20px;margin-bottom:12px">
         ${lang==='pt' ? 'Para personalizar sua experiência' : 'Para personalizar tu experiencia'}
       </h2>
       <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:18px">
@@ -347,6 +563,8 @@ async function onboardingCheckAndShow(profile) {
       b.addEventListener('mouseenter', () => { b.style.borderColor = '#0e7490'; });
       b.addEventListener('mouseleave', () => { b.style.borderColor = 'rgba(13,45,61,0.16)'; });
       b.addEventListener('click', async () => {
+        // Médico: antes de gravar, pergunta o tratamento (Dr./Dra.) — gravado junto com o tipo
+        if (b.dataset.tipo === 'medico') { renderGenero(); return; }
         b.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
         const r = await profileSetTipoUsuario(b.dataset.tipo);
         if (!r.ok) {
@@ -358,6 +576,48 @@ async function onboardingCheckAndShow(profile) {
         overlay.remove();
       });
     });
+  }
+
+  // Passo extra só para médicos: tratamento (Dr./Dra.) obrigatório; grava tipo + genero juntos.
+  function renderGenero() {
+    card.innerHTML = `
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:20px;margin-bottom:12px">
+        ${lang==='pt' ? 'Como devemos tratar você?' : '¿Cómo debemos tratarte?'}
+      </h2>
+      <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:14px">
+        ${lang==='pt' ? 'Usaremos "Dr." ou "Dra." na sua saudação e no seu perfil.' : 'Usaremos "Dr." o "Dra." en tu saludo y en tu perfil.'}
+      </p>
+      ${amGeneroFieldsetHtml(lang, 'og-genero', null)}
+      <p class="og-genero-msg am-genero-msg" role="alert" aria-live="assertive" hidden></p>
+      <div class="am-genero-actions">
+        <button type="button" class="am-genero-cancel og-genero-back">${lang==='pt' ? 'Voltar' : 'Volver'}</button>
+        <button type="button" class="am-genero-save og-genero-save">${lang==='pt' ? 'Continuar' : 'Continuar'}</button>
+      </div>`;
+    const msg = card.querySelector('.og-genero-msg');
+    const save = card.querySelector('.og-genero-save');
+    card.querySelectorAll('input[name="og-genero"]').forEach(i => i.addEventListener('change', () => { msg.hidden = true; }));
+    card.querySelector('.og-genero-back').addEventListener('click', renderTipo);
+    save.addEventListener('click', async () => {
+      const sel = card.querySelector('input[name="og-genero"]:checked');
+      if (!sel) {
+        msg.hidden = false;
+        msg.textContent = lang==='pt' ? 'Escolha "Dra." ou "Dr." para continuar.' : 'Elige "Dra." o "Dr." para continuar.';
+        return;
+      }
+      save.disabled = true;
+      save.textContent = lang==='pt' ? 'Salvando…' : 'Guardando…';
+      const r = await profileSetTipoUsuario('medico', sel.value);
+      if (!r.ok) {
+        save.disabled = false;
+        save.textContent = lang==='pt' ? 'Continuar' : 'Continuar';
+        msg.hidden = false;
+        msg.textContent = amGeneroErroMsg(lang, r); // mantém a seleção; nada é perdido
+        return;
+      }
+      overlay.remove();
+      uiUpdateUserInfo();
+    });
+    const first = card.querySelector('input[type=radio]'); if (first) first.focus();
   }
 
   if (needsTerms) renderTerms();
@@ -557,6 +817,7 @@ async function hcListAll(limit = 20) {
     .order('atualizado_em', { ascending: false })
     .limit(limit);
 
+  window.__hcsError = !!error; // o dashboard distingue "falhou" de "não tem HC"
   if (error) { console.error('HC list error:', error); return []; }
   return data || [];
 }
@@ -642,17 +903,40 @@ async function guardCheckAccess() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
+ * Nome do motivo nos DOIS idiomas, resolvido por motivo_id em MOTIVOS (anamnesismed-motivos.js).
+ * O HC grava o nome no idioma em que foi criada (hc.motivo); aqui a tela sempre mostra o idioma ativo.
+ * Sem MOTIVOS carregado (ou id desconhecido) cai no nome gravado, igual nos dois idiomas.
+ */
+let _motivoNomeMap = null;
+function amMotivoNomes(id, fallback) {
+  if (!_motivoNomeMap) {
+    _motivoNomeMap = {};
+    try {
+      if (typeof MOTIVOS !== 'undefined') {
+        Object.keys(MOTIVOS).forEach(esp => (MOTIVOS[esp] || []).forEach(cat => (cat.items || []).forEach(it => {
+          if (!_motivoNomeMap[it.id]) _motivoNomeMap[it.id] = { pt: it.name, es: it.nameEs || it.name };
+        })));
+      }
+    } catch (e) { _motivoNomeMap = {}; }
+  }
+  const m = id && _motivoNomeMap[id];
+  const base = fallback || id || '';
+  return m ? { pt: m.pt, es: m.es } : { pt: base, es: base };
+}
+window.amMotivoNomes = amMotivoNomes;
+const _amBi = (pt, es) => `<span class="pt">${escHtml(pt)}</span><span class="es">${escHtml(es)}</span>`;
+
+/**
  * Preenche o nome do usuário em todos os lugares da UI
  */
 async function uiUpdateUserInfo() {
   const profile = await profileGet();
   if (!profile) return;
 
-  let nomeBase = profile.nome || profile.email?.split('@')[0] || 'Usuário';
-  nomeBase = nomeBase.charAt(0).toUpperCase() + nomeBase.slice(1);
-
-  // Prefixo Dr. antes do nome
-  const nome = 'Dr. ' + nomeBase;
+  // Só médicos recebem título (Dra./Dr./Dr(a).); estudantes e perfis sem tipo usam só o nome.
+  // amNomeBase remove "Dr."/"Dra." já digitado no nome → nunca "Dra. Dra. Ana".
+  const nomeBase = amNomeBase(profile);
+  const nome = amNomeExibicao(profile);
 
   // Cache local p/ exibição instantânea do nome (elimina o "delay" ao recarregar)
   try { localStorage.setItem('am-uname', nome); } catch(e) {}
@@ -669,6 +953,9 @@ async function uiUpdateUserInfo() {
   if (saudPt) saudPt.textContent = 'Olá, ' + nome + ' 👋';
   if (saudEs) saudEs.textContent = 'Hola, ' + nome + ' 👋';
 
+  // Aviso para médicos antigos sem gênero (só no dashboard)
+  if (PAGE === 'dashboard') amGeneroAvisoShow(profile);
+
   // Avatar com inicial (após o prefixo, usar inicial do nome base)
   document.querySelectorAll('.sb-avatar, .user-avatar').forEach(el => {
     el.textContent = nomeBase.charAt(0).toUpperCase();
@@ -682,12 +969,12 @@ async function uiUpdateUserInfo() {
     // (span#hcs-count-pt/es, populado por uiLoadStats). Sobrescrever o textContent aqui
     // destruiria esse span — pular esses elementos e deixar uiLoadStats cuidar deles.
     if (el.querySelector('[id^="hcs-count-"]')) return;
+    // O sidebar tem .user-plan.pt e .user-plan.es separados: cada um recebe o SEU idioma.
+    const es = el.classList.contains('es') ? true : (el.classList.contains('pt') ? false : lang === 'es');
     if (access.type === 'pro') {
       el.textContent = 'Pro';
     } else if (access.type === 'trial') {
-      el.textContent = lang === 'es'
-        ? `Prueba — ${access.daysLeft} días`
-        : `Teste — ${access.daysLeft} dias`;
+      el.textContent = es ? `Prueba — ${access.daysLeft} días` : `Teste — ${access.daysLeft} dias`;
     }
   });
 
@@ -757,15 +1044,20 @@ async function uiLoadRecentHCs(limit, preHcs) {
   container.innerHTML = hcs.map(hc => {
     const color = specColors[hc.especialidade] || '#6b7c8a';
     const st = statusLabels[hc.status] || statusLabels.rascunho;
-    const date = new Date(hc.atualizado_em).toLocaleDateString('pt-BR');
+    const _d = new Date(hc.atualizado_em || hc.criado_em);
+    const date = isNaN(_d.getTime()) ? '—' // nunca mostra "Invalid Date"
+      : `<span class="pt">${_d.toLocaleDateString('pt-BR')}</span><span class="es">${_d.toLocaleDateString('es-ES')}</span>`;
+    const mn = amMotivoNomes(hc.motivo_id, hc.motivo);
     const nomePaciente = (hc.dados && hc.dados.campos && hc.dados.campos['dp-nome']) || '';
-    const specLabel = hc.especialidade === 'clinica' ? 'Clínica Médica' : 'Cirugía General';
+    const specLabel = hc.especialidade === 'clinica'
+      ? '<span class="pt">Clínica Médica</span><span class="es">Clínica Médica</span>'
+      : '<span class="pt">Cirurgia Geral</span><span class="es">Cirugía General</span>';
 
     return `
-    <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" style="cursor:pointer">
+    <div class="hc-card" onclick="window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" role="button" tabindex="0" onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();this.click()}" style="cursor:pointer">
       <div class="hc-color" style="background:${color}"></div>
       <div class="hc-info">
-        <div class="hc-name">${escHtml(hc.motivo || hc.motivo_id)}${nomePaciente ? ' — ' + escHtml(nomePaciente) : ''}</div>
+        <div class="hc-name">${_amBi(mn.pt, mn.es)}${nomePaciente ? ' — ' + escHtml(nomePaciente) : ''}</div>
         <div class="hc-meta">
           <span>${specLabel}</span>
           <span class="hc-dot"></span>
@@ -776,11 +1068,73 @@ async function uiLoadRecentHCs(limit, preHcs) {
         <span class="hc-status ${st.cls} es">${st.es}</span>
         <span class="hc-status ${st.cls} pt">${st.pt}</span>
         <button class="hc-btn hc-btn-edit" onclick="event.stopPropagation();window.location.href='anamnesismed-app.html?hc='+encodeURIComponent('${hc.motivo_id}')" title="Editar" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span class="pt">Editar</span><span class="es">Editar</span></button>
-        <button class="hc-btn hc-btn-del" onclick="event.stopPropagation();hcDelete('${hc.id}').then(()=>{window.__hcsAll=null;uiLoadRecentHCs(window.currentDashView==='hcs'?100:5);})" title="Eliminar / Excluir" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
+        <button class="hc-btn hc-btn-del" onclick="event.stopPropagation();amConfirmDeleteHC('${hc.id}')" title="Eliminar / Excluir" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
       </div>
     </div>`;
   }).join('');
 }
+
+
+/**
+ * Confirmação antes de excluir uma HC (antes o botão apagava na hora, sem volta).
+ * Diálogo acessível: foco no botão seguro (Cancelar), Esc/fora/Cancelar fecham, foco volta ao botão de origem.
+ */
+function amConfirmDeleteHC(hcId) {
+  const opener = document.activeElement;
+  const old = document.getElementById('hc-del-modal'); if (old) old.remove();
+  const m = document.createElement('div');
+  m.className = 'am-modal'; m.id = 'hc-del-modal';
+  m.innerHTML = `
+    <div class="am-modal-backdrop" data-modal-close></div>
+    <div class="am-modal-box" role="alertdialog" aria-modal="true" aria-labelledby="hcdel-t" aria-describedby="hcdel-d" tabindex="-1">
+      <h2 class="am-modal-title" id="hcdel-t"><span class="pt">Excluir esta HC?</span><span class="es">¿Eliminar esta HC?</span></h2>
+      <div class="am-modal-body" id="hcdel-d">
+        <p class="pt">Esta ação não pode ser desfeita.</p><p class="es">Esta acción no se puede deshacer.</p>
+      </div>
+      <p class="priv-status error" role="alert" hidden id="hcdel-err"></p>
+      <div class="am-modal-actions">
+        <button type="button" class="am-btn am-btn--secondary" data-modal-close><span class="pt">Cancelar</span><span class="es">Cancelar</span></button>
+        <button type="button" class="am-btn am-btn--danger" id="hcdel-ok"><span class="pt">Excluir</span><span class="es">Eliminar</span></button>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  document.body.classList.add('am-modal-open');
+  const close = () => {
+    document.removeEventListener('keydown', onKey, true);
+    m.remove(); document.body.classList.remove('am-modal-open');
+    try { if (opener && document.body.contains(opener)) opener.focus(); } catch (e) {}
+  };
+  const onKey = (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key === 'Tab') {
+      const f = [...m.querySelectorAll('button')].filter(b => !b.disabled);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (!m.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    }
+  };
+  document.addEventListener('keydown', onKey, true);
+  m.querySelectorAll('[data-modal-close]').forEach(el => el.addEventListener('click', close));
+  m.querySelector('#hcdel-ok').addEventListener('click', async (ev) => {
+    const btn = ev.currentTarget; btn.disabled = true;
+    const ok = await hcDelete(hcId);
+    if (ok) {
+      close();
+      window.__hcsAll = null;
+      uiLoadRecentHCs(window.currentDashView === 'hcs' ? 100 : 5);
+    } else {
+      btn.disabled = false;
+      const er = m.querySelector('#hcdel-err');
+      er.innerHTML = '<span class="pt">Não foi possível excluir. Tente de novo.</span><span class="es">No se pudo eliminar. Inténtalo de nuevo.</span>';
+      er.hidden = false;
+    }
+  });
+  const cancel = m.querySelector('.am-modal-actions [data-modal-close]');
+  (cancel || m.querySelector('.am-modal-box')).focus();
+}
+window.amConfirmDeleteHC = amConfirmDeleteHC;
 
 /**
  * Calcula e preenche os cards de estatísticas do dashboard
@@ -835,7 +1189,9 @@ async function uiLoadStats(preHcs, prePdf) {
   }
 
   // Motivos consultados (distintos)
-  const motivosUnicos = [...new Set(hcs.map(hc => hc.motivo || hc.motivo_id).filter(Boolean))];
+  const motivosMap = new Map();
+  hcs.forEach(hc => { const k = hc.motivo_id || hc.motivo; if (k && !motivosMap.has(k)) motivosMap.set(k, amMotivoNomes(hc.motivo_id, hc.motivo)); });
+  const motivosUnicos = [...motivosMap.values()];
   const motivosValueEl = document.getElementById('stat-motivos-value');
   if (motivosValueEl) motivosValueEl.textContent = String(motivosUnicos.length);
 
@@ -848,8 +1204,8 @@ async function uiLoadStats(preHcs, prePdf) {
     } else {
       const primeiro = motivosUnicos[0];
       const resto = motivosUnicos.length - 1;
-      motivosDeltaPt.textContent = resto > 0 ? `${primeiro} + ${resto} mais` : primeiro;
-      motivosDeltaEs.textContent = resto > 0 ? `${primeiro} + ${resto} más` : primeiro;
+      motivosDeltaPt.textContent = resto > 0 ? `${primeiro.pt} + ${resto} mais` : primeiro.pt;
+      motivosDeltaEs.textContent = resto > 0 ? `${primeiro.es} + ${resto} más` : primeiro.es;
     }
   }
 }
@@ -885,7 +1241,7 @@ async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
 
   const eventos = [];
   hcs.forEach(hc => {
-    const nome = hc.motivo || hc.motivo_id || '—';
+    const nome = amMotivoNomes(hc.motivo_id, hc.motivo || '—');
     const criado = hc.criado_em;
     const atualizado = hc.atualizado_em;
     if (atualizado && atualizado !== criado) {
@@ -903,7 +1259,7 @@ async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
       const key = exp.motivoId || exp.motivo || 'unknown';
       if (!pdfSeen.has(key)) {
         pdfSeen.add(key);
-        eventos.push({ tipo: 'exported', motivo: exp.motivo, ts: exp.ts });
+        eventos.push({ tipo: 'exported', motivo: amMotivoNomes(exp.motivoId, exp.motivo || ''), ts: exp.ts });
       }
     });
 
@@ -930,13 +1286,15 @@ async function uiLoadRecentActivity(limit = 6, preHcs, prePdf) {
   list.innerHTML = recentes.map(ev => {
     const lab = labels[ev.tipo] || labels.created;
     const time = activityFormatTime(ev.ts);
-    const motivoTxt = ev.motivo ? ` — ${escHtml(ev.motivo)}` : '';
+    const mt = ev.motivo || { pt: '', es: '' };
+    const motivoPt = mt.pt ? ` — ${escHtml(mt.pt)}` : '';
+    const motivoEs = mt.es ? ` — ${escHtml(mt.es)}` : '';
     return `
       <div class="act-item">
         <div class="act-dot ${lab.dot}"></div>
         <div>
-          <div class="act-text pt"><strong>${lab.pt}</strong>${motivoTxt}</div>
-          <div class="act-text es"><strong>${lab.es}</strong>${motivoTxt}</div>
+          <div class="act-text pt"><strong>${lab.pt}</strong>${motivoPt}</div>
+          <div class="act-text es"><strong>${lab.es}</strong>${motivoEs}</div>
           <div class="act-time pt">${time.pt}</div>
           <div class="act-time es">${time.es}</div>
         </div>
@@ -959,7 +1317,7 @@ function showPaywall(reason) {
   overlay.innerHTML = `
     <div style="background:#fff;border-radius:16px;padding:40px;max-width:400px;width:100%;text-align:center">
       <div style="font-size:48px;margin-bottom:16px">⏰</div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin-bottom:10px">
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:24px;font-weight:900;margin-bottom:10px">
         ${lang === 'es' ? 'Tu trial ha terminado' : 'Seu trial acabou'}
       </h2>
       <p style="font-size:14px;color:#6b6660;margin-bottom:24px;line-height:1.6">
@@ -1023,9 +1381,9 @@ function showSaveFeedback() {
     badge.id = 'save-badge';
     badge.style.cssText = `
       position:fixed;bottom:80px;right:16px;z-index:500;
-      background:#1e6b3c;color:#fff;font-size:11px;font-weight:700;
+      background:#1e6b3c;color:#fff;font-size:12px;font-weight:700;
       padding:6px 12px;border-radius:20px;
-      opacity:0;transition:opacity .3s;font-family:'DM Mono',monospace`;
+      opacity:0;transition:opacity .3s;font-family:'JetBrains Mono',ui-monospace,monospace`;
     badge.textContent = '✓ Salvo';
     document.body.appendChild(badge);
   }
@@ -1079,7 +1437,7 @@ function showSaveFeedback() {
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('success-state').style.display = 'block';
       } else {
-        alert(result.error || 'Erro ao enviar o link. Tente novamente.');
+        amNotify({ pt: 'Erro ao enviar o link. Tente novamente.', es: 'Error al enviar el link. Inténtalo de nuevo.' });
       }
     };
 
@@ -1108,7 +1466,7 @@ function showSaveFeedback() {
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('success-state').style.display = 'block';
       } else {
-        alert(result.error || 'Erro ao criar conta. Tente novamente.');
+        amNotify({ pt: 'Erro ao criar conta. Tente novamente.', es: 'Error al crear la cuenta. Inténtalo de nuevo.' });
       }
     };
   }
@@ -1130,14 +1488,40 @@ function showSaveFeedback() {
     // Atualizar UI — busca HCs e PDFs UMA vez e em paralelo, reaproveitando nas 3
     // funções (antes: 3 buscas sequenciais de historias + 2 de PDFs => dashboard lento).
     uiUpdateUserInfo();   // nome aparece assim que a sessão resolve (não bloqueia a lista)
-    const [hcsAll, pdfAll] = await Promise.all([
-      hcListAll(100),
-      window.pdfExportList ? window.pdfExportList() : Promise.resolve([])
-    ]);
-    window.__hcsAll = hcsAll; // cache reusado pelo setView (evita refetch ao trocar de view)
-    uiLoadRecentHCs(window.currentDashView === 'hcs' ? 100 : 5, hcsAll);
-    uiLoadStats(hcsAll, pdfAll);
-    uiLoadRecentActivity(6, hcsAll, pdfAll);
+    window.amDashLoad = async function () {
+      window.__hcsError = false;
+      const [hcsAll, pdfAll] = await Promise.all([
+        hcListAll(100),
+        window.pdfExportList ? window.pdfExportList() : Promise.resolve([])
+      ]);
+      if (window.__hcsError) { // falha de carga: mensagem + "Tentar novamente" (não mostra "Sem HC" e zeros)
+        window.__hcsAll = null;
+        const c = document.querySelector('.hc-list');
+        if (c) c.innerHTML = `
+          <div class="empty-state error-state" role="alert">
+            <div class="empty-title es">No se pudieron cargar tus historias clínicas</div>
+            <div class="empty-title pt">Não foi possível carregar suas histórias clínicas</div>
+            <div class="empty-sub es">Revisa tu conexión e inténtalo de nuevo.</div>
+            <div class="empty-sub pt">Verifique sua conexão e tente novamente.</div>
+            <button type="button" class="empty-btn es" onclick="window.amDashLoad()">Intentar de nuevo</button>
+            <button type="button" class="empty-btn pt" onclick="window.amDashLoad()">Tentar novamente</button>
+          </div>`;
+        ['stat-hcs-value', 'stat-pdfs-value', 'stat-motivos-value'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '—'; });
+        return;
+      }
+      window.__hcsAll = hcsAll; // cache reusado pelo setView (evita refetch ao trocar de view)
+      uiLoadRecentHCs(window.currentDashView === 'hcs' ? 100 : 5, hcsAll);
+      uiLoadStats(hcsAll, pdfAll);
+      uiLoadRecentActivity(6, hcsAll, pdfAll);
+    };
+    // Card "Plano": lê o plano real do perfil (pro / estudante / teste)
+    try {
+      const prof = await profileGet();
+      const k = !prof ? 'trial' : (prof.plano === 'pro' ? 'pro' : (prof.tipo_usuario === 'estudante' ? 'estudante' : 'trial'));
+      const pc = document.getElementById('stat-plano-card');
+      if (pc) pc.dataset.plano = k;
+    } catch (e) { console.warn('plano card:', e); }
+    await window.amDashLoad();
 
     // Deep-link: retorno do Stripe Checkout (?payment=success) — mostra confirmação,
     // re-checa o plano (o webhook pode ter atualizado o acesso) e limpa a URL
@@ -1184,6 +1568,15 @@ function showSaveFeedback() {
       setVal('cfg-ano-curso', profile.ano_curso);
       setVal('cfg-idioma', profile.idioma || lang);
 
+      // Tratamento (Dr./Dra.) — só médicos
+      const gField = document.getElementById('cfg-genero-field');
+      if (gField && profile.tipo_usuario === 'medico') {
+        gField.hidden = false;
+        const g = amGeneroNorm(profile.genero);
+        const r = g && gField.querySelector('input[name="cfg-genero"][value="' + g + '"]');
+        if (r) r.checked = true;
+      }
+
       const planoEl = document.getElementById('cfg-plano');
       if (planoEl) {
         if (profile.plano === 'pro') {
@@ -1201,18 +1594,44 @@ function showSaveFeedback() {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('cfg-save-btn');
-        if (btn) { btn.disabled = true; btn.textContent = lang === 'pt' ? 'Salvando...' : 'Guardando...'; }
+        const st = document.getElementById('cfg-status');
+        const L = document.documentElement.dataset.lang === 'es' ? 'es' : 'pt';
+        const say = (kind, pt, es) => {
+          if (!st) return;
+          st.hidden = false;
+          st.className = 'cfg-status ' + kind;
+          st.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+          st.textContent = L === 'es' ? es : pt;
+        };
+        const gField = document.getElementById('cfg-genero-field');
+        const isMed = gField && !gField.hidden;
+        const gSel = isMed && gField.querySelector('input[name="cfg-genero"]:checked');
+        if (isMed && !gSel) {
+          say('error', 'Escolha seu tratamento: "Dra." ou "Dr.".', 'Elige tu tratamiento: "Dra." o "Dr.".');
+          const f = gField.querySelector('input[type=radio]'); if (f) f.focus();
+          return;
+        }
+        if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
+        say('info', 'Salvando…', 'Guardando…');
 
-        await authSaveProfile({
+        const payload = {
           nome: document.getElementById('cfg-nome')?.value,
           sobrenome: document.getElementById('cfg-sobrenome')?.value,
           universidade: document.getElementById('cfg-universidade')?.value,
           ano_curso: document.getElementById('cfg-ano-curso')?.value,
           idioma: document.getElementById('cfg-idioma')?.value,
-        });
+        };
+        if (gSel) payload.genero = gSel.value;
+        const res = await authSaveProfile(payload);
 
-        if (btn) { btn.disabled = false; btn.textContent = lang === 'pt' ? 'Salvo ✓' : 'Guardado ✓'; }
-        setTimeout(() => { if (btn) btn.textContent = lang === 'pt' ? 'Salvar alterações' : 'Guardar cambios'; }, 2000);
+        if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
+        if (res && res.ok) {
+          say('ok', 'Alterações salvas.', 'Cambios guardados.');
+          await uiUpdateUserInfo();
+        } else {
+          // Campos preenchidos permanecem no formulário — nada é perdido
+          say('error', 'Não foi possível salvar. Verifique a conexão e tente novamente.', 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
+        }
       });
     }
 
@@ -1288,9 +1707,7 @@ function showSaveFeedback() {
     const session = await authGetSession();
     if (session) {
       document.querySelectorAll('.nav-cta, .btn-primary').forEach(el => {
-        el.textContent = document.documentElement.dataset.lang === 'pt'
-          ? 'Ir ao App →'
-          : 'Ir al App →';
+        el.innerHTML = '<span class="pt">Ir ao App →</span><span class="es">Ir al App →</span>';
         el.href = 'anamnesismed-dashboard.html';
         el.onclick = null;
       });
@@ -1316,17 +1733,38 @@ async function stripeCheckout() {
   }
 
   try {
+    // O back end identifica o usuário pelo token (userId/email do body são ignorados)
+    const { data: sessData } = await sb.auth.getSession();
+    const token = sessData && sessData.session && sessData.session.access_token;
+    if (!token) {
+      window.location.href = 'anamnesismed-auth.html';
+      return;
+    }
     // Chama a Vercel Function que cria a sessão no Stripe
     const res = await fetch('/api/create-checkout-session', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: user.email, userId: user.id })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({})
     });
-    const { url } = await res.json();
-    window.location.href = url; // Redireciona para o Stripe Checkout
+    if (res.status === 401) {
+      amNotify({ pt: 'Sua sessão expirou. Entre novamente para continuar.', es: 'Tu sesión expiró. Inicia sesión de nuevo para continuar.' });
+      setTimeout(() => { window.location.href = 'anamnesismed-auth.html'; }, 2500);
+      return;
+    }
+    const body = await res.json().catch(() => ({}));
+    if (res.status === 409 && body && body.code === 'already_subscribed') {
+      amShowBanner({
+        id: 'am-banner-subscribed',
+        msg: { pt: 'Você já tem uma assinatura ativa.', es: 'Ya tienes una suscripción activa.' },
+        link: { href: 'anamnesismed-config.html#plano', pt: 'Gerenciar assinatura', es: 'Gestionar suscripción' }
+      });
+      return;
+    }
+    if (!res.ok || !body.url) throw new Error('checkout sem url (HTTP ' + res.status + ')');
+    window.location.href = body.url; // Redireciona para o Stripe Checkout
   } catch (err) {
     console.error('Stripe checkout error:', err);
-    alert('Erro ao iniciar pagamento. Tente novamente.');
+    amNotify({ pt: 'Erro ao iniciar pagamento. Tente novamente.', es: 'Error al iniciar el pago. Inténtalo de nuevo.' });
   }
 }
 
@@ -1341,3 +1779,7 @@ window.hcListAll          = hcListAll;
 window.uiLoadRecentHCs    = uiLoadRecentHCs;
 window.profileCheckAccess = profileCheckAccess;
 window.onboardingCheckAndShow = onboardingCheckAndShow;
+window.amTratamento       = amTratamento;
+window.amNomeExibicao     = amNomeExibicao;
+window.amAskGenero        = amAskGenero;
+window.profileSetGenero   = profileSetGenero;

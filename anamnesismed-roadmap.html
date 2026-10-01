@@ -6,16 +6,26 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AnamnesísMed — Roadmap Técnico</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
 <style>
 :root{--ink:#0a0c10;--paper:#f5f1e8;--cream:#ede8d8;--white:#fff;
   --red:#c0392b;--teal:#1a5c5c;--gold:#9a6800;--green:#1e6b3c;
   --navy:#1a3a5c;--purple:#5b2d8e;--muted:#6b6660;--line:rgba(10,12,16,.1);
-  --serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace}
+  --serif:'Space Grotesk',system-ui,sans-serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--sans);background:var(--paper);color:var(--ink);padding:32px 24px 60px;max-width:960px;margin:0 auto}
 h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;letter-spacing:-.5px}
@@ -28,8 +38,8 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
 .phase-num{font-family:var(--serif);font-size:32px;font-weight:900;opacity:.15;line-height:1}
 .phase-icon{font-size:26px;flex-shrink:0}
 .phase-title{font-family:var(--serif);font-size:18px;font-weight:900}
-.phase-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.phase-badge{margin-left:auto;font-size:9px;font-weight:700;font-family:var(--mono);
+.phase-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.phase-badge{margin-left:auto;font-size:12px;font-weight:700;font-family:var(--mono);
   letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:8px;white-space:nowrap}
 .badge-now{background:#d4edda;color:#155724}
 .badge-week{background:#fff3cd;color:#856404}
@@ -48,14 +58,14 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
 .block-title{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
 .block-icon{font-size:16px}
 .block-items{list-style:none;display:flex;flex-direction:column;gap:5px}
-.block-items li{font-size:12px;color:var(--muted);display:flex;gap:7px;line-height:1.5}
-.block-items li::before{content:'→';color:var(--red);flex-shrink:0;font-size:11px;margin-top:1px}
+.block-items li{font-size:12px;color:var(--muted);display:block;position:relative;padding-left:19px;line-height:1.6;overflow-wrap:anywhere}
+.block-items li::before{content:'→';color:var(--red);position:absolute;left:0;top:0;font-size:12px}
 .block-items li strong{color:var(--ink);font-weight:600}
-.block-items li code{font-family:var(--mono);font-size:10px;background:var(--cream);
+.block-items li code{font-family:var(--mono);font-size:12px;background:var(--cream);
   padding:1px 5px;border-radius:3px;color:var(--ink)}
 
 .cost-tag{display:inline-block;margin-top:8px;padding:3px 9px;border-radius:6px;
-  font-size:10px;font-weight:700;font-family:var(--mono);
+  font-size:12px;font-weight:700;font-family:var(--mono);
   background:var(--cream);color:var(--muted)}
 .cost-tag.free{background:#d4edda;color:#155724}
 .cost-tag.paid{background:#fff3cd;color:#856404}
@@ -70,34 +80,46 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
 .arch-node{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
   border-radius:8px;padding:10px 14px;text-align:center;min-width:90px}
 .arch-node-icon{font-size:18px;display:block;margin-bottom:4px}
-.arch-node-name{font-size:11px;font-weight:700;color:var(--white)}
-.arch-node-sub{font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono);margin-top:2px}
+.arch-node-name{font-size:12px;font-weight:700;color:var(--white)}
+.arch-node-sub{font-size:12px;color:rgba(255,255,255,.35);font-family:var(--mono);margin-top:2px}
 .arch-arrow{font-size:18px;color:rgba(255,255,255,.25);flex-shrink:0}
 
 /* PRICING DETAIL */
 .pricing-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.pricing-row-5{grid-template-columns:repeat(5,1fr)}
 .price-mini{background:var(--cream);border-radius:9px;padding:14px;text-align:center}
 .price-mini-val{font-family:var(--serif);font-size:22px;font-weight:900;color:var(--ink)}
-.price-mini-lbl{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-.price-mini-desc{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5}
+.price-mini-lbl{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.price-mini-desc{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
 
 /* CHECKLIST */
 .checklist{display:flex;flex-direction:column;gap:7px;padding:14px 0 4px}
 .check-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.5}
 .check-box{width:20px;height:20px;border-radius:5px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
 .done{background:var(--ink);color:var(--white)}
 .todo{background:var(--cream);border:1.5px solid var(--line);color:var(--muted)}
 .now{background:var(--red);color:var(--white)}
 
+@media(max-width:820px){
+  .pricing-row-5{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:600px){
   .phase-body{grid-template-columns:1fr}
   .arch-flow{flex-direction:column;align-items:flex-start}
-  .pricing-row{grid-template-columns:1fr}
+  .pricing-row,.pricing-row-5{grid-template-columns:1fr}
+  .phase-head{flex-wrap:wrap;padding:16px}
+  .phase-title{font-size:16px}
+  .phase-body{padding:16px}
+  .phase-badge{margin-left:0}
+  body{padding:24px 16px 48px}
 }
 </style>
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+<main id="main" tabindex="-1">
 
 <h1>AnamnesísMed</h1>
 <div class="subtitle">Roadmap Técnico · Hospedagem · Pagamentos · Controle de Usuários</div>
@@ -309,7 +331,7 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
   </div>
   <!-- Cálculo de receita -->
   <div style="padding:0 22px 20px">
-    <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:4px">Projeção de Receita</div>
+    <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:4px">Projeção de Receita</div>
     <div class="pricing-row">
       <div class="price-mini">
         <div class="price-mini-val">$89</div>
@@ -378,7 +400,7 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
     <span class="phase-badge badge-now">Essencial</span>
   </div>
   <div style="padding:20px 22px">
-    <div class="pricing-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="pricing-row pricing-row-5">
       <div class="price-mini">
         <div class="price-mini-val" style="font-size:16px">$12</div>
         <div class="price-mini-lbl">Domínio</div>
@@ -408,5 +430,6 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
   </div>
 </div>
 
+</main>
 </body>
 </html>

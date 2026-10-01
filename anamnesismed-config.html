@@ -6,15 +6,23 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
-<script src="am-icons.js?v=f6cfe7c9"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0A1A24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Anamnesis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
+<script src="am-icons.js?v=3383aef7"></script>
 <script src="nav-back.js?v=eeac804b"></script>
-<title>AnamnesísMed — Configurações</title>
+<title>AnamnesísMed — Configuración</title>
+<meta name="description" content="Configuración de tu cuenta en AnamnesísMed: perfil, idioma, plan y datos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -22,25 +30,26 @@
   --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
   --secondary:#0d9488;--accent:#f59e0b;--danger:#c0392b;
   --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
+  --serif:'Space Grotesk',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
   --sidebar-w:240px
 }
-body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;display:flex}
 [data-lang="es"] .pt{display:none!important}
 [data-lang="pt"] .es{display:none!important}
 
 /* SIDEBAR (mirrors dashboard) */
-.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 .topbar{background:var(--bg-card);border-bottom:1px solid var(--line);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
 .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--ink);flex-shrink:0}
 .hamburger:hover{background:var(--bg)}
-.topbar-title{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink)}
+.topbar-title{margin:0;font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink)}
 .topbar-subtitle{font-size:13px;color:var(--muted)}
 .lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
-.lang-btn{padding:4px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.lang-btn{padding:4px 11px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+.lang-btn:focus-visible{outline:2px solid var(--primary-dark);outline-offset:-3px}.lang-btn.active:focus-visible{outline-color:#5ED6E3}
 
 .content{padding:32px;max-width:760px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 
@@ -55,14 +64,16 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .form-input,.form-select{
   padding:11px 14px;font-size:14px;font-family:var(--sans);
   background:var(--bg);border:1px solid var(--line-md);border-radius:9px;
-  color:var(--ink);outline:none;transition:all .2s
+  color:var(--ink);transition:all .2s
 }
 .form-input:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(14,116,144,.1)}
 .form-input[disabled]{opacity:.6;cursor:not-allowed}
-.form-hint{font-size:11px;color:var(--muted)}
+.form-hint{font-size:12px;color:var(--muted)}
+.cfg-status{margin-top:12px;font-size:14px;font-weight:600;color:var(--muted)}.cfg-status.ok{color:#15803d}.cfg-status.error{color:#b91c1c}
+.form-field[hidden]{display:none}
 
 .btn-primary{
-  margin-top:6px;padding:12px 24px;font-size:14px;font-weight:700;
+  margin-top:6px;min-height:44px;padding:12px 24px;font-size:14px;font-weight:700;
   color:#fff;background:var(--primary);border:none;border-radius:9px;
   cursor:pointer;transition:all .2s;align-self:flex-start
 }
@@ -72,7 +83,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .plan-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .plan-badge{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--primary)}
 .plan-desc{font-size:13px;color:var(--muted);margin-top:2px}
-.btn-upgrade{padding:10px 20px;font-size:13px;font-weight:700;color:#fff;background:var(--accent);border:none;border-radius:9px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-upgrade{padding:12px 20px;min-height:44px;font-size:13px;font-weight:700;color:#fff;background:#C23A26;border:none;border-radius:9px;cursor:pointer;text-decoration:none;display:inline-block}
 .btn-upgrade:hover{filter:brightness(.95)}
 
 .danger-zone{border-color:rgba(192,57,43,.25)}
@@ -83,23 +94,38 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 }
 .btn-danger:hover{background:rgba(192,57,43,.14)}
 
+
+.priv-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--line)}
+.priv-row:first-of-type{border-top:0;padding-top:0}
+.priv-txt{display:flex;flex-direction:column;gap:2px;flex:1 1 260px;min-width:0;font-size:13px;color:var(--muted)}
+.priv-txt strong{font-size:14px;color:var(--ink)}
+.priv-status{margin-top:4px;padding:10px 12px;border-radius:9px;font-size:13px;line-height:1.45;background:#E6F4EA;color:#14532D;border:1px solid #B7E1C1}
+.priv-status.error{background:#FDECEA;color:#8A1F11;border-color:#F3B3AB}
+.priv-status[hidden]{display:none}
 @media(max-width:768px){
   .main{margin-left:0}
   .hamburger{display:flex}
   .topbar{padding:0 14px;height:56px}
   .form-grid{grid-template-columns:1fr}
   .content{padding:20px 14px 40px}
+  .topbar-back,.topbar-subtitle{display:none!important}/* cabia errado e empurrava o seletor de idioma para fora da tela */
+  .lang-toggle{flex-shrink:0}
+  .topbar-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 </style>
-  <link rel="stylesheet" href="sidebar.css?v=20566b6d">
+  <link rel="stylesheet" href="anamnesismed-theme.css?v=6a37d91b">
+<link rel="stylesheet" href="anamnesismed-components.css?v=0724fbbb">
+<link rel="stylesheet" href="sidebar.css?v=0c39aa1b">
+<script src="/pwa.js?v=ca447f53" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <!-- SIDEBAR -->
 <div id="sidebar-root"></div>
 
 <!-- MAIN -->
-<div class="main">
+<main class="main" id="main" tabindex="-1">
   <header class="topbar">
     <div class="topbar-left">
       <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
@@ -109,15 +135,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </button>
       <a href="anamnesismed-dashboard.html" class="topbar-back"><span class="pt">← Voltar</span><span class="es">← Volver</span></a>
       <div>
-        <div class="topbar-title pt">Configurações</div>
-        <div class="topbar-title es">Configuración</div>
+        <h1 class="topbar-title pt">Configurações</h1>
+        <h1 class="topbar-title es">Configuración</h1>
         <div class="topbar-subtitle pt">Gerencie seus dados e preferências</div>
         <div class="topbar-subtitle es">Gestiona tus datos y preferencias</div>
       </div>
     </div>
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn" id="btn-pt" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn" id="btn-pt" aria-pressed="false" aria-label="Português" onclick="setLang('pt')">PT</button>
+      <button type="button" class="lang-btn active" id="btn-es" aria-pressed="true" aria-label="Español" onclick="setLang('es')">ES</button>
     </div>
   </header>
 
@@ -132,35 +158,44 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 
       <div class="form-grid">
         <div class="form-field">
-          <label class="form-label pt">Nome</label>
-          <label class="form-label es">Nombre</label>
+          <label class="form-label pt" for="cfg-nome">Nome</label>
+          <label class="form-label es" for="cfg-nome">Nombre</label>
           <input type="text" class="form-input" id="cfg-nome" autocomplete="given-name">
         </div>
         <div class="form-field">
-          <label class="form-label pt">Sobrenome</label>
-          <label class="form-label es">Apellido</label>
+          <label class="form-label pt" for="cfg-sobrenome">Sobrenome</label>
+          <label class="form-label es" for="cfg-sobrenome">Apellido</label>
           <input type="text" class="form-input" id="cfg-sobrenome" autocomplete="family-name">
         </div>
+        <div class="form-field full" id="cfg-genero-field" hidden>
+          <fieldset class="am-genero" aria-required="true">
+            <legend><span class="pt">Tratamento / Gênero</span><span class="es">Tratamiento / Género</span> <span aria-hidden="true">*</span></legend>
+            <div class="am-genero-opts">
+              <label class="am-genero-opt"><input type="radio" name="cfg-genero" value="F"><span><strong>Dra.</strong> <span class="am-genero-sub">(<span class="pt">feminino</span><span class="es">femenino</span>)</span></span></label>
+              <label class="am-genero-opt"><input type="radio" name="cfg-genero" value="M"><span><strong>Dr.</strong> <span class="am-genero-sub">(<span class="pt">masculino</span><span class="es">masculino</span>)</span></span></label>
+            </div>
+          </fieldset>
+        </div>
         <div class="form-field full">
-          <label class="form-label pt">E-mail</label>
-          <label class="form-label es">Correo electrónico</label>
+          <label class="form-label pt" for="cfg-email">E-mail</label>
+          <label class="form-label es" for="cfg-email">Correo electrónico</label>
           <input type="email" class="form-input" id="cfg-email" disabled>
           <span class="form-hint pt">O e-mail é o seu identificador de login e não pode ser alterado aqui.</span>
           <span class="form-hint es">El correo es tu identificador de acceso y no puede cambiarse aquí.</span>
         </div>
         <div class="form-field">
-          <label class="form-label pt">Universidade</label>
-          <label class="form-label es">Universidad</label>
+          <label class="form-label pt" for="cfg-universidade">Universidade</label>
+          <label class="form-label es" for="cfg-universidade">Universidad</label>
           <input type="text" class="form-input" id="cfg-universidade" autocomplete="organization">
         </div>
         <div class="form-field">
-          <label class="form-label pt">Ano / curso</label>
-          <label class="form-label es">Año / curso</label>
-          <input type="text" class="form-input" id="cfg-ano-curso" placeholder="Ex: 4º ano de Medicina">
+          <label class="form-label pt" for="cfg-ano-curso">Ano / curso</label>
+          <label class="form-label es" for="cfg-ano-curso">Año / curso</label>
+          <input type="text" class="form-input" id="cfg-ano-curso" placeholder="Ex: 4º ano de Medicina" data-ph-pt="Ex: 4º ano de Medicina" data-ph-es="Ej.: 4.º año de Medicina">
         </div>
         <div class="form-field">
-          <label class="form-label pt">Idioma da plataforma</label>
-          <label class="form-label es">Idioma de la plataforma</label>
+          <label class="form-label pt" for="cfg-idioma">Idioma da plataforma</label>
+          <label class="form-label es" for="cfg-idioma">Idioma de la plataforma</label>
           <select class="form-select" id="cfg-idioma">
             <option value="pt">Português</option>
             <option value="es">Español</option>
@@ -171,10 +206,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       <button type="submit" class="btn-primary" id="cfg-save-btn">
         <span class="pt">Salvar alterações</span><span class="es">Guardar cambios</span>
       </button>
+      <p id="cfg-status" class="cfg-status" role="status" aria-live="polite" hidden></p>
     </form>
 
     <!-- PLANO -->
-    <div class="card">
+    <div class="card" id="plano">
       <div class="card-title pt">Plano e assinatura</div>
       <div class="card-title es">Plan y suscripción</div>
       <div class="card-sub pt">Acompanhe seu plano atual no AnamnesísMed</div>
@@ -202,6 +238,38 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
       </div>
     </div>
 
+    <!-- PRIVACIDADE E DADOS (LGPD) -->
+    <section class="card" id="privacidade" aria-labelledby="priv-title">
+      <h2 class="card-title pt" id="priv-title">Privacidade e dados</h2>
+      <h2 class="card-title es" id="priv-title-es">Privacidad y datos</h2>
+      <div class="card-sub pt">Você é dono dos seus dados: baixe uma cópia ou exclua a conta quando quiser.</div>
+      <div class="card-sub es">Tus datos son tuyos: descarga una copia o elimina tu cuenta cuando quieras.</div>
+
+      <div class="priv-row">
+        <div class="priv-txt">
+          <strong class="pt">Exportar meus dados</strong><strong class="es">Exportar mis datos</strong>
+          <span class="pt">Baixa um arquivo JSON com seu perfil e todas as suas histórias clínicas.</span>
+          <span class="es">Descarga un archivo JSON con tu perfil y todas tus historias clínicas.</span>
+        </div>
+        <button type="button" class="btn-secondary am-btn am-btn--secondary" id="btn-export">
+          <span class="am-spinner am-spinner--dark" aria-hidden="true" hidden></span>
+          <span class="pt">Exportar meus dados</span><span class="es">Exportar mis datos</span>
+        </button>
+      </div>
+      <p class="priv-status" id="export-status" role="status" aria-live="polite" hidden></p>
+
+      <div class="priv-row priv-danger">
+        <div class="priv-txt">
+          <strong class="pt">Excluir minha conta</strong><strong class="es">Eliminar mi cuenta</strong>
+          <span class="pt">Apaga seu perfil e suas histórias clínicas e cancela a assinatura. Não há como desfazer.</span>
+          <span class="es">Borra tu perfil y tus historias clínicas y cancela la suscripción. No se puede deshacer.</span>
+        </div>
+        <button type="button" class="btn-danger am-btn" id="btn-delete-open" aria-haspopup="dialog">
+          <span class="pt">Excluir minha conta</span><span class="es">Eliminar mi cuenta</span>
+        </button>
+      </div>
+    </section>
+
     <!-- CONTA / SAIR -->
     <div class="card danger-zone">
       <div class="card-title pt">Sessão</div>
@@ -214,6 +282,28 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
     </div>
 
   </div>
+</main>
+
+<!-- DIÁLOGO: excluir conta (alertdialog, foco preso, Esc cancela) -->
+<div class="am-modal" id="del-modal" hidden>
+  <div class="am-modal-backdrop" data-modal-close></div>
+  <div class="am-modal-box" role="alertdialog" aria-modal="true" aria-labelledby="del-title" aria-describedby="del-desc" tabindex="-1">
+    <h2 class="am-modal-title" id="del-title"><span class="pt">Excluir sua conta?</span><span class="es">¿Eliminar tu cuenta?</span></h2>
+    <div class="am-modal-body" id="del-desc">
+      <p class="pt"><strong>Esta ação é irreversível.</strong> Vamos apagar seu perfil e todas as suas histórias clínicas, e <strong>cancelar imediatamente a assinatura</strong> (se houver). Faturas já emitidas continuam guardadas pelo processador de pagamento, como a lei exige.</p>
+      <p class="es"><strong>Esta acción es irreversible.</strong> Borraremos tu perfil y todas tus historias clínicas, y <strong>cancelaremos de inmediato la suscripción</strong> (si existe). Las facturas ya emitidas las conserva el procesador de pagos, como exige la ley.</p>
+      <p class="pt">Dica: use antes “Exportar meus dados” para guardar uma cópia.</p>
+      <p class="es">Consejo: usa antes “Exportar mis datos” para guardar una copia.</p>
+    </div>
+    <p class="priv-status error" id="del-status" role="alert" hidden></p>
+    <div class="am-modal-actions">
+      <button type="button" class="am-btn am-btn--secondary" id="del-cancel"><span class="pt">Cancelar</span><span class="es">Cancelar</span></button>
+      <button type="button" class="am-btn am-btn--danger" id="del-confirm">
+        <span class="am-spinner" aria-hidden="true" hidden></span>
+        <span class="pt">Excluir definitivamente</span><span class="es">Eliminar definitivamente</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -221,11 +311,17 @@ function encerrarSessao(){
   if(window.authLogout) window.authLogout();
   else window.location.href = 'anamnesismed-auth.html';
 }
+function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Configuración", "d": "Configuración de tu cuenta en AnamnesísMed: perfil, idioma, plan y datos."}, "pt": {"t": "AnamnesísMed — Configurações", "d": "Configurações da sua conta no AnamnesísMed: perfil, idioma, plano e dados."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(l){
+  amSetMeta(l);
+  amLangA11y(l);
   document.documentElement.setAttribute('data-lang', l);
   document.getElementById('btn-pt').classList.toggle('active', l==='pt');
   document.getElementById('btn-es').classList.toggle('active', l==='es');
   try{localStorage.setItem('am-lang', l)}catch(e){}
+  document.querySelectorAll('[data-ph-pt]').forEach(function(el){el.placeholder=el.getAttribute(l==='pt'?'data-ph-pt':'data-ph-es')});
 }
 (function(){
   var saved;
@@ -234,8 +330,8 @@ function setLang(l){
 })();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js?v=bb827873"></script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
+<script src="supabase-integration.js?v=628b1cd6"></script>
 <script>
 // ── Popular dados reais do usuário (plano, membro desde, trial) ──
 (async function(){
@@ -243,6 +339,7 @@ function setLang(l){
     if (!window.profileGet) return;
     var profile = await window.profileGet();
     if (!profile) return;
+    var DF = {day:'2-digit',month:'2-digit',year:'numeric'};
 
     if (window.uiUpdateUserInfo) await window.uiUpdateUserInfo();
 
@@ -250,11 +347,11 @@ function setLang(l){
     var criadoEm = profile.criado_em || profile.created_at;
     if (criadoEm) {
       var d = new Date(criadoEm);
-      var fmt = d.toLocaleDateString(undefined, {day:'2-digit',month:'2-digit',year:'numeric'});
+      var fmt = d.toLocaleDateString('pt-BR', DF), fmtEs = d.toLocaleDateString('es-ES', DF);
       var elPt = document.getElementById('cfg-membro-desde');
       var elEs = document.getElementById('cfg-membro-desde-es');
       if (elPt) elPt.textContent = fmt;
-      if (elEs) elEs.textContent = fmt;
+      if (elEs) elEs.textContent = fmtEs;
     }
 
     // Plano + trial
@@ -273,11 +370,11 @@ function setLang(l){
 
         if (profile.trial_end) {
           var dEnd = new Date(profile.trial_end);
-          var fmtEnd = dEnd.toLocaleDateString(undefined, {day:'2-digit',month:'2-digit',year:'numeric'});
+          var fmtEnd = dEnd.toLocaleDateString('pt-BR', DF), fmtEndEs = dEnd.toLocaleDateString('es-ES', DF);
           var fimPt = document.getElementById('cfg-trial-fim');
           var fimEs = document.getElementById('cfg-trial-fim-es');
           if (fimPt) fimPt.textContent = fmtEnd;
-          if (fimEs) fimEs.textContent = fmtEnd;
+          if (fimEs) fimEs.textContent = fmtEndEs;
         }
       }
     }
@@ -286,6 +383,77 @@ function setLang(l){
   }
 })();
 </script>
-<script src="sidebar.js?v=f6cd0d5b"></script>
+
+<script>
+/* ── Privacidade e dados: exportar (GET /api/exportar-dados) e excluir conta (POST /api/excluir-conta) ── */
+(function(){
+  function L(){return document.documentElement.getAttribute('data-lang')==='pt'?'pt':'es'}
+  var T={
+    pt:{exporting:'Preparando seu arquivo…',exported:'Arquivo baixado. Guarde-o em local seguro: ele contém dados clínicos.',session:'Sua sessão expirou. Entre novamente para continuar.',fail:'Não foi possível concluir agora. Tente novamente em instantes.',net:'Sem conexão com o servidor. Verifique sua internet e tente de novo.',deleting:'Excluindo sua conta…',delFail:'Não foi possível excluir a conta agora. Nada foi perdido pela metade: você pode tentar de novo com segurança.',busy:'Aguarde…',big:'Seus dados excedem o tamanho máximo da exportação pelo site. Peça a exportação completa pelo canal de privacidade (DPO).'},
+    es:{exporting:'Preparando tu archivo…',exported:'Archivo descargado. Guárdalo en un lugar seguro: contiene datos clínicos.',session:'Tu sesión expiró. Inicia sesión de nuevo para continuar.',fail:'No se pudo completar ahora. Inténtalo de nuevo en unos instantes.',net:'Sin conexión con el servidor. Revisa tu internet e inténtalo de nuevo.',deleting:'Eliminando tu cuenta…',delFail:'No se pudo eliminar la cuenta ahora. Nada quedó a medias: puedes intentarlo de nuevo con seguridad.',busy:'Espera…',big:'Tus datos superan el tamaño máximo de la exportación por el sitio. Solicita la exportación completa por el canal de privacidad (DPO).'}
+  };
+  function show(el,msg,isErr){el.textContent=msg;el.hidden=false;el.classList.toggle('error',!!isErr)}
+  function busy(btn,on){btn.disabled=on;btn.setAttribute('aria-busy',on?'true':'false');var sp=btn.querySelector('.am-spinner');if(sp)sp.hidden=!on}
+  function token(){return (window.authGetToken?window.authGetToken():Promise.resolve(null))}
+  function toLogin(){setTimeout(function(){location.href='anamnesismed-auth.html'},2000)}
+
+  /* Exportar */
+  var bx=document.getElementById('btn-export'),sx=document.getElementById('export-status');
+  if(bx)bx.addEventListener('click',function(){
+    busy(bx,true);show(sx,T[L()].exporting,false);
+    token().then(function(tk){
+      if(!tk){show(sx,T[L()].session,true);toLogin();return}
+      return fetch('/api/exportar-dados',{headers:{'Authorization':'Bearer '+tk}}).then(function(r){
+        if(r.status===401){show(sx,T[L()].session,true);toLogin();return}
+        if(r.status===413){show(sx,T[L()].big,true);return}
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.blob().then(function(b){
+          var url=URL.createObjectURL(new Blob([b],{type:'application/json'}));
+          var a=document.createElement('a');a.href=url;a.download='anamnesismed-meus-dados-'+new Date().toISOString().slice(0,10)+'.json';
+          document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},4000);
+          show(sx,T[L()].exported,false);
+        });
+      });
+    }).catch(function(e){show(sx,(e&&/^HTTP/.test(e.message))?T[L()].fail:T[L()].net,true)}).then(function(){busy(bx,false)});
+  });
+
+  /* Excluir conta — alertdialog com foco preso */
+  var modal=document.getElementById('del-modal'),box=modal&&modal.querySelector('.am-modal-box'),
+      open=document.getElementById('btn-delete-open'),cancel=document.getElementById('del-cancel'),
+      ok=document.getElementById('del-confirm'),sd=document.getElementById('del-status'),opener=null,working=false,redirecting=false;
+  function focusables(){return [].slice.call(box.querySelectorAll('button:not([disabled]),[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')).filter(function(e){return e.offsetParent!==null})}
+  function openM(){opener=document.activeElement;sd.hidden=true;modal.hidden=false;document.body.classList.add('am-modal-open');cancel.focus()}
+  function closeM(){if(working)return;modal.hidden=true;document.body.classList.remove('am-modal-open');if(opener&&opener.focus)opener.focus()}
+  if(modal){
+    open.addEventListener('click',openM);
+    cancel.addEventListener('click',closeM);
+    modal.addEventListener('click',function(e){if(e.target.hasAttribute('data-modal-close'))closeM()});
+    document.addEventListener('keydown',function(e){
+      if(modal.hidden)return;
+      if(e.key==='Escape'){e.preventDefault();closeM();return}
+      if(e.key==='Tab'){
+        var f=focusables();if(!f.length)return;
+        var first=f[0],last=f[f.length-1];
+        if(!box.contains(document.activeElement)){e.preventDefault();first.focus();return}
+        if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+        else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+      }
+    });
+    ok.addEventListener('click',function(){
+      if(working)return;working=true;busy(ok,true);cancel.disabled=true;show(sd,T[L()].deleting,false);sd.classList.remove('error');
+      token().then(function(tk){
+        if(!tk){working=false;show(sd,T[L()].session,true);toLogin();return}
+        return fetch('/api/excluir-conta',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},body:JSON.stringify({confirmar:true})}).then(function(r){
+          if(r.status===401){working=false;show(sd,T[L()].session,true);toLogin();return}
+          if(!r.ok)throw new Error('HTTP '+r.status);
+          var done=function(){redirecting=true;try{localStorage.removeItem('am-uname');localStorage.removeItem('am-recent')}catch(e){}location.href='anamnesismed-landing.html'};
+          try{var so=(typeof sb!=='undefined'&&sb.auth&&sb.auth.signOut)?sb.auth.signOut():null;Promise.resolve(so).then(done,done)}catch(e){done()}
+        });
+      }).catch(function(e){working=false;show(sd,(e&&/^HTTP/.test(e.message))?T[L()].delFail:T[L()].net,true)}).then(function(){if(!redirecting){busy(ok,false);cancel.disabled=false;working=false}});
+    });
+  }
+})();
+</script>
+<script src="sidebar.js?v=3eecb789"></script>
 </body>
 </html>
