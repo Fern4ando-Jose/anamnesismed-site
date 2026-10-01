@@ -7,14 +7,15 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
+<meta name="theme-color" content="#0B7C88">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
 <script src="am-icons.js?v=f6cfe7c9"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <title>AnamnesísMed — Nova HC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -22,8 +23,8 @@
   --ink:#0d2d3d;--primary:#0e7490;--primary-dark:#0c5f72;
   --secondary:#0d9488;--accent:#f59e0b;
   --muted:#4b6070;--line:rgba(13,45,61,0.10);--line-md:rgba(13,45,61,0.16);
-  --serif:'Libre Baskerville',Georgia,serif;
-  --sans:'Source Sans 3',system-ui,sans-serif;
+  --serif:'Space Grotesk',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
   --sidebar-w:240px
 }
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;display:flex}
@@ -215,7 +216,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .motivos-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 }
 </style>
-  <link rel="stylesheet" href="sidebar.css?v=20566b6d">
+  <link rel="stylesheet" href="anamnesismed-theme.css?v=d829a549">
+<link rel="stylesheet" href="sidebar.css?v=da83dbc8">
 </head>
 <body>
 
@@ -518,7 +520,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   // nome DEPOIS que a sessão resolve. Não chamar aqui para evitar nome vazio.
 });
 </script>
-<script src="supabase-integration.js?v=6171c81a" defer></script>
-<script src="sidebar.js?v=3d75a6f4"></script>
+<script src="supabase-integration.js?v=42a2e21d" defer></script>
+<script src="sidebar.js?v=4ced0109"></script>
 </body>
 </html>

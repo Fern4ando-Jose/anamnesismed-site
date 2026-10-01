@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#0e7490">
+<meta name="theme-color" content="#0B7C88">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>try{var l=localStorage.getItem('am-lang');if(l)document.documentElement.setAttribute('data-lang',l);}catch(e){}</script>
 <script src="am-icons.js?v=f6cfe7c9"></script>
@@ -45,7 +45,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .lang-btn{padding:5px 11px;font-size:11px;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:.2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
 .search-wrap{position:relative}
-.search-input{padding:9px 12px 9px 34px;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);outline:none;width:200px;transition:.2s;font-family:var(--sans)}
+.search-input{padding:9px 12px 9px 34px;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);width:200px;transition:.2s;font-family:var(--sans)}
 .search-input:focus{border-color:var(--primary);width:240px;box-shadow:0 0 0 3px rgba(15,163,177,.12)}
 .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted)}
 .btn-new{padding:9px 17px;font-family:var(--serif);font-size:14px;font-weight:600;color:#fff;background:var(--primary);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.18s;text-decoration:none;box-shadow:0 6px 16px rgba(15,163,177,.26)}
@@ -157,7 +157,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
   .hc-actions{display:none}.stats-row{grid-template-columns:1fr 1fr}
 }
 </style>
-<link rel="stylesheet" href="sidebar.css?v=20566b6d">
+<link rel="stylesheet" href="anamnesismed-theme.css?v=d829a549">
+<link rel="stylesheet" href="sidebar.css?v=da83dbc8">
 </head>
 <body>
 
@@ -369,8 +370,8 @@ function setView(v){
   document.getElementById('page-sub-es').textContent=daysEs[now.getDay()]+', '+d+' de '+monthsEs[now.getMonth()]+' de '+now.getFullYear();
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js?v=6171c81a"></script>
-<script src="sidebar.js?v=3d75a6f4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.2/dist/umd/supabase.js"></script>
+<script src="supabase-integration.js?v=42a2e21d"></script>
+<script src="sidebar.js?v=4ced0109"></script>
 </body>
 </html>

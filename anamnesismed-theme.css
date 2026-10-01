@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+/* Fontes (Space Grotesk/Inter/JetBrains Mono): carregadas via <link> nas páginas (preconnect + display=swap). */
 
 /* ════════════════════════════════════════════════════════════
    AnamnesísMed · Tema "Pulso" — tokens globais
@@ -34,3 +34,14 @@ h1,h2,h3,h4{font-family:var(--serif);letter-spacing:-.3px}
   font-family:var(--mono);
   font-feature-settings:"tnum" 1;
 }
+
+/* Foco visível (teclado) — nunca remover outline sem substituto. #0B7C88: contraste ≥3:1 sobre claro. */
+:focus-visible{outline:2px solid #0B7C88;outline-offset:2px}
+.sidebar :focus-visible,.cta-banner :focus-visible,footer :focus-visible{outline-color:#5ED6E3}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline-offset:1px}
+/* Toast/mensagem acessível reutilizável (amNotify em supabase-integration.js) */
+.am-toast-wrap{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:8px;width:min(92vw,420px);pointer-events:none}
+.am-toast{pointer-events:auto;background:var(--ink);color:#fff;border-left:4px solid var(--primary);border-radius:10px;padding:12px 14px;font:500 14px/1.45 var(--sans);box-shadow:0 8px 28px rgba(10,26,36,.35);display:flex;gap:10px;align-items:flex-start}
+.am-toast.error{border-left-color:var(--accent)}
+.am-toast button{margin-left:auto;background:none;border:0;color:#fff;font-size:16px;line-height:1;cursor:pointer;padding:0 2px}
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

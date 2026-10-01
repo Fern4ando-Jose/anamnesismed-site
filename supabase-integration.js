@@ -25,6 +25,48 @@ function escHtml(s) {
   });
 }
 
+// ── Aviso acessível reutilizável (substitui alert()) ─────────────────────────
+// amNotify('texto') ou amNotify({pt:'...', es:'...'}, {type:'error'|'info', timeout:ms})
+// Renderiza um toast com role="alert" (erro) / role="status" (info) + aria-live; sem bloquear a página.
+function amNotify(msg, opts) {
+  opts = opts || {};
+  var lang = document.documentElement.getAttribute('data-lang') === 'pt' ? 'pt' : 'es';
+  var text = (msg && typeof msg === 'object') ? (msg[lang] || msg.pt || msg.es || '') : String(msg || '');
+  var isErr = opts.type !== 'info';
+  var wrap = document.getElementById('am-toast-wrap');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'am-toast-wrap';
+    wrap.className = 'am-toast-wrap';
+    document.body.appendChild(wrap);
+    if (!document.getElementById('am-toast-style')) {
+      // Fallback de estilo para páginas sem anamnesismed-theme.css
+      var st = document.createElement('style');
+      st.id = 'am-toast-style';
+      st.textContent = '.am-toast-wrap{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:8px;width:min(92vw,420px)}' +
+        '.am-toast{background:#0A1A24;color:#fff;border-left:4px solid #0FA3B1;border-radius:10px;padding:12px 14px;font:500 14px/1.45 system-ui,sans-serif;box-shadow:0 8px 28px rgba(10,26,36,.35);display:flex;gap:10px;align-items:flex-start}' +
+        '.am-toast.error{border-left-color:#FF5C49}.am-toast button{margin-left:auto;background:none;border:0;color:#fff;font-size:16px;cursor:pointer}';
+      document.head.appendChild(st);
+    }
+  }
+  var t = document.createElement('div');
+  t.className = 'am-toast' + (isErr ? ' error' : '');
+  t.setAttribute('role', isErr ? 'alert' : 'status');
+  t.setAttribute('aria-live', isErr ? 'assertive' : 'polite');
+  var span = document.createElement('span');
+  span.textContent = text;
+  var close = document.createElement('button');
+  close.type = 'button';
+  close.setAttribute('aria-label', lang === 'pt' ? 'Fechar aviso' : 'Cerrar aviso');
+  close.textContent = '\u2715';
+  close.addEventListener('click', function () { t.remove(); });
+  t.appendChild(span); t.appendChild(close);
+  wrap.appendChild(t);
+  setTimeout(function () { if (t.parentNode) t.remove(); }, opts.timeout || 8000);
+  return t;
+}
+window.amNotify = amNotify;
+
 // ── Detectar em qual página estamos ──────────────────────────────────────
 const PAGE = (() => {
   const p = window.location.pathname;
@@ -57,7 +99,7 @@ async function authSendMagicLink(email) {
     return { ok: true };
   } catch (err) {
     console.error('Magic link error:', err);
-    return { ok: false, error: err.message };
+    return { ok: false, error: err && err.message, rate: !!(err && (err.status === 429 || /rate limit/i.test(err.message || ''))) };
   }
 }
 
@@ -74,9 +116,11 @@ async function authGoogleLogin() {
       }
     });
     if (error) throw error;
+    return { ok: true };
   } catch (err) {
     console.error('Google OAuth error:', err);
-    alert('Erro ao iniciar login com Google. Tente novamente.');
+    amNotify({ pt: 'Erro ao iniciar login com Google. Tente novamente.', es: 'Error al iniciar sesión con Google. Inténtalo de nuevo.' });
+    return { ok: false, error: err && err.message };
   }
 }
 
@@ -245,7 +289,7 @@ async function onboardingCheckAndShow(profile) {
     position:fixed;inset:0;z-index:9999;
     background:rgba(13,45,61,0.72);
     display:flex;align-items:center;justify-content:center;
-    padding:20px;font-family:'Source Sans 3',system-ui,sans-serif`;
+    padding:20px;font-family:'Inter',system-ui,sans-serif`;
 
   const card = document.createElement('div');
   card.style.cssText = `
@@ -257,7 +301,7 @@ async function onboardingCheckAndShow(profile) {
 
   function renderTerms() {
     card.innerHTML = `
-      <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:20px;margin-bottom:12px">
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:20px;margin-bottom:12px">
         ${lang==='pt' ? 'Antes de continuar' : 'Antes de continuar'}
       </h2>
       <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:14px">
@@ -322,7 +366,7 @@ async function onboardingCheckAndShow(profile) {
 
   function renderTipo() {
     card.innerHTML = `
-      <h2 style="font-family:'Libre Baskerville',Georgia,serif;font-size:20px;margin-bottom:12px">
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:20px;margin-bottom:12px">
         ${lang==='pt' ? 'Para personalizar sua experiência' : 'Para personalizar tu experiencia'}
       </h2>
       <p style="font-size:14px;line-height:1.6;color:#4b6070;margin-bottom:18px">
@@ -959,7 +1003,7 @@ function showPaywall(reason) {
   overlay.innerHTML = `
     <div style="background:#fff;border-radius:16px;padding:40px;max-width:400px;width:100%;text-align:center">
       <div style="font-size:48px;margin-bottom:16px">⏰</div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin-bottom:10px">
+      <h2 style="font-family:'Space Grotesk',system-ui,sans-serif;font-size:24px;font-weight:900;margin-bottom:10px">
         ${lang === 'es' ? 'Tu trial ha terminado' : 'Seu trial acabou'}
       </h2>
       <p style="font-size:14px;color:#6b6660;margin-bottom:24px;line-height:1.6">
@@ -1025,7 +1069,7 @@ function showSaveFeedback() {
       position:fixed;bottom:80px;right:16px;z-index:500;
       background:#1e6b3c;color:#fff;font-size:11px;font-weight:700;
       padding:6px 12px;border-radius:20px;
-      opacity:0;transition:opacity .3s;font-family:'DM Mono',monospace`;
+      opacity:0;transition:opacity .3s;font-family:'JetBrains Mono',ui-monospace,monospace`;
     badge.textContent = '✓ Salvo';
     document.body.appendChild(badge);
   }
@@ -1079,7 +1123,7 @@ function showSaveFeedback() {
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('success-state').style.display = 'block';
       } else {
-        alert(result.error || 'Erro ao enviar o link. Tente novamente.');
+        amNotify({ pt: 'Erro ao enviar o link. Tente novamente.', es: 'Error al enviar el link. Inténtalo de nuevo.' });
       }
     };
 
@@ -1108,7 +1152,7 @@ function showSaveFeedback() {
         document.getElementById('form-wrap').style.display = 'none';
         document.getElementById('success-state').style.display = 'block';
       } else {
-        alert(result.error || 'Erro ao criar conta. Tente novamente.');
+        amNotify({ pt: 'Erro ao criar conta. Tente novamente.', es: 'Error al crear la cuenta. Inténtalo de nuevo.' });
       }
     };
   }
@@ -1316,17 +1360,30 @@ async function stripeCheckout() {
   }
 
   try {
+    // O back end identifica o usuário pelo token (userId/email do body são ignorados)
+    const { data: sessData } = await sb.auth.getSession();
+    const token = sessData && sessData.session && sessData.session.access_token;
+    if (!token) {
+      window.location.href = 'anamnesismed-auth.html';
+      return;
+    }
     // Chama a Vercel Function que cria a sessão no Stripe
     const res = await fetch('/api/create-checkout-session', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: user.email, userId: user.id })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({})
     });
-    const { url } = await res.json();
-    window.location.href = url; // Redireciona para o Stripe Checkout
+    if (res.status === 401) {
+      amNotify({ pt: 'Sua sessão expirou. Entre novamente para continuar.', es: 'Tu sesión expiró. Inicia sesión de nuevo para continuar.' });
+      setTimeout(() => { window.location.href = 'anamnesismed-auth.html'; }, 2500);
+      return;
+    }
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.url) throw new Error('checkout sem url (HTTP ' + res.status + ')');
+    window.location.href = body.url; // Redireciona para o Stripe Checkout
   } catch (err) {
     console.error('Stripe checkout error:', err);
-    alert('Erro ao iniciar pagamento. Tente novamente.');
+    amNotify({ pt: 'Erro ao iniciar pagamento. Tente novamente.', es: 'Error al iniciar el pago. Inténtalo de nuevo.' });
   }
 }
 

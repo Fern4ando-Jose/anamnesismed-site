@@ -6,8 +6,8 @@
   'use strict';
 
   var HTML = [
-    '<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>',
-    '<aside class="sidebar" id="sidebar">',
+    '<div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>',
+    '<aside class="sidebar" id="sidebar" aria-label="Menu principal / Menú principal">',
     '',
     '  <div class="sidebar-head" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">',
     '    <div>',
@@ -15,7 +15,7 @@
     '      <div class="sidebar-role pt" id="sb-plan-pt">Teste</div>',
     '      <div class="sidebar-role es" id="sb-plan-es">Prueba</div>',
     '    </div>',
-    '    <button id="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Fechar menu"',
+    '    <button type="button" id="sidebar-close-btn" aria-label="Fechar menu / Cerrar menú"',
     '      style="display:none;align-items:center;justify-content:center;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0">&#x2715;</button>',
     '  </div>',
     '',
@@ -54,7 +54,7 @@
     '      <span class="nav-icon">' + amIcon('sparkles', 18) + '</span>',
     '      <span class="pt">Upgrade para Pro</span><span class="es">Upgrade a Pro</span>',
     '    </a>',
-    '    <button class="nav-item nav-item-logout" onclick="if(window.encerrarSessao)encerrarSessao()">',
+    '    <button type="button" class="nav-item nav-item-logout" onclick="if(window.encerrarSessao)encerrarSessao()">',
     '      <span class="nav-icon">' + amIcon('logout', 16) + '</span>',
     '      <span class="pt">Encerrar sess&#xE3;o</span><span class="es">Cerrar sesi&#xF3;n</span>',
     '    </button>',
@@ -80,9 +80,26 @@
   root.innerHTML = HTML;
 
   /* ── TOGGLE ── */
+  /* Botões que abrem/fecham o menu (hambúrguer de cada página) recebem aria-expanded/aria-controls. */
+  function _toggleButtons() {
+    return document.querySelectorAll('[onclick*="toggleSidebar"],[onclick*="openSidebar"],[data-sidebar-toggle]');
+  }
+  var _lastTrigger = null;
   function _syncBodyState() {
-    var open = document.getElementById('sidebar').classList.contains('open');
+    var sb = document.getElementById('sidebar');
+    var open = sb.classList.contains('open');
     document.body.classList.toggle('sb-open', open);
+    _toggleButtons().forEach(function (b) {
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      b.setAttribute('aria-controls', 'sidebar');
+    });
+    var closeBtn = document.getElementById('sidebar-close-btn');
+    if (open && window.matchMedia('(max-width:768px)').matches) {
+      if (document.activeElement && document.activeElement !== document.body) _lastTrigger = document.activeElement;
+      if (closeBtn) closeBtn.focus();
+    } else if (!open && _lastTrigger && document.body.contains(_lastTrigger) && sb.contains(document.activeElement)) {
+      try { _lastTrigger.focus(); } catch (e) {}
+    }
   }
   window.toggleSidebar = function () {
     document.getElementById('sidebar').classList.toggle('open');
@@ -99,6 +116,13 @@
     document.getElementById('sidebar-backdrop').classList.remove('open');
     _syncBodyState();
   };
+  document.getElementById('sidebar-backdrop').addEventListener('click', window.closeSidebar);
+  document.getElementById('sidebar-close-btn').addEventListener('click', window.closeSidebar);
+  /* Esc fecha o menu (teclado) */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('open')) window.closeSidebar();
+  });
+  _syncBodyState();
 
   /* ── NOME INSTANTÂNEO (cache local — elimina o delay até o Supabase resolver) ── */
   try {
