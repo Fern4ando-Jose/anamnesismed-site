@@ -26,7 +26,7 @@
  */
 
 const Anthropic = require('@anthropic-ai/sdk');
-const { exigirAcesso } = require('./_lib/acesso');
+const { createClient } = require('@supabase/supabase-js');
 
 const MODEL = 'claude-haiku-4-5';
 const MAX_TOKENS = 1800;
@@ -155,15 +155,24 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: 'Supabase não configurado no servidor' });
   }
 
-  // 1) Autenticação + plano (pago OU trial vigente) — gate compartilhado (api/_lib/acesso.js).
-  // Trial vencido não chama a API paga: o front cai no motor local e mostra o motivo.
-  var acesso = await exigirAcesso(req, { msg: msg, exigir: 'pago_ou_trial' });
-  if (!acesso.ok) return res.status(acesso.status).json(acesso.body);
-  var userId = acesso.userId;
-  var sbAdmin = acesso.sbAdmin;
+  // 1) Autenticação — token do Supabase no header Authorization (bloqueia anônimo)
+  var authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
+  var token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
+  if (!token) return res.status(401).json({ error: msg('Não autenticado', 'No autenticado') });
+
+  var sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+  var userId = null;
+  try {
+    var au = await sbAdmin.auth.getUser(token);
+    if (au.error || !au.data || !au.data.user) return res.status(401).json({ error: msg('Sessão inválida', 'Sesión inválida') });
+    userId = au.data.user.id;
+  } catch (e) {
+    return res.status(401).json({ error: msg('Falha ao validar sessão', 'Error al validar la sesión') });
+  }
 
   // 2) Limite diário por usuário — FAIL-CLOSED (controle de custo da API paga).
-  // Acesso: plano pago ou trial vigente (checado no passo 1).
+  // Não há gate de plano: qualquer usuário logado (trial ou pro) gera HC por IA.
   // Se a tabela de uso não existir ou falhar, devolvemos 503 e NÃO chamamos o modelo
   // (o front cai no motor de narrativa local — o usuário ainda recebe a HC).
   var usageUnavailable = function () {

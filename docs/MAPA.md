@@ -18,13 +18,12 @@
 ## FASE 0 — Base e decisões (antes de qualquer funcionalidade)
 
 ### 0.1 Segurança de acesso (P0)
-- [x] **Bloqueio do cliente em `plano`/`trial_end`/`stripe_id`: JÁ EXISTE EM PRODUÇÃO** (trigger `trg_profiles_protege_billing`, migration `2026-10-01-profiles-protege-billing`, aplicada fora do repositório). Verificado em 01/10/2026 com teste revertido no banco real: quem é `pro` continua `pro`, quem é `trial` não vira `pro`, trial e `stripe_id` não mudam, DELETE bloqueado. A migration que eu havia escrito foi **retirada** (seria um 2º trigger redundante)
-- [ ] **Divergência repo × produção:** o banco tem 5 migrations que não estão no `main` (`2026-09-30-profiles-stripe-id`, `2026-10-01-profiles-protege-billing`, `2026-10-01-uso-atomico-rpc`, `2026-10-02-devolver-cota-e-search-path`, `2026-10-02-revoke-handle-new-user`) e funções `consumir_cota_ia`/`devolver_cota_ia`. Trazer esses arquivos para o repo e alinhar o código da API (que ainda usa o limite diário não atômico)
-- [x] Autenticar `create-checkout-session` (userId e e-mail vêm do token; corpo ignorado) + front envia o token
-- [x] Gate server-side compartilhado `api/_lib/acesso.js` usado por `assistente-dx`, `gerar-hc` e checkout. `gerar-hc` exige plano pago **ou trial vigente**; falha de banco = 503, não "assine"
-- [x] Rodar o agente `qa-planos-acesso` → `docs/auditoria/05-qa-fase-0.1.md` (sem P0 novo; P1 abaixo)
-- [ ] **P1 do QA:** webhook do Stripe não confere o `error` do `update` (falha de banco devolve 200 e perde a ativação/cancelamento) · limite diário não atômico (já resolvido no banco pela RPC, falta o código usar) · perfil `trial` com `trial_end` NULL
-- **Aceite:** um usuário autenticado **não** consegue se tornar `pro` via API do Supabase nem criar checkout para outro usuário. ✔ confirmado em produção (banco) e em `test/api-acesso-handlers.test.js` (checkout).
+> **Feita em outra sessão**, branch `claude/anamnese-medica-correcao-lfvmyq` (ainda **não está no `main`**): checkout autenticado, plano protegido por trigger, cota atômica (`consumir_cota_ia`), CSP e webhook robusto, com testes e migrations. Eu havia implementado o mesmo e **retirei o meu código** deste PR para não duplicar nem conflitar; ficaram só os documentos.
+- [x] Bloqueio do cliente em `plano`/`trial_end`/`stripe_id`: **ativo em produção** (trigger `trg_profiles_protege_billing`). Verificado em 01/10/2026 com teste revertido no banco real: `pro` continua `pro`, `trial` não vira `pro`, trial e `stripe_id` não mudam, DELETE bloqueado
+- [x] Checkout autenticado, cota atômica, webhook robusto — **na outra branch** (migrations já aplicadas em produção)
+- [ ] **Levar a outra branch ao `main`** (dono decide quando mergear; a minha branch não depende dela)
+- [ ] **Revisar a outra branch** com o agente `qa-planos-acesso` + `revisor-seguranca-ia` antes do merge (o QA que rodei revisou o *meu* código, não o dela). Pontos a conferir, do QA em `docs/auditoria/05-qa-fase-0.1.md`: webhook conferindo o `error` do `update`; perfil `trial` com `trial_end` NULL; `trial_end` vencido bloqueando `gerar-hc`; testes que aceitam 500/503 como sucesso
+- **Aceite:** um usuário autenticado **não** consegue se tornar `pro` via API do Supabase nem criar checkout para outro usuário. ✔ banco (confirmado); checkout: confirmar após o merge da outra branch.
 
 ### 0.2 Jurídico e LGPD (P0)
 - [ ] Reescrever termos e privacidade: IA generativa, envio à Anthropic, transferência internacional, retenção; remover "não compartilha com terceiros"
