@@ -62,7 +62,7 @@
     '',
     '  <div class="sidebar-foot">',
     '    <a href="anamnesismed-config.html" class="user-info" style="text-decoration:none">',
-    '      <div class="user-av user-avatar">?</div>',
+    '      <div class="user-av user-avatar">' + amIcon('user', 16) + '</div>',
     '      <div style="flex:1;min-width:0;overflow:hidden">',
     '        <div class="user-name" id="sidebar-user-name" data-user-name>&#x2014;</div>',
     '        <div class="user-plan pt">Teste</div>',
