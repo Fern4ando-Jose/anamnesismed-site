@@ -15,11 +15,15 @@
  * Não gasta API paga (P2): fala só com o Supabase, com a chave de serviço já
  * configurada. Não lê nem devolve dado de paciente — conta linhas de `profiles`.
  *
+ * Também roda, depois do toque, a LIMPEZA diária de dados antigos (best effort; ver `limparAntigos` em
+ * _comum.js): rate_limits (>2 dias), contas_em_exclusao (>30 dias) e stripe_events (>90 dias).
+ *
  * Proteção: exige `Authorization: Bearer <CRON_SECRET>` SEMPRE (a Vercel injeta esse
  * header nos crons quando a env CRON_SECRET está definida no projeto). Sem a env,
  * responde 503 (fail-closed). Sem proteção seria uma porta aberta para martelar o banco.
  */
 const { createClient } = require('@supabase/supabase-js');
+const { bearerConfere, descreveErro, falhaSegura, limparAntigos } = require('./_comum');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -34,8 +38,7 @@ module.exports = async (req, res) => {
     console.error(JSON.stringify({ evt: 'keepalive', ok: false, motivo: 'CRON_SECRET ausente' }));
     return res.status(503).json({ ok: false, error: 'CRON_SECRET não configurado no servidor' });
   }
-  const auth = req.headers['authorization'] || '';
-  if (auth !== 'Bearer ' + segredo) return res.status(401).json({ error: 'Não autorizado' });
+  if (!bearerConfere(req.headers['authorization'] || '', segredo)) return res.status(401).json({ error: 'Não autorizado' });
 
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -49,14 +52,17 @@ module.exports = async (req, res) => {
     const sb = createClient(url, key);
     // `head: true` traz só a contagem — nenhum dado de paciente sai do banco.
     const { error, count } = await sb.from('profiles').select('id', { count: 'exact', head: true });
-    if (error) throw new Error(error.message || 'consulta falhou');
+    if (error) throw falhaSegura('consulta falhou: ' + descreveErro(error));
     const ms = Date.now() - t0;
-    console.log(JSON.stringify({ evt: 'keepalive', ok: true, perfis: count || 0, ms: ms, ts: new Date().toISOString() }));
+    // Limpeza diária (rate_limits, contas_em_exclusao >30 d, stripe_events >90 d): best effort — nunca
+    // faz o keepalive falhar. Vive aqui para não consumir um 3º cron (o plano gratuito da Vercel limita).
+    const limpeza = await limparAntigos(sb);
+    console.log(JSON.stringify({ evt: 'keepalive', ok: true, perfis: count || 0, ms: ms, limpeza: limpeza, ts: new Date().toISOString() }));
     return res.status(200).json({ ok: true, perfis: count || 0, ms: ms });
   } catch (e) {
     const ms = Date.now() - t0;
     // Mensagem sanitizada: o erro cru do banco pode trazer detalhe interno (P3).
-    console.error(JSON.stringify({ evt: 'keepalive', ok: false, ms: ms, motivo: String(e && e.message).slice(0, 200) }));
+    console.error(JSON.stringify({ evt: 'keepalive', ok: false, ms: ms, motivo: descreveErro(e) }));
     return res.status(503).json({ ok: false, error: 'Banco não respondeu' });
   }
 };

@@ -20,7 +20,7 @@
  */
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
-const { iniciaRota, autenticar, aplicaLimite } = require('./_comum');
+const { iniciaRota, autenticar, aplicaLimite, descreveErro } = require('./_comum');
 
 module.exports = async (req, res) => {
   if (iniciaRota(req, res, 'POST')) return;
@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
     if (error) throw new Error(error.code || 'erro ao ler perfil');
     stripeId = (prof && prof.stripe_id) || null;
   } catch (e) {
-    console.error('[portal-cliente] não foi possível ler o perfil:', String(e && e.message).slice(0, 120));
+    console.error('[portal-cliente] não foi possível ler o perfil:', descreveErro(e));
     return res.status(503).json({ error: 'Não foi possível verificar sua assinatura agora. Tente novamente em instantes.' });
   }
   if (!stripeId) {

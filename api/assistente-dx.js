@@ -26,7 +26,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { iniciaRota, autenticar, devolverCota } = require('./_comum');
+const { iniciaRota, autenticar, devolverCota, aplicaLimite, descreveErro } = require('./_comum');
 
 const MODEL = 'claude-sonnet-4-6';
 // 3000 (02/08/2026, 2ª correção do dia): eu havia baixado para 1500 para caber no
@@ -279,14 +279,22 @@ module.exports = async (req, res) => {
   if (auth.error) return res.status(auth.status).json({ error: auth.error });
   const userId = auth.user.id;
 
-  // 2) Plano pago — só 'pro' tem acesso (TODO: incluir trial/segmentar médico×estudante depois)
+  // 2) Plano pago — só 'pro' tem acesso (TODO: incluir trial/segmentar médico×estudante depois).
+  // ERRO DE BANCO ≠ PLANO NÃO-PRO: perfil inexistente (PGRST116) ou plano != pro → 403; qualquer outra
+  // falha na leitura (banco fora, timeout) → 503, para o front não mostrar "faça upgrade" a quem JÁ paga.
+  const indisponivel = () => res.status(503).json({ error: msg('Não foi possível confirmar o plano agora. Tente novamente em instantes.', 'No se pudo confirmar el plan ahora. Inténtalo de nuevo en unos instantes.'), code: 'plano_indisponivel' });
   try {
     const { data: prof, error } = await sbAdmin.from('profiles').select('plano').eq('id', userId).single();
+    if (error && error.code !== 'PGRST116') {
+      console.error('[assistente-dx] leitura do plano falhou:', descreveErro(error));
+      return indisponivel();
+    }
     if (error || !prof || prof.plano !== 'pro') {
       return res.status(403).json({ error: msg('Recurso exclusivo do plano pago', 'Recurso exclusivo del plan de pago'), code: 'upgrade' });
     }
   } catch (e) {
-    return res.status(403).json({ error: msg('Não foi possível confirmar o plano', 'No se pudo confirmar el plan'), code: 'upgrade' });
+    console.error('[assistente-dx] leitura do plano exceção:', descreveErro(e));
+    return indisponivel();
   }
 
   // 3) Conteúdo mínimo — validado ANTES de descontar a cota (400 não consome limite)
@@ -296,6 +304,10 @@ module.exports = async (req, res) => {
     (hc.exameFisico && String(hc.exameFisico).trim());
   if (!temConteudo) return res.status(400).json({ error: msg('Preencha a HC antes de pedir a análise', 'Completa la HC antes de pedir el análisis') });
 
+  // 3b) Rajada curta (6/min) ANTES da cota diária: um disparo em loop não consome a cota do dia nem chama o
+  // modelo. Fail-closed (503 se `consumir_limite` não existir — migration 2026-10-03).
+  if (!(await aplicaLimite(res, sbAdmin, userId, 'assistente-dx-rajada'))) return;
+
   // 4) Limite diário por usuário — FAIL-CLOSED e ATÔMICO (controle de custo da API paga,
   // mesmo padrão do /api/gerar-hc). O incremento é feito pela RPC `consumir_cota_ia`
   // (insert ... on conflict do update ... where count < limite), então requisições
@@ -304,14 +316,14 @@ module.exports = async (req, res) => {
   try {
     const { data: usados, error: rpcErr } = await sbAdmin.rpc('consumir_cota_ia', { p_user_id: userId, p_rota: 'assistente-dx', p_limite: DAILY_LIMIT });
     if (rpcErr || typeof usados !== 'number') {
-      console.error('[ALERTA custo] RPC consumir_cota_ia falhou (fail-closed; migration aplicada?):', rpcErr ? (rpcErr.message || rpcErr.code) : 'retorno inesperado');
+      console.error('[ALERTA custo] RPC consumir_cota_ia falhou (fail-closed; migration aplicada?):', rpcErr ? descreveErro(rpcErr) : 'retorno inesperado');
       return res.status(503).json({ error: msg('Serviço de IA temporariamente indisponível', 'Servicio de IA temporalmente no disponible'), code: 'usage_unavailable' });
     }
     if (usados < 0) {
       return res.status(429).json({ error: msg('Limite diário de análises atingido. Tente novamente amanhã.', 'Límite diario de análisis alcanzado. Inténtalo de nuevo mañana.'), code: 'rate_limit' });
     }
   } catch (e) {
-    console.error('[ALERTA custo] consumir_cota_ia exceção (fail-closed):', e && e.message ? e.message : e);
+    console.error('[ALERTA custo] consumir_cota_ia exceção (fail-closed):', descreveErro(e));
     return res.status(503).json({ error: msg('Serviço de IA temporariamente indisponível', 'Servicio de IA temporalmente no disponible'), code: 'usage_unavailable' });
   }
 
@@ -366,7 +378,7 @@ module.exports = async (req, res) => {
   } catch (err) {
     // Loga só o necessário no servidor (sem dados de paciente) e devolve mensagem FIXA:
     // err.message do SDK pode conter trechos do request/detalhes internos.
-    console.error('assistente-dx error:', JSON.stringify({ status: (err && err.status) || null, name: err && err.name, msg: String(err && err.message).slice(0, 200) }));
+    console.error('assistente-dx error:', JSON.stringify({ status: (err && err.status) || null, erro: descreveErro(err) }));
     // A cota foi consumida antes da chamada: se o modelo falhou (erro/timeout/5xx do SDK),
     // devolve-a — sem mascarar o erro original (devolverCota nunca lança).
     await devolverCota(sbAdmin, userId, 'assistente-dx');

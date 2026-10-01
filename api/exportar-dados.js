@@ -19,7 +19,7 @@
  * Env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY, NEXT_PUBLIC_URL (CORS).
  */
 const { createClient } = require('@supabase/supabase-js');
-const { iniciaRota, autenticar, aplicaLimite, tabelaAusente } = require('./_comum');
+const { iniciaRota, autenticar, aplicaLimite, tabelaAusente, descreveErro, falhaSegura } = require('./_comum');
 
 const PAGINA = 1000;            // tamanho do lote (limite padrão do PostgREST)
 const MAX_LINHAS = 20000;       // teto TOTAL de linhas (todas as tabelas somadas)
@@ -35,11 +35,11 @@ async function lerTudo(sb, tabela, coluna, valor, orc) {
     const { data, error } = await sb.from(tabela).select('*').eq(coluna, valor).order('id', { ascending: true }).range(ini, ini + PAGINA - 1);
     if (error) {
       if (tabelaAusente(error)) return [];
-      throw new Error(tabela + ': ' + (error.code || 'erro de leitura'));
+      throw falhaSegura(tabela + ': ' + descreveErro(error));
     }
     const lote = data || [];
     orc.linhas += lote.length;
-    orc.bytes += JSON.stringify(lote).length;
+    orc.bytes += Buffer.byteLength(JSON.stringify(lote), 'utf8'); // bytes reais (UTF-8), não caracteres
     if (orc.linhas > MAX_LINHAS || orc.bytes > MAX_BYTES) throw new ExportGrande(tabela);
     linhas.push(...lote);
     if (lote.length < PAGINA) break;
@@ -86,7 +86,7 @@ module.exports = async (req, res) => {
         code: 'export_muito_grande',
       });
     }
-    console.error('[exportar-dados] falha ao ler dados:', String(e && e.message).slice(0, 80), 'user=' + user.id);
+    console.error('[exportar-dados] falha ao ler dados:', descreveErro(e), 'user=' + user.id);
     return res.status(500).json({ error: 'Não foi possível exportar seus dados agora. Tente novamente.' });
   }
 };

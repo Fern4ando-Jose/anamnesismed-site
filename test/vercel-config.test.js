@@ -78,6 +78,12 @@ test('rotas /api: cada função pública tem maxDuration e o cron aponta para um
     assert.ok(c && c.maxDuration >= 1 && c.maxDuration <= 60, 'maxDuration ausente/ inválido em api/' + f);
   }
   for (const k of Object.keys(cfg.functions)) assert.ok(fs.existsSync(path.join(ROOT, k)), 'functions aponta para arquivo inexistente: ' + k);
+  // Crons agendados: keepalive+limpeza e a reconciliação Stripe x banco (ambas exigem CRON_SECRET: 503 sem ele).
+  const agendados = cfg.crons.map((c) => c.path);
+  assert.ok(agendados.includes('/api/manter-banco-vivo'), 'cron do keepalive/limpeza ausente');
+  assert.ok(agendados.includes('/api/reconciliar-assinaturas'), 'cron da reconciliação ausente');
+  assert.equal(new Set(agendados).size, agendados.length, 'cron duplicado');
+  assert.equal(cfg.functions['api/stripe-webhook.js'].maxDuration, 30, 'webhook precisa de 30 s (Stripe + banco)');
   for (const cr of cfg.crons) {
     assert.ok(fs.existsSync(path.join(ROOT, cr.path.replace(/^\//, '') + '.js')), 'cron sem rota: ' + cr.path);
     assert.match(cr.schedule, /^(\S+\s+){4}\S+$/);

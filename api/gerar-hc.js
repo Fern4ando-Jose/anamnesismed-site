@@ -27,7 +27,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { iniciaRota, autenticar, devolverCota } = require('./_comum');
+const { iniciaRota, autenticar, devolverCota, aplicaLimite, descreveErro } = require('./_comum');
 
 const MODEL = 'claude-haiku-4-5';
 const MAX_TOKENS = 1800;
@@ -195,6 +195,10 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: pt ? 'Sem respostas suficientes para gerar a HC' : 'Sin respuestas suficientes para generar la HC' });
   }
 
+  // 3a) Rajada curta (6/min) ANTES da cota diária: disparo em loop não consome a cota do dia nem chama o
+  // modelo. Fail-closed (503 se `consumir_limite` não existir — migration 2026-10-03).
+  if (!(await aplicaLimite(res, sbAdmin, userId, 'gerar-hc-rajada'))) return;
+
   // 3) Limite diário por usuário — FAIL-CLOSED e ATÔMICO (controle de custo da API paga).
   // Não há gate de plano: qualquer usuário logado (trial ou pro) gera HC por IA.
   // O incremento é feito pela RPC `consumir_cota_ia` (insert ... on conflict do update ...
@@ -207,14 +211,14 @@ module.exports = async (req, res) => {
   try {
     var rpc = await sbAdmin.rpc('consumir_cota_ia', { p_user_id: userId, p_rota: 'gerar-hc', p_limite: DAILY_LIMIT });
     if (rpc.error || typeof rpc.data !== 'number') {
-      console.error('[ALERTA custo] RPC consumir_cota_ia falhou (fail-closed; migration aplicada?):', rpc.error ? (rpc.error.message || rpc.error.code) : 'retorno inesperado');
+      console.error('[ALERTA custo] RPC consumir_cota_ia falhou (fail-closed; migration aplicada?):', rpc.error ? descreveErro(rpc.error) : 'retorno inesperado');
       return usageUnavailable();
     }
     if (rpc.data < 0) {
       return res.status(429).json({ error: msg('Limite diário de gerações de HC atingido. Tente novamente amanhã.', 'Límite diario de generaciones de HC alcanzado. Inténtalo de nuevo mañana.'), code: 'rate_limit' });
     }
   } catch (e) {
-    console.error('[ALERTA custo] consumir_cota_ia exceção (fail-closed):', e && e.message ? e.message : e);
+    console.error('[ALERTA custo] consumir_cota_ia exceção (fail-closed):', descreveErro(e));
     return usageUnavailable();
   }
 
@@ -258,7 +262,7 @@ module.exports = async (req, res) => {
   } catch (err) {
     // Loga só o necessário no servidor (sem dados de paciente) e devolve mensagem FIXA:
     // err.message do SDK pode conter trechos do request/detalhes internos.
-    console.error('gerar-hc error:', JSON.stringify({ status: (err && err.status) || null, name: err && err.name, msg: String(err && err.message).slice(0, 200) }));
+    console.error('gerar-hc error:', JSON.stringify({ status: (err && err.status) || null, erro: descreveErro(err) }));
     // A cota foi consumida antes da chamada: se o modelo falhou (erro/timeout/5xx do SDK),
     // devolve-a — sem mascarar o erro original (devolverCota nunca lança).
     await devolverCota(sbAdmin, userId, 'gerar-hc');

@@ -15,7 +15,7 @@
 
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
-const { iniciaRota, autenticar, aplicaLimite, contaEmExclusao, STATUS_VIVOS } = require('./_comum');
+const { iniciaRota, autenticar, aplicaLimite, contaEmExclusao, STATUS_VIVOS, descreveErro } = require('./_comum');
 
 module.exports = async (req, res) => {
   // CORS restrito a NEXT_PUBLIC_URL (fail-closed), no-store, preflight e método — ver _comum.js.
@@ -58,7 +58,7 @@ module.exports = async (req, res) => {
       return res.status(409).json({ error: 'Esta conta está em processo de exclusão e não pode assinar.', code: 'conta_em_exclusao' });
     }
   } catch (e) {
-    console.error('[create-checkout-session] não foi possível ler o perfil/marca de exclusão:', String(e && e.message).slice(0, 120));
+    console.error('[create-checkout-session] não foi possível ler o perfil/marca de exclusão:', descreveErro(e));
     return res.status(503).json({ error: 'Não foi possível verificar sua assinatura agora. Tente novamente em instantes.' });
   }
 

@@ -18,9 +18,14 @@ function setup(opts) {
   const supa = {
     createClient: () => ({
       auth: { getUser: async () => ({ data: { user: { id: 'u1' } }, error: null }) },
-      from: () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: { plano: opts.plano || 'pro' }, error: null }) }) }) }),
+      from: () => ({ select: () => ({ eq: () => ({ single: async () => {
+        if (opts.planoThrow) throw new Error('rede');
+        if (opts.planoErro) return { data: null, error: opts.planoErro };
+        return { data: { plano: opts.plano || 'pro' }, error: null };
+      } }) }) }),
       rpc: async (fn, args) => {
         state.rpcCalls.push({ fn, args });
+        if (fn === 'consumir_limite') return opts.limite || { data: 0, error: null }; // rajada curta (6/min)
         if (fn === 'devolver_cota_ia') { if (opts.rpcDevolverErro) throw new Error('rede'); return { data: 0, error: null }; }
         return opts.rpc || { data: 1, error: null };
       },
@@ -116,4 +121,42 @@ test('falha na devolução (RPC lança) não mascara o erro original', async () 
   await silencia(() => handler(req(bodyOk), res));
   assert.equal(res.code, 502);
   assert.equal(res.body.error, 'Erro ao gerar a análise');
+});
+
+// ── M6: erro de banco ≠ plano não-pro ─────────────────────────────────────────
+test('erro de banco ao ler o plano → 503 plano_indisponivel (não 403 upgrade), sem cota nem modelo', async () => {
+  for (const opts of [{ planoErro: { code: '57014' } }, { planoThrow: true }]) {
+    const { handler, state } = setup(opts);
+    const res = makeRes();
+    await silencia(() => handler(req(bodyOk), res));
+    assert.equal(res.code, 503, JSON.stringify(opts));
+    assert.equal(res.body.code, 'plano_indisponivel');
+    assert.equal(state.rpcCalls.length, 0);
+    assert.equal(state.streams.length, 0);
+  }
+});
+
+test('perfil inexistente (PGRST116) continua 403 upgrade', async () => {
+  const { handler } = setup({ planoErro: { code: 'PGRST116' } });
+  const res = makeRes();
+  await handler(req(bodyOk), res);
+  assert.equal(res.code, 403);
+  assert.equal(res.body.code, 'upgrade');
+});
+
+test('rajada estourada → 429 + Retry-After, sem cota diária nem modelo; limitador ausente → 503', async () => {
+  let { handler, state } = setup({ limite: { data: 17, error: null } });
+  let res = makeRes();
+  await handler(req(bodyOk), res);
+  assert.equal(res.code, 429);
+  assert.equal(res.headers['Retry-After'], '17');
+  assert.equal(state.rpcCalls.filter((c) => c.fn === 'consumir_cota_ia').length, 0);
+  assert.equal(state.streams.length, 0);
+  assert.equal(state.rpcCalls.find((c) => c.fn === 'consumir_limite').args.p_acao, 'assistente-dx-rajada');
+
+  ({ handler, state } = setup({ limite: { data: null, error: { code: '42883' } } }));
+  res = makeRes();
+  await silencia(() => handler(req(bodyOk), res));
+  assert.equal(res.code, 503);
+  assert.equal(state.streams.length, 0);
 });

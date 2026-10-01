@@ -19,6 +19,7 @@ function setup(opts) {
       auth: { getUser: async () => (opts.user === null ? { data: null, error: { message: 'bad' } } : { data: { user: { id: 'u1' } }, error: null }) },
       rpc: async (fn, args) => {
         state.rpcCalls.push({ fn, args });
+        if (fn === 'consumir_limite') return opts.limite || { data: 0, error: null }; // rajada curta (6/min)
         if (fn === 'devolver_cota_ia') { if (opts.rpcDevolverErro) throw new Error('rede'); return { data: 0, error: null }; }
         return opts.rpc || { data: 1, error: null };
       },
@@ -93,9 +94,13 @@ test('sucesso → 200 com narrativa; RPC chamada com rota e limite', async () =>
   await handler(req(bodyOk), res);
   assert.equal(res.code, 200);
   assert.equal(res.body.narrativa, 'Paciente feminino.');
-  assert.equal(state.rpcCalls[0].fn, 'consumir_cota_ia');
-  assert.equal(state.rpcCalls[0].args.p_rota, 'gerar-hc');
-  assert.equal(state.rpcCalls[0].args.p_user_id, 'u1');
+  const cota = state.rpcCalls.filter((c) => c.fn === 'consumir_cota_ia');
+  assert.equal(cota.length, 1);
+  assert.equal(cota[0].args.p_rota, 'gerar-hc');
+  assert.equal(cota[0].args.p_user_id, 'u1');
+  const rajada = state.rpcCalls.find((c) => c.fn === 'consumir_limite');
+  assert.ok(rajada && rajada.args.p_acao === 'gerar-hc-rajada' && rajada.args.p_janela_seg === 60, 'rajada curta consumida antes da cota diária');
+  assert.ok(state.rpcCalls.indexOf(rajada) < state.rpcCalls.findIndex((c) => c.fn === 'consumir_cota_ia'));
 });
 
 test('tipos inválidos em demografia/motivos não quebram e são limitados no prompt', async () => {
@@ -190,4 +195,23 @@ test('limite atingido (429) e RPC de cota indisponível NÃO devolvem nada (nada
     await silencia(() => handler(req(bodyOk), res));
     assert.equal(state.rpcCalls.filter((c) => c.fn === 'devolver_cota_ia').length, 0);
   }
+});
+
+test('rajada estourada (consumir_limite > 0) → 429 + Retry-After, sem gastar a cota diária nem chamar o modelo', async () => {
+  const { handler, state } = setup({ limite: { data: 42, error: null } });
+  const res = makeRes();
+  await handler(req(bodyOk), res);
+  assert.equal(res.code, 429);
+  assert.equal(res.headers['Retry-After'], '42');
+  assert.equal(state.rpcCalls.filter((c) => c.fn === 'consumir_cota_ia').length, 0);
+  assert.equal(state.created.length, 0);
+});
+
+test('limitador de rajada indisponível → 503 fail-closed, sem cota nem modelo', async () => {
+  const { handler, state } = setup({ limite: { data: null, error: { code: '42883' } } });
+  const res = makeRes();
+  await silencia(() => handler(req(bodyOk), res));
+  assert.equal(res.code, 503);
+  assert.equal(state.rpcCalls.filter((c) => c.fn === 'consumir_cota_ia').length, 0);
+  assert.equal(state.created.length, 0);
 });

@@ -15,7 +15,7 @@ process.env.NEXT_PUBLIC_URL = 'https://app.example.com';
 //       authDelErr
 function setup(opts) {
   opts = opts || {};
-  const st = { ops: [], cancelled: [], authDeleted: [], marcas: [], rpcs: [], expiradas: [], ordem: [] };
+  const st = { ops: [], cancelled: [], authDeleted: [], marcas: [], rpcs: [], expiradas: [], ordem: [], customersDel: [] };
   const user = opts.user === null ? null : { id: 'u1', email: 'a@b.com' };
   const supa = {
     createClient: () => ({
@@ -36,6 +36,7 @@ function setup(opts) {
       list: async () => ({ data: opts.subs || [] }),
       cancel: async (id) => { if (opts.cancelErr) throw opts.cancelErr; st.ordem.push('cancela'); st.cancelled.push(id); return {}; },
     },
+    customers: { del: async (id) => { if (opts.delCustomerErr) throw opts.delCustomerErr; st.ordem.push('customer-del'); st.customersDel.push(id); return { deleted: true }; } },
     checkout: { sessions: {
       list: async () => ({ data: opts.abertas || [] }),
       expire: async (id) => { st.expiradas.push(id); return {}; },
@@ -101,8 +102,10 @@ test('falha ao cancelar no Stripe → 502 e NADA é apagado', async () => {
   const res = makeRes();
   await quieto(() => handler(req({ confirmar: true }), res));
   assert.equal(res.code, 502);
-  assert.equal(st.ops.length, 0);
+  assert.deepEqual(st.ops.map((o) => o.tabela), ['contas_em_exclusao'], 'nenhum dado apagado; só a marca de exclusão é REVERTIDA (M3)');
+  assert.equal(st.ops[0].val, 'u1');
   assert.equal(st.authDeleted.length, 0);
+  assert.equal(st.customersDel.length, 0);
 });
 
 test('customer inexistente no Stripe (resource_missing) → segue e apaga', async () => {
@@ -128,7 +131,7 @@ test('stripe_id presente e STRIPE_SECRET_KEY ausente → 500 e nada apagado', as
     const res = makeRes();
     await quieto(() => handler(req({ confirmar: true }), res));
     assert.equal(res.code, 500);
-    assert.equal(st.ops.length, 0);
+    assert.deepEqual(st.ops.map((o) => o.tabela), ['contas_em_exclusao'], 'só a reversão da marca');
   } finally { process.env.STRIPE_SECRET_KEY = guardado; }
 });
 
@@ -137,7 +140,7 @@ test('falha ao ler o perfil → 503 fail-closed, nada apagado', async () => {
   const res = makeRes();
   await quieto(() => handler(req({ confirmar: true }), res));
   assert.equal(res.code, 503);
-  assert.equal(st.ops.length, 0);
+  assert.deepEqual(st.ops.map((o) => o.tabela), ['contas_em_exclusao'], 'só a reversão da marca');
 });
 
 test('erro real ao apagar uma tabela → 500 e NÃO apaga o login (dá para repetir)', async () => {
@@ -237,4 +240,36 @@ test('corpo sem confirmação não gasta o limite', async () => {
   const { handler, st } = setup();
   await handler(req({}), makeRes());
   assert.equal(st.rpcs.length, 0);
+});
+
+// ── M2: apaga o customer no Stripe (best effort) ──────────────────────────────
+test('após cancelar as assinaturas apaga o customer no Stripe, antes de apagar os dados', async () => {
+  const { handler, st } = setup({ stripeId: 'cus_1', subs: [{ id: 'sub_a', status: 'active' }] });
+  const res = makeRes();
+  await quieto(() => handler(req({ confirmar: true }), res));
+  assert.equal(res.code, 200);
+  assert.deepEqual(st.customersDel, ['cus_1']);
+  assert.ok(st.ordem.indexOf('cancela') < st.ordem.indexOf('customer-del'));
+  assert.ok(st.ordem.indexOf('customer-del') < st.ordem.indexOf('del:historias_clinicas'));
+});
+
+test('falha ao apagar o customer é só log (200) e não vaza a mensagem do SDK', async () => {
+  const err = new Error('SEGREDO@x.com'); err.type = 'StripeAPIError';
+  const { handler, st } = setup({ stripeId: 'cus_1', delCustomerErr: err });
+  const res = makeRes();
+  const linhas = [];
+  const e = console.error, l = console.log; console.error = (...a) => linhas.push(a.join(' ')); console.log = () => {};
+  try { await handler(req({ confirmar: true }), res); } finally { console.error = e; console.log = l; }
+  assert.equal(res.code, 200);
+  assert.ok(st.authDeleted.length === 1);
+  assert.ok(linhas.some((x) => x.includes('customer do Stripe não apagado')));
+  assert.ok(!linhas.join('\n').includes('SEGREDO'));
+});
+
+test('falha DEPOIS de apagar dados (ex.: tabela) mantém a marca de exclusão (não reverte)', async () => {
+  const { handler, st } = setup({ deleteErr: { gerar_hc_usage: { code: '57014' } } });
+  const res = makeRes();
+  await quieto(() => handler(req({ confirmar: true }), res));
+  assert.equal(res.code, 500);
+  assert.ok(!st.ops.some((o) => o.tabela === 'contas_em_exclusao'));
 });
