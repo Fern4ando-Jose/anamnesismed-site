@@ -26,7 +26,7 @@
   if(p.get('novo')||p.get('motivo')||p.get('hc'))document.documentElement.classList.add('deep-hc');
 }catch(e){}})();
 </script>
-<script src="am-icons.js?v=f6cfe7c9"></script>
+<script src="am-icons.js?v=3383aef7"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -270,6 +270,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 .score-table tr:nth-child(even) td{background:var(--cream)}
 .score-table tr:last-child td{border-bottom:none}
 .score-table td:first-child{font-weight:700;color:var(--primary);font-size:12px}
+/* tabelas largas rolam na horizontal dentro do próprio bloco (nunca cortam o conteúdo) */
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:10px;max-width:100%}
+.tbl-scroll>table{margin-bottom:0}
 .score-note{background:rgba(13,148,136,.08);border-left:3px solid var(--secondary);border-radius:0 7px 7px 0;padding:9px 12px;font-size:12px;line-height:1.6;margin-bottom:12px;color:var(--primary-dark)}
 .score-note strong{display:block;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px;opacity:.7}
 .ibox{border-left:3px solid;border-radius:0 7px 7px 0;padding:10px 12px;margin-bottom:10px;font-size:12px;line-height:1.65}
@@ -364,6 +367,9 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 }
 .fab-item:hover .fab-label{opacity:1;transform:none}
 .fab-item{display:flex;align-items:center;gap:8px}
+.conduta-btn [data-am-icon]{vertical-align:-3px;margin-right:6px}
+/* celular: PDF e Salvar já estão no cabeçalho da HC e (PDF) na barra inferior — o FAB fica só com Referências e não cobre campos */
+@media(max-width:768px){.fab-item-sec{display:none}}
 
 /* ── MOBILE RESPONSIVENESS ── */
 @media(max-width:768px){
@@ -662,10 +668,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
         </div>
         <div style="margin-left:auto;display:flex;gap:8px">
           <button class="conduta-btn conduta-btn-pdf" onclick="exportPDF()" style="padding:7px 14px;font-size:12px">
-            📄 PDF
+            <span data-am-icon="file" data-am-size="16" aria-hidden="true"></span> PDF
           </button>
           <button class="conduta-btn conduta-btn-secondary" onclick="saveHC()" style="padding:7px 14px;font-size:12px">
-            💾 <span class="pt">Salvar</span><span class="es">Guardar</span>
+            <span data-am-icon="save" data-am-size="16" aria-hidden="true"></span> <span class="pt">Salvar</span><span class="es">Guardar</span>
           </button>
         </div>
       </div>
@@ -1831,13 +1837,13 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
             </div>
             <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
               <button class="conduta-btn conduta-btn-primary" onclick="exportPDF()">
-                📄 <span class="pt">Exportar PDF completo</span><span class="es">Exportar PDF completo</span>
+                <span data-am-icon="file" data-am-size="16" aria-hidden="true"></span> <span class="pt">Exportar PDF completo</span><span class="es">Exportar PDF completo</span>
               </button>
               <button class="conduta-btn conduta-btn-secondary" onclick="saveHC()">
-                💾 <span class="pt">Salvar HC</span><span class="es">Guardar HC</span>
+                <span data-am-icon="save" data-am-size="16" aria-hidden="true"></span> <span class="pt">Salvar HC</span><span class="es">Guardar HC</span>
               </button>
               <button class="conduta-btn conduta-btn-pdf" onclick="newHC()">
-                ➕ <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
+                <span data-am-icon="plus" data-am-size="16" aria-hidden="true"></span> <span class="pt">Nova HC</span><span class="es">Nueva HC</span>
               </button>
             </div>
           </div>
@@ -1851,15 +1857,15 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 
 <!-- FLOATING ACTION BUTTON (visível só na tela HC) -->
 <div class="fab-wrap" id="fab-wrap">
-  <div class="fab-item">
+  <div class="fab-item fab-item-sec">
     <span class="fab-label pt">Imprimir / PDF</span>
     <span class="fab-label es">Imprimir / PDF</span>
-    <button type="button" class="fab-btn fab-secondary" onclick="exportPDF()" title="PDF" aria-label="Imprimir / PDF"><span aria-hidden="true">📄</span></button>
+    <button type="button" class="fab-btn fab-secondary" onclick="exportPDF()" title="PDF" aria-label="Imprimir / PDF"><span data-am-icon="file" data-am-size="22" aria-hidden="true"></span></button>
   </div>
-  <div class="fab-item">
+  <div class="fab-item fab-item-sec">
     <span class="fab-label pt">Salvar HC</span>
     <span class="fab-label es">Guardar HC</span>
-    <button type="button" class="fab-btn fab-secondary" onclick="saveHC()" title="Salvar / Guardar" aria-label="Salvar HC / Guardar HC"><span aria-hidden="true">💾</span></button>
+    <button type="button" class="fab-btn fab-secondary" onclick="saveHC()" title="Salvar / Guardar" aria-label="Salvar HC / Guardar HC"><span data-am-icon="save" data-am-size="22" aria-hidden="true"></span></button>
   </div>
   <div class="fab-item">
     <span class="fab-label pt">Referências do motivo</span>
@@ -1889,7 +1895,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
   </div>
 </nav>
 <script src="anamnesismed-motivos.js?v=f48a3410"></script>
-<script src="anamnesismed-guide.js?v=8975a4a0"></script>
+<script src="anamnesismed-guide.js?v=6ad07d43"></script>
 <script src="anamnesismed-guide-es.js?v=4b87efd7"></script>
 <script>
 // ── LANG ──────────────────────────────────────────────

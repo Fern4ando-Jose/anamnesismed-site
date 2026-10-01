@@ -162,7 +162,7 @@ function bi(pt, es){
 
 function buildMnemonicsHTML(gc){
   if(!gc||!gc.mnemonics||!gc.mnemonics.length)
-    return '<div class="ibox ibox-primary"><strong>Mnemônicas</strong><span class="pt">Nenhuma mnemônica cadastrada para este motivo ainda.</span><span class="es">Ninguna mnemotécnica registrada aún.</span></div>';
+    return '<div class="ibox ibox-primary"><strong class="pt">Mnemônicas</strong><strong class="es">Mnemotécnicas</strong><span class="pt">Nenhuma mnemônica cadastrada para este motivo ainda.</span><span class="es">Ninguna mnemotécnica registrada aún.</span></div>';
   var html='';
   gc.mnemonics.forEach(function(m){
     html+='<div class="mnem-card"><div class="mnem-card-head"><span class="mnem-kw">'+bi(m.kw,m.kwEs)+'</span><span class="mnem-name">'+bi(m.name,m.nameEs)+'</span></div>';
@@ -177,7 +177,7 @@ function buildMnemonicsHTML(gc){
 
 function buildManobrasHTML(gc){
   if(!gc||!gc.manobras||!gc.manobras.length)
-    return '<div class="ibox ibox-primary"><strong>Manobras Semiológicas</strong><span class="pt">Nenhuma manobra cadastrada para este motivo ainda.</span><span class="es">Ninguna maniobra registrada aún.</span></div>';
+    return '<div class="ibox ibox-primary"><strong class="pt">Manobras Semiológicas</strong><strong class="es">Maniobras Semiológicas</strong><span class="pt">Nenhuma manobra cadastrada para este motivo ainda.</span><span class="es">Ninguna maniobra registrada aún.</span></div>';
   var html='';
   gc.manobras.forEach(function(m,i){
     html+='<div class="acc" id="acc-m-'+i+'">';
@@ -197,7 +197,7 @@ function buildManobrasHTML(gc){
 
 function buildSinaisHTML(gc){
   if(!gc||!gc.sinais||!gc.sinais.length)
-    return '<div class="ibox ibox-secondary"><strong>Sinais Clássicos</strong><span class="pt">Nenhum sinal cadastrado para este motivo ainda.</span></div>';
+    return '<div class="ibox ibox-secondary"><strong class="pt">Sinais Clássicos</strong><strong class="es">Signos Clásicos</strong><span class="pt">Nenhum sinal cadastrado para este motivo ainda.</span><span class="es">Ningún signo registrado para este motivo aún.</span></div>';
   var html='<div class="sign-grid">';
   gc.sinais.forEach(function(s){
     html+='<div class="sign-card"><div class="sign-name">'+bi(s.name,s.nameEs)+'</div>';
@@ -210,34 +210,34 @@ function buildSinaisHTML(gc){
 
 function buildDDxHTML(gc){
   if(!gc||!gc.ddx||!gc.ddx.length)
-    return '<div class="ibox ibox-primary"><strong pt>Diagnóstico Diferencial</strong><span class="pt">Nenhum DDx cadastrado para este motivo.</span></div>';
-  var html='<table class="ddx-table"><thead><tr><th pt>Diagnóstico</th><th es>Diagnóstico</th><th pt>A favor</th><th es>A favor</th><th pt>Contra</th><th es>En contra</th></tr></thead><tbody>';
+    return '<div class="ibox ibox-primary"><strong class="pt">Diagnóstico Diferencial</strong><strong class="es">Diagnóstico Diferencial</strong><span class="pt">Nenhum DDx cadastrado para este motivo.</span><span class="es">Ningún DDx registrado para este motivo.</span></div>';
+  var html='<div class="tbl-scroll"><table class="ddx-table"><thead><tr><th>Diagnóstico</th><th>A favor</th><th><span class="pt">Contra</span><span class="es">En contra</span></th></tr></thead><tbody>';
   gc.ddx.forEach(function(d){
     // d = [diag, aFavor, contra, diagEs?, aFavorEs?, contraEs?]
     html+='<tr><td>'+bi(d[0],d[3])+'</td><td><span class="ddx-inc">✓</span> '+bi(d[1],d[4])+'</td><td><span class="ddx-exc">✗</span> '+bi(d[2],d[5])+'</td></tr>';
   });
-  return html+'</tbody></table>';
+  return html+'</tbody></table></div>';
 }
 
 function buildEscalasHTML(gc){
   if(!gc||!gc.escalas||!gc.escalas.length)
-    return '<div class="ibox ibox-secondary"><strong>Escalas</strong><span class="pt">Nenhuma escala cadastrada para este motivo ainda.</span></div>';
+    return '<div class="ibox ibox-secondary"><strong>Escalas</strong> <span class="pt">Nenhuma escala cadastrada para este motivo ainda.</span><span class="es">Ninguna escala registrada para este motivo aún.</span></div>';
   var html='';
   gc.escalas.forEach(function(e){
     html+='<div class="score-title">'+bi(e.title,e.titleEs)+'</div>';
-    html+='<table class="score-table"><thead><tr>';
+    html+='<div class="tbl-scroll"><table class="score-table"><thead><tr>';
     e.headers.forEach(function(h,hi){var hEs=(e.headersEs&&e.headersEs[hi]);html+='<th>'+bi(h,hEs)+'</th>';});
     html+='</tr></thead><tbody>';
     e.rows.forEach(function(r,ri){html+='<tr>';r.forEach(function(c,ci){var cEs=(e.rowsEs&&e.rowsEs[ri]&&e.rowsEs[ri][ci]);html+='<td>'+bi(c,cEs)+'</td>';});html+='</tr>';});
-    html+='</tbody></table>';
-    if(e.note)html+='<div class="score-note"><strong pt>Interpretação</strong><strong es>Interpretación</strong>'+bi(e.note,e.noteEs)+'</div>';
+    html+='</tbody></table></div>';
+    if(e.note)html+='<div class="score-note"><strong class="pt">Interpretação</strong><strong class="es">Interpretación</strong>'+bi(e.note,e.noteEs)+'</div>';
   });
   return html;
 }
 
 function buildCondutaHTML(gc){
   if(!gc||!gc.conduta)
-    return '<div class="ibox ibox-primary"><strong>Conduta</strong><span class="pt">Nenhuma conduta cadastrada para este motivo ainda.</span></div>';
+    return '<div class="ibox ibox-primary"><strong class="pt">Conduta</strong><strong class="es">Conducta</strong><span class="pt">Nenhuma conduta cadastrada para este motivo ainda.</span><span class="es">Ninguna conducta registrada para este motivo aún.</span></div>';
   var c=gc.conduta,html='';
   if(c.steps&&c.steps.length){
     html+='<div class="score-title pt">Passos da abordagem</div><div class="score-title es">Pasos del abordaje</div>';
