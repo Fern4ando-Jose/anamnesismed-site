@@ -8,12 +8,13 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AnamnesísMed — Política de Privacidade</title>
-<meta name="description" content="Política de privacidade do AnamnesísMed: como tratamos seus dados e os dados de pacientes.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AnamnesísMed — Política de Privacidad</title>
+<meta name="description" content="Política de privacidad de AnamnesísMed: cómo tratamos tus datos y los datos de pacientes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -77,6 +78,7 @@ nav{
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <nav>
   <a href="anamnesismed-landing.html" class="nav-logo">Anamnesis<span>Med</span></a>
@@ -88,7 +90,7 @@ nav{
   </div>
 </nav>
 
-<div class="page-wrap">
+<main class="page-wrap" id="main" tabindex="-1">
 
   <div class="doc-header">
     <div class="doc-badge pt">🔒 Privacidade dos Dados</div>
@@ -225,11 +227,14 @@ nav{
     </div>
   </div>
 
-</div>
+</main>
 
 <script>
 function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Política de Privacidad", "d": "Política de privacidad de AnamnesísMed: cómo tratamos tus datos y los datos de pacientes."}, "pt": {"t": "AnamnesísMed — Política de Privacidade", "d": "Política de privacidade do AnamnesísMed: como tratamos seus dados e os dados de pacientes."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(l){
+  amSetMeta(l);
   amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   document.getElementById('btn-es').classList.toggle('active',l==='es');

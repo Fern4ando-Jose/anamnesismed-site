@@ -3,7 +3,7 @@
  * ─────────────────────────────────────────────────────────────────────────
  * Arquivo: supabase-integration.js
  * Inclui em TODOS os HTMLs antes do </body>:
- *   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ *   <script src="/vendor/supabase-2.110.2.js"></script>   (hospedado no próprio domínio; v2.110.2)
  *   <script src="supabase-integration.js"></script>
  *
  * CONFIGURAR as duas linhas abaixo com suas chaves do Supabase:

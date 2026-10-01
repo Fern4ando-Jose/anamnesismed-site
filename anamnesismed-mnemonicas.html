@@ -11,11 +11,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
 <script src="am-icons.js?v=f6cfe7c9"></script>
 <script src="nav-back.js?v=eeac804b"></script>
-<title>Mnemônicas & Manobras — AnamnesisMed</title>
+<title>AnamnesísMed — Mnemotécnicas y Maniobras</title>
+<meta name="description" content="Mnemotécnicas y maniobras semiológicas para la historia clínica en AnamnesísMed.">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
@@ -88,12 +90,14 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
 @media(max-width:600px){.acc-findings{grid-template-columns:1fr}.mnem-kw{font-size:20px}}
 @media(max-width:768px){.wrap{margin-left:0;padding:16px 14px 80px}.hamburger{display:flex}}
 </style>
-<link rel="stylesheet" href="anamnesismed-theme.css?v=d829a549">
+<link rel="stylesheet" href="anamnesismed-theme.css?v=1c9b2bef">
+<link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
 <link rel="stylesheet" href="sidebar.css?v=466ffc2c">
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 <div id="sidebar-root"></div>
-<div class="wrap">
+<main class="wrap" id="main" tabindex="-1">
   <div class="topbar">
     <div class="topbar-left">
       <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
@@ -119,12 +123,15 @@ h1{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.5px;
   <div class="filter-row" id="filters"></div>
 
   <div id="content"></div>
-</div>
+</main>
 
 <script>
 var LANG = 'es';
 function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Mnemotécnicas y Maniobras", "d": "Mnemotécnicas y maniobras semiológicas para la historia clínica en AnamnesísMed."}, "pt": {"t": "AnamnesísMed — Mnemônicas e Manobras", "d": "Mnemônicas e manobras semiológicas para a história clínica no AnamnesísMed."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(l){
+  amSetMeta(l);
   amLangA11y(l);
   LANG = l;
   document.body.classList.toggle('lang-es', l==='es');

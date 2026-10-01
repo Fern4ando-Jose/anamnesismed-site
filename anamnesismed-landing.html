@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AnamnesísMed — Historia clínica completa para médicos y estudiantes</title>
 <meta name="description" content="Herramienta de historia clínica completa para médicos y estudiantes. Mnemotécnicas, maniobras semiológicas, escalas y diagnóstico diferencial. Gratis para empezar.">
 <link rel="canonical" href="https://anamnesismed.com/">
@@ -28,7 +28,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="anamnesismed-theme.css?v=d829a549">
+<link rel="stylesheet" href="anamnesismed-theme.css?v=1c9b2bef">
+<link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%}
@@ -300,6 +301,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <nav id="nav">
   <a href="index.html" class="nav-logo">Anamnesis<span>Med</span></a>
@@ -341,6 +343,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   <a href="anamnesismed-auth.html" class="mob-cta-s es">Empezar gratis →</a>
 </div>
 
+<main id="main" tabindex="-1">
 <!-- HERO -->
 <section class="hero" style="padding:0">
   <div class="hero-left">
@@ -611,6 +614,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
 </div>
 
 <!-- FOOTER -->
+</main>
 <footer>
   <div class="foot-grid">
     <div>
@@ -709,6 +713,6 @@ function setLang(l){
 })();
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=bd481f13"></script>
+<script src="supabase-integration.js?v=ff8bced3"></script>
 </body>
 </html>

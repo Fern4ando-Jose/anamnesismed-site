@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AnamnesísMed — HC Completa</title>
 <meta name="description" content="Armado de la historia clínica (HC) con guía AEA, mnemotécnicas, maniobras y narrativa automática en AnamnesísMed.">
 <meta name="robots" content="noindex, nofollow">
@@ -461,17 +461,19 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 @keyframes iaDxShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .ia-dx-disclaimer{margin-top:18px;font-size:12px;line-height:1.45;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 </style>
-  <link rel="stylesheet" href="anamnesismed-theme.css?v=d829a549">
+  <link rel="stylesheet" href="anamnesismed-theme.css?v=1c9b2bef">
+<link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
 <link rel="stylesheet" href="sidebar.css?v=466ffc2c">
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
 <div id="sidebar-root"></div>
 
 <!-- MAIN -->
-<div class="main">
+<main class="main" id="main" tabindex="-1">
   <!-- TOPBAR -->
   <header class="topbar" id="topbar">
     <button type="button" class="hamburger" onclick="toggleSidebar()" aria-label="Menu" aria-expanded="false" aria-controls="sidebar"><span data-am-icon="menu" data-am-size="22"></span></button>
@@ -1734,7 +1736,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div><!-- /hc-sections -->
   </div><!-- /hc-screen -->
 
-</div><!-- /main -->
+</main><!-- /main -->
 
 <!-- FLOATING ACTION BUTTON (visível só na tela HC) -->
 <div class="fab-wrap" id="fab-wrap">
@@ -1781,7 +1783,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
 <script>
 // ── LANG ──────────────────────────────────────────────
 function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — HC Completa", "d": "Armado de la historia clínica (HC) con guía AEA, mnemotécnicas, maniobras y narrativa automática en AnamnesísMed."}, "pt": {"t": "AnamnesísMed — HC Completa", "d": "Montagem da história clínica (HC) com guia AEA, mnemônicas, manobras e narrativa automática no AnamnesísMed."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(l){
+  amSetMeta(l);
   amLangA11y(l);
   document.documentElement.setAttribute('data-lang',l);
   var _slEs = document.getElementById('slang-es'); if(_slEs) _slEs.classList.toggle('active',l==='es');
@@ -2819,7 +2824,7 @@ function openRefMotivo(){
 <script src="anamnesismed-narrativa.js?v=86e59da0"></script>
 <script src="anamnesismed-pdf.js?v=a96326db"></script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=bd481f13"></script>
+<script src="supabase-integration.js?v=ff8bced3"></script>
 <script src="anamnesismed-assistente.js?v=88810182"></script>
 <script>
 // ── INTEGRAÇÃO SUPABASE: acesso real, dados do usuário, onboarding ──

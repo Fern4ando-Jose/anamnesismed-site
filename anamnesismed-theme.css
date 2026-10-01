@@ -16,6 +16,13 @@
   --pulse:#FF5C49;
   --signal:#15B27A;        /* verde-sinal (normal / positivo) */
   --muted:#5A7079;
+  --teal-text:#0A6A75;       /* teal p/ TEXTO sobre fundo CLARO (>= 5:1 em #EAF0F2) */
+  --teal-on-dark:#5ED6E3;    /* teal p/ TEXTO sobre superfície ESCURA (#0A1A24: 9,4:1) — nunca use --teal-text no escuro (2,8:1) */
+  --text-on-dark:rgba(255,255,255,.78);   /* texto secundário sobre escuro (>= 7:1) */
+  --muted-on-dark:#9DB6BD;   /* rótulos discretos sobre escuro (>= 7:1) */
+  --primary-deep:#096873;    /* hover de botões preenchidos */
+  --r:10px;--r-lg:16px;
+  --safe-t:env(safe-area-inset-top,0px);--safe-r:env(safe-area-inset-right,0px);--safe-b:env(safe-area-inset-bottom,0px);--safe-l:env(safe-area-inset-left,0px);
   --line:rgba(10,26,36,0.09);
   --line-md:rgba(10,26,36,0.16);
   --serif:'Space Grotesk',system-ui,sans-serif;   /* slot "display" das páginas */
@@ -39,9 +46,7 @@ h1,h2,h3,h4{font-family:var(--serif);letter-spacing:-.3px}
 :focus-visible{outline:2px solid #0B7C88;outline-offset:2px}
 .sidebar :focus-visible,.cta-banner :focus-visible,footer :focus-visible{outline-color:#5ED6E3}
 input:focus-visible,select:focus-visible,textarea:focus-visible{outline-offset:1px}
-/* Toast/mensagem acessível reutilizável (amNotify em supabase-integration.js) */
-.am-toast-wrap{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:8px;width:min(92vw,420px);pointer-events:none}
-.am-toast{pointer-events:auto;background:var(--ink);color:#fff;border-left:4px solid var(--primary);border-radius:10px;padding:12px 14px;font:500 14px/1.45 var(--sans);box-shadow:0 8px 28px rgba(10,26,36,.35);display:flex;gap:10px;align-items:flex-start}
-.am-toast.error{border-left-color:var(--accent)}
-.am-toast button{margin-left:auto;background:none;border:0;color:#fff;font-size:16px;line-height:1;cursor:pointer;padding:0 2px}
-.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Base mobile/toque: sem zoom de texto no giro do aparelho, sem atraso de 300ms nem flash cinza ao tocar */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+a,button,[role=button],[role=tab],summary,label,input,select,textarea{touch-action:manipulation;-webkit-tap-highlight-color:rgba(15,163,177,.18)}
+/* Componentes compartilhados (botões, campos, cards, chips, toast, spinner, skip-link, .sr-only): anamnesismed-components.css */

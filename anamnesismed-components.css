@@ -1,0 +1,59 @@
+/* ════════════════════════════════════════════════════════════
+   AnamnesísMed · Componentes compartilhados
+   Carregado por TODAS as páginas (depois de anamnesismed-theme.css quando existe).
+   Fonte única de: skip-link, .sr-only, botões (.am-btn), campos (.am-input/.am-label),
+   cards (.am-card), chips (.am-chip), spinner (.am-spinner) e toast (.am-toast).
+   Só usa tokens (com fallback), então funciona também nas páginas com :root próprio.
+   As páginas mantêm só o que é específico delas (ex.: tamanho do botão do hero).
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Acessibilidade ── */
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;margin:-1px;padding:0;border:0}
+.skip-link{position:fixed;left:12px;top:calc(8px + env(safe-area-inset-top,0px));z-index:100000;padding:12px 18px;min-height:44px;display:inline-flex;align-items:center;
+  background:var(--ink,#0A1A24);color:#fff;font:700 14px/1.2 var(--sans,system-ui,sans-serif);text-decoration:none;border-radius:10px;border:2px solid #5ED6E3;
+  transform:translateY(-200%);transition:transform .15s}
+.skip-link:focus,.skip-link:focus-visible{transform:translateY(0);outline:none}
+[data-lang="es"] .skip-link .pt,[data-lang="pt"] .skip-link .es{display:none!important}
+#main:focus{outline:none}
+
+/* ── Botões ── */
+.am-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 20px;
+  font:700 14px/1.2 var(--sans,system-ui,sans-serif);border:1.5px solid transparent;border-radius:var(--r,10px);
+  cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s}
+.am-btn--primary{background:var(--primary-dark,#0B7C88);color:#fff}
+.am-btn--primary:hover{background:var(--primary-deep,#096873);transform:translateY(-1px)}
+.am-btn--secondary{background:var(--bg-card,#fff);color:var(--ink,#0A1A24);border-color:var(--line-md,rgba(10,26,36,.16))}
+.am-btn--secondary:hover{border-color:var(--primary-dark,#0B7C88);background:var(--bg,#EAF0F2)}
+.am-btn--ghost{background:transparent;color:var(--muted,#5A7079);border-color:var(--line-md,rgba(10,26,36,.16))}
+.am-btn--ghost:hover{border-color:var(--primary-dark,#0B7C88);color:var(--teal-text,#0A6A75)}
+.am-btn--block{display:flex;width:100%}
+.am-btn[disabled],.am-btn[aria-disabled="true"]{opacity:.7;cursor:not-allowed;transform:none}
+
+/* ── Campos ── */
+.am-label{display:block;font-size:13px;font-weight:600;color:var(--ink,#0A1A24);margin-bottom:6px}
+.am-input{width:100%;min-height:44px;padding:12px 14px;font:400 15px/1.4 var(--sans,system-ui,sans-serif);
+  background:var(--bg-card,#fff);border:1.5px solid var(--line-md,rgba(10,26,36,.16));border-radius:var(--r,10px);color:var(--ink,#0A1A24);
+  transition:border-color .2s,box-shadow .2s}
+.am-input:focus{border-color:var(--primary-dark,#0B7C88);box-shadow:0 0 0 3px rgba(15,163,177,.12)}
+.am-input::placeholder{color:rgba(90,112,121,.8)}
+.am-input[aria-invalid="true"]{border-color:#B3261E}
+/* 16px em campos no toque: evita o zoom automático do iOS ao focar */
+@media (pointer:coarse){.am-input,input.am-input,select.am-input,textarea.am-input{font-size:16px}}
+
+/* ── Card / chip ── */
+.am-card{background:var(--bg-card,#fff);border:1px solid var(--line,rgba(10,26,36,.09));border-radius:14px;padding:28px}
+.am-chip{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:5px 12px;border-radius:20px;font:600 12px/1.2 var(--sans,system-ui,sans-serif);
+  background:rgba(15,163,177,.12);border:1px solid rgba(15,163,177,.3);color:var(--teal-text,#0A6A75)}
+@media (pointer:coarse){button.am-chip,a.am-chip,[role=button].am-chip{min-height:44px}}
+
+/* ── Spinner ── */
+@keyframes am-spin{to{transform:rotate(360deg)}}
+.am-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:am-spin .7s linear infinite;vertical-align:-2px}
+.am-spinner--dark{border-color:rgba(10,26,36,.2);border-top-color:var(--primary-dark,#0B7C88)}
+@media (prefers-reduced-motion:reduce){.am-spinner{animation-duration:1.8s}}
+
+/* ── Toast (amNotify em supabase-integration.js) ── */
+.am-toast-wrap{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:8px;width:min(92vw,420px);pointer-events:none}
+.am-toast{pointer-events:auto;background:var(--ink,#0A1A24);color:#fff;border-left:4px solid var(--primary,#0FA3B1);border-radius:10px;padding:12px 14px;font:500 14px/1.45 var(--sans,system-ui,sans-serif);box-shadow:0 8px 28px rgba(10,26,36,.35);display:flex;gap:10px;align-items:flex-start}
+.am-toast.error{border-left-color:var(--accent,#FF5C49)}
+.am-toast button{margin-left:auto;background:none;border:0;color:#fff;font-size:20px;line-height:1;cursor:pointer;padding:0;min-width:44px;min-height:44px;margin:-10px -8px -10px auto}

@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AnamnesísMed — Entrar o crear cuenta</title>
 <meta name="description" content="Entra o crea tu cuenta en AnamnesísMed con tu email, sin contraseña. Historia clínica para médicos y estudiantes.">
 <meta name="robots" content="noindex, nofollow">
@@ -17,15 +17,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="anamnesismed-theme.css?v=d829a549">
+<link rel="stylesheet" href="anamnesismed-theme.css?v=1c9b2bef">
+<link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
   /* tokens do tema Pulso vêm de anamnesismed-theme.css; aqui só extras locais */
-  --teal-text:#0A6A75;      /* teal p/ TEXTO sobre fundo claro (AA ≥ 5:1 em #EAF0F2) */
-  --primary-deep:#096873;   /* hover de botões preenchidos */
-  --ease:cubic-bezier(0.16,1,0.3,1);
-  --r:10px;--r-lg:16px
+  --ease:cubic-bezier(0.16,1,0.3,1)
 }
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
 [data-lang="es"] .pt{display:none!important}
@@ -47,7 +45,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 
 .left-top{display:flex;justify-content:space-between;align-items:center}
 .logo{font-family:var(--serif);font-size:20px;font-weight:700;color:#fff;text-decoration:none}
-.logo span{color:var(--teal-text)}
+.logo span{color:var(--teal-on-dark)}
 
 .lang-toggle{display:flex;background:rgba(255,255,255,.08);border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
 .lang-btn{padding:6px 12px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:rgba(255,255,255,.75);transition:all .2s;font-family:var(--sans)}
@@ -56,7 +54,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 /* FEATURE HIGHLIGHTS */
 .left-mid{flex:1;display:flex;flex-direction:column;justify-content:center;padding:48px 0}
 .left-headline{font-family:var(--serif);font-size:clamp(26px,2.5vw,38px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:14px}
-.left-headline em{font-style:italic;color:var(--teal-text)}
+.left-headline em{font-style:italic;color:var(--teal-on-dark)}
 .left-sub{font-size:16px;color:rgba(255,255,255,.78);margin-bottom:40px;line-height:1.7;max-width:400px}
 
 .features-list{display:flex;flex-direction:column;gap:14px}
@@ -99,38 +97,16 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 
 /* FORM */
 .form-group{margin-bottom:18px}
-.form-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
-.form-input{
-  width:100%;padding:12px 14px;font-size:15px;font-family:var(--sans);
-  background:var(--bg-card);border:1.5px solid var(--line-md);
-  border-radius:var(--r);color:var(--ink);
-  transition:border-color .2s,box-shadow .2s
-}
-.form-input:focus{border-color:var(--primary-dark);box-shadow:0 0 0 3px rgba(15,163,177,.12)}
-.form-input::placeholder{color:rgba(90,112,121,.8)}
-
-.btn-submit{
-  width:100%;padding:14px;font-size:15px;font-weight:700;
-  color:#fff;background:var(--primary-dark);border:none;
-  border-radius:var(--r);cursor:pointer;font-family:var(--sans);
-  transition:all .2s;box-shadow:0 4px 20px rgba(15,163,177,.25);
-  margin-top:4px
-}
-.btn-submit:hover{background:var(--primary-deep);transform:translateY(-1px);box-shadow:0 6px 28px rgba(15,163,177,.35)}
+.form-input{padding:12px 14px} /* base em .am-input (anamnesismed-components.css) */
+.btn-submit{padding:14px;font-size:15px;box-shadow:0 4px 20px rgba(15,163,177,.25);margin-top:4px}
+.btn-submit:hover{box-shadow:0 6px 28px rgba(15,163,177,.35)}
 .btn-submit:active{transform:translateY(0)}
 
 .divider{display:flex;align-items:center;gap:12px;margin:20px 0}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
 .divider span{font-size:12px;color:var(--muted);white-space:nowrap}
 
-.btn-google{
-  width:100%;padding:12px;font-size:14px;font-weight:600;
-  color:var(--ink);background:var(--bg-card);border:1.5px solid var(--line-md);
-  border-radius:var(--r);cursor:pointer;font-family:var(--sans);
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:all .2s
-}
-.btn-google:hover{border-color:var(--primary-dark);background:var(--bg)}
+.btn-google{padding:12px;font-size:14px;font-weight:600}
 .google-icon{width:18px;height:18px}
 
 .auth-footer{margin-top:24px;text-align:center;font-size:13px;color:var(--muted)}
@@ -171,18 +147,16 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 /* ERRO INLINE + CARREGANDO */
 .form-error{display:flex;gap:8px;align-items:flex-start;margin:0 0 16px;padding:12px 14px;border-radius:var(--r);background:#FDECEA;border:1px solid #F3B3AB;color:#8A1F11;font-size:14px;line-height:1.5}
 .form-error[hidden]{display:none}
-.form-input[aria-invalid="true"]{border-color:#B3261E}
 .btn-submit[disabled],.btn-google[disabled]{opacity:.7;cursor:not-allowed;transform:none!important}
-.btn-submit .spin{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:8px}
+.btn-submit .spin{display:none;margin-right:8px}
 .btn-submit.loading .spin{display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.btn-submit .spin{animation-duration:2s}}
 .auth-legal{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.5}
 .auth-legal a{color:var(--teal-text)}
 .success-state:focus{outline:none}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 
 <!-- LEFT PANEL -->
 <div class="left">
@@ -270,12 +244,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 
       <form id="form-login" novalidate>
         <div class="form-group">
-          <label class="form-label pt" for="email-login">E-mail</label>
-          <label class="form-label es" for="email-login">Email</label>
-          <input type="email" id="email-login" class="form-input" placeholder="seu@email.com" required autocomplete="email" inputmode="email" aria-describedby="auth-error">
+          <label class="form-label am-label pt" for="email-login">E-mail</label>
+          <label class="form-label am-label es" for="email-login">Email</label>
+          <input type="email" id="email-login" class="form-input am-input" placeholder="seu@email.com" required autocomplete="email" inputmode="email" aria-describedby="auth-error">
         </div>
-        <button type="submit" id="btn-submit" class="btn-submit">
-          <span class="spin" aria-hidden="true"></span>
+        <button type="submit" id="btn-submit" class="btn-submit am-btn am-btn--primary am-btn--block">
+          <span class="spin am-spinner" aria-hidden="true"></span>
           <span class="btn-label pt">Continuar com e-mail →</span>
           <span class="btn-label es">Continuar con email →</span>
         </button>
@@ -283,7 +257,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 
       <div class="divider"><span class="pt">ou continue com</span><span class="es">o continúa con</span></div>
 
-      <button type="button" class="btn-google" id="btn-google">
+      <button type="button" class="btn-google am-btn am-btn--secondary am-btn--block" id="btn-google">
         <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -353,7 +327,7 @@ function setBusy(busy){
   btn.setAttribute('aria-busy',busy?'true':'false');
   var lbl=btn.querySelectorAll('.btn-label');
   lbl.forEach(function(el){
-    if(busy){el.dataset.orig=el.textContent;el.textContent=el.classList.contains('pt')?'Enviando…':'Enviando…';}
+    if(busy){el.dataset.orig=el.textContent;el.textContent=el.classList.contains('pt')?'Enviando o link…':'Enviando el enlace…';}
     else if(el.dataset.orig){el.textContent=el.dataset.orig;}
   });
 }
@@ -418,6 +392,6 @@ document.getElementById('email-login').addEventListener('input',clearError);
 })();
 </script>
 <script src="/vendor/supabase-2.110.2.js?v=e899d5f6"></script>
-<script src="supabase-integration.js?v=bd481f13"></script>
+<script src="supabase-integration.js?v=ff8bced3"></script>
 </body>
 </html>

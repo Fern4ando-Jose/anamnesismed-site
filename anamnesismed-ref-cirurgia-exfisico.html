@@ -8,9 +8,11 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0B7C88">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>try{var l=localStorage.getItem('am-lang');if(l){document.documentElement.setAttribute('data-lang',l);document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es')}}catch(e){}</script>
 <title>AnamnesísMed — Cirugía General: Examen del Abdomen y Abdomen Agudo</title>
+<meta name="description" content="Guía de cirugía general: examen del abdomen, abdomen agudo y síntomas quirúrgicos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -166,13 +168,15 @@ table.sx tbody tr:hover td:first-child{background:#f1edfb}
   .finds{grid-template-columns:1fr}
 }
 </style>
-<link rel="stylesheet" href="anamnesismed-theme.css?v=d829a549">
+<link rel="stylesheet" href="anamnesismed-theme.css?v=1c9b2bef">
+<link rel="stylesheet" href="anamnesismed-components.css?v=938e8aa8">
 <link rel="stylesheet" href="sidebar.css?v=466ffc2c">
 </head>
 <body>
+<a class="skip-link" href="#main"><span class="es">Saltar al contenido</span><span class="pt">Pular para o conteúdo</span></a>
 <div id="sidebar-root"></div>
 
-<div class="main">
+<main class="main" id="main" tabindex="-1">
   <header class="topbar">
     <div class="topbar-left">
       <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
@@ -199,7 +203,7 @@ table.sx tbody tr:hover td:first-child{background:#f1edfb}
 
   <nav class="secnav" id="secnav"></nav>
   <div class="wrap" id="wrap"></div>
-</div>
+</main>
 
 <script>
 var L = "es";
@@ -485,7 +489,10 @@ function goSec(id, keep){
 }
 
 function amLangA11y(l){document.documentElement.setAttribute('lang',l==='pt'?'pt-BR':'es');document.querySelectorAll('.lang-btn,.slang-btn').forEach(function(b){var k=b.dataset.lang||(b.id||'').replace(/^(s?lang|btn)-/,'');if(k==='es'||k==='pt')b.setAttribute('aria-pressed',l===k?'true':'false')})}
+var AM_META={"es": {"t": "AnamnesísMed — Cirugía General: Examen del Abdomen y Abdomen Agudo", "d": "Guía de cirugía general: examen del abdomen, abdomen agudo y síntomas quirúrgicos."}, "pt": {"t": "AnamnesísMed — Cirurgia Geral: Exame do Abdome e Abdome Agudo", "d": "Guia de cirurgia geral: exame do abdome, abdome agudo e sintomas cirúrgicos."}};
+function amSetMeta(l){var m=AM_META[l==='pt'?'pt':'es'];if(!m)return;document.title=m.t;var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.d)}
 function setLang(lang){
+  amSetMeta(lang);
   amLangA11y(lang);
   L=lang;
   document.documentElement.setAttribute("data-lang",lang);
@@ -505,7 +512,8 @@ document.addEventListener("DOMContentLoaded", function(){
   renderNav(); renderAll();
 });
 </script>
-<script src="supabase-integration.js?v=bd481f13" defer></script>
+<script src="/vendor/supabase-2.110.2.js?v=e899d5f6" defer></script>
+<script src="supabase-integration.js?v=ff8bced3" defer></script>
 <script src="am-icons.js?v=f6cfe7c9"></script>
 <script src="nav-back.js?v=eeac804b"></script>
 <script src="sidebar.js?v=4ced0109"></script>

@@ -40,4 +40,20 @@ async function devolverCota(sbAdmin, userId, rota) {
   }
 }
 
-module.exports = { lerToken, aplicaCors, devolverCota };
+// Tabela ainda não criada (migration opcional não aplicada): 42P01 = undefined_table (Postgres),
+// PGRST205 = tabela fora do schema cache (PostgREST). Tratada como "sem dados", não como falha.
+function tabelaAusente(error) {
+  return !!error && (error.code === '42P01' || error.code === 'PGRST205');
+}
+
+// Valida o token no Supabase. Retorna o usuário ({id, email, ...}) ou null.
+async function usuarioDoToken(sbAdmin, token) {
+  try {
+    const { data, error } = await sbAdmin.auth.getUser(token);
+    return (!error && data && data.user && data.user.id) ? data.user : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+module.exports = { lerToken, aplicaCors, devolverCota, tabelaAusente, usuarioDoToken };
