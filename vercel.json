@@ -54,6 +54,12 @@
     },
     "api/exportar-dados.js": {
       "maxDuration": 30
+    },
+    "api/portal-cliente.js": {
+      "maxDuration": 15
+    },
+    "api/reconciliar-assinaturas.js": {
+      "maxDuration": 60
     }
   },
   "crons": [

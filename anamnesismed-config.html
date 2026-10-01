@@ -49,6 +49,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .lang-toggle{display:flex;background:rgba(13,45,61,0.06);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
 .lang-btn{padding:4px 11px;font-size:12px;font-weight:700;letter-spacing:.5px;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
 .lang-btn.active{background:var(--ink);color:#fff;border-radius:20px}
+.lang-btn:focus-visible{outline:2px solid var(--primary-dark);outline-offset:-3px}.lang-btn.active:focus-visible{outline-color:#5ED6E3}
 
 .content{padding:32px;max-width:760px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 
@@ -82,7 +83,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:10
 .plan-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .plan-badge{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--primary)}
 .plan-desc{font-size:13px;color:var(--muted);margin-top:2px}
-.btn-upgrade{padding:10px 20px;font-size:13px;font-weight:700;color:#fff;background:var(--accent);border:none;border-radius:9px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-upgrade{padding:12px 20px;min-height:44px;font-size:13px;font-weight:700;color:#fff;background:#C23A26;border:none;border-radius:9px;cursor:pointer;text-decoration:none;display:inline-block}
 .btn-upgrade:hover{filter:brightness(.95)}
 
 .danger-zone{border-color:rgba(192,57,43,.25)}
