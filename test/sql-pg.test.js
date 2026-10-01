@@ -95,6 +95,9 @@ const ORDEM = [
   '2026-10-01-uso-atomico-rpc.sql',
   '2026-10-02-devolver-cota-e-search-path.sql',
   '2026-10-02-revoke-handle-new-user.sql',
+  '2026-10-02-profiles-genero.sql',
+  '2026-10-03-consumir-limite.sql',
+  '2026-10-03-contas-em-exclusao.sql',
 ];
 
 test.before(() => {
@@ -169,6 +172,14 @@ test('migrations down da 10-02 e re-aplicação funcionam', { skip }, () => {
   assert.equal(r.stdout.trim(), 't');
   r = psqlFile(path.join(MIG, '2026-10-02-devolver-cota-e-search-path.sql'));
   assert.equal(r.status, 0, r.stderr);
+});
+
+test('RPC consumir_limite + rate_limits (asserts reais)', { skip }, () => {
+  rodaSqlTeste('2026-10-03-consumir-limite.test.sql');
+});
+
+test('tabela contas_em_exclusao (asserts reais)', { skip }, () => {
+  rodaSqlTeste('2026-10-03-contas-em-exclusao.test.sql');
 });
 
 test('concorrência: 12 consumos paralelos com limite 5 → exatamente 5 passam e nenhum furo', { skip }, async () => {
