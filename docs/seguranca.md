@@ -21,7 +21,7 @@ removê-lo derrubaria o app inteiro. Com `'unsafe-inline'`, a CSP **não** barra
   lê-lo. É exatamente o risco que o plano abaixo reduz.
 
 **O que está endurecido (mantido o mais restritivo possível).** `default-src 'self'`;
-`script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net` (sem `unsafe-eval`; Stripe.js removido —
+`script-src 'self' 'unsafe-inline'` (o supabase-js agora é servido de /vendor/, sem CDN) (sem `unsafe-eval`; Stripe.js removido —
 o front só redireciona para a URL do checkout); `img-src 'self' data: blob:` (sem `https:` aberto);
 `connect-src 'self' https://<projeto>.supabase.co` (host exato, sem curinga e sem `wss:`/Stripe — o
 front não usa Realtime nem chama o Stripe do navegador); `frame-src 'none'`; `object-src 'none'`;
