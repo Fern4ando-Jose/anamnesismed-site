@@ -535,7 +535,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div>
 
     <!-- Motivo grids rendered by JS -->
-    <div id="motivo-content"></div>
+    <div id="motivo-content" role="tabpanel" aria-labelledby="stab-clinica"></div>
   </div>
 
   <!-- HC SCREEN -->
@@ -564,35 +564,35 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     <!-- Clinical guide tabs (motivo-specific) -->
     <div class="guide-tabs-wrap" id="guide-tabs-wrap">
     <div class="guide-tabs" id="guide-tabs" role="tablist" aria-label="Guia clínico / Guía clínica">
-      <button type="button" role="tab" class="guide-tab active" aria-selected="true" onclick="showGuide('form',this)">
+      <button type="button" role="tab" class="guide-tab active" id="gtab-form" aria-selected="true" aria-controls="hc-sections" onclick="showGuide('form',this)">
         <span class="guide-tab-icon" data-am-icon="clipboard" data-am-size="15"></span>
         <span class="pt">Formulário HC</span><span class="es">Formulario HC</span>
       </button>
-      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('mnemonics',this)">
+      <button type="button" role="tab" class="guide-tab" id="gtab-mnemonics" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('mnemonics',this)">
         <span class="guide-tab-icon" data-am-icon="brain" data-am-size="15"></span>
         <span class="pt">Mnemônicas</span><span class="es">Mnemotécnicas</span>
       </button>
-      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('manobras',this)">
+      <button type="button" role="tab" class="guide-tab" id="gtab-manobras" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('manobras',this)">
         <span class="guide-tab-icon" data-am-icon="stethoscope" data-am-size="15"></span>
         <span class="pt">Manobras</span><span class="es">Maniobras</span>
       </button>
-      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('sinais',this)">
+      <button type="button" role="tab" class="guide-tab" id="gtab-sinais" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('sinais',this)">
         <span class="guide-tab-icon" data-am-icon="activity" data-am-size="15"></span>
         <span class="pt">Sinais Clássicos</span><span class="es">Signos Clásicos</span>
       </button>
-      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('ddx',this)">
+      <button type="button" role="tab" class="guide-tab" id="gtab-ddx" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('ddx',this)">
         <span class="guide-tab-icon" data-am-icon="scale" data-am-size="15"></span>
         <span class="pt">Diagnóstico Diferencial</span><span class="es">Diagnóstico Diferencial</span>
       </button>
-      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('escalas',this)">
+      <button type="button" role="tab" class="guide-tab" id="gtab-escalas" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('escalas',this)">
         <span class="guide-tab-icon" data-am-icon="chart" data-am-size="15"></span>
         <span class="pt">Escalas</span><span class="es">Escalas</span>
       </button>
-      <button type="button" role="tab" class="guide-tab" aria-selected="false" onclick="showGuide('conduta',this)">
+      <button type="button" role="tab" class="guide-tab" id="gtab-conduta" aria-selected="false" aria-controls="guide-content-area" onclick="showGuide('conduta',this)">
         <span class="guide-tab-icon" data-am-icon="file" data-am-size="15"></span>
         <span class="pt">Conduta</span><span class="es">Conducta</span>
       </button>
-      <button type="button" role="tab" class="guide-tab guide-tab-ia" id="gtab-assistente" aria-selected="false" onclick="showGuide('assistente',this)">
+      <button type="button" role="tab" class="guide-tab guide-tab-ia" id="gtab-assistente" aria-selected="false" aria-controls="assistente-area" onclick="showGuide('assistente',this)">
         <span class="guide-tab-icon" data-am-icon="sparkles" data-am-size="15"></span>
         <span class="pt">Assistente IA</span><span class="es">Asistente IA</span>
         <span class="ia-pro-pill">PRO</span>
@@ -602,10 +602,10 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div>
 
     <!-- GUIDE CONTENT (Mnemônicas, Manobras, etc.) -->
-    <div id="guide-content-area" style="display:none"></div>
+    <div id="guide-content-area" role="tabpanel" aria-labelledby="gtab-mnemonics" style="display:none"></div>
 
     <!-- ASSISTENTE DE IA (apoio diagnóstico) — exclusivo do plano pago -->
-    <div id="assistente-area" style="display:none">
+    <div id="assistente-area" role="tabpanel" aria-labelledby="gtab-assistente" style="display:none">
       <div class="ia-dx-wrap">
         <div class="ia-dx-head">
           <span class="ia-dx-title"><span data-am-icon="sparkles" data-am-size="20"></span> <span class="pt">Assistente de IA — Apoio Diagnóstico</span><span class="es">Asistente de IA — Apoyo Diagnóstico</span></span>
@@ -647,7 +647,7 @@ select.f-input{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appea
     </div>
 
     <!-- HC FORM SECTIONS -->
-    <div class="hc-sections" id="hc-sections">
+    <div class="hc-sections" id="hc-sections" role="tabpanel" aria-labelledby="gtab-form">
 
       <!-- S0: DADOS PESSOAIS -->
       <div class="hc-panel open" id="panel-dados">
@@ -2910,15 +2910,25 @@ function openRefMotivo(){
       try{tabs[n].scrollIntoView({block:'nearest',inline:'nearest'})}catch(x){}
     });
   }
+  /* Painéis: cada aba aponta (aria-controls) para um role=tabpanel existente; o painel compartilhado
+     (#guide-content-area serve Mnemônicas/Manobras/Sinais/DDx/Escalas/Conduta) é rotulado pela aba ATIVA. */
+  function labelPanels(list){
+    var tabs=[].slice.call(list.querySelectorAll('[role="tab"]'));
+    var done={};
+    tabs.forEach(function(t){
+      var id=t.getAttribute('aria-controls');if(!id||done[id]===2)return;
+      var p=document.getElementById(id);if(!p)return;
+      var on=t.getAttribute('aria-selected')==='true';
+      if(on||!done[id]){p.setAttribute('aria-labelledby',t.id);done[id]=on?2:1}
+    });
+  }
+  [document.querySelector('.spec-tabs'),document.getElementById('guide-tabs')].forEach(function(list){
+    if(!list)return;
+    labelPanels(list);
+    new MutationObserver(function(){labelPanels(list)}).observe(list,{attributes:true,attributeFilter:['aria-selected'],subtree:true});
+  });
   setup(document.querySelector('.spec-tabs'));
   setup(document.getElementById('guide-tabs'));
-  ['hc-sections','guide-content-area','assistente-area'].forEach(function(id){
-    var el=document.getElementById(id);if(el&&!el.getAttribute('role'))el.setAttribute('role','tabpanel');
-  });
-  document.querySelectorAll('#guide-tabs [role="tab"]').forEach(function(t){
-    var m=/showGuide\('(\w+)'/.exec(t.getAttribute('onclick')||'');
-    if(m)t.setAttribute('aria-controls',m[1]==='form'?'hc-sections':m[1]==='assistente'?'assistente-area':'guide-content-area');
-  });
 })();
 </script>
 <script src="sidebar.js?v=4ced0109"></script>
