@@ -3,8 +3,13 @@
  * Exclusão da conta e dos dados do próprio usuário (LGPD art. 18, VI — "eliminação").
  *
  * O que faz, nesta ordem (cada passo é idempotente; falhou no meio → 5xx e o usuário pode
- * repetir a chamada, que continua de onde parou):
+ *   repetir a chamada, que continua de onde parou):
  *   1. Valida o token (Bearer) e o corpo: exige `{ "confirmar": true }` (ação irreversível).
+ *      Limite: 3 exclusões/hora por usuário (429 + Retry-After; 503 se o limitador faltar).
+ *   1b. MARCA a conta como "em exclusão" (tabela `contas_em_exclusao`) ANTES de qualquer efeito:
+ *      a partir daí /api/create-checkout-session recusa novos checkouts (409) e o webhook do Stripe
+ *      trata um checkout tardio como sucesso idempotente e cancela a assinatura criada. Sem
+ *      conseguir marcar → 503 e nada é feito. A marca NÃO tem FK e sobrevive à exclusão do login.
  *   2. Cancela NA HORA as assinaturas do Stripe do cliente (se houver). Se não conseguir
  *      cancelar, ABORTA antes de apagar qualquer coisa — senão o ex-usuário continuaria sendo
  *      cobrado sem ter conta.
@@ -23,10 +28,14 @@
  */
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
-const { lerToken, aplicaCors, tabelaAusente, usuarioDoToken } = require('./_comum');
+const { iniciaRota, autenticar, aplicaLimite, tabelaAusente } = require('./_comum');
 
 // [tabela, coluna do dono] — ordem importa: filhas antes do perfil e do usuário no Auth
 // (`historias_clinicas.user_id` referencia auth.users SEM cascade).
+// REGRA (checada por test/sql-pg.test.js no Postgres de teste): toda tabela de `public` com FK para
+// auth.users TEM de estar aqui OU ter ON DELETE CASCADE (ex.: `rate_limits` cai por cascade).
+// Ao criar tabela nova com dado do usuário, inclua-a aqui. `contas_em_exclusao` fica de fora de
+// propósito (a marca sobrevive à exclusão).
 const TABELAS = [
   ['historias_clinicas', 'user_id'],
   ['pdf_exports', 'user_id'],
@@ -44,27 +53,33 @@ function falha(res, status, msg, motivo, userId) {
 }
 
 module.exports = async (req, res) => {
-  aplicaCors(res, 'POST, OPTIONS');
-  res.setHeader('Cache-Control', 'no-store');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (iniciaRota(req, res, 'POST')) return;
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
     return falha(res, 500, 'Supabase não configurado no servidor', 'env do Supabase ausente');
   }
 
-  const token = lerToken(req);
-  if (!token) return res.status(401).json({ error: 'Não autenticado' });
-
   const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  const user = await usuarioDoToken(sbAdmin, token);
-  if (!user) return res.status(401).json({ error: 'Sessão inválida' });
-  const userId = user.id;
+  const auth = await autenticar(sbAdmin, req);
+  if (auth.error) return res.status(auth.status).json({ error: auth.error });
+  const userId = auth.user.id;
 
   // Ação irreversível: exige confirmação explícita no corpo.
   const body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};
   if (body.confirmar !== true) {
     return res.status(400).json({ error: 'Confirmação obrigatória: envie {"confirmar": true}', code: 'confirmacao_obrigatoria' });
+  }
+
+  // Limite por usuário (fail-closed). Depois da confirmação: corpo inválido não gasta tentativa.
+  if (!(await aplicaLimite(res, sbAdmin, userId, 'excluir-conta'))) return;
+
+  // 1a) MARCA a conta como "em exclusão" ANTES de qualquer efeito (idempotente: upsert por user_id).
+  // Fail-closed: sem a marca não dá para impedir um checkout concorrente, então não prossegue.
+  try {
+    const { error } = await sbAdmin.from('contas_em_exclusao').upsert({ user_id: userId }, { onConflict: 'user_id', ignoreDuplicates: true });
+    if (error) throw new Error(error.code || 'erro ao marcar');
+  } catch (e) {
+    return falha(res, 503, 'Não foi possível concluir agora. Tente novamente em instantes.', 'marca de exclusão falhou (migration 2026-10-03-contas-em-exclusao aplicada?): ' + String(e && e.message).slice(0, 80), userId);
   }
 
   // 1) Perfil → customer do Stripe. FAIL-CLOSED: sem saber se há assinatura, não apaga.
@@ -84,6 +99,16 @@ module.exports = async (req, res) => {
     }
     try {
       const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+      // Expira checkouts ainda ABERTOS do customer (best effort): um deles poderia ser pago depois
+      // do cancelamento. Se escapar, o webhook cancela a assinatura criada (conta marcada).
+      try {
+        const abertas = await stripe.checkout.sessions.list({ customer: stripeId, status: 'open', limit: 100 });
+        for (const sessao of ((abertas && abertas.data) || [])) {
+          try { await stripe.checkout.sessions.expire(sessao.id); } catch (_) { /* já expirada/paga */ }
+        }
+      } catch (e) {
+        console.warn('[excluir-conta] não foi possível expirar checkouts abertos (segue):', e && e.code ? e.code : 'erro', 'user=' + userId);
+      }
       const lista = await stripe.subscriptions.list({ customer: stripeId, status: 'all', limit: 100 });
       for (const sub of ((lista && lista.data) || [])) {
         if (ENCERRADAS.includes(sub.status)) continue;

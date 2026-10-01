@@ -15,25 +15,31 @@ process.env.NEXT_PUBLIC_URL = 'https://app.example.com';
 //       authDelErr
 function setup(opts) {
   opts = opts || {};
-  const st = { ops: [], cancelled: [], authDeleted: [] };
+  const st = { ops: [], cancelled: [], authDeleted: [], marcas: [], rpcs: [], expiradas: [], ordem: [] };
   const user = opts.user === null ? null : { id: 'u1', email: 'a@b.com' };
   const supa = {
     createClient: () => ({
       auth: {
         getUser: async () => (user ? { data: { user }, error: null } : { data: null, error: { message: 'bad' } }),
-        admin: { deleteUser: async (id) => { st.authDeleted.push(id); return { error: opts.authDelErr || null }; } },
+        admin: { deleteUser: async (id) => { st.ordem.push('auth'); st.authDeleted.push(id); return { error: opts.authDelErr || null }; } },
       },
+      rpc: async (fn, args) => { st.rpcs.push({ fn, args }); return opts.limite || { data: 0, error: null }; },
       from: (tabela) => ({
+        upsert: async (linha) => { st.ordem.push('marca'); st.marcas.push({ tabela, linha }); return { error: opts.marcaErr || null }; },
         select: () => ({ eq: () => ({ maybeSingle: async () => (opts.profileErr ? { data: null, error: { code: 'XX000' } } : { data: { stripe_id: opts.stripeId || null }, error: null }) }) }),
-        delete: () => ({ eq: async (col, val) => { st.ops.push({ tabela, col, val }); return { error: (opts.deleteErr && opts.deleteErr[tabela]) || null }; } }),
+        delete: () => ({ eq: async (col, val) => { st.ordem.push('del:' + tabela); st.ops.push({ tabela, col, val }); return { error: (opts.deleteErr && opts.deleteErr[tabela]) || null }; } }),
       }),
     }),
   };
   const stripe = () => ({
     subscriptions: {
       list: async () => ({ data: opts.subs || [] }),
-      cancel: async (id) => { if (opts.cancelErr) throw opts.cancelErr; st.cancelled.push(id); return {}; },
+      cancel: async (id) => { if (opts.cancelErr) throw opts.cancelErr; st.ordem.push('cancela'); st.cancelled.push(id); return {}; },
     },
+    checkout: { sessions: {
+      list: async () => ({ data: opts.abertas || [] }),
+      expire: async (id) => { st.expiradas.push(id); return {}; },
+    } },
   });
   return { handler: loadWithMocks(HANDLER, { stripe, '@supabase/supabase-js': supa }), st };
 }
@@ -104,8 +110,9 @@ test('customer inexistente no Stripe (resource_missing) → segue e apaga', asyn
   const stripeMod = () => ({ subscriptions: { list: async () => { throw err; } } });
   const st = { ops: [], authDeleted: [] };
   const supa = { createClient: () => ({
+    rpc: async () => ({ data: 0, error: null }),
     auth: { getUser: async () => ({ data: { user: { id: 'u1' } }, error: null }), admin: { deleteUser: async (id) => { st.authDeleted.push(id); return { error: null }; } } },
-    from: (t) => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { stripe_id: 'cus_morto' }, error: null }) }) }), delete: () => ({ eq: async () => { st.ops.push(t); return { error: null }; } }) }),
+    from: (t) => ({ upsert: async () => ({ error: null }), select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { stripe_id: 'cus_morto' }, error: null }) }) }), delete: () => ({ eq: async () => { st.ops.push(t); return { error: null }; } }) }),
   }) };
   const handler = loadWithMocks(HANDLER, { stripe: stripeMod, '@supabase/supabase-js': supa });
   const res = makeRes();
@@ -172,4 +179,62 @@ test('logs não vazam e-mail nem conteúdo do body', async () => {
   } finally { console.error = e; console.log = l; }
   const tudo = linhas.join('\n');
   assert.ok(!tudo.includes('a@b.com') && !tudo.includes('Fulano') && !tudo.includes('segredo-clinico'));
+});
+
+test('MARCA a conta em exclusão ANTES de cancelar no Stripe e de apagar qualquer coisa', async () => {
+  const { handler, st } = setup({ stripeId: 'cus_1', subs: [{ id: 'sub_a', status: 'active' }] });
+  const res = makeRes();
+  await quieto(() => handler(req({ confirmar: true }), res));
+  assert.equal(res.code, 200);
+  assert.deepEqual(st.marcas, [{ tabela: 'contas_em_exclusao', linha: { user_id: 'u1' } }]);
+  assert.equal(st.ordem[0], 'marca');
+  assert.ok(st.ordem.indexOf('marca') < st.ordem.indexOf('cancela'));
+  assert.ok(st.ordem.indexOf('cancela') < st.ordem.indexOf('del:historias_clinicas'));
+  assert.equal(st.ordem[st.ordem.length - 1], 'auth', 'Auth por último');
+});
+
+test('não consegue marcar → 503 e NADA é feito (nem Stripe, nem delete)', async () => {
+  const { handler, st } = setup({ stripeId: 'cus_1', subs: [{ id: 'sub_a', status: 'active' }], marcaErr: { code: '42P01' } });
+  const res = makeRes();
+  await quieto(() => handler(req({ confirmar: true }), res));
+  assert.equal(res.code, 503);
+  assert.equal(st.cancelled.length, 0);
+  assert.equal(st.ops.length, 0);
+  assert.equal(st.authDeleted.length, 0);
+});
+
+test('checkouts abertos do customer são expirados antes do cancelamento', async () => {
+  const { handler, st } = setup({ stripeId: 'cus_1', subs: [], abertas: [{ id: 'cs_1' }, { id: 'cs_2' }] });
+  const res = makeRes();
+  await quieto(() => handler(req({ confirmar: true }), res));
+  assert.equal(res.code, 200);
+  assert.deepEqual(st.expiradas, ['cs_1', 'cs_2']);
+});
+
+test('rate limit: 429 com Retry-After (nada é feito); RPC ausente → 503 fail-closed', async () => {
+  let { handler, st } = setup({ limite: { data: 1800, error: null } });
+  let res = makeRes(); await quieto(() => handler(req({ confirmar: true }), res));
+  assert.equal(res.code, 429);
+  assert.equal(res.headers['Retry-After'], '1800');
+  assert.equal(res.body.code, 'rate_limited');
+  assert.equal(st.marcas.length, 0);
+  assert.equal(st.ops.length, 0);
+  ({ handler, st } = setup({ limite: { data: null, error: { code: 'PGRST202' } } }));
+  res = makeRes(); await quieto(() => handler(req({ confirmar: true }), res));
+  assert.equal(res.code, 503);
+  assert.equal(st.marcas.length, 0);
+  assert.equal(st.ops.length, 0);
+});
+
+test('o limite usado é excluir-conta 3/h e o Cache-Control é no-store', async () => {
+  const { handler, st } = setup();
+  const res = makeRes(); await quieto(() => handler(req({ confirmar: true }), res));
+  assert.deepEqual(st.rpcs[0], { fn: 'consumir_limite', args: { p_user_id: 'u1', p_acao: 'excluir-conta', p_janela_seg: 3600, p_max: 3 } });
+  assert.equal(res.headers['Cache-Control'], 'no-store');
+});
+
+test('corpo sem confirmação não gasta o limite', async () => {
+  const { handler, st } = setup();
+  await handler(req({}), makeRes());
+  assert.equal(st.rpcs.length, 0);
 });

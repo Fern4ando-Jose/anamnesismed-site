@@ -12,9 +12,11 @@ process.env.SUPABASE_SERVICE_KEY = 'service_dummy';
 function setup(opts) {
   opts = opts || {};
   const consultas = [];
+  const rpcs = [];
   const tabelas = opts.tabelas || {};
   const supa = {
     createClient: () => ({
+      rpc: async (fn, args) => { rpcs.push({ fn, args }); return opts.limite || { data: 0, error: null }; },
       auth: { getUser: async () => (opts.user === null ? { data: null, error: { message: 'bad' } } : { data: { user: { id: 'u1', email: 'a@b.com' } }, error: null }) },
       from: (nome) => {
         const q = { nome };
@@ -34,7 +36,7 @@ function setup(opts) {
       },
     }),
   };
-  return { handler: loadWithMocks(HANDLER, { '@supabase/supabase-js': supa }), consultas };
+  return { handler: loadWithMocks(HANDLER, { '@supabase/supabase-js': supa }), consultas, rpcs };
 }
 const req = (tok) => ({ method: 'GET', headers: tok === '' ? {} : { authorization: 'Bearer ' + (tok || 'tok') } });
 
@@ -93,4 +95,59 @@ test('erro real de leitura → 500 (nunca exportação parcial) e log sem dado c
   assert.equal(res.code, 500);
   assert.equal(res.body.historias_clinicas, undefined);
   assert.ok(!linhas.join('\n').includes('secreto'));
+});
+
+test('rate limit: 429 + Retry-After sem ler dados; RPC ausente → 503; usa exportar-dados 5/h', async () => {
+  let { handler, consultas, rpcs } = setup();
+  let res = makeRes(); await handler(req(), res);
+  assert.deepEqual(rpcs[0], { fn: 'consumir_limite', args: { p_user_id: 'u1', p_acao: 'exportar-dados', p_janela_seg: 3600, p_max: 5 } });
+  ({ handler, consultas } = setup({ limite: { data: 900, error: null } }));
+  res = makeRes(); await handler(req(), res);
+  assert.equal(res.code, 429); assert.equal(res.headers['Retry-After'], '900'); assert.equal(consultas.length, 0);
+  const o = console.error; console.error = () => {};
+  try {
+    ({ handler, consultas } = setup({ limite: { data: null, error: { code: 'PGRST202' } } }));
+    res = makeRes(); await handler(req(), res);
+  } finally { console.error = o; }
+  assert.equal(res.code, 503); assert.equal(consultas.length, 0);
+});
+
+test('teto de linhas TOTAL: acima de 20.000 → 413 claro (nunca exportação truncada) e para de ler', async () => {
+  const muitas = Array.from({ length: 20001 }, (_, i) => ({ id: 'h' + i, user_id: 'u1' }));
+  const { handler, consultas } = setup({ tabelas: { historias_clinicas: muitas, pdf_exports: [{ id: 'p1', user_id: 'u1' }] } });
+  const res = makeRes(); const w = console.warn; console.warn = () => {};
+  try { await handler(req(), res); } finally { console.warn = w; }
+  assert.equal(res.code, 413);
+  assert.equal(res.body.code, 'export_muito_grande');
+  assert.match(res.body.error, /DPO/);
+  assert.equal(res.body.historias_clinicas, undefined);
+  assert.ok(!consultas.some((c) => c.nome === 'pdf_exports'), 'não lê as tabelas seguintes depois de estourar');
+});
+
+test('exatamente 20.000 linhas ainda passa; o teto soma TODAS as tabelas', async () => {
+  const hcs = Array.from({ length: 19999 }, (_, i) => ({ id: 'h' + i, user_id: 'u1' }));
+  let { handler } = setup({ tabelas: { profiles: [{ id: 'u1' }], historias_clinicas: hcs } });
+  let res = makeRes(); await handler(req(), res);
+  assert.equal(res.code, 200);
+  ({ handler } = setup({ tabelas: { profiles: [{ id: 'u1' }], historias_clinicas: hcs, pdf_exports: [{ id: 'p1', user_id: 'u1' }] } }));
+  res = makeRes(); const w = console.warn; console.warn = () => {};
+  try { await handler(req(), res); } finally { console.warn = w; }
+  assert.equal(res.code, 413);
+});
+
+test('teto de BYTES (~4 MB): poucas HCs enormes → 413', async () => {
+  const grande = 'x'.repeat(1500000);
+  const { handler } = setup({ tabelas: { historias_clinicas: [1, 2, 3].map((n) => ({ id: 'h' + n, user_id: 'u1', dados: grande })) } });
+  const res = makeRes(); const w = console.warn; console.warn = () => {};
+  try { await handler(req(), res); } finally { console.warn = w; }
+  assert.equal(res.code, 413);
+});
+
+test('OPTIONS → 200 e CORS só da origem do app', async () => {
+  process.env.NEXT_PUBLIC_URL = 'https://app.example.com';
+  const { handler } = setup();
+  const res = makeRes(); await handler({ method: 'OPTIONS', headers: {} }, res);
+  assert.equal(res.code, 200);
+  assert.equal(res.headers['Access-Control-Allow-Origin'], 'https://app.example.com');
+  assert.equal(res.headers['Cache-Control'], 'no-store');
 });

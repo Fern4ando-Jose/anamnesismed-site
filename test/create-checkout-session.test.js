@@ -18,18 +18,23 @@ function setup(user, opts) {
   opts = opts || {};
   const created = [];
   const listCalls = [];
+  const rpcs = [];
   const perfil = opts.perfil === undefined ? { plano: 'trial', stripe_id: null } : opts.perfil;
   const supa = {
     createClient: () => ({
       auth: { getUser: async () => (user ? { data: { user }, error: null } : { data: null, error: { message: 'bad' } }) },
-      from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => (perfil === 'erro' ? { data: null, error: { code: 'XX000' } } : { data: perfil, error: null }) }) }) }),
+      rpc: async (fn, args) => { rpcs.push({ fn, args }); return opts.limite || { data: 0, error: null }; },
+      from: (tabela) => ({ select: () => ({ eq: () => ({ maybeSingle: async () => {
+        if (tabela === 'contas_em_exclusao') return opts.marcaErr ? { data: null, error: opts.marcaErr } : { data: opts.marca ? { user_id: 'u1' } : null, error: null };
+        return perfil === 'erro' ? { data: null, error: { code: 'XX000' } } : { data: perfil, error: null };
+      } }) }) }),
     }),
   };
   const stripe = () => ({
     subscriptions: { list: async (p) => { listCalls.push(p); if (opts.listErr) throw new Error('stripe fora'); return { data: opts.subs || [] }; } },
     checkout: { sessions: { create: async (p) => { created.push(p); if (opts.createErr) opts.createErr(p); return { url: 'https://checkout.stripe.com/x' }; } } },
   });
-  return { handler: loadWithMocks(HANDLER, { stripe, '@supabase/supabase-js': supa }), created, listCalls };
+  return { handler: loadWithMocks(HANDLER, { stripe, '@supabase/supabase-js': supa }), created, listCalls, rpcs };
 }
 const withTok = (body) => ({ method: 'POST', headers: { authorization: 'Bearer tok' }, body });
 
@@ -158,4 +163,46 @@ test('perfil inexistente (null) → segue como trial com customer_email', async 
   await handler(withTok({}), res);
   assert.equal(res.code, 200);
   assert.equal(created[0].customer_email, 'a@b.com');
+});
+
+// ── Exclusão em andamento, rate limit e CORS ──────────────────────────────────
+test('conta marcada como em exclusão → 409 conta_em_exclusao e NÃO cria sessão', async () => {
+  const { handler, created } = setup({ id: 'u1', email: 'a@b.com' }, { marca: true });
+  const res = makeRes();
+  await handler(withTok({}), res);
+  assert.equal(res.code, 409);
+  assert.equal(res.body.code, 'conta_em_exclusao');
+  assert.equal(created.length, 0);
+});
+
+test('não consegue ler a marca de exclusão (tabela ausente/erro) → 503 fail-closed', async () => {
+  const { handler, created } = setup({ id: 'u1', email: 'a@b.com' }, { marcaErr: { code: '42P01' } });
+  const res = makeRes();
+  const orig = console.error; console.error = () => {};
+  try { await handler(withTok({}), res); } finally { console.error = orig; }
+  assert.equal(res.code, 503);
+  assert.equal(created.length, 0);
+});
+
+test('rate limit: usa checkout 20/h; 429 + Retry-After; RPC ausente → 503; nada é criado', async () => {
+  let { handler, created, rpcs } = setup({ id: 'u1', email: 'a@b.com' });
+  let res = makeRes(); await handler(withTok({}), res);
+  assert.deepEqual(rpcs[0], { fn: 'consumir_limite', args: { p_user_id: 'u1', p_acao: 'checkout', p_janela_seg: 3600, p_max: 20 } });
+  ({ handler, created } = setup({ id: 'u1', email: 'a@b.com' }, { limite: { data: 120, error: null } }));
+  res = makeRes(); await handler(withTok({}), res);
+  assert.equal(res.code, 429); assert.equal(res.headers['Retry-After'], '120'); assert.equal(created.length, 0);
+  const orig = console.error; console.error = () => {};
+  try {
+    ({ handler, created } = setup({ id: 'u1', email: 'a@b.com' }, { limite: { data: null, error: { code: 'PGRST202' } } }));
+    res = makeRes(); await handler(withTok({}), res);
+  } finally { console.error = orig; }
+  assert.equal(res.code, 503); assert.equal(created.length, 0);
+});
+
+test('CORS restrito à origem do app, no-store e preflight', async () => {
+  const { handler } = setup({ id: 'u1', email: 'a@b.com' });
+  const res = makeRes(); await handler({ method: 'OPTIONS', headers: {} }, res);
+  assert.equal(res.code, 200);
+  assert.equal(res.headers['Access-Control-Allow-Origin'], 'https://app.example.com');
+  assert.equal(res.headers['Cache-Control'], 'no-store');
 });

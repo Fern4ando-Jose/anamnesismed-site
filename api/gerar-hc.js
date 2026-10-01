@@ -27,7 +27,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { devolverCota } = require('./_comum');
+const { iniciaRota, autenticar, devolverCota } = require('./_comum');
 
 const MODEL = 'claude-haiku-4-5';
 const MAX_TOKENS = 1800;
@@ -162,9 +162,8 @@ function buildUserMessage(pt, demografia, motivos, relatoLivre) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  // CORS restrito, no-store, preflight e método (centralizado em _comum.js).
+  if (iniciaRota(req, res, 'POST')) return;
 
   var body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};
   var lang = body.lang === 'es' ? 'es' : 'pt';
@@ -182,20 +181,10 @@ module.exports = async (req, res) => {
   }
 
   // 1) Autenticação — token do Supabase no header Authorization (bloqueia anônimo)
-  var authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
-  var token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
-  if (!token) return res.status(401).json({ error: msg('Não autenticado', 'No autenticado') });
-
   var sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-
-  var userId = null;
-  try {
-    var au = await sbAdmin.auth.getUser(token);
-    if (au.error || !au.data || !au.data.user) return res.status(401).json({ error: msg('Sessão inválida', 'Sesión inválida') });
-    userId = au.data.user.id;
-  } catch (e) {
-    return res.status(401).json({ error: msg('Falha ao validar sessão', 'Error al validar la sesión') });
-  }
+  var auth = await autenticar(sbAdmin, req, msg);
+  if (auth.error) return res.status(auth.status).json({ error: auth.error });
+  var userId = auth.user.id;
 
   // 2) Conteúdo mínimo — validado ANTES de descontar a cota (400 não consome limite).
   // Precisa de pelo menos um motivo com alguma resposta OU relato livre preenchido

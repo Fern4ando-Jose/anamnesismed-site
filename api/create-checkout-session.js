@@ -15,18 +15,11 @@
 
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
+const { iniciaRota, autenticar, aplicaLimite, contaEmExclusao, STATUS_VIVOS } = require('./_comum');
 
 module.exports = async (req, res) => {
-  // CORS — falha fechado: só o domínio do app (NEXT_PUBLIC_URL), nunca '*'.
-  // Endpoint que cria cobrança não pode aceitar qualquer origem. Sem a env
-  // configurada, não enviamos o header (cross-origin bloqueado; same-origin segue).
-  const allowedOrigin = process.env.NEXT_PUBLIC_URL || '';
-  if (allowedOrigin) res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  // CORS restrito a NEXT_PUBLIC_URL (fail-closed), no-store, preflight e método — ver _comum.js.
+  if (iniciaRota(req, res, 'POST')) return;
 
   // Body inválido (undefined/não-objeto) → 400, nunca 500. A identidade NÃO vem do body.
   if (req.body !== undefined && req.body !== null && (typeof req.body !== 'object' || Array.isArray(req.body))) {
@@ -42,34 +35,30 @@ module.exports = async (req, res) => {
   }
 
   // Autenticação — token do Supabase no header Authorization
-  const authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
-  const token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
-  if (!token) return res.status(401).json({ error: 'Não autenticado' });
-
-  let userId = null;
-  let email = null;
-  try {
-    const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-    const { data, error } = await sbAdmin.auth.getUser(token);
-    if (error || !data || !data.user) return res.status(401).json({ error: 'Sessão inválida' });
-    userId = data.user.id;
-    email = data.user.email;
-  } catch (e) {
-    return res.status(401).json({ error: 'Falha ao validar sessão' });
-  }
+  const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  const auth = await autenticar(sbAdmin, req);
+  if (auth.error) return res.status(auth.status).json({ error: auth.error });
+  const userId = auth.user.id;
+  const email = auth.user.email;
   if (!userId || !email) return res.status(400).json({ error: 'Usuário sem email válido' });
 
-  // Perfil do usuário (service_role): plano atual e customer do Stripe, se já houver.
-  // FAIL-CLOSED: se não der para ler, não cria checkout (evita cobrança em duplicidade).
+  // Limite por usuário (20/h) — fail-closed: 429 + Retry-After; 503 se o limitador faltar.
+  if (!(await aplicaLimite(res, sbAdmin, userId, 'checkout'))) return;
+
+  // Perfil do usuário (service_role): plano atual e customer do Stripe, se já houver; e a marca de
+  // "conta em exclusão" (não se abre checkout para conta que está sendo apagada — senão a pessoa
+  // pagaria por uma conta que some). FAIL-CLOSED: sem conseguir ler, não cria checkout.
   let plano = null;
   let stripeId = null;
   try {
-    const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
     const { data: prof, error } = await sbAdmin.from('profiles').select('plano, stripe_id').eq('id', userId).maybeSingle();
     if (error) throw new Error(error.code || 'erro ao ler perfil');
     if (prof) { plano = prof.plano || null; stripeId = prof.stripe_id || null; }
+    if (await contaEmExclusao(sbAdmin, userId)) {
+      return res.status(409).json({ error: 'Esta conta está em processo de exclusão e não pode assinar.', code: 'conta_em_exclusao' });
+    }
   } catch (e) {
-    console.error('[create-checkout-session] não foi possível ler o perfil:', String(e && e.message).slice(0, 120));
+    console.error('[create-checkout-session] não foi possível ler o perfil/marca de exclusão:', String(e && e.message).slice(0, 120));
     return res.status(503).json({ error: 'Não foi possível verificar sua assinatura agora. Tente novamente em instantes.' });
   }
 
@@ -82,7 +71,7 @@ module.exports = async (req, res) => {
     // deixa seguir. Falha ao consultar o Stripe também é fail-closed.
     if (plano === 'pro' && stripeId) {
       const lista = await stripe.subscriptions.list({ customer: stripeId, status: 'all', limit: 20 });
-      const viva = ((lista && lista.data) || []).some((sub) => ['active', 'trialing', 'past_due'].includes(sub.status));
+      const viva = ((lista && lista.data) || []).some((sub) => STATUS_VIVOS.includes(sub.status));
       if (viva) {
         return res.status(409).json({ error: 'Você já possui uma assinatura ativa. Gerencie-a pela página de configurações.', code: 'already_subscribed' });
       }

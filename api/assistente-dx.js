@@ -26,7 +26,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { devolverCota } = require('./_comum');
+const { iniciaRota, autenticar, devolverCota } = require('./_comum');
 
 const MODEL = 'claude-sonnet-4-6';
 // 3000 (02/08/2026, 2ª correção do dia): eu havia baixado para 1500 para caber no
@@ -262,7 +262,8 @@ function parseRelatorio(text) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  // CORS restrito, no-store, preflight e método (centralizado em _comum.js).
+  if (iniciaRota(req, res, 'POST')) return;
 
   const body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};
   const lang = body.lang === 'es' ? 'es' : 'pt';
@@ -273,20 +274,10 @@ module.exports = async (req, res) => {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return res.status(500).json({ error: 'Supabase não configurado no servidor' });
 
   // 1) Autenticação — token do Supabase no header Authorization
-  const authHeader = req.headers['authorization'] || req.headers['Authorization'] || '';
-  const token = /^Bearer\s+(.+)$/i.test(authHeader) ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
-  if (!token) return res.status(401).json({ error: msg('Não autenticado', 'No autenticado') });
-
   const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-
-  let userId = null;
-  try {
-    const { data, error } = await sbAdmin.auth.getUser(token);
-    if (error || !data || !data.user) return res.status(401).json({ error: msg('Sessão inválida', 'Sesión inválida') });
-    userId = data.user.id;
-  } catch (e) {
-    return res.status(401).json({ error: msg('Falha ao validar sessão', 'Error al validar la sesión') });
-  }
+  const auth = await autenticar(sbAdmin, req, msg);
+  if (auth.error) return res.status(auth.status).json({ error: auth.error });
+  const userId = auth.user.id;
 
   // 2) Plano pago — só 'pro' tem acesso (TODO: incluir trial/segmentar médico×estudante depois)
   try {

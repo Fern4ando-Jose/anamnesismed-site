@@ -11,24 +11,36 @@
  * PRIVACIDADE: o conteúdo clínico só vai na resposta ao próprio dono; nada é logado.
  * Resposta com `Cache-Control: no-store` e download como arquivo.
  *
+ * LIMITES: 5 exportações/hora por usuário (429 + Retry-After; 503 se o limitador faltar) e TETO de
+ * tamanho — no máximo 20.000 linhas no total e ~4 MB de JSON (a Vercel corta respostas acima de
+ * 4,5 MB). Acima disso → 413 `export_muito_grande` com mensagem clara (nunca uma exportação
+ * truncada); o titular pede a exportação completa pelo canal do DPO (docs/lgpd.md).
+ *
  * Env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY, NEXT_PUBLIC_URL (CORS).
  */
 const { createClient } = require('@supabase/supabase-js');
-const { lerToken, aplicaCors, tabelaAusente, usuarioDoToken } = require('./_comum');
+const { iniciaRota, autenticar, aplicaLimite, tabelaAusente } = require('./_comum');
 
-const PAGINA = 1000;       // tamanho do lote (limite padrão do PostgREST)
-const MAX_LINHAS = 20000;  // teto de segurança por tabela (memória/tempo da função)
+const PAGINA = 1000;            // tamanho do lote (limite padrão do PostgREST)
+const MAX_LINHAS = 20000;       // teto TOTAL de linhas (todas as tabelas somadas)
+const MAX_BYTES = 4000000;      // teto do JSON (limite de resposta da Vercel ≈ 4,5 MB)
 
-// Lê todas as linhas do dono, em lotes. Tabela inexistente → []. Outro erro → lança.
-async function lerTudo(sb, tabela, coluna, valor) {
+class ExportGrande extends Error {}
+
+// Lê todas as linhas do dono, em lotes, descontando do orçamento COMPARTILHADO `orc`
+// ({ linhas, bytes }). Tabela inexistente → []. Estourou o teto → ExportGrande. Outro erro → lança.
+async function lerTudo(sb, tabela, coluna, valor, orc) {
   const linhas = [];
-  for (let ini = 0; ini < MAX_LINHAS; ini += PAGINA) {
+  for (let ini = 0; ; ini += PAGINA) {
     const { data, error } = await sb.from(tabela).select('*').eq(coluna, valor).order('id', { ascending: true }).range(ini, ini + PAGINA - 1);
     if (error) {
       if (tabelaAusente(error)) return [];
       throw new Error(tabela + ': ' + (error.code || 'erro de leitura'));
     }
     const lote = data || [];
+    orc.linhas += lote.length;
+    orc.bytes += JSON.stringify(lote).length;
+    if (orc.linhas > MAX_LINHAS || orc.bytes > MAX_BYTES) throw new ExportGrande(tabela);
     linhas.push(...lote);
     if (lote.length < PAGINA) break;
   }
@@ -36,29 +48,27 @@ async function lerTudo(sb, tabela, coluna, valor) {
 }
 
 module.exports = async (req, res) => {
-  aplicaCors(res, 'GET, OPTIONS');
-  res.setHeader('Cache-Control', 'no-store');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  if (iniciaRota(req, res, 'GET')) return;
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
     console.error('[exportar-dados] env do Supabase ausente');
     return res.status(500).json({ error: 'Supabase não configurado no servidor' });
   }
 
-  const token = lerToken(req);
-  if (!token) return res.status(401).json({ error: 'Não autenticado' });
-
   const sbAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  const user = await usuarioDoToken(sbAdmin, token);
-  if (!user) return res.status(401).json({ error: 'Sessão inválida' });
+  const auth = await autenticar(sbAdmin, req);
+  if (auth.error) return res.status(auth.status).json({ error: auth.error });
+  const user = auth.user;
+
+  if (!(await aplicaLimite(res, sbAdmin, user.id, 'exportar-dados'))) return;
 
   try {
-    const [perfis, historias, pdfs] = await Promise.all([
-      lerTudo(sbAdmin, 'profiles', 'id', user.id),
-      lerTudo(sbAdmin, 'historias_clinicas', 'user_id', user.id),
-      lerTudo(sbAdmin, 'pdf_exports', 'user_id', user.id),
-    ]);
+    // Sequencial (não Promise.all): o orçamento é compartilhado e o primeiro estouro já aborta,
+    // sem carregar as outras tabelas na memória da função.
+    const orc = { linhas: 0, bytes: 0 };
+    const perfis = await lerTudo(sbAdmin, 'profiles', 'id', user.id, orc);
+    const historias = await lerTudo(sbAdmin, 'historias_clinicas', 'user_id', user.id, orc);
+    const pdfs = await lerTudo(sbAdmin, 'pdf_exports', 'user_id', user.id, orc);
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Content-Disposition', 'attachment; filename="anamnesismed-meus-dados.json"');
     return res.status(200).json({
@@ -69,6 +79,13 @@ module.exports = async (req, res) => {
       pdf_exports: pdfs,
     });
   } catch (e) {
+    if (e instanceof ExportGrande) {
+      console.warn('[exportar-dados] exportação acima do teto (' + MAX_LINHAS + ' linhas / ' + MAX_BYTES + ' bytes) user=' + user.id);
+      return res.status(413).json({
+        error: 'Seus dados excedem o tamanho máximo da exportação pelo site (' + MAX_LINHAS + ' registros ou 4 MB). Peça a exportação completa pelo canal de privacidade (DPO).',
+        code: 'export_muito_grande',
+      });
+    }
     console.error('[exportar-dados] falha ao ler dados:', String(e && e.message).slice(0, 80), 'user=' + user.id);
     return res.status(500).json({ error: 'Não foi possível exportar seus dados agora. Tente novamente.' });
   }
