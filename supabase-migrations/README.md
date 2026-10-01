@@ -38,7 +38,6 @@ Functions, sem processo de migração no deploy).
 | `2026-06-14-ai-assistant-usage` | tabela `ai_assistant_usage` | `down/` |
 | `2026-06-23-rls-profiles-historias` | RLS + policies WITH CHECK | `down/` (⚠️ reabre gap) |
 | `2026-06-28-gerar-hc-usage` | tabela `gerar_hc_usage` | `down/` (⚠️ fail-closed) |
-| `2026-10-01-protege-colunas-plano` | trigger que bloqueia o cliente de alterar `plano`/`trial_end`/`stripe_id` + policies sem DELETE | `down/` (⚠️ reabre o furo de paywall) |
 | `2026-06-28-stripe-events-idempotencia` | tabela `stripe_events` | `down/` |
 | `2026-07-11-schema-migrations` | tabela de controle | — (base do log) |
 

@@ -18,12 +18,13 @@
 ## FASE 0 — Base e decisões (antes de qualquer funcionalidade)
 
 ### 0.1 Segurança de acesso (P0)
-- [x] Bloquear escrita de `plano`, `trial_end`, `stripe_id` pelo cliente — `supabase-migrations/2026-10-01-protege-colunas-plano.sql` (trigger + policies sem DELETE). Testada em Postgres 16 local: antes o usuário comum virava `pro`; depois não. **`tipo_usuario` fica para a Fase 1** (o modal de onboarding ainda grava pelo cliente)
+- [x] **Bloqueio do cliente em `plano`/`trial_end`/`stripe_id`: JÁ EXISTE EM PRODUÇÃO** (trigger `trg_profiles_protege_billing`, migration `2026-10-01-profiles-protege-billing`, aplicada fora do repositório). Verificado em 01/10/2026 com teste revertido no banco real: quem é `pro` continua `pro`, quem é `trial` não vira `pro`, trial e `stripe_id` não mudam, DELETE bloqueado. A migration que eu havia escrito foi **retirada** (seria um 2º trigger redundante)
+- [ ] **Divergência repo × produção:** o banco tem 5 migrations que não estão no `main` (`2026-09-30-profiles-stripe-id`, `2026-10-01-profiles-protege-billing`, `2026-10-01-uso-atomico-rpc`, `2026-10-02-devolver-cota-e-search-path`, `2026-10-02-revoke-handle-new-user`) e funções `consumir_cota_ia`/`devolver_cota_ia`. Trazer esses arquivos para o repo e alinhar o código da API (que ainda usa o limite diário não atômico)
 - [x] Autenticar `create-checkout-session` (userId e e-mail vêm do token; corpo ignorado) + front envia o token
-- [x] Gate server-side compartilhado `api/_lib/acesso.js` usado por `assistente-dx`, `gerar-hc` e checkout. `gerar-hc` agora exige plano pago **ou trial vigente** (trial vencido cai no motor local); falha de banco = 503, não "assine"
-- [ ] **Aplicar a migration no Supabase de produção (ação do dono — SQL Editor)** e rodar a verificação do cabeçalho do arquivo
-- [ ] Rodar o agente `qa-planos-acesso` e tratar os achados
-- **Aceite:** teste mostra que um usuário autenticado **não** consegue se tornar `pro` via API do Supabase nem criar checkout para outro usuário. ✔ no SQL local e em `test/api-acesso-handlers.test.js`; falta confirmar em produção após aplicar a migration.
+- [x] Gate server-side compartilhado `api/_lib/acesso.js` usado por `assistente-dx`, `gerar-hc` e checkout. `gerar-hc` exige plano pago **ou trial vigente**; falha de banco = 503, não "assine"
+- [x] Rodar o agente `qa-planos-acesso` → `docs/auditoria/05-qa-fase-0.1.md` (sem P0 novo; P1 abaixo)
+- [ ] **P1 do QA:** webhook do Stripe não confere o `error` do `update` (falha de banco devolve 200 e perde a ativação/cancelamento) · limite diário não atômico (já resolvido no banco pela RPC, falta o código usar) · perfil `trial` com `trial_end` NULL
+- **Aceite:** um usuário autenticado **não** consegue se tornar `pro` via API do Supabase nem criar checkout para outro usuário. ✔ confirmado em produção (banco) e em `test/api-acesso-handlers.test.js` (checkout).
 
 ### 0.2 Jurídico e LGPD (P0)
 - [ ] Reescrever termos e privacidade: IA generativa, envio à Anthropic, transferência internacional, retenção; remover "não compartilha com terceiros"
