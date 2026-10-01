@@ -67,6 +67,37 @@ function amNotify(msg, opts) {
 }
 window.amNotify = amNotify;
 
+// ── Aviso fixo inline (não some sozinho) — ex.: "você já tem assinatura ativa" ──
+// amShowBanner({id, msg:{pt,es}, link:{href,pt,es}}) → role="alert", com botão de fechar. Reaproveita o mesmo id.
+function amShowBanner(o) {
+  var lang = document.documentElement.getAttribute('data-lang') === 'pt' ? 'pt' : 'es';
+  var old = document.getElementById(o.id);
+  if (old) old.remove();
+  var b = document.createElement('div');
+  b.id = o.id;
+  b.className = 'am-banner';
+  b.setAttribute('role', 'alert');
+  var m = document.createElement('span');
+  m.className = 'am-banner-msg';
+  m.textContent = o.msg[lang] || o.msg.pt;
+  b.appendChild(m);
+  if (o.link) {
+    var a = document.createElement('a');
+    a.href = o.link.href;
+    a.textContent = o.link[lang] || o.link.pt;
+    b.appendChild(a);
+  }
+  var x = document.createElement('button');
+  x.type = 'button';
+  x.setAttribute('aria-label', lang === 'pt' ? 'Fechar aviso' : 'Cerrar aviso');
+  x.textContent = '\u2715';
+  x.addEventListener('click', function () { b.remove(); });
+  b.appendChild(x);
+  document.body.appendChild(b);
+  return b;
+}
+window.amShowBanner = amShowBanner;
+
 // ── Detectar em qual página estamos ──────────────────────────────────────
 const PAGE = (() => {
   const p = window.location.pathname;
@@ -1379,6 +1410,14 @@ async function stripeCheckout() {
       return;
     }
     const body = await res.json().catch(() => ({}));
+    if (res.status === 409 && body && body.code === 'already_subscribed') {
+      amShowBanner({
+        id: 'am-banner-subscribed',
+        msg: { pt: 'Você já tem uma assinatura ativa.', es: 'Ya tienes una suscripción activa.' },
+        link: { href: 'anamnesismed-config.html#plano', pt: 'Gerenciar assinatura', es: 'Gestionar suscripción' }
+      });
+      return;
+    }
     if (!res.ok || !body.url) throw new Error('checkout sem url (HTTP ' + res.status + ')');
     window.location.href = body.url; // Redireciona para o Stripe Checkout
   } catch (err) {

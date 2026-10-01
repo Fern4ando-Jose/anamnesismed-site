@@ -9,18 +9,19 @@
   --bg:#EAF0F2;            /* névoa clínica (fundo de página) */
   --bg-card:#FFFFFF;
   --ink:#0A1A24;           /* tinta profunda (texto / superfícies escuras) */
-  --primary:#0FA3B1;       /* teal evoluído */
-  --primary-dark:#0B7C88;
+  --primary:#0B7C88;       /* teal (texto/ícones/preenchimento c/ texto branco: >= 4,9:1 sobre branco) */
+  --primary-bright:#0FA3B1;/* teal vivo — só decorativo (gradientes, bordas, ícones grandes); NÃO usar com texto branco por cima (3,05:1) */
+  --primary-dark:#096873;
   --secondary:#0D9488;
   --accent:#FF5C49;        /* coral arterial (pulso / alerta) — uso contido */
   --pulse:#FF5C49;
   --signal:#15B27A;        /* verde-sinal (normal / positivo) */
-  --muted:#5A7079;
+  --muted:#4E636C;
   --teal-text:#0A6A75;       /* teal p/ TEXTO sobre fundo CLARO (>= 5:1 em #EAF0F2) */
   --teal-on-dark:#5ED6E3;    /* teal p/ TEXTO sobre superfície ESCURA (#0A1A24: 9,4:1) — nunca use --teal-text no escuro (2,8:1) */
   --text-on-dark:rgba(255,255,255,.78);   /* texto secundário sobre escuro (>= 7:1) */
   --muted-on-dark:#9DB6BD;   /* rótulos discretos sobre escuro (>= 7:1) */
-  --primary-deep:#096873;    /* hover de botões preenchidos */
+  --primary-deep:#075560;    /* hover de botões preenchidos */
   --r:10px;--r-lg:16px;
   --safe-t:env(safe-area-inset-top,0px);--safe-r:env(safe-area-inset-right,0px);--safe-b:env(safe-area-inset-bottom,0px);--safe-l:env(safe-area-inset-left,0px);
   --line:rgba(10,26,36,0.09);

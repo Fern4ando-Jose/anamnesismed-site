@@ -57,3 +57,27 @@
 .am-toast{pointer-events:auto;background:var(--ink,#0A1A24);color:#fff;border-left:4px solid var(--primary,#0FA3B1);border-radius:10px;padding:12px 14px;font:500 14px/1.45 var(--sans,system-ui,sans-serif);box-shadow:0 8px 28px rgba(10,26,36,.35);display:flex;gap:10px;align-items:flex-start}
 .am-toast.error{border-left-color:var(--accent,#FF5C49)}
 .am-toast button{margin-left:auto;background:none;border:0;color:#fff;font-size:20px;line-height:1;cursor:pointer;padding:0;min-width:44px;min-height:44px;margin:-10px -8px -10px auto}
+
+/* ── Botão de perigo ── */
+.am-btn--danger{background:#B3261E;color:#fff}
+.am-btn--danger:hover{background:#8F1D17}
+
+/* ── Diálogo modal (alertdialog) ── */
+.am-modal{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.am-modal[hidden]{display:none}
+.am-modal-backdrop{position:absolute;inset:0;background:rgba(10,26,36,.6)}
+.am-modal-box{position:relative;width:min(100%,480px);max-height:100%;overflow:auto;background:var(--bg-card,#fff);color:var(--ink,#0A1A24);border-radius:16px;padding:24px;box-shadow:0 24px 60px rgba(10,26,36,.4);display:flex;flex-direction:column;gap:12px}
+.am-modal-box:focus{outline:none}
+.am-modal-title{font:700 20px/1.25 var(--serif,system-ui,sans-serif);margin:0}
+.am-modal-body{font-size:14px;line-height:1.55;color:var(--ink,#0A1A24);display:flex;flex-direction:column;gap:8px}
+.am-modal-body p{margin:0}
+.am-modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
+@media (max-width:480px){.am-modal-actions .am-btn{flex:1 1 100%}}
+body.am-modal-open{overflow:hidden}
+
+/* ── Aviso fixo inline (ex.: assinatura já ativa) ── */
+.am-banner{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:10000;width:min(94vw,520px);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;
+  background:var(--ink,#0A1A24);color:#fff;border-left:4px solid var(--primary,#0FA3B1);border-radius:12px;padding:14px 16px;font:500 14px/1.45 var(--sans,system-ui,sans-serif);box-shadow:0 12px 36px rgba(10,26,36,.4)}
+.am-banner a{color:var(--teal-on-dark,#5ED6E3);font-weight:700;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px}
+.am-banner button{margin-left:auto;background:none;border:0;color:#fff;font-size:20px;line-height:1;cursor:pointer;min-width:44px;min-height:44px}
+.am-banner .am-banner-msg{flex:1 1 220px;padding-top:2px}
