@@ -148,6 +148,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
   .right{padding:24px 16px}
   .auth-card{max-width:100%}
 }
+@media(max-width:600px){
+  /* no celular o formulário precisa aparecer sem rolar: esconde a lista de benefícios */
+  .features-list{display:none}
+  .left-mid{padding:12px 0 0}
+  .left-sub{margin-bottom:0}
+  .left{padding-bottom:18px}
+  .right{padding-top:18px}
+}
 
 /* ERRO INLINE + CARREGANDO */
 .form-error{display:flex;gap:8px;align-items:flex-start;margin:0 0 16px;padding:12px 14px;border-radius:var(--r);background:#FDECEA;border:1px solid #F3B3AB;color:#8A1F11;font-size:14px;line-height:1.5}
