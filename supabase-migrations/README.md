@@ -45,6 +45,7 @@ Functions, sem processo de migração no deploy).
 | `2026-10-01-uso-atomico-rpc` | função `consumir_cota_ia` (cota diária atômica) | `down/` (⚠️ fail-closed nas rotas de IA) |
 | `2026-10-02-devolver-cota-e-search-path` | função `devolver_cota_ia` + `search_path = public, pg_temp` em todas as funções SECURITY DEFINER/triggers | `down/` (⚠️ reabre risco de search_path) |
 | `2026-10-02-revoke-handle-new-user` | revoga EXECUTE de `handle_new_user()` para anon/authenticated (Advisor 0028/0029) | `down/` (⚠️ reabre a chamada pela API) |
+| `2026-10-02-profiles-genero` | coluna `profiles.genero` ('F'/'M', opcional) para o tratamento Dra./Dr. de médicos | `down/` (perde o gênero informado) |
 
 ### Ações manuais do dono (SQL Editor) — correção de segurança de 2026-10-01
 
