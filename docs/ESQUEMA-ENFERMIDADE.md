@@ -1,6 +1,14 @@
 # Esquema da guia de enfermidade e do caso clínico (Fase 0.3)
 
-> **Status: PROPOSTA de desenho** — nenhum código foi alterado (`scripts/build.js` e `src/` intactos). Aprovado o desenho, a implementação é: registro `AM.enfermidade`, validador ligado ao `scripts/verify.sh` e renderer.
+> **Status: APROVADO e IMPLEMENTADO (menos o renderer).** Código: `AM.enfermidade` em `scripts/build.js`, validador em `scripts/validar-enfermidades.js` (ligado ao `scripts/verify.sh`), testes em `test/enfermidades.test.js`, piloto em `src/enfermidades/apendicite-aguda.js` (**rascunho**).
+>
+> **Ajustes em relação ao desenho original:**
+> - `refs[].verificada` (true/false) é obrigatório. Ref citada mas **ainda não conferida contra o livro** fica `false`; guia `publicado` exige todas `true`. Isso evita um "tem referência" que não significa "foi conferido".
+> - Fármaco aponta as refs por **índice**: `farmacologico[].refs: [0, 1]` (índices de `refs[]`).
+> - `diagnostico.diferenciais[]` aceita `id` (liga a motivo/enfermidade existente) **ou** `nome` (texto livre, sem link ainda).
+> - **Só guias `publicado` vão para `anamnesismed-enfermidades.js`**: o site é estático e tudo que está nesse arquivo é público. Pré-visualização local com rascunhos: `node scripts/build.js --rascunhos` (não commitar).
+> - O `build.js` **aborta** se alguma guia tiver erro de validação.
+> - Doses: ficam no guia do motivo (`src/motivos/*`) até terem ref; a guia de enfermidade traz só a classe do fármaco.
 > Segue o padrão que já existe: `AM.motivo(id, {...})` em `src/motivos/<id>.js`, textos bilíngues (`x` em PT, `xEs` em ES).
 
 ## 1. Por que separar "motivo" de "enfermidade"
@@ -104,14 +112,16 @@ Decisão validada: o texto é **nosso**; a fonte é **citada**, nunca copiada.
 ## 7. Piloto proposto
 Apendicite, pancreatite aguda e colecistite: já existem como motivos com mnemônicas, escalas e conduta, então o trabalho é **reorganizar + referenciar + escrever o que falta** (fisiopatologia, quadro, caso). Aproveita-se o conteúdo atual sem reescrevê-lo.
 
-## 8. Decisões que precisam do dono
-- [ ] Aprova o esquema acima (campos e regras do validador)?
-- [ ] Mínimo de 2 referências por guia (≥1 livro/diretriz) é adequado?
-- [ ] Piloto: apendicite, pancreatite e colecistite?
-- [ ] Quem preenche o rascunho: dono (pelos livros) ou agente gera rascunho para o dono conferir?
+## 8. Decisões do dono
+- [x] Esquema aprovado e **enfermidade separada do motivo**
+- [ ] Mínimo de 2 referências por guia (≥1 livro/diretriz): confirmar
+- [ ] Piloto: apendicite feita como rascunho; pancreatite e colecistite a seguir — confirmar
+- [ ] Quem preenche o rascunho: dono (pelos livros) ou agente gera rascunho para o dono conferir? (a apendicite foi rascunhada pelo agente a partir do guia do projeto)
 
-## 9. Implementação (após aprovação)
-- [ ] `AM.enfermidade` e `AM.caso` em `scripts/build.js` (+ saída ES); ordem das especialidades dinâmica
-- [ ] `scripts/validar-enfermidades.mjs` e chamada no `verify.sh`
+## 9. Implementação
+- [x] `AM.enfermidade` em `scripts/build.js` (casos dentro da enfermidade)
+- [x] `scripts/validar-enfermidades.js` + chamada no `verify.sh` + 11 testes
+- [ ] Ordem das especialidades dinâmica (hoje `ESP_ORDER` fixo no `build.js`; especialidades novas exigirão ajuste)
 - [ ] Renderer da guia e do caso (modo estudante), exibição de refs e `revisadoEm`
-- [ ] Piloto: 3 guias + 1 caso cada
+- [ ] Piloto: apendicite ✔ rascunho com 1 caso · pancreatite ☐ · colecistite ☐
+- [ ] **Conferir a apendicite**: dono pelos livros + agente `revisor-conteudo-clinico`; depois trocar `verificada` e `status`

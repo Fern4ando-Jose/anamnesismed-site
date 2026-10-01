@@ -35,12 +35,14 @@
 - **Aceite:** textos revisados por advogado; aviso visível na tela, no PDF e nos termos.
 
 ### 0.3 Modelo de dados do conteúdo (P0)
-> **Desenho proposto em `docs/ESQUEMA-ENFERMIDADE.md`** — aguarda aprovação do dono (§8 do documento). Implementação só depois.
-- [ ] Definir esquema `enfermidade` (definição, epidemiologia, fisiopatologia, quadro clínico, diagnóstico, exames, tratamento, complicações, prognóstico, `refs[]`, `revisadoEm`, `revisor`) e `caso` (apresentação, dados progressivos, perguntas, gabarito, pérolas, ref)
-- [ ] Estender `scripts/build.js` (registro `AM.enfermidade`, `ESP_ORDER` dinâmico, versão ES)
-- [ ] Unificar a lista de especialidades (hoje duplicada em 3 lugares)
-- [ ] Validador (campos obrigatórios, `refs`, paridade PT/ES, links de DDx) ligado a `scripts/verify.sh`
-- **Aceite:** `verify.sh` falha se uma enfermidade não tiver referência ou tradução.
+> Desenho aprovado pelo dono (enfermidade **separada** do motivo). Detalhes e ajustes: `docs/ESQUEMA-ENFERMIDADE.md`.
+- [x] Esquema `enfermidade` (com `casos[]` dentro) documentado
+- [x] `scripts/build.js` com `AM.enfermidade`; aborta se houver erro; só guias `publicado` vão ao arquivo público
+- [x] Validador (obrigatórios, paridade PT/ES, refs, ids, fármacos, status, casos) ligado ao `scripts/verify.sh` — 11 testes
+- [x] Piloto: `src/enfermidades/apendicite-aguda.js` (**rascunho**, refs ainda não conferidas)
+- [ ] Unificar a lista de especialidades (hoje duplicada em `build.js`, `SPEC_META`, `REF_PAGE`) — **toca HTML**, esperar o merge da outra branch
+- [ ] Conferir a apendicite (dono + `revisor-conteudo-clinico`)
+- **Aceite:** `verify.sh` falha se uma enfermidade não tiver referência ou tradução. ✔
 
 ### 0.4 Decisões do dono (bloqueiam fases seguintes)
 - [x] Residente conta como **Médico** (decidido pelo dono)
