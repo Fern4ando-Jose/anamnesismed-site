@@ -86,6 +86,7 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
 
 /* PRICING DETAIL */
 .pricing-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.pricing-row-5{grid-template-columns:repeat(5,1fr)}
 .price-mini{background:var(--cream);border-radius:9px;padding:14px;text-align:center}
 .price-mini-val{font-family:var(--serif);font-size:22px;font-weight:900;color:var(--ink)}
 .price-mini-lbl{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
@@ -100,10 +101,13 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
 .todo{background:var(--cream);border:1.5px solid var(--line);color:var(--muted)}
 .now{background:var(--red);color:var(--white)}
 
+@media(max-width:820px){
+  .pricing-row-5{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:600px){
   .phase-body{grid-template-columns:1fr}
   .arch-flow{flex-direction:column;align-items:flex-start}
-  .pricing-row{grid-template-columns:1fr}
+  .pricing-row,.pricing-row-5{grid-template-columns:1fr}
   .phase-head{flex-wrap:wrap;padding:16px}
   .phase-title{font-size:16px}
   .phase-body{padding:16px}
@@ -396,7 +400,7 @@ h1{font-family:var(--serif);font-size:28px;font-weight:900;margin-bottom:6px;let
     <span class="phase-badge badge-now">Essencial</span>
   </div>
   <div style="padding:20px 22px">
-    <div class="pricing-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="pricing-row pricing-row-5">
       <div class="price-mini">
         <div class="price-mini-val" style="font-size:16px">$12</div>
         <div class="price-mini-lbl">Domínio</div>
