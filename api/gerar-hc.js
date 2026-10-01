@@ -27,6 +27,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
+const { devolverCota } = require('./_comum');
 
 const MODEL = 'claude-haiku-4-5';
 const MAX_TOKENS = 1800;
@@ -250,6 +251,8 @@ module.exports = async (req, res) => {
       .trim();
 
     if (!narrativa) {
+      // Modelo não entregou texto: o usuário não recebeu o serviço → devolve a cota.
+      await devolverCota(sbAdmin, userId, 'gerar-hc');
       return res.status(502).json({ error: pt ? 'O modelo não retornou texto' : 'El modelo no devolvió texto' });
     }
     // Observabilidade estruturada: uma linha JSON por chamada paga, para a rotina
@@ -267,6 +270,9 @@ module.exports = async (req, res) => {
     // Loga só o necessário no servidor (sem dados de paciente) e devolve mensagem FIXA:
     // err.message do SDK pode conter trechos do request/detalhes internos.
     console.error('gerar-hc error:', JSON.stringify({ status: (err && err.status) || null, name: err && err.name, msg: String(err && err.message).slice(0, 200) }));
+    // A cota foi consumida antes da chamada: se o modelo falhou (erro/timeout/5xx do SDK),
+    // devolve-a — sem mascarar o erro original (devolverCota nunca lança).
+    await devolverCota(sbAdmin, userId, 'gerar-hc');
     var status = (err && err.status) || 500;
     if (status === 429) return res.status(503).json({ error: msg('Serviço de IA sobrecarregado. Tente novamente em instantes.', 'Servicio de IA sobrecargado. Inténtalo de nuevo en unos instantes.') });
     return res.status(502).json({ error: msg('Erro ao gerar a HC', 'Error al generar la HC') });

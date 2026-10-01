@@ -26,6 +26,7 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
+const { devolverCota } = require('./_comum');
 
 const MODEL = 'claude-sonnet-4-6';
 // 3000 (02/08/2026, 2ª correção do dia): eu havia baixado para 1500 para caber no
@@ -366,6 +367,8 @@ module.exports = async (req, res) => {
     if (!relatorio) {
       // fallback: devolve o texto cru para o front exibir como apoio
       if (text) return res.status(200).json({ relatorio: null, raw: text });
+      // Modelo não entregou nada utilizável: o usuário não recebeu o serviço → devolve a cota.
+      await devolverCota(sbAdmin, userId, 'assistente-dx');
       return res.status(502).json({ error: msg('O modelo não retornou análise', 'El modelo no devolvió análisis') });
     }
     return res.status(200).json({ relatorio });
@@ -373,6 +376,9 @@ module.exports = async (req, res) => {
     // Loga só o necessário no servidor (sem dados de paciente) e devolve mensagem FIXA:
     // err.message do SDK pode conter trechos do request/detalhes internos.
     console.error('assistente-dx error:', JSON.stringify({ status: (err && err.status) || null, name: err && err.name, msg: String(err && err.message).slice(0, 200) }));
+    // A cota foi consumida antes da chamada: se o modelo falhou (erro/timeout/5xx do SDK),
+    // devolve-a — sem mascarar o erro original (devolverCota nunca lança).
+    await devolverCota(sbAdmin, userId, 'assistente-dx');
     const status = (err && err.status) || 500;
     if (status === 429) return res.status(503).json({ error: msg('Serviço de IA sobrecarregado. Tente novamente em instantes.', 'Servicio de IA sobrecargado. Inténtalo de nuevo en unos instantes.') });
     return res.status(502).json({ error: msg('Erro ao gerar a análise', 'Error al generar el análisis') });

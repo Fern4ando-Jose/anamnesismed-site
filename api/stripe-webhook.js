@@ -19,6 +19,31 @@
 const Stripe = require('stripe');
 const { createClient } = require('@supabase/supabase-js');
 
+// Eventos que EXIGEM escrita no banco. Só estes entram em stripe_events: registrar todo
+// tipo que o Stripe enviar (inclusive os que ignoramos) só incharia a tabela e daria
+// superfície para encher o banco com eventos irrelevantes.
+//  - customer.subscription.updated só conta quando a assinatura realmente acabou
+//    (unpaid/canceled); active/past_due etc. não escrevem nada.
+//  - invoice.payment_failed só loga (não rebaixa na 1ª falha).
+function eventoExigeEscrita(event) {
+  switch (event && event.type) {
+    case 'checkout.session.completed':
+    case 'customer.subscription.deleted':
+      return true;
+    case 'customer.subscription.updated': {
+      const st = event.data && event.data.object && event.data.object.status;
+      return st === 'unpaid' || st === 'canceled';
+    }
+    default:
+      return false;
+  }
+}
+
+// Mensagem de erro do Supabase sem risco de vazar dado: só código + trecho curto.
+function descreveErro(error) {
+  return (error && (error.code || String(error.message || '').slice(0, 120))) || 'erro desconhecido';
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -45,6 +70,15 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Webhook signature inválida' });
   }
 
+  // Tipos que não escrevem nada: confirma (200) SEM registrar em stripe_events.
+  if (!eventoExigeEscrita(event)) {
+    if (event.type === 'invoice.payment_failed') {
+      // Só registra; não rebaixa na primeira falha (dunning do Stripe cuida das novas tentativas).
+      console.warn(`[stripe-webhook] pagamento falhou — customer ${event.data.object.customer} (sem rebaixar)`);
+    }
+    return res.status(200).json({ received: true, ignored: true });
+  }
+
   // ── Idempotência: grava o event.id ANTES de processar ───────────────────────
   // O Stripe reentrega eventos; sem isto um checkout.session.completed repetido
   // reativaria a assinatura. PK única em stripe_events → 23505 = já processado.
@@ -69,10 +103,19 @@ module.exports = async (req, res) => {
       case 'checkout.session.completed': {
         const userId = obj.metadata?.userId;
         if (userId) {
-          await sbAdmin.from('profiles')
+          // `update` do supabase-js NÃO lança: devolve { error }. Sem checar, um erro (ou
+          // nenhuma linha afetada) devolvia 200 ao Stripe, que não retentava — cliente
+          // pagou e ficou sem o plano. Qualquer falha aqui vira throw → 5xx + reversão da
+          // idempotência (catch abaixo), e o Stripe reentrega.
+          const { data: linhas, error } = await sbAdmin.from('profiles')
             .update({ plano: 'pro', stripe_id: obj.customer })
-            .eq('id', userId);
+            .eq('id', userId)
+            .select('id');
+          if (error) throw new Error('falha ao ativar plano pro: ' + descreveErro(error));
+          if (!Array.isArray(linhas) || linhas.length === 0) throw new Error('perfil não encontrado para ativar o plano pro');
           console.log(`✅ Usuário ${userId} ativado como pro`);
+        } else {
+          console.warn('[stripe-webhook] checkout.session.completed sem metadata.userId — nada ativado');
         }
         break;
       }
@@ -87,21 +130,19 @@ module.exports = async (req, res) => {
       case 'customer.subscription.deleted': {
         const customerId = obj.customer;
         if (customerId) {
-          await sbAdmin.from('profiles')
+          // Mesma regra: checa o `error` (não lança). Zero linhas é legítimo aqui (conta já
+          // excluída / customer desconhecido), então só o erro real reprova.
+          const { error } = await sbAdmin.from('profiles')
             .update({ plano: 'trial' })
             .eq('stripe_id', customerId);
+          if (error) throw new Error('falha ao rebaixar plano: ' + descreveErro(error));
           console.log(`⚠️  Assinatura encerrada (${event.type}) — customer ${customerId} → trial`);
         }
         break;
       }
 
-      case 'invoice.payment_failed':
-        // Só registra; não rebaixa na primeira falha (ver comentário acima).
-        console.warn(`[stripe-webhook] pagamento falhou — customer ${obj.customer} (sem rebaixar)`);
-        break;
-
       default:
-        // Evento não tratado — OK, só confirma recebimento
+        // Inalcançável: eventoExigeEscrita() já filtrou os tipos sem escrita.
         break;
     }
   } catch (err) {
@@ -109,7 +150,10 @@ module.exports = async (req, res) => {
     // reentrega do Stripe reprocesse o evento (senão o 23505 o pularia para sempre).
     console.error('[stripe-webhook] erro ao processar', event.type, err && err.message ? err.message : err);
     if (dedupActive) {
-      try { await sbAdmin.from('stripe_events').delete().eq('event_id', event.id); } catch (_) { /* best-effort */ }
+      try {
+        const del = await sbAdmin.from('stripe_events').delete().eq('event_id', event.id);
+        if (del && del.error) console.error('[ALERTA stripe] não foi possível reverter a idempotência de', event.id, '— o Stripe pode pular a reentrega:', descreveErro(del.error));
+      } catch (_) { console.error('[ALERTA stripe] exceção ao reverter a idempotência de', event.id); }
     }
     return res.status(500).json({ error: 'Erro ao processar evento' });
   }
