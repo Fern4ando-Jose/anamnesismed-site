@@ -14,11 +14,11 @@ AM.enfermidade("apendicite-aguda", {
   "definicao": "Inflamação aguda do apêndice vermiforme, geralmente por obstrução da luz, com risco de necrose, perfuração e peritonite.",
   "definicaoEs": "Inflamación aguda del apéndice vermiforme, generalmente por obstrucción de la luz, con riesgo de necrosis, perforación y peritonitis.",
 
-  "epidemiologia": "Causa mais comum de abdome agudo cirúrgico. Pode ocorrer em qualquer idade, com maior frequência entre a segunda e a terceira décadas de vida.",
-  "epidemiologiaEs": "Causa más común de abdomen agudo quirúrgico. Puede ocurrir a cualquier edad, con mayor frecuencia entre la segunda y la tercera décadas de la vida.",
+  "epidemiologia": "Causa mais comum de abdome agudo cirúrgico. Pode ocorrer em qualquer idade, com maior frequência entre a segunda e a terceira décadas de vida, com leve predomínio no sexo masculino. O risco ao longo da vida é de cerca de 7 a 8% [conferir].",
+  "epidemiologiaEs": "Causa más común de abdomen agudo quirúrgico. Puede ocurrir a cualquier edad, con mayor frecuencia entre la segunda y la tercera décadas de la vida, con leve predominio en el sexo masculino. El riesgo a lo largo de la vida es de alrededor del 7 al 8% [verificar].",
 
-  "fisiopatologia": "A obstrução da luz (fecalito, hiperplasia linfoide, outras causas) leva ao acúmulo de muco, aumento da pressão intraluminal e distensão. Segue-se comprometimento do retorno venoso e linfático, proliferação bacteriana, isquemia da parede, necrose e, se não tratada, perfuração com peritonite localizada ou difusa. A dor visceral inicial, periumbilical, passa a somática e localizada na fossa ilíaca direita quando o peritônio parietal é irritado.",
-  "fisiopatologiaEs": "La obstrucción de la luz (fecalito, hiperplasia linfoide, otras causas) lleva a acumulación de moco, aumento de la presión intraluminal y distensión. Sigue el compromiso del retorno venoso y linfático, proliferación bacteriana, isquemia de la pared, necrosis y, si no se trata, perforación con peritonitis localizada o difusa. El dolor visceral inicial, periumbilical, pasa a somático y localizado en la fosa ilíaca derecha cuando se irrita el peritoneo parietal.",
+  "fisiopatologia": "A obstrução da luz (fecalito, hiperplasia linfoide, outras causas) leva ao acúmulo de muco, aumento da pressão intraluminal e distensão. Segue-se comprometimento do retorno venoso e linfático, proliferação bacteriana, isquemia da parede, necrose e, se não tratada, perfuração com peritonite localizada ou difusa. Nem todo caso evolui de forma progressiva: parte tem curso não complicado, o que fundamenta a discussão do tratamento com antibiótico. A dor visceral inicial, periumbilical, passa a somática e localizada na fossa ilíaca direita quando o peritônio parietal é irritado.",
+  "fisiopatologiaEs": "La obstrucción de la luz (fecalito, hiperplasia linfoide, otras causas) lleva a acumulación de moco, aumento de la presión intraluminal y distensión. Sigue el compromiso del retorno venoso y linfático, proliferación bacteriana, isquemia de la pared, necrosis y, si no se trata, perforación con peritonitis localizada o difusa. No todo caso evoluciona de forma progresiva: parte tiene curso no complicado, lo que fundamenta la discusión del tratamiento con antibióticos. El dolor visceral inicial, periumbilical, pasa a somático y localizado en la fosa ilíaca derecha cuando se irrita el peritoneo parietal.",
 
   "quadroClinico": {
     "sintomas": [
@@ -49,11 +49,13 @@ AM.enfermidade("apendicite-aguda", {
     ],
     "formasAtipicas": [
       "Apêndice retrocecal ou pélvico: dor menos localizada, com sinal do psoas ou do obturador",
-      "Idosos, crianças e gestantes: apresentação menos típica e diagnóstico mais tardio"
+      "Idosos, crianças e gestantes: apresentação menos típica, diagnóstico mais tardio e maior taxa de perfuração",
+      "Gestante: com o útero aumentado, a dor pode aparecer em quadrante superior direito"
     ],
     "formasAtipicasEs": [
       "Apéndice retrocecal o pélvico: dolor menos localizado, con signo del psoas o del obturador",
-      "Ancianos, niños y gestantes: presentación menos típica y diagnóstico más tardío"
+      "Ancianos, niños y gestantes: presentación menos típica, diagnóstico más tardío y mayor tasa de perforación",
+      "Gestante: con el útero aumentado, el dolor puede aparecer en el cuadrante superior derecho"
     ]
   },
 
@@ -74,7 +76,7 @@ AM.enfermidade("apendicite-aguda", {
         "achado": "Resultado negativo afasta gravidez; positivo exige investigar gravidez ectópica", "achadoEs": "Resultado negativo descarta embarazo; positivo exige investigar embarazo ectópico",
         "quando": "Mulheres em idade fértil", "quandoEs": "Mujeres en edad fértil" },
       { "nome": "Ultrassonografia abdominal", "nomeEs": "Ecografía abdominal",
-        "achado": "Apêndice não compressível e aumentado de calibre, líquido periapendicular", "achadoEs": "Apéndice no compresible y aumentado de calibre, líquido periapendicular",
+        "achado": "Apêndice não compressível e aumentado de calibre (diâmetro acima de 6 mm), líquido periapendicular", "achadoEs": "Apéndice no compresible y aumentado de calibre (diámetro por encima de 6 mm), líquido periapendicular",
         "quando": "Primeira linha, sobretudo em crianças e gestantes", "quandoEs": "Primera línea, sobre todo en niños y gestantes" },
       { "nome": "TC de abdome e pelve com contraste", "nomeEs": "TC de abdomen y pelvis con contraste",
         "achado": "Apêndice espessado, densificação da gordura, apendicolito, abscesso", "achadoEs": "Apéndice engrosado, densificación de la grasa, apendicolito, absceso",
@@ -88,7 +90,12 @@ AM.enfermidade("apendicite-aguda", {
       { "nome": "Gastroenterite", "nomeEs": "Gastroenteritis", "pista": "Diarreia e vômitos antes da dor, dor difusa", "pistaEs": "Diarrea y vómitos antes del dolor, dolor difuso" },
       { "nome": "Cólica ureteral", "nomeEs": "Cólico ureteral", "pista": "Dor lombar que irradia, hematúria, paciente agitado", "pistaEs": "Dolor lumbar que irradia, hematuria, paciente agitado" },
       { "nome": "Doença inflamatória pélvica", "nomeEs": "Enfermedad inflamatoria pélvica", "pista": "Mulher, dor bilateral, corrimento, dor à mobilização do colo", "pistaEs": "Mujer, dolor bilateral, flujo, dolor a la movilización del cuello" },
-      { "nome": "Gravidez ectópica", "nomeEs": "Embarazo ectópico", "pista": "β-HCG positivo, atraso menstrual, instabilidade", "pistaEs": "β-HCG positivo, retraso menstrual, inestabilidad" }
+      { "nome": "Gravidez ectópica", "nomeEs": "Embarazo ectópico", "pista": "β-HCG positivo, atraso menstrual, instabilidade", "pistaEs": "β-HCG positivo, retraso menstrual, inestabilidad" },
+      { "nome": "Linfadenite mesentérica ou ileíte", "nomeEs": "Linfadenitis mesentérica o ileítis", "pista": "Crianças e jovens, dor difusa, quadro de infecção respiratória ou gastrointestinal recente", "pistaEs": "Niños y jóvenes, dolor difuso, cuadro de infección respiratoria o gastrointestinal reciente" },
+      { "nome": "Doença de Crohn", "nomeEs": "Enfermedad de Crohn", "pista": "Diarreia crônica, perda de peso, história prévia ou achados de ileíte terminal", "pistaEs": "Diarrea crónica, pérdida de peso, antecedentes o hallazgos de ileítis terminal" },
+      { "nome": "Torção ou ruptura de cisto ovariano", "nomeEs": "Torsión o ruptura de quiste ovárico", "pista": "Mulher, dor súbita, ultrassonografia pélvica alterada", "pistaEs": "Mujer, dolor súbito, ecografía pélvica alterada" },
+      { "nome": "Torção testicular", "nomeEs": "Torsión testicular", "pista": "Homem jovem com dor na fossa ilíaca ou no abdome baixo: sempre examinar os testículos", "pistaEs": "Varón joven con dolor en la fosa ilíaca o en el abdomen bajo: siempre examinar los testículos" },
+      { "nome": "Hérnia inguinal ou crural encarcerada", "nomeEs": "Hernia inguinal o crural incarcerada", "pista": "Abaulamento na região inguinal, dor localizada", "pistaEs": "Abultamiento en la región inguinal, dolor localizado" }
     ]
   },
 
@@ -104,25 +111,25 @@ AM.enfermidade("apendicite-aguda", {
       "Evaluación del cirujano e indicación según la escala y la imagen"
     ],
     "farmacologico": [
-      { "classe": "Analgésicos e antieméticos", "classeEs": "Analgésicos y antieméticos", "nota": "Sintomáticos; doses a preencher com referência", "notaEs": "Sintomáticos; dosis a completar con referencia", "refs": [0, 1] },
+      { "classe": "Analgésicos e antieméticos", "classeEs": "Analgésicos y antieméticos", "nota": "Sintomáticos; a analgesia, incluindo opioide, não prejudica o diagnóstico (Cochrane). Doses a preencher com referência", "notaEs": "Sintomáticos; la analgesia, incluido el opioide, no perjudica el diagnóstico (Cochrane). Dosis a completar con referencia", "refs": [0, 4] },
       { "classe": "Antibióticos", "classeEs": "Antibióticos", "nota": "Profilaxia pré-operatória; terapêutico na forma complicada (perfurada). Esquema e doses a preencher com referência", "notaEs": "Profilaxis preoperatoria; terapéutico en la forma complicada (perforada). Esquema y dosis a completar con referencia", "refs": [1] }
     ],
     "cirurgico": [
-      "Apendicectomia, preferencialmente por via laparoscópica, nos casos confirmados ou de alta probabilidade",
-      "Forma perfurada ou com abscesso: antibioticoterapia e abordagem conforme a gravidade",
+      "Apendicectomia, preferencialmente por via laparoscópica, nos casos confirmados ou de alta probabilidade; na forma não complicada, o atraso de até 24 h é considerado seguro [conferir]",
+      "Forma perfurada ou com abscesso: antibioticoterapia e abordagem conforme a gravidade; abscesso pode ser drenado por via percutânea, com decisão posterior sobre apendicectomia de intervalo [conferir]",
       "Tratamento não operatório com antibióticos pode ser considerado em casos selecionados de apendicite não complicada, com risco de recorrência; decisão compartilhada com o paciente [conferir na diretriz WSES e nos livros]"
     ],
     "cirurgicoEs": [
-      "Apendicectomía, preferentemente por vía laparoscópica, en los casos confirmados o de alta probabilidad",
-      "Forma perforada o con absceso: antibioticoterapia y abordaje según la gravedad",
+      "Apendicectomía, preferentemente por vía laparoscópica, en los casos confirmados o de alta probabilidad; en la forma no complicada, el retraso de hasta 24 h se considera seguro [verificar]",
+      "Forma perforada o con absceso: antibioticoterapia y abordaje según la gravedad; el absceso puede drenarse por vía percutánea, con decisión posterior sobre apendicectomía de intervalo [verificar]",
       "El tratamiento no operatorio con antibióticos puede considerarse en casos seleccionados de apendicitis no complicada, con riesgo de recurrencia; decisión compartida con el paciente [verificar en la guía WSES y en los libros]"
     ],
     "encaminhar": "Todo caso suspeito vai à avaliação cirúrgica no mesmo atendimento.",
     "encaminharEs": "Todo caso sospechoso pasa a evaluación quirúrgica en la misma atención."
   },
 
-  "complicacoes": ["Perfuração", "Peritonite localizada ou difusa", "Abscesso apendicular", "Sepse", "Infecção de sítio cirúrgico"],
-  "complicacoesEs": ["Perforación", "Peritonitis localizada o difusa", "Absceso apendicular", "Sepsis", "Infección del sitio quirúrgico"],
+  "complicacoes": ["Perfuração", "Peritonite localizada ou difusa", "Abscesso apendicular", "Sepse", "Infecção de sítio cirúrgico", "Íleo", "Abscesso residual", "Aderências"],
+  "complicacoesEs": ["Perforación", "Peritonitis localizada o difusa", "Absceso apendicular", "Sepsis", "Infección del sitio quirúrgico", "Íleo", "Absceso residual", "Adherencias"],
   "prognostico": "Bom quando o diagnóstico e o tratamento são precoces; morbidade e mortalidade aumentam com a perfuração e o atraso.",
   "prognosticoEs": "Bueno cuando el diagnóstico y el tratamiento son precoces; la morbimortalidad aumenta con la perforación y el retraso.",
   "sinaisAlarme": ["Rigidez abdominal em tábua", "Instabilidade hemodinâmica", "Dor que piora ao mínimo movimento", "Febre alta com piora clínica"],
@@ -167,9 +174,10 @@ AM.enfermidade("apendicite-aguda", {
 
   "refs": [
     { "tipo": "livro", "citacao": "Townsend CM et al. Sabiston Textbook of Surgery (apêndice). Edição mais recente usada pelo dono.", "localizacao": "[conferir capítulo/página]", "verificada": false },
-    { "tipo": "diretriz", "citacao": "Di Saverio S et al. Diagnosis and treatment of acute appendicitis: 2020 update of the WSES Jerusalem guidelines. World J Emerg Surg 2020;15:27.", "localizacao": "[conferir]", "ano": 2020, "verificada": false },
+    { "tipo": "diretriz", "citacao": "Di Saverio S et al. Diagnosis and treatment of acute appendicitis: 2020 update of the WSES Jerusalem guidelines. World J Emerg Surg 2020;15:27.", "localizacao": "[existe edição 2025 das diretrizes: conferir qual usar]", "ano": 2020, "verificada": false },
     { "tipo": "artigo", "citacao": "Alvarado A. A practical score for the early diagnosis of acute appendicitis. Ann Emerg Med 1986;15:557-564.", "localizacao": "[conferir]", "ano": 1986, "verificada": false },
-    { "tipo": "artigo", "citacao": "Andersson M, Andersson RE. The appendicitis inflammatory response score: a tool for the diagnosis of acute appendicitis that outperforms the Alvarado score. World J Surg 2008;32:1843-1849.", "localizacao": "[conferir]", "ano": 2008, "verificada": false }
+    { "tipo": "artigo", "citacao": "Andersson M, Andersson RE. The appendicitis inflammatory response score: a tool for the diagnosis of acute appendicitis that outperforms the Alvarado score. World J Surg 2008;32:1843-1849.", "localizacao": "[conferir]", "ano": 2008, "verificada": false },
+    { "tipo": "artigo", "citacao": "Manterola C et al. Analgesia in patients with acute abdominal pain. Cochrane Database Syst Rev 2011;(1):CD005660.", "localizacao": "[conferir]", "ano": 2011, "verificada": false }
   ],
   "status": "rascunho",
   "revisadoEm": "",

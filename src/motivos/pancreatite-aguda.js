@@ -170,7 +170,7 @@ AM.motivo("pancreatite-aguda", {
           [
             "T",
             "Trauma",
-            "Trauma abdominal / pós-CPRE"
+            "Trauma abdominal"
           ],
           [
             "S",
@@ -190,7 +190,7 @@ AM.motivo("pancreatite-aguda", {
           [
             "S",
             "Scorpion",
-            "Picada de escorpião"
+            "Picada de escorpião (Tityus trinitatis — regional, Trinidad)"
           ],
           [
             "H",
@@ -383,7 +383,7 @@ AM.motivo("pancreatite-aguda", {
             "Queda Ht>10%, BUN↑>5, Ca<8, PaO₂<60, BE>4, sequestro fluido>6L"
           ]
         ],
-        "note": "≥3 critérios → pancreatite grave (mortalidade crescente com a pontuação)"
+        "note": "≥3 critérios → pancreatite grave (mortalidade crescente com a pontuação) | Limites da admissão acima: pancreatite não biliar; na biliar: idade >70, leucócitos >18.000, glicose >220, DHL >400, TGO >250"
       }
     ],
     "conduta": {
@@ -399,7 +399,7 @@ AM.motivo("pancreatite-aguda", {
         "Hidratação venosa precoce, moderadamente agressiva e guiada por metas (Ringer lactato) — pilar do tratamento",
         "Analgesia (opioides se necessário)",
         "Antieméticos",
-        "Suporte nutricional precoce (enteral preferível)",
+        "Dieta oral precoce (24-48 h) conforme tolerância; enteral se não tolerar (preferível à parenteral)",
         "ATB apenas se necrose infectada/colangite — não profilático"
       ],
       "steps": [
@@ -427,7 +427,7 @@ AM.motivo("pancreatite-aguda", {
           ],
           [
             "Trauma",
-            "Trauma abdominal / pos-CPRE"
+            "Trauma abdominal"
           ],
           [
             "Steroids",
@@ -443,7 +443,7 @@ AM.motivo("pancreatite-aguda", {
           ],
           [
             "Scorpion",
-            "Picadura de escorpión"
+            "Picadura de escorpión (Tityus trinitatis — regional, Trinidad)"
           ],
           [
             "Hyper",
@@ -627,7 +627,7 @@ AM.motivo("pancreatite-aguda", {
             "Caída Hto>10%, BUN↑>5, Ca<8, PaO₂<60, EB>4, secuestro de fluido>6L"
           ]
         ],
-        "note": "≥3 criterios → pancreatitis grave (mortalidad creciente con la puntuación)"
+        "note": "≥3 criterios → pancreatitis grave (mortalidad creciente con la puntuación) | Límites del ingreso arriba: pancreatitis no biliar; en la biliar: edad >70, leucocitos >18.000, glucosa >220, LDH >400, AST >250"
       }
     ],
     "conduta": {
@@ -643,7 +643,7 @@ AM.motivo("pancreatite-aguda", {
         "Hidratación venosa precoz, moderadamente agresiva y guiada por metas (Ringer lactato) — pilar del tratamiento",
         "Analgesia (opioides si es necesario)",
         "Antieméticos",
-        "Soporte nutricional precoz (enteral preferible)",
+        "Dieta oral precoz (24-48 h) según tolerancia; enteral si no la tolera (preferible a la parenteral)",
         "ATB solo si necrosis infectada/colangitis — no profiláctico"
       ],
       "steps": [

@@ -296,7 +296,7 @@ AM.motivo("colecistite-colelitiase", {
         "name": "Sinal de Murphy",
         "eponym": "Colecistite aguda",
         "how": "Parada inspiratória à palpação do HCD",
-        "means": "Colecistite aguda — alta sensibilidade"
+        "means": "Colecistite aguda — boa especificidade; sensibilidade moderada (isolado, não afasta o diagnóstico)"
       },
       {
         "name": "Tríade de Charcot",
@@ -375,7 +375,7 @@ AM.motivo("colecistite-colelitiase", {
             "Disfunção de órgão (cardiovascular, neurológica, respiratória, renal, hepática, hematológica)"
           ]
         ],
-        "note": "Grau III exige suporte de órgão + drenagem precoce"
+        "note": "Grau III: suporte de órgão e drenagem precoce; colecistectomia só em centro avançado e em casos selecionados"
       },
       {
         "title": "Preditores de coledocolitíase (ASGE)",
@@ -402,7 +402,7 @@ AM.motivo("colecistite-colelitiase", {
       ],
       "drugs": [
         "Jejum + hidratação venosa",
-        "Analgesia (dipirona/AINE; opioide se intensa)",
+        "Analgesia (AINE; opioide se intensa)",
         "Antieméticos",
         "Antibiótico (ex.: ceftriaxona + metronidazol) na colecistite/colangite",
         "CPRE para desobstrução na coledocolitíase/colangite"
@@ -528,7 +528,7 @@ AM.motivo("colecistite-colelitiase", {
         "name": "Signo de Murphy",
         "eponym": "Colecistitis aguda",
         "how": "Detención inspiratoria a la palpación del HCD",
-        "means": "Colecistitis aguda — alta sensibilidad"
+        "means": "Colecistitis aguda — buena especificidad; sensibilidad moderada (aislado, no descarta el diagnóstico)"
       },
       {
         "name": "Tríada de Charcot",
@@ -607,7 +607,7 @@ AM.motivo("colecistite-colelitiase", {
             "Disfunción de órgano (cardiovascular, neurológica, respiratoria, renal, hepática, hematológica)"
           ]
         ],
-        "note": "El grado III exige soporte de órgano + drenaje precoz"
+        "note": "Grado III: soporte de órgano y drenaje precoz; colecistectomía solo en centro avanzado y en casos seleccionados"
       },
       {
         "title": "Predictores de coledocolitiasis (ASGE)",
@@ -634,7 +634,7 @@ AM.motivo("colecistite-colelitiase", {
       ],
       "drugs": [
         "Ayuno + hidratación venosa",
-        "Analgesia (dipirona/AINE; opioide si es intensa)",
+        "Analgesia (AINE; opioide si es intensa)",
         "Antieméticos",
         "Antibiótico (ej.: ceftriaxona + metronidazol) en colecistitis/colangitis",
         "CPRE para desobstrucción en la coledocolitiasis/colangitis"

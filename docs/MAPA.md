@@ -47,7 +47,8 @@
 - [ ] **Depois do merge das duas branches: rodar `node scripts/versionar-assets.mjs`** (ou `scripts/verify.sh`) e commitar os HTMLs. `anamnesismed-motivos.js` mudou e o navegador só baixa a versão nova se o carimbo `?v=` mudar. Não commitei os HTMLs agora para não conflitar com a outra branch
 - [ ] Dono confere as guias `apendicite-aguda`, `pancreatite-aguda` e `colecistite-aguda` pelos livros; depois `verificada: true` e `status`
 - [x] **Guias de motivo corrigidas pela revisão 07 (mesma autorização)**: pancreatite — hidratação "moderadamente agressiva e guiada por metas" (era "vigorosa/agressiva"), CPRE urgente só se colangite; colecistite — colecistectomia precoce "até 7 dias da admissão/10 dias dos sintomas (WSES 2020)" (era "<72h"), critérios ASGE 2019 (bilirrubina >4 só com via biliar dilatada)
-- [ ] **Ainda por fazer nas guias (revisão 07):** prazos de CPRE, de colecistectomia na pancreatite grave e de intervenção na necrose; definição do grau III e critérios de colangite (Tóquio 2018); critérios CCI/ASA para colecistectomia precoce; Sabiston sem edição/página
+- [x] **Todas as demais sugestões das revisões 06 e 07 foram aplicadas** (autorizado pelo dono). **Registro item a item com decisão do dono: `docs/REVISAO-ITEM-A-ITEM.md`** — o dono analisa e propõe mudanças antes de qualquer publicação
+- [ ] **Dono revisa `docs/REVISAO-ITEM-A-ITEM.md`** (manter/mudar cada item) e confere pelos livros; itens que dependem dele estão na seção G (edição do Sabiston, parede da vesícula 3 × 4 mm, janela de observação, Lapinsky/Lenander)
 - **Aceite:** `verify.sh` falha se uma enfermidade não tiver referência ou tradução. ✔
 
 ### 0.4 Decisões do dono (bloqueiam fases seguintes)

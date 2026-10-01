@@ -981,7 +981,7 @@ var GUIDE_ES = {
         "name": "Signo de Murphy",
         "eponym": "Colecistitis aguda",
         "how": "Detención inspiratoria a la palpación del HCD",
-        "means": "Colecistitis aguda — alta sensibilidad"
+        "means": "Colecistitis aguda — buena especificidad; sensibilidad moderada (aislado, no descarta el diagnóstico)"
       },
       {
         "name": "Tríada de Charcot",
@@ -1060,7 +1060,7 @@ var GUIDE_ES = {
             "Disfunción de órgano (cardiovascular, neurológica, respiratoria, renal, hepática, hematológica)"
           ]
         ],
-        "note": "El grado III exige soporte de órgano + drenaje precoz"
+        "note": "Grado III: soporte de órgano y drenaje precoz; colecistectomía solo en centro avanzado y en casos seleccionados"
       },
       {
         "title": "Predictores de coledocolitiasis (ASGE)",
@@ -1099,7 +1099,7 @@ var GUIDE_ES = {
       ],
       "drugs": [
         "Ayuno + hidratación venosa",
-        "Analgesia (dipirona/AINE; opioide si es intensa)",
+        "Analgesia (AINE; opioide si es intensa)",
         "Antieméticos",
         "Antibiótico (ej.: ceftriaxona + metronidazol) en colecistitis/colangitis",
         "CPRE para desobstrucción en la coledocolitiasis/colangitis"
@@ -4881,7 +4881,7 @@ var GUIDE_ES = {
           ],
           [
             "Trauma",
-            "Trauma abdominal / pos-CPRE"
+            "Trauma abdominal"
           ],
           [
             "Steroids",
@@ -4897,7 +4897,7 @@ var GUIDE_ES = {
           ],
           [
             "Scorpion",
-            "Picadura de escorpión"
+            "Picadura de escorpión (Tityus trinitatis — regional, Trinidad)"
           ],
           [
             "Hyper",
@@ -5081,7 +5081,7 @@ var GUIDE_ES = {
             "Caída Hto>10%, BUN↑>5, Ca<8, PaO₂<60, EB>4, secuestro de fluido>6L"
           ]
         ],
-        "note": "≥3 criterios → pancreatitis grave (mortalidad creciente con la puntuación)"
+        "note": "≥3 criterios → pancreatitis grave (mortalidad creciente con la puntuación) | Límites del ingreso arriba: pancreatitis no biliar; en la biliar: edad >70, leucocitos >18.000, glucosa >220, LDH >400, AST >250"
       }
     ],
     "conduta": {
@@ -5097,7 +5097,7 @@ var GUIDE_ES = {
         "Hidratación venosa precoz, moderadamente agresiva y guiada por metas (Ringer lactato) — pilar del tratamiento",
         "Analgesia (opioides si es necesario)",
         "Antieméticos",
-        "Soporte nutricional precoz (enteral preferible)",
+        "Dieta oral precoz (24-48 h) según tolerancia; enteral si no la tolera (preferible a la parenteral)",
         "ATB solo si necrosis infectada/colangitis — no profiláctico"
       ],
       "steps": [
